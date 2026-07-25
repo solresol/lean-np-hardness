@@ -1,0 +1,33 @@
+# Theorem status
+
+| Result | Status | Lean declaration or completion criterion |
+|---|---|---|
+| Semantic many-one reduction | Complete | `LeanNPHardness.ManyOneReduction` |
+| Semantic identity reduction | Complete | `ManyOneReduction.refl` |
+| Semantic composition | Complete | `ManyOneReduction.comp` |
+| Polynomial-time many-one reduction structure | Complete | `LeanNPHardness.PolytimeManyOneReduction` |
+| Polynomial-time identity reduction | Complete | `PolytimeManyOneReduction.refl` |
+| Composition from an explicit machine witness | Complete | `PolytimeManyOneReduction.compOfWitness` |
+| Generic polynomial-time machine composition | Pending | Construct the composed `FinTM2`; do not rely on mathlib's `proof_wanted` declaration as a completed proof. |
+| Closed polynomial-time reduction composition | Pending | Derive `PolytimeManyOneReduction.comp` from the preceding machine theorem. |
+| P | Pending | Define deterministic polynomial-time decidability for encoded languages. |
+| NP | Pending | Define verifier-based NP with polynomial certificate bounds. |
+| NP-hardness and NP-completeness | Pending | Define using the checked polynomial reduction relation and prove foundational transport lemmas. |
+| CNF-SAT language and encoding | Pending | Concrete syntax, semantics, and finite encoding. |
+| Exact 3-SAT is in NP | Pending | Checked verifier and runtime bound. |
+| Cook--Levin | Pending | Polynomial reduction from every NP language to SAT. |
+| Exact 3-SAT is NP-complete | Pending | Checked SAT-to-3-SAT normalization and final composition. |
+
+## Initial audit
+
+The initial declarations build with the pinned Lean and mathlib revisions.
+`LeanNPHardness.Audit` reports:
+
+- `ManyOneReduction.comp` depends on no axioms;
+- `PolytimeManyOneReduction.refl` depends on `propext`,
+  `Classical.choice`, and `Quot.sound`; and
+- `PolytimeManyOneReduction.compOfWitness` depends on `propext` and
+  `Quot.sound`.
+
+The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
+`unsafe` declaration.

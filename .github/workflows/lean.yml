@@ -1,0 +1,26 @@
+name: Lean
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v6
+
+      - name: Build the Lean project
+        uses: leanprover/lean-action@v1
+
+      - name: Reject unfinished project proofs
+        run: >-
+          ! grep -R -n -E
+          '(^|[^[:alpha:]])(sorry|admit)([^[:alpha:]]|$)|^[[:space:]]*axiom[[:space:]]|^[[:space:]]*unsafe[[:space:]]'
+          LeanNPHardness LeanNPHardness.lean
