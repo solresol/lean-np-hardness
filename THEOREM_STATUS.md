@@ -8,6 +8,8 @@
 | Polynomial-time many-one reduction structure | Complete | `LeanNPHardness.PolytimeManyOneReduction` |
 | Polynomial-time identity reduction | Complete | `PolytimeManyOneReduction.refl` |
 | Composition from an explicit machine witness | Complete | `PolytimeManyOneReduction.compOfWitness` |
+| Polynomial-time composition after identity | Complete | `PolytimeManyOneReduction.reflComp` |
+| Polynomial-time composition before identity | Complete | `PolytimeManyOneReduction.compRefl` |
 | Generic polynomial-time machine composition | Pending | Construct the composed `FinTM2`; do not rely on mathlib's `proof_wanted` declaration as a completed proof. |
 | Closed polynomial-time reduction composition | Pending | Derive `PolytimeManyOneReduction.comp` from the preceding machine theorem. |
 | P | Pending | Define deterministic polynomial-time decidability for encoded languages. |
@@ -27,7 +29,10 @@ The initial declarations build with the pinned Lean and mathlib revisions.
 - `PolytimeManyOneReduction.refl` depends on `propext`,
   `Classical.choice`, and `Quot.sound`; and
 - `PolytimeManyOneReduction.compOfWitness` depends on `propext` and
-  `Quot.sound`.
+  `Quot.sound`; and
+- `PolytimeManyOneReduction.reflComp` and
+  `PolytimeManyOneReduction.compRefl` depend on `propext`,
+  `Classical.choice`, and `Quot.sound`.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
 `unsafe` declaration.
