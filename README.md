@@ -35,9 +35,11 @@ The initial checked layer contains:
 - `ManyOneReduction`, with identity and composition proved semantically;
 - `PolytimeManyOneReduction`, tied directly to mathlib's
   `FinEncoding` and `TM2ComputableInPolyTime`;
-- a polynomial-time identity reduction; and
+- a polynomial-time identity reduction;
 - composition from an explicit verified machine-composition witness, with
-  unconditional left- and right-identity special cases.
+  unconditional left- and right-identity special cases; and
+- a checked lift of one finite machine into the left side of a disjoint-union
+  stack layout, including exact one-step simulation.
 
 The generic polynomial-time composition theorem, P, NP, SAT, exact 3-SAT, and
 Cook--Levin remain pending. See [THEOREM_STATUS.md](THEOREM_STATUS.md) and

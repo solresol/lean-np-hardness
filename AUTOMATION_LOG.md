@@ -41,3 +41,44 @@ avoid failed routes, and choose a materially different experiment when blocked.
   that embeds one `FinTM2` into a disjoint-union stack index, and prove a
   one-step simulation lemma before attempting sequential control or runtime
   composition.
+
+## 2026-07-27 — left-machine stack embedding and step simulation
+
+- **Starting commit:** `9193996cc34a4f0039bfabe5db5c8a315d1de0a1`
+- **Goal:** implement the first machine-level component named by the previous
+  entry: embed one `FinTM2` into a disjoint-union stack family and prove
+  one-step preservation.
+- **Checked increment:** added finite `StackIndex` and dependent
+  `StackAlphabet` definitions for a pair of machines; `leftStacks` and its
+  dependent-update compatibility theorem; recursive `liftLeftStmt` and
+  `liftLeftCfg`; and the `liftLeft_stepAux` and `liftLeft_step` simulation
+  theorems. The lift preserves the first machine's labels and state while
+  leaving every second-machine stack empty.
+- **Files:** `LeanNPHardness/MachineEmbedding.lean`,
+  `LeanNPHardness/Audit.lean`, `LeanNPHardness.lean`,
+  `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** targeted machine-embedding build passed; full
+  `lake build` passed 1,134 jobs. `#print axioms` reports only `propext` and
+  `Quot.sound` for `MachineComposition.liftLeft_step`. The project scan found
+  no `sorry`, `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted`
+  remains only in the explanatory dependency-boundary comment.
+- **Failed approaches/blockers:** initial instance synthesis did not recover
+  the component machines' `DecidableEq` and `Fintype` fields through the
+  `StackIndex` definition; explicit local projection instances fixed it.
+  `stacks` parsed as a reserved token in this Lean toolchain and was renamed
+  `contents`. The dependent `Function.update` proof also required an explicit
+  proof that `Sum.inl j ≠ Sum.inl k`; plain simplification did not derive it.
+  Finally, the lifted `Option.map` step goal needed one explicit definitional
+  reduction after rewriting the statement simulation.
+- **Useful API discovery:** `TM2.stepAux` recursively evaluates an entire
+  statement tree within one counted machine step. Consequently the statement
+  lift must commute with every `push`, `peek`, `pop`, `load`, and `branch`
+  constructor, while `goto` and `halt` are definitional. Dependent stack
+  updates are the only nontrivial structural case in the left embedding.
+- **Ending state:** one step of the first program is now simulated exactly in
+  the combined stack family. No sequential control, intermediate-output copy,
+  or runtime claim has been made.
+- **Best next experiment:** implement the symmetric right-stack embedding and
+  one-step simulation. Then use both simulations to design label and state
+  injections for a genuinely combined program, keeping the later copy phase
+  separate.
