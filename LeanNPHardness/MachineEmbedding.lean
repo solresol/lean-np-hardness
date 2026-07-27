@@ -145,4 +145,123 @@ theorem liftLeft_step (first second : FinTM2)
           rw [liftLeft_stepAux]
           rfl
 
+/-- Embed the second machine's stacks into a combined stack family, leaving all
+stacks belonging to the first machine empty. -/
+def rightStacks (first second : FinTM2)
+    (contents : ∀ k, List (second.Γ k)) :
+    ∀ k, List (StackAlphabet first second k)
+  | Sum.inl _ => []
+  | Sum.inr k => contents k
+
+@[simp]
+theorem rightStacks_inl (first second : FinTM2)
+    (contents : ∀ k, List (second.Γ k)) (k : first.K) :
+    rightStacks first second contents (Sum.inl k) = [] :=
+  rfl
+
+@[simp]
+theorem rightStacks_inr (first second : FinTM2)
+    (contents : ∀ k, List (second.Γ k)) (k : second.K) :
+    rightStacks first second contents (Sum.inr k) = contents k :=
+  rfl
+
+/-- Updating a second-machine stack before embedding is the same as updating
+its right injection after embedding. -/
+theorem rightStacks_update (first second : FinTM2)
+    (contents : ∀ k, List (second.Γ k)) (k : second.K)
+    (value : List (second.Γ k)) :
+    rightStacks first second (Function.update contents k value) =
+      Function.update (rightStacks first second contents) (Sum.inr k) value := by
+  funext index
+  cases index with
+  | inl j =>
+      simp
+  | inr j =>
+      by_cases h : j = k
+      · subst j
+        simp
+      · have hsum :
+            (Sum.inr j : StackIndex first second) ≠ Sum.inr k := by
+          intro equality
+          exact h (Sum.inr.inj equality)
+        simp [h, hsum]
+
+/-- Lift a statement of the second machine to the combined stack family.
+Control labels and internal state are unchanged. -/
+def liftRightStmt (first second : FinTM2) :
+    TM2.Stmt second.Γ second.Λ second.σ →
+      TM2.Stmt (StackAlphabet first second) second.Λ second.σ
+  | .push k write next =>
+      .push (Sum.inr k) write (liftRightStmt first second next)
+  | .peek k read next =>
+      .peek (Sum.inr k) read (liftRightStmt first second next)
+  | .pop k read next =>
+      .pop (Sum.inr k) read (liftRightStmt first second next)
+  | .load update next =>
+      .load update (liftRightStmt first second next)
+  | .branch test yes no =>
+      .branch test (liftRightStmt first second yes)
+        (liftRightStmt first second no)
+  | .goto next => .goto next
+  | .halt => .halt
+
+/-- Lift a configuration of the second machine into the combined stack family.
+All first-machine stacks start empty. -/
+def liftRightCfg (first second : FinTM2)
+    (cfg : TM2.Cfg second.Γ second.Λ second.σ) :
+    TM2.Cfg (StackAlphabet first second) second.Λ second.σ where
+  l := cfg.l
+  var := cfg.var
+  stk := rightStacks first second cfg.stk
+
+/-- Lifting the second machine commutes with execution of a single statement. -/
+theorem liftRight_stepAux (first second : FinTM2)
+    (stmt : TM2.Stmt second.Γ second.Λ second.σ)
+    (state : second.σ) (contents : ∀ k, List (second.Γ k)) :
+    TM2.stepAux (liftRightStmt first second stmt) state
+        (rightStacks first second contents) =
+      liftRightCfg first second (TM2.stepAux stmt state contents) := by
+  induction stmt generalizing state contents with
+  | push k write next ih =>
+      simp only [liftRightStmt, TM2.stepAux]
+      rw [← rightStacks_update]
+      exact ih _ _
+  | peek k read next ih =>
+      simpa only [liftRightStmt, TM2.stepAux, rightStacks_inr] using
+        ih (read state (contents k).head?) contents
+  | pop k read next ih =>
+      simp only [liftRightStmt, TM2.stepAux, rightStacks_inr]
+      rw [← rightStacks_update]
+      exact ih _ _
+  | load update next ih =>
+      simpa only [liftRightStmt, TM2.stepAux] using ih (update state) contents
+  | branch test yes no ihYes ihNo =>
+      by_cases h : test state
+      · simpa only [liftRightStmt, TM2.stepAux, h, cond_true] using
+          ihYes state contents
+      · simpa only [liftRightStmt, TM2.stepAux, h, cond_false] using
+          ihNo state contents
+  | goto next =>
+      rfl
+  | halt =>
+      rfl
+
+/-- One step of the second machine is simulated exactly by its lift into the
+combined stack family. -/
+theorem liftRight_step (first second : FinTM2)
+    (program : second.Λ → TM2.Stmt second.Γ second.Λ second.σ)
+    (cfg : TM2.Cfg second.Γ second.Λ second.σ) :
+    TM2.step (fun label => liftRightStmt first second (program label))
+        (liftRightCfg first second cfg) =
+      Option.map (liftRightCfg first second) (TM2.step program cfg) := by
+  cases cfg with
+  | mk label state contents =>
+      cases label with
+      | none =>
+          rfl
+      | some label =>
+          simp only [liftRightCfg, TM2.step]
+          rw [liftRight_stepAux]
+          rfl
+
 end LeanNPHardness.MachineComposition

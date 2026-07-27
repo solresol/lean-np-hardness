@@ -82,3 +82,41 @@ avoid failed routes, and choose a materially different experiment when blocked.
   one-step simulation. Then use both simulations to design label and state
   injections for a genuinely combined program, keeping the later copy phase
   separate.
+
+## 2026-07-28 — right-machine stack embedding and step simulation
+
+- **Starting commit:** `0869697c5e61a9198fd8978b38d90281826ba2a2`
+- **Goal:** complete the symmetric stack-level simulation needed before
+  designing one combined sequential program.
+- **Checked increment:** added `rightStacks`, its injection and dependent-update
+  lemmas, recursive `liftRightStmt`, `liftRightCfg`, and the
+  `liftRight_stepAux` and `liftRight_step` simulation theorems. The second
+  machine now runs unchanged on the right side of `StackIndex first second`,
+  with all first-machine stacks empty.
+- **Files:** `LeanNPHardness/MachineEmbedding.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** targeted machine-embedding build passed; full
+  `lake build` passed 1,134 jobs. `#print axioms` reports only `propext` and
+  `Quot.sound` for `MachineComposition.liftRight_step`. The project scan found
+  no `sorry`, `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted`
+  remains only in the explanatory dependency-boundary comment.
+- **Failed approaches/blockers:** no failed route today; the right proof reused
+  the explicit component instances, non-reserved `contents` name, injected
+  inequality, and final definitional reduction identified on 2026-07-27.
+  The remaining blocker is no longer stack simulation: a combined machine must
+  inject both label and internal-state types and add a distinct transfer phase.
+- **Useful API discovery:** the left and right `TM2.stepAux` simulations are
+  structurally identical after exchanging `Sum.inl` and `Sum.inr`. The
+  intermediate-symbol conversion cannot be defined from two raw `FinTM2`
+  values alone; it must use the first `TM2ComputableAux.outputAlphabet` and
+  second `TM2ComputableAux.inputAlphabet` equivalences through the shared
+  middle encoding.
+- **Ending state:** either component machine now has a checked exact one-step
+  simulation on its side of the combined stack family. Sequential control,
+  transfer, multi-step correctness, and runtime bounds remain pending.
+- **Best next experiment:** define finite combined control-label and
+  phase-tagged state types, including a separate transfer label/state, at the
+  `TM2ComputableAux` layer where the middle-alphabet equivalence is available.
+  First prove the label and state injections preserve one component step; defer
+  the actual output-copy loop.

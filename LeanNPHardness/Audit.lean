@@ -11,5 +11,6 @@ open Computability
 #print axioms LeanNPHardness.PolytimeManyOneReduction.reflComp
 #print axioms LeanNPHardness.PolytimeManyOneReduction.compRefl
 #print axioms LeanNPHardness.MachineComposition.liftLeft_step
+#print axioms LeanNPHardness.MachineComposition.liftRight_step
 
 end LeanNPHardness.Audit
