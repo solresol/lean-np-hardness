@@ -12,6 +12,7 @@
 | Polynomial-time composition before identity | Complete | `PolytimeManyOneReduction.compRefl` |
 | Left-machine combined-stack embedding | Complete | `MachineComposition.liftLeft_step` |
 | Right-machine combined-stack embedding | Complete | `MachineComposition.liftRight_step` |
+| Finite combined control and middle-alphabet bridge | Complete | `MachineComposition.ControlLabel`, `ControlState`, and `middleAlphabetEquiv` |
 | Generic polynomial-time machine composition | Pending | Construct the composed `FinTM2`; do not rely on mathlib's `proof_wanted` declaration as a completed proof. |
 | Closed polynomial-time reduction composition | Pending | Derive `PolytimeManyOneReduction.comp` from the preceding machine theorem. |
 | P | Pending | Define deterministic polynomial-time decidability for encoded languages. |
@@ -38,7 +39,9 @@ The initial declarations build with the pinned Lean and mathlib revisions.
 - `MachineComposition.liftLeft_step` depends on `propext` and
   `Quot.sound`; and
 - `MachineComposition.liftRight_step` depends on `propext` and
-  `Quot.sound`.
+  `Quot.sound`; and
+- `MachineComposition.middleAlphabetEquiv_symm_apply_apply` depends on
+  `propext` and `Quot.sound`.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
 `unsafe` declaration.

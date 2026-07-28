@@ -39,7 +39,8 @@ The initial checked layer contains:
 - composition from an explicit verified machine-composition witness, with
   unconditional left- and right-identity special cases; and
 - checked lifts of both finite machines into the two sides of a disjoint-union
-  stack layout, including exact one-step simulations.
+  stack layout, including exact one-step simulations, finite phase control,
+  and the checked intermediate-alphabet equivalence.
 
 The generic polynomial-time composition theorem, P, NP, SAT, exact 3-SAT, and
 Cook--Levin remain pending. See [THEOREM_STATUS.md](THEOREM_STATUS.md) and

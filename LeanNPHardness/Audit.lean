@@ -1,4 +1,5 @@
 import LeanNPHardness.MachineEmbedding
+import LeanNPHardness.MachineControl
 import LeanNPHardness.PolytimeComposition
 
 namespace LeanNPHardness.Audit
@@ -12,5 +13,6 @@ open Computability
 #print axioms LeanNPHardness.PolytimeManyOneReduction.compRefl
 #print axioms LeanNPHardness.MachineComposition.liftLeft_step
 #print axioms LeanNPHardness.MachineComposition.liftRight_step
+#print axioms LeanNPHardness.MachineComposition.middleAlphabetEquiv_symm_apply_apply
 
 end LeanNPHardness.Audit

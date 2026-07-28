@@ -120,3 +120,45 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `TM2ComputableAux` layer where the middle-alphabet equivalence is available.
   First prove the label and state injections preserve one component step; defer
   the actual output-copy loop.
+
+## 2026-07-29 — finite phase control and middle-alphabet bridge
+
+- **Starting commit:** `bf3487b76ecac4875a2b2721e4400fe6495fe8f5`
+- **Goal:** define the finite control types and checked alphabet conversion
+  needed before either component program can be injected into one sequential
+  machine.
+- **Checked increment:** added `ControlLabel` with disjoint left, transfer, and
+  right phases; finite `ControlState` with phase-tagged component states and an
+  optional canonical middle-alphabet symbol; total component-state projections
+  with injection round trips; and `middleAlphabetEquiv`, which composes the
+  first witness's output equivalence with the inverse of the second witness's
+  input equivalence. Added bridge round-trip theorems and label-separation
+  proofs.
+- **Files:** `LeanNPHardness/MachineControl.lean`,
+  `LeanNPHardness/Audit.lean`, `LeanNPHardness.lean`, `README.md`,
+  `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** targeted control-module build passed; full
+  `lake build` passed 1,135 jobs. `#print axioms` reports only `propext` and
+  `Quot.sound` for `middleAlphabetEquiv_symm_apply_apply`. The project scan
+  found no `sorry`, `admit`, project-defined `axiom`, or `unsafe`;
+  `proof_wanted` remains only in the explanatory dependency-boundary comment.
+- **Failed approaches/blockers:** simplification did not prove that a nested
+  right-component label differs from the nested transfer label. Injecting the
+  outer `Sum.inr` equality and eliminating the resulting impossible inner
+  `Sum.inr = Sum.inl` equality closed the proof. No other implementation route
+  failed.
+- **Useful API discovery:** `FinTM2` requires only its input-stack alphabet to
+  be finite; its output alphabet need not expose `Fintype`. Transfer state
+  should therefore hold an `Option` symbol from the shared `FinEncoding`
+  alphabet, whose finiteness is available, rather than a private output-stack
+  symbol. The executable bridge is exactly
+  `first.outputAlphabet.trans second.inputAlphabet.symm`.
+- **Ending state:** the combined machine now has checked finite phase labels,
+  finite phase state, and a reversible middle-symbol bridge. No component
+  statement has yet been rewritten to use those control types, and no transfer
+  loop or runtime result is claimed.
+- **Best next experiment:** define a phase-preserving left-control statement
+  and program lift, using `leftStateValue` to totalize state-dependent
+  operations, and prove an exact one-step simulation from a left-phase
+  configuration. Keep `halt` unchanged in that lemma; introduce the
+  halt-to-transfer transition only in a later sequential variant.
