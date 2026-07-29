@@ -162,3 +162,42 @@ avoid failed routes, and choose a materially different experiment when blocked.
   operations, and prove an exact one-step simulation from a left-phase
   configuration. Keep `halt` unchanged in that lemma; introduce the
   halt-to-transfer transition only in a later sequential variant.
+
+## 2026-07-30 — first-component combined-control simulation
+
+- **Starting commit:** `7169f0588d58c42f73f5a01a39e2d76add95cc78`
+- **Goal:** inject the first machine's statements, configurations, and program
+  into the combined stack, label, and state types and prove exact one-step
+  preservation without yet changing halting behavior.
+- **Checked increment:** added `liftLeftControlStmt`, which rewrites every stack
+  index, state-dependent operation, branch, and jump into combined control;
+  `liftLeftControlCfg`; total `liftLeftControlProgram`; and the
+  `liftLeftControl_stepAux` and `liftLeftControl_step` simulation theorems.
+  The lift deliberately maps `halt` to `halt`, isolating phase-preserving
+  correctness from the later sequential halt-to-transfer transition.
+- **Files:** `LeanNPHardness/MachineControlSimulation.lean`,
+  `LeanNPHardness/Audit.lean`, `LeanNPHardness.lean`, `README.md`,
+  `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** targeted control-simulation build passed; full
+  `lake build` passed 1,136 jobs. `#print axioms` reports only `propext` and
+  `Quot.sound` for `liftLeftControl_step`. The project scan found no `sorry`,
+  `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in
+  the explanatory dependency-boundary comment.
+- **Failed approaches/blockers:** the final program-step rewrite initially
+  failed because the total program still contained a match on
+  `leftLabel first second label`; unfolding `leftLabel` exposed `Sum.inl` and
+  reduced the match. No statement-constructor proof failed.
+- **Useful API discovery:** `leftStateValue` makes all lifted state functions
+  total by returning the first machine's declared initial state outside the
+  left phase. On an injected `leftState`, its round-trip simp theorem reduces
+  every `push`, `peek`, `pop`, `load`, branch, and jump exactly to the original
+  operation. A phase-preserving halt theorem can therefore be proved before
+  introducing any sequential behavior.
+- **Ending state:** the first component now executes exactly inside the full
+  combined control types. The second component still has only the earlier
+  stack-level simulation; transfer control, multi-step correctness, and
+  runtime bounds remain pending.
+- **Best next experiment:** implement the symmetric phase-preserving
+  right-control statement, configuration, and total-program lift with exact
+  one-step simulation. Reuse the explicit `rightLabel` unfolding at the final
+  program match, then begin a separate left-halt-to-transfer variant.
