@@ -201,3 +201,42 @@ avoid failed routes, and choose a materially different experiment when blocked.
   right-control statement, configuration, and total-program lift with exact
   one-step simulation. Reuse the explicit `rightLabel` unfolding at the final
   program match, then begin a separate left-halt-to-transfer variant.
+
+## 2026-08-02 — second-component combined-control simulation
+
+- **Starting commit:** `a28b57f2eba67abdfb175d134f683399ac525cd9`
+- **Goal:** complete the symmetric phase-preserving injection of the second
+  machine into the combined stack, label, and state types before introducing
+  transfer behavior.
+- **Checked increment:** added `liftRightControlStmt`, which rewrites every
+  second-machine stack index, state-dependent operation, branch, and jump into
+  combined control; `liftRightControlCfg`; total
+  `liftRightControlProgram`; and the `liftRightControl_stepAux` and
+  `liftRightControl_step` simulation theorems. Like the left lift, the
+  construction preserves `halt`, keeping transfer semantics separate.
+- **Files:** `LeanNPHardness/MachineControlSimulation.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** targeted control-simulation and audit builds passed;
+  full `lake build` passed 1,136 jobs. `#print axioms` reports only `propext`
+  and `Quot.sound` for `liftRightControl_step`. The Lean-source scan found no
+  `sorry`, `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted`
+  occurs only in the explanatory dependency-boundary comment.
+- **Failed approaches/blockers:** the first final-step proof did not unfold
+  `liftRightControlProgram`, so rewriting with `liftRightControl_stepAux`
+  could not match the target. Adding that definition to the explicit
+  simplification list reduced the nested injected label and closed the proof.
+  No transfer or runtime blocker was attempted in this increment.
+- **Useful API discovery:** unfolding `rightLabel` alone exposes the nested
+  `Sum.inr (Sum.inr label)`, but the total program match still needs
+  `liftRightControlProgram` unfolded explicitly. Once reduced, all statement
+  cases follow the left proof with `rightStateValue_rightState` and
+  `rightStacks_update`.
+- **Ending state:** both component programs now have exact, checked one-step
+  simulations in the full combined control types. Transfer control,
+  multi-step correctness, and polynomial runtime bounds remain pending.
+- **Best next experiment:** define a separate first-program lift that changes
+  only `halt` into a jump to `transferLabel`, then prove that non-halting
+  statements still simulate the first machine and that a halting statement
+  enters a canonical transfer configuration. Do not combine output copying or
+  runtime accounting into that first transfer increment.
