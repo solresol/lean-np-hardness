@@ -16,6 +16,8 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.liftRight_step
 #print axioms LeanNPHardness.MachineComposition.middleAlphabetEquiv_symm_apply_apply
 #print axioms LeanNPHardness.MachineComposition.liftLeftControl_step
+#print axioms LeanNPHardness.MachineComposition.liftLeftThenTransfer_step
+#print axioms LeanNPHardness.MachineComposition.liftLeftThenTransfer_step_of_halt
 #print axioms LeanNPHardness.MachineComposition.liftRightControl_step
 
 end LeanNPHardness.Audit

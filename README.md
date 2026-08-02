@@ -41,7 +41,9 @@ The initial checked layer contains:
 - checked lifts of both finite machines into the two sides of a disjoint-union
   stack layout, including exact one-step simulations, finite phase control,
   the checked intermediate-alphabet equivalence, and exact simulations of
-  both components after injection into the combined control types.
+  both components after injection into the combined control types; and
+- a checked first-program variant that preserves continuing steps and
+  redirects a reached halt to a canonical transfer-labelled configuration.
 
 The generic polynomial-time composition theorem, P, NP, SAT, exact 3-SAT, and
 Cook--Levin remain pending. See [THEOREM_STATUS.md](THEOREM_STATUS.md) and

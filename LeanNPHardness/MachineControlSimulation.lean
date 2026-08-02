@@ -137,6 +137,223 @@ theorem liftLeftControl_step {Γ₀ Γ₁ Γ₂ : Type}
           rw [liftLeftControl_stepAux]
           rfl
 
+/-- Lift a first-machine statement into combined control, redirecting every
+reached `halt` leaf to the transfer label. All other statement constructors
+are lifted exactly as in `liftLeftControlStmt`. -/
+def liftLeftThenTransferStmt {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) :
+    TM2.Stmt first.tm.Γ first.tm.Λ first.tm.σ →
+      TM2.Stmt (StackAlphabet first.tm second.tm)
+        (ControlLabel first second) (ControlState first second)
+  | .push k write next =>
+      .push (Sum.inl k)
+        (fun state => write (leftStateValue first second state))
+        (liftLeftThenTransferStmt first second next)
+  | .peek k read next =>
+      .peek (Sum.inl k)
+        (fun state symbol =>
+          leftState first second
+            (read (leftStateValue first second state) symbol))
+        (liftLeftThenTransferStmt first second next)
+  | .pop k read next =>
+      .pop (Sum.inl k)
+        (fun state symbol =>
+          leftState first second
+            (read (leftStateValue first second state) symbol))
+        (liftLeftThenTransferStmt first second next)
+  | .load update next =>
+      .load
+        (fun state =>
+          leftState first second
+            (update (leftStateValue first second state)))
+        (liftLeftThenTransferStmt first second next)
+  | .branch test yes no =>
+      .branch
+        (fun state => test (leftStateValue first second state))
+        (liftLeftThenTransferStmt first second yes)
+        (liftLeftThenTransferStmt first second no)
+  | .goto next =>
+      .goto
+        (fun state =>
+          leftLabel first second (next (leftStateValue first second state)))
+  | .halt => .goto (fun _ => transferLabel first second)
+
+/-- The result of a first-machine statement after redirecting a reached halt.
+A continuing label is injected into the left phase; a halting result is sent
+to the transfer label. State and stacks remain the injected first-machine
+state and stacks. -/
+def liftLeftThenTransferCfg {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (cfg : TM2.Cfg first.tm.Γ first.tm.Λ first.tm.σ) :
+    TM2.Cfg (StackAlphabet first.tm second.tm)
+      (ControlLabel first second) (ControlState first second) where
+  l := some (cfg.l.elim (transferLabel first second)
+    (leftLabel first second))
+  var := leftState first second cfg.var
+  stk := leftStacks first.tm second.tm cfg.stk
+
+/-- Canonical entry configuration for the transfer phase. The transfer
+program will be responsible for replacing the injected first-machine state
+with its own symbol-carrying transfer state. -/
+def leftTransferEntryCfg {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : first.tm.σ) (contents : ∀ k, List (first.tm.Γ k)) :
+    TM2.Cfg (StackAlphabet first.tm second.tm)
+      (ControlLabel first second) (ControlState first second) where
+  l := some (transferLabel first second)
+  var := leftState first second state
+  stk := leftStacks first.tm second.tm contents
+
+@[simp]
+theorem liftLeftThenTransferCfg_running {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) (label : first.tm.Λ)
+    (state : first.tm.σ) (contents : ∀ k, List (first.tm.Γ k)) :
+    liftLeftThenTransferCfg first second
+        (TM2.Cfg.mk (some label) state contents) =
+      liftLeftControlCfg first second
+        (TM2.Cfg.mk (some label) state contents) :=
+  rfl
+
+@[simp]
+theorem liftLeftThenTransferCfg_halted {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : first.tm.σ) (contents : ∀ k, List (first.tm.Γ k)) :
+    liftLeftThenTransferCfg first second
+        (TM2.Cfg.mk none state contents) =
+      leftTransferEntryCfg first second state contents :=
+  rfl
+
+/-- Redirecting first-machine halts commutes with execution of one complete
+statement. The target configuration records whether the original statement
+continued at a label or reached `halt`. -/
+theorem liftLeftThenTransfer_stepAux {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (stmt : TM2.Stmt first.tm.Γ first.tm.Λ first.tm.σ)
+    (state : first.tm.σ)
+    (contents : ∀ k, List (first.tm.Γ k)) :
+    TM2.stepAux (liftLeftThenTransferStmt first second stmt)
+        (leftState first second state)
+        (leftStacks first.tm second.tm contents) =
+      liftLeftThenTransferCfg first second
+        (TM2.stepAux stmt state contents) := by
+  induction stmt generalizing state contents with
+  | push k write next ih =>
+      simp only [liftLeftThenTransferStmt, TM2.stepAux,
+        leftStateValue_leftState]
+      rw [← leftStacks_update]
+      exact ih _ _
+  | peek k read next ih =>
+      simpa only [liftLeftThenTransferStmt, TM2.stepAux,
+        leftStateValue_leftState, leftStacks_inl] using
+        ih (read state (contents k).head?) contents
+  | pop k read next ih =>
+      simp only [liftLeftThenTransferStmt, TM2.stepAux,
+        leftStateValue_leftState, leftStacks_inl]
+      rw [← leftStacks_update]
+      exact ih _ _
+  | load update next ih =>
+      simpa only [liftLeftThenTransferStmt, TM2.stepAux,
+        leftStateValue_leftState] using
+        ih (update state) contents
+  | branch test yes no ihYes ihNo =>
+      by_cases h : test state
+      · simpa only [liftLeftThenTransferStmt, TM2.stepAux,
+          leftStateValue_leftState, h, cond_true] using
+          ihYes state contents
+      · simpa only [liftLeftThenTransferStmt, TM2.stepAux,
+          leftStateValue_leftState, h, cond_false] using
+          ihNo state contents
+  | goto next =>
+      rfl
+  | halt =>
+      rfl
+
+/-- Lift the first program so a reached `halt` enters the transfer phase.
+Non-left labels halt; the theorem below only executes injected left labels. -/
+def liftLeftThenTransferProgram {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (program : first.tm.Λ → TM2.Stmt first.tm.Γ first.tm.Λ first.tm.σ) :
+    ControlLabel first second →
+      TM2.Stmt (StackAlphabet first.tm second.tm)
+        (ControlLabel first second) (ControlState first second)
+  | Sum.inl label => liftLeftThenTransferStmt first second (program label)
+  | Sum.inr _ => .halt
+
+/-- One first-program step is preserved, except that a resulting halt is
+redirected to the canonical transfer entry configuration. -/
+theorem liftLeftThenTransfer_step {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (program : first.tm.Λ → TM2.Stmt first.tm.Γ first.tm.Λ first.tm.σ)
+    (cfg : TM2.Cfg first.tm.Γ first.tm.Λ first.tm.σ) :
+    TM2.step (liftLeftThenTransferProgram first second program)
+        (liftLeftControlCfg first second cfg) =
+      Option.map (liftLeftThenTransferCfg first second)
+        (TM2.step program cfg) := by
+  cases cfg with
+  | mk label state contents =>
+      cases label with
+      | none =>
+          rfl
+      | some label =>
+          simp only [liftLeftControlCfg, TM2.step,
+            Option.map_some, liftLeftThenTransferProgram, leftLabel]
+          rw [liftLeftThenTransfer_stepAux]
+
+/-- If the original step continues at a label, the halt-redirecting program
+has exactly the same injected result as the phase-preserving lift. -/
+theorem liftLeftThenTransfer_step_of_running {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (program : first.tm.Λ → TM2.Stmt first.tm.Γ first.tm.Λ first.tm.σ)
+    (cfg nextCfg : TM2.Cfg first.tm.Γ first.tm.Λ first.tm.σ)
+    (label : first.tm.Λ) (hstep : TM2.step program cfg = some nextCfg)
+    (hlabel : nextCfg.l = some label) :
+    TM2.step (liftLeftThenTransferProgram first second program)
+        (liftLeftControlCfg first second cfg) =
+      some (liftLeftControlCfg first second nextCfg) := by
+  rw [liftLeftThenTransfer_step, hstep]
+  simp only [Option.map_some]
+  cases nextCfg with
+  | mk nextLabel state contents =>
+      cases nextLabel with
+      | none =>
+          simp at hlabel
+      | some nextLabel =>
+          simp only [Option.some.injEq] at hlabel
+          subst nextLabel
+          rfl
+
+/-- If the original step reaches `halt`, the halt-redirecting program instead
+enters the canonical transfer-labelled configuration with the same state and
+stacks. -/
+theorem liftLeftThenTransfer_step_of_halt {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (program : first.tm.Λ → TM2.Stmt first.tm.Γ first.tm.Λ first.tm.σ)
+    (cfg nextCfg : TM2.Cfg first.tm.Γ first.tm.Λ first.tm.σ)
+    (hstep : TM2.step program cfg = some nextCfg)
+    (hhalt : nextCfg.l = none) :
+    TM2.step (liftLeftThenTransferProgram first second program)
+        (liftLeftControlCfg first second cfg) =
+      some (leftTransferEntryCfg first second nextCfg.var nextCfg.stk) := by
+  rw [liftLeftThenTransfer_step, hstep]
+  simp only [Option.map_some]
+  cases nextCfg with
+  | mk nextLabel state contents =>
+      cases nextLabel with
+      | none =>
+          rfl
+      | some nextLabel =>
+          simp at hhalt
+
 /-- Lift a second-machine statement into the combined stack, label, and state
 types while preserving `halt`. State-dependent operations are totalized with
 `rightStateValue`; on a genuine right-phase state they reduce to the original

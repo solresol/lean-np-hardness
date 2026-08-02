@@ -240,3 +240,48 @@ avoid failed routes, and choose a materially different experiment when blocked.
   statements still simulate the first machine and that a halting statement
   enters a canonical transfer configuration. Do not combine output copying or
   runtime accounting into that first transfer increment.
+
+## 2026-08-03 — checked left-halt transition into transfer control
+
+- **Starting commit:** `1e90d19f6c58deec211e7e878ca439ae5bf38ac8`
+- **Goal:** implement the previously isolated control transition from a
+  completed first-machine statement into the transfer phase, without yet
+  claiming output copying or runtime composition.
+- **Checked increment:** added `liftLeftThenTransferStmt`, which differs from
+  the phase-preserving lift only by redirecting reached `halt` leaves to
+  `transferLabel`; `liftLeftThenTransferCfg` and `leftTransferEntryCfg`; the
+  exact statement theorem `liftLeftThenTransfer_stepAux`; and the program
+  theorem `liftLeftThenTransfer_step` with separate running and halted
+  corollaries. Continuing steps reduce to `liftLeftControlCfg`, while a
+  halting result enters the canonical transfer-labelled configuration with
+  the injected first-machine state and stacks.
+- **Files:** `LeanNPHardness/MachineControlSimulation.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** targeted control-simulation and audit build passed;
+  full `lake build` passed 1,136 jobs. `#print axioms` reports only `propext`
+  and `Quot.sound` for `liftLeftThenTransfer_step` and
+  `liftLeftThenTransfer_step_of_halt`. The Lean-source scan found no `sorry`,
+  `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted` occurs only in
+  the explanatory dependency-boundary comment.
+- **Failed approaches/blockers:** no proof route failed in this increment.
+  The Coq comparison development composes its reduction at the library
+  relation level and does not provide evidence for this mathlib-specific
+  machine construction. The new combined program deliberately still halts if
+  the transfer label itself is stepped: transfer execution and its runtime
+  remain unimplemented.
+- **Useful API discovery:** because `TM2.stepAux` evaluates a whole statement
+  tree in one counted step, recursively replacing `halt` gives one exact
+  theorem covering nested branches; no static no-halt predicate is needed.
+  Mathlib's `TMToPartrec.move₂` preserves stack order using a dedicated
+  reversal stack and two moves, indicating that the generic middle-output
+  transfer will need explicit scratch storage rather than a single direct
+  source-to-target move.
+- **Ending state:** execution of the first component can now continue at an
+  injected left label or enter transfer control on halt, with both cases
+  machine-checked and audited. No middle symbols are copied yet.
+- **Best next experiment:** define finite scratch-stack and two-stage transfer
+  control types sufficient for an order-preserving copy. First prove that the
+  existing left and right stack injections still embed into the extended
+  layout; defer the transfer loop and multi-step runtime proof until those
+  structural lemmas build.
