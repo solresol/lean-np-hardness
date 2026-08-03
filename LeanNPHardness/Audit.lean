@@ -1,6 +1,7 @@
 import LeanNPHardness.MachineEmbedding
 import LeanNPHardness.MachineControl
 import LeanNPHardness.MachineControlSimulation
+import LeanNPHardness.MachineTransfer
 import LeanNPHardness.PolytimeComposition
 
 namespace LeanNPHardness.Audit
@@ -19,5 +20,8 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.liftLeftThenTransfer_step
 #print axioms LeanNPHardness.MachineComposition.liftLeftThenTransfer_step_of_halt
 #print axioms LeanNPHardness.MachineComposition.liftRightControl_step
+#print axioms LeanNPHardness.MachineComposition.transferLabel_ne_fillInputLabel
+#print axioms LeanNPHardness.MachineComposition.transferLeftStacks_update
+#print axioms LeanNPHardness.MachineComposition.transferRightStacks_update
 
 end LeanNPHardness.Audit

@@ -16,6 +16,8 @@
 | Left-component combined-control simulation | Complete | `MachineComposition.liftLeftControl_step` |
 | Right-component combined-control simulation | Complete | `MachineComposition.liftRightControl_step` |
 | Left halt-to-transfer control | Complete | `MachineComposition.liftLeftThenTransfer_step` and `liftLeftThenTransfer_step_of_halt` |
+| Two-stage transfer control and scratch-stack layout | Complete | `MachineComposition.TransferPhase`, `TransferStackIndex`, `transferLeftStacks_update`, and `transferRightStacks_update` |
+| Intermediate-output transfer loop | Pending | Implement and verify the order-preserving two-stage copy from the first output stack through canonical middle-alphabet scratch storage to the second input stack. |
 | Generic polynomial-time machine composition | Pending | Construct the composed `FinTM2`; do not rely on mathlib's `proof_wanted` declaration as a completed proof. |
 | Closed polynomial-time reduction composition | Pending | Derive `PolytimeManyOneReduction.comp` from the preceding machine theorem. |
 | P | Pending | Define deterministic polynomial-time decidability for encoded languages. |
@@ -52,6 +54,9 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   and `Quot.sound`.
 - `MachineComposition.liftRightControl_step` depends on `propext` and
   `Quot.sound`.
+- `MachineComposition.transferLabel_ne_fillInputLabel`,
+  `transferLeftStacks_update`, and `transferRightStacks_update` depend on
+  `propext` and `Quot.sound`.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
 `unsafe` declaration.

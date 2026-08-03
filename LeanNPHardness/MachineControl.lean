@@ -4,11 +4,19 @@ namespace LeanNPHardness.MachineComposition
 
 open Turing
 
-/-- Labels for the two component programs and a separate transfer phase. -/
+/-- The two stages of an order-preserving intermediate-output transfer. The
+first stage reverses the first machine's output onto scratch storage; the
+second stage reverses scratch storage onto the second machine's input. -/
+inductive TransferPhase
+  | reverseOutput
+  | fillInput
+  deriving DecidableEq, Fintype
+
+/-- Labels for the two component programs and the two transfer stages. -/
 def ControlLabel {Γ₀ Γ₁ Γ₂ : Type}
     (first : TM2ComputableAux Γ₀ Γ₁)
     (second : TM2ComputableAux Γ₁ Γ₂) :=
-  first.tm.Λ ⊕ (Unit ⊕ second.tm.Λ)
+  first.tm.Λ ⊕ (TransferPhase ⊕ second.tm.Λ)
 
 instance {Γ₀ Γ₁ Γ₂ : Type}
     (first : TM2ComputableAux Γ₀ Γ₁)
@@ -16,7 +24,8 @@ instance {Γ₀ Γ₁ Γ₂ : Type}
     Fintype (ControlLabel first second) := by
   letI : Fintype first.tm.Λ := first.tm.ΛFin
   letI : Fintype second.tm.Λ := second.tm.ΛFin
-  exact inferInstanceAs (Fintype (first.tm.Λ ⊕ (Unit ⊕ second.tm.Λ)))
+  exact inferInstanceAs
+    (Fintype (first.tm.Λ ⊕ (TransferPhase ⊕ second.tm.Λ)))
 
 /-- Inject a first-machine label into combined control. -/
 def leftLabel {Γ₀ Γ₁ Γ₂ : Type}
@@ -25,12 +34,27 @@ def leftLabel {Γ₀ Γ₁ Γ₂ : Type}
     ControlLabel first second :=
   Sum.inl label
 
-/-- The unique label reserved for transferring the intermediate encoding. -/
+/-- Inject a transfer stage into combined control. -/
+def transferPhaseLabel {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) (phase : TransferPhase) :
+    ControlLabel first second :=
+  Sum.inr (Sum.inl phase)
+
+/-- The entry label for transferring the intermediate encoding. -/
 def transferLabel {Γ₀ Γ₁ Γ₂ : Type}
     (first : TM2ComputableAux Γ₀ Γ₁)
     (second : TM2ComputableAux Γ₁ Γ₂) :
     ControlLabel first second :=
-  Sum.inr (Sum.inl ())
+  transferPhaseLabel first second .reverseOutput
+
+/-- The second transfer-stage label, which fills the second input stack from
+the reversed scratch stack. -/
+def fillInputLabel {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) :
+    ControlLabel first second :=
+  transferPhaseLabel first second .fillInput
 
 /-- Inject a second-machine label into combined control. -/
 def rightLabel {Γ₀ Γ₁ Γ₂ : Type}
@@ -44,7 +68,7 @@ theorem leftLabel_ne_transferLabel {Γ₀ Γ₁ Γ₂ : Type}
     (first : TM2ComputableAux Γ₀ Γ₁)
     (second : TM2ComputableAux Γ₁ Γ₂) (label : first.tm.Λ) :
     leftLabel first second label ≠ transferLabel first second := by
-  simp [leftLabel, transferLabel]
+  simp [leftLabel, transferLabel, transferPhaseLabel]
 
 @[simp]
 theorem rightLabel_ne_transferLabel {Γ₀ Γ₁ Γ₂ : Type}
@@ -53,9 +77,21 @@ theorem rightLabel_ne_transferLabel {Γ₀ Γ₁ Γ₂ : Type}
     rightLabel first second label ≠ transferLabel first second := by
   intro equality
   have inner :
-      (Sum.inr label : Unit ⊕ second.tm.Λ) = Sum.inl () :=
+      (Sum.inr label : TransferPhase ⊕ second.tm.Λ) =
+        Sum.inl .reverseOutput :=
     Sum.inr.inj equality
   cases inner
+
+@[simp]
+theorem transferLabel_ne_fillInputLabel {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) :
+    transferLabel first second ≠ fillInputLabel first second := by
+  intro equality
+  have phaseEquality :
+      TransferPhase.reverseOutput = TransferPhase.fillInput :=
+    Sum.inl.inj (Sum.inr.inj equality)
+  cases phaseEquality
 
 /-- Phase-tagged internal state. The transfer phase stores at most one symbol
 in the shared, finite middle encoding alphabet rather than either machine's

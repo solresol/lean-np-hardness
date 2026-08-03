@@ -285,3 +285,50 @@ avoid failed routes, and choose a materially different experiment when blocked.
   existing left and right stack injections still embed into the extended
   layout; defer the transfer loop and multi-step runtime proof until those
   structural lemmas build.
+
+## 2026-08-04 — two-stage transfer control and scratch-stack embedding
+
+- **Starting commit:** `d56e608fa83fac95d89ae9ceac17b8173242909d`
+- **Goal:** add the finite control and stack structure needed for an
+  order-preserving intermediate-output copy, while deferring the copy loop and
+  runtime proof.
+- **Checked increment:** replaced the single transfer label payload with finite
+  `TransferPhase.reverseOutput` and `TransferPhase.fillInput` stages, preserving
+  `transferLabel` as the entry stage and adding the distinct `fillInputLabel`.
+  Added `TransferStackIndex` and `TransferStackAlphabet`, which extend the two
+  component stack families with one scratch stack over the shared middle
+  alphabet. Added first- and second-machine embeddings, their projection
+  lemmas, the generic `extendStacks_update` theorem, and checked
+  `transferLeftStacks_update` and `transferRightStacks_update` corollaries.
+- **Files:** `LeanNPHardness/MachineControl.lean`,
+  `LeanNPHardness/MachineTransfer.lean`, `LeanNPHardness/Audit.lean`,
+  `LeanNPHardness.lean`, `README.md`, `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** targeted transfer, control-simulation, and audit build
+  passed 1,135 jobs; full `lake build` passed 1,137 jobs. The new axiom audits
+  report only `propext` and `Quot.sound` for the label-separation and
+  component-update theorems. The Lean-source scan found no `sorry`, `admit`,
+  project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in the
+  explanatory dependency-boundary comment.
+- **Failed approaches/blockers:** directly proving each nested component update
+  by case-splitting the extended index left residual dependent
+  `Function.update` goals. Factoring out the generic `extendStacks_update`
+  theorem removed the duplicate nested reasoning and both corollaries then
+  reduced by rewriting. No transfer execution or runtime result was attempted.
+- **Useful API discovery:** mathlib's `TMToPartrec.move₂` performs an
+  order-preserving move as two reversals through a dedicated scratch stack.
+  Here the scratch alphabet can be the shared finite `FinEncoding` alphabet
+  `Γ₁`; transfer state already holds `Option Γ₁`, so later steps can convert
+  private output symbols into canonical symbols and then into private input
+  symbols without identifying the component alphabets. The comparison Coq
+  development constructs its concrete compiler reduction with
+  `reducesPolyMO_intro` and composes at the reduction-relation level; it does
+  not supply a reusable machine-stack transfer construction for this Lean API.
+- **Ending state:** the combined control has two checked transfer stages and the
+  component stacks have checked embeddings into a finite scratch-extended
+  layout. The transfer statements, multi-step correctness, composed `FinTM2`,
+  and polynomial runtime remain pending.
+- **Best next experiment:** define a generic statement/configuration lift from
+  `StackAlphabet` to `TransferStackAlphabet` that leaves the scratch stack
+  untouched, and prove a one-step simulation. This should transport both
+  existing component-control simulations to the final stack layout before the
+  transfer loop is implemented.

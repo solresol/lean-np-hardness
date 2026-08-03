@@ -2,6 +2,7 @@ import LeanNPHardness.Audit
 import LeanNPHardness.MachineControl
 import LeanNPHardness.MachineControlSimulation
 import LeanNPHardness.MachineEmbedding
+import LeanNPHardness.MachineTransfer
 import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.PolytimeReduction
 import LeanNPHardness.SemanticReduction

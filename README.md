@@ -43,7 +43,11 @@ The initial checked layer contains:
   the checked intermediate-alphabet equivalence, and exact simulations of
   both components after injection into the combined control types; and
 - a checked first-program variant that preserves continuing steps and
-  redirects a reached halt to a canonical transfer-labelled configuration.
+  redirects a reached halt to a canonical transfer-labelled configuration;
+  and
+- finite reverse-output/fill-input transfer phases plus a scratch-extended
+  stack layout over the canonical middle alphabet, with checked update lemmas
+  for both component stack embeddings.
 
 The generic polynomial-time composition theorem, P, NP, SAT, exact 3-SAT, and
 Cook--Levin remain pending. See [THEOREM_STATUS.md](THEOREM_STATUS.md) and
