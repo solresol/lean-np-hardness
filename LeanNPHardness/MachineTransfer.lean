@@ -188,4 +188,105 @@ theorem transferRightStacks_update {Γ₀ Γ₁ Γ₂ : Type}
   rw [extendStacks_update]
   rfl
 
+/-- Lift a statement over the combined component stacks into the
+scratch-extended stack family. Labels, state, and statement behavior are
+unchanged; every component-stack index is injected on the left. -/
+def liftScratchStmt {Γ₀ Γ₁ Γ₂ Λ σ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) :
+    TM2.Stmt (StackAlphabet first.tm second.tm) Λ σ →
+      TM2.Stmt (TransferStackAlphabet first second) Λ σ
+  | .push index write next =>
+      .push (Sum.inl index) write (liftScratchStmt first second next)
+  | .peek index read next =>
+      .peek (Sum.inl index) read (liftScratchStmt first second next)
+  | .pop index read next =>
+      .pop (Sum.inl index) read (liftScratchStmt first second next)
+  | .load update next =>
+      .load update (liftScratchStmt first second next)
+  | .branch test yes no =>
+      .branch test (liftScratchStmt first second yes)
+        (liftScratchStmt first second no)
+  | .goto next => .goto next
+  | .halt => .halt
+
+/-- Embed a combined-stack configuration into the scratch-extended layout,
+preserving an arbitrary scratch-stack value. -/
+def liftScratchCfg {Γ₀ Γ₁ Γ₂ Λ σ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) (scratch : List Γ₁)
+    (cfg : TM2.Cfg (StackAlphabet first.tm second.tm) Λ σ) :
+    TM2.Cfg (TransferStackAlphabet first second) Λ σ where
+  l := cfg.l
+  var := cfg.var
+  stk := extendStacks first second cfg.stk scratch
+
+/-- Lift a combined-stack program into the scratch-extended layout. -/
+def liftScratchProgram {Γ₀ Γ₁ Γ₂ Λ σ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (program : Λ → TM2.Stmt (StackAlphabet first.tm second.tm) Λ σ) :
+    Λ → TM2.Stmt (TransferStackAlphabet first second) Λ σ :=
+  fun label => liftScratchStmt first second (program label)
+
+/-- Lifting into the scratch-extended stack family commutes with execution of
+one complete statement and leaves the scratch stack unchanged. -/
+theorem liftScratch_stepAux {Γ₀ Γ₁ Γ₂ Λ σ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (stmt : TM2.Stmt (StackAlphabet first.tm second.tm) Λ σ)
+    (state : σ)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (scratch : List Γ₁) :
+    TM2.stepAux (liftScratchStmt first second stmt) state
+        (extendStacks first second contents scratch) =
+      liftScratchCfg first second scratch
+        (TM2.stepAux stmt state contents) := by
+  induction stmt generalizing state contents with
+  | push index write next ih =>
+      simp only [liftScratchStmt, TM2.stepAux]
+      rw [← extendStacks_update]
+      exact ih _ _
+  | peek index read next ih =>
+      simpa only [liftScratchStmt, TM2.stepAux, extendStacks] using
+        ih (read state (contents index).head?) contents
+  | pop index read next ih =>
+      simp only [liftScratchStmt, TM2.stepAux, extendStacks]
+      rw [← extendStacks_update]
+      exact ih _ _
+  | load update next ih =>
+      simpa only [liftScratchStmt, TM2.stepAux] using
+        ih (update state) contents
+  | branch test yes no ihYes ihNo =>
+      by_cases h : test state
+      · simpa only [liftScratchStmt, TM2.stepAux, h, cond_true] using
+          ihYes state contents
+      · simpa only [liftScratchStmt, TM2.stepAux, h, cond_false] using
+          ihNo state contents
+  | goto next =>
+      rfl
+  | halt =>
+      rfl
+
+/-- One program step is simulated exactly after adding scratch storage. -/
+theorem liftScratch_step {Γ₀ Γ₁ Γ₂ Λ σ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (program : Λ → TM2.Stmt (StackAlphabet first.tm second.tm) Λ σ)
+    (cfg : TM2.Cfg (StackAlphabet first.tm second.tm) Λ σ)
+    (scratch : List Γ₁) :
+    TM2.step (liftScratchProgram first second program)
+        (liftScratchCfg first second scratch cfg) =
+      Option.map (liftScratchCfg first second scratch)
+        (TM2.step program cfg) := by
+  cases cfg with
+  | mk label state contents =>
+      cases label with
+      | none =>
+          rfl
+      | some label =>
+          simp only [liftScratchCfg, TM2.step, liftScratchProgram]
+          rw [liftScratch_stepAux]
+          rfl
+
 end LeanNPHardness.MachineComposition

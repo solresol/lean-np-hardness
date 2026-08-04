@@ -332,3 +332,44 @@ avoid failed routes, and choose a materially different experiment when blocked.
   untouched, and prove a one-step simulation. This should transport both
   existing component-control simulations to the final stack layout before the
   transfer loop is implemented.
+
+## 2026-08-05 — generic scratch-stack program simulation
+
+- **Starting commit:** `6473f3bc46d10d2ea34d8ca1009b612cda47ae5d`
+- **Goal:** transport arbitrary combined-control statements and configurations
+  into the scratch-extended stack layout without yet implementing the transfer
+  loop.
+- **Checked increment:** added `liftScratchStmt`, `liftScratchCfg`, and
+  `liftScratchProgram`, together with exact statement- and program-step
+  simulations `liftScratch_stepAux` and `liftScratch_step`. The configuration
+  lift preserves an arbitrary scratch-stack value, so the theorem applies both
+  before transfer (empty scratch) and around later phases with live scratch
+  contents.
+- **Files:** `LeanNPHardness/MachineTransfer.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** targeted transfer and audit builds passed; full
+  `lake build` passed 1,137 jobs. `#print axioms` reports only `propext` and
+  `Quot.sound` for `liftScratch_step`. `git diff --check` passed. The
+  Lean-source scan found no `sorry`, `admit`, project-defined `axiom`, or
+  `unsafe`; `proof_wanted` remains only in the explanatory
+  dependency-boundary comment.
+- **Failed approaches/blockers:** no proof route failed. The actual output-copy
+  statement and its multi-step correctness were deliberately not attempted in
+  this increment. The Coq comparison still supplies only relation-level
+  composition, not this mathlib-specific machine construction.
+- **Useful API discovery:** `TM2.stepAux` again permits a constructor-by-
+  constructor simulation, and `extendStacks_update` is sufficient for both
+  dependent update cases. For the next transfer loop, `FinEncoding` supplies a
+  `Fintype` alphabet but not an arbitrary inhabitant. A statement that branches
+  on `Option Γ₁` therefore cannot totalize its later `push` writer by assuming a
+  default symbol; a finite control label carrying the actual symbol is the
+  cleaner route.
+- **Ending state:** every existing combined-control program can now execute
+  unchanged on the final scratch-extended stack family with an exact checked
+  one-step theorem. Intermediate symbols are not yet copied and no runtime
+  claim has been made.
+- **Best next experiment:** introduce a finite transfer-action label carrying
+  a canonical `Γ₁` symbol for push steps, then prove one reverse-output
+  iteration for both nonempty and empty source stacks. This avoids an
+  unjustified `Inhabited Γ₁` assumption and keeps the fill-input stage separate.

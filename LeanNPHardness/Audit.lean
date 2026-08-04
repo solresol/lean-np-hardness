@@ -23,5 +23,6 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.transferLabel_ne_fillInputLabel
 #print axioms LeanNPHardness.MachineComposition.transferLeftStacks_update
 #print axioms LeanNPHardness.MachineComposition.transferRightStacks_update
+#print axioms LeanNPHardness.MachineComposition.liftScratch_step
 
 end LeanNPHardness.Audit
