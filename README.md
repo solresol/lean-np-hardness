@@ -50,7 +50,9 @@ The initial checked layer contains:
   for both component stack embeddings; and
 - a generic checked statement and configuration lift that runs any combined
   control program unchanged in the scratch-extended layout while preserving
-  arbitrary scratch contents.
+  arbitrary scratch contents; and
+- finite symbol-carrying reverse-transfer actions with checked nonempty and
+  empty two-step iterations from the first output stack onto scratch storage.
 
 The generic polynomial-time composition theorem, P, NP, SAT, exact 3-SAT, and
 Cook--Levin remain pending. See [THEOREM_STATUS.md](THEOREM_STATUS.md) and

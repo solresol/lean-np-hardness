@@ -373,3 +373,49 @@ avoid failed routes, and choose a materially different experiment when blocked.
   a canonical `Γ₁` symbol for push steps, then prove one reverse-output
   iteration for both nonempty and empty source stacks. This avoids an
   unjustified `Inhabited Γ₁` assumption and keeps the fill-input stage separate.
+
+## 2026-08-06 — checked reverse-output transfer iteration
+
+- **Starting commit:** `745b81a3f188e12060ffccbfba979740abcb9f25`.
+- **Goal:** implement the first executable transfer loop increment: finite
+  symbol-carrying control plus exact nonempty and empty reverse-output cases.
+- **Checked increment:** added finite `TransferAction`, including a
+  `reversePush (Option Γ₁)` action that needs no arbitrary middle-alphabet
+  inhabitant; total transfer-state projection; generic scratch replacement;
+  `reverseOutputStmt`, `reversePushStmt`, and the isolated
+  `reverseOutputProgram`; and exact two-step theorems
+  `reverseOutput_iteration_nonempty` and `reverseOutput_iteration_empty`.
+  The nonempty case removes the first output head, converts it with
+  `first.outputAlphabet`, and pushes it onto scratch. The empty case advances
+  to `fillInput` without changing scratch.
+- **Files:** `LeanNPHardness/MachineControl.lean`,
+  `LeanNPHardness/MachineTransfer.lean`, `LeanNPHardness/Audit.lean`,
+  `README.md`, `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** targeted control, transfer, and audit builds passed;
+  full `lake build` passed 1,137 jobs; `git diff --check` passed. The new axiom
+  audits report `propext`, `Classical.choice`, and `Quot.sound`. The Lean-source
+  scan found no `sorry`, `admit`, project-defined `axiom`, or `unsafe`;
+  `proof_wanted` remains only in the existing explanatory comment.
+- **Failed approaches/blockers:** initial label-separation simplification did
+  not unfold the new nested action injection, so the proof now injects the
+  `Sum` equality and the `TransferAction.phase` equality explicitly. Initial
+  transfer-step simplification also left dependent `Function.update` terms;
+  unfolding `transferLeftIndex` after `extendStacks_update` closed them. A
+  scratch-update lemma oriented with an unconstrained old scratch value made
+  rewriting ambiguous; orienting it from the explicit update to the extended
+  stack and adding `extendStacks_scratch` removed the metavariable. The
+  fill-input loop and multi-step whole-list theorem remain unimplemented.
+- **Useful API discovery:** one `TM2.step` can pop and translate the source
+  symbol, but a second label is required to push it because a state-dependent
+  push writer must be total. Carrying `Option Γ₁` in the finite label handles
+  both the concrete-symbol and exhausted-source cases without `Inhabited Γ₁`.
+  Rechecking `phd-thesis-coq/theories/Hardness.v` confirmed that the comparison
+  development still composes through `reducesPolyMO_intro` and `red_NPhard`; it
+  provides no machine-stack copy proof for this mathlib API.
+- **Ending state:** one reverse-output iteration is executable, checked, and
+  audited for both source shapes. Repeated execution, the scratch-to-second-
+  input phase, composed `FinTM2`, and polynomial runtime remain pending.
+- **Best next experiment:** add a finite fill-input push action carrying the
+  canonical scratch head, convert it with `second.inputAlphabet.symm`, and
+  prove exact nonempty and empty two-step fill-input iterations. Then formulate
+  whole-list reachability separately.

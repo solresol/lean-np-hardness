@@ -24,5 +24,7 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.transferLeftStacks_update
 #print axioms LeanNPHardness.MachineComposition.transferRightStacks_update
 #print axioms LeanNPHardness.MachineComposition.liftScratch_step
+#print axioms LeanNPHardness.MachineComposition.reverseOutput_iteration_nonempty
+#print axioms LeanNPHardness.MachineComposition.reverseOutput_iteration_empty
 
 end LeanNPHardness.Audit

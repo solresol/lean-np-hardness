@@ -18,6 +18,7 @@
 | Left halt-to-transfer control | Complete | `MachineComposition.liftLeftThenTransfer_step` and `liftLeftThenTransfer_step_of_halt` |
 | Two-stage transfer control and scratch-stack layout | Complete | `MachineComposition.TransferPhase`, `TransferStackIndex`, `transferLeftStacks_update`, and `transferRightStacks_update` |
 | Combined-control scratch-stack simulation | Complete | `MachineComposition.liftScratch_step` |
+| Reverse-output transfer iteration | Complete | `MachineComposition.reverseOutput_iteration_nonempty` and `reverseOutput_iteration_empty` |
 | Intermediate-output transfer loop | Pending | Implement and verify the order-preserving two-stage copy from the first output stack through canonical middle-alphabet scratch storage to the second input stack. |
 | Generic polynomial-time machine composition | Pending | Construct the composed `FinTM2`; do not rely on mathlib's `proof_wanted` declaration as a completed proof. |
 | Closed polynomial-time reduction composition | Pending | Derive `PolytimeManyOneReduction.comp` from the preceding machine theorem. |
@@ -59,6 +60,9 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   `transferLeftStacks_update`, and `transferRightStacks_update` depend on
   `propext` and `Quot.sound`.
 - `MachineComposition.liftScratch_step` depends on `propext` and
+  `Quot.sound`.
+- `MachineComposition.reverseOutput_iteration_nonempty` and
+  `reverseOutput_iteration_empty` depend on `propext`, `Classical.choice`, and
   `Quot.sound`.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
