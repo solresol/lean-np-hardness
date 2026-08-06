@@ -419,3 +419,48 @@ avoid failed routes, and choose a materially different experiment when blocked.
   canonical scratch head, convert it with `second.inputAlphabet.symm`, and
   prove exact nonempty and empty two-step fill-input iterations. Then formulate
   whole-list reachability separately.
+
+## 2026-08-07 — checked fill-input transfer iteration
+
+- **Starting commit:** `5bcaa737ed38c260124506e1e0aad080c93edd5b`.
+- **Goal:** implement the second executable transfer stage with exact
+  nonempty and empty two-step behavior, without yet claiming whole-list
+  reachability or a composed machine.
+- **Checked increment:** added the finite symbol-carrying `fillPush` action,
+  `fillInputStmt`, `fillPushStmt`, the complete two-stage `transferProgram`,
+  and `rightEntryCfg`. Proved `fillInput_iteration_nonempty`, which pops the
+  canonical scratch head, converts it with `second.inputAlphabet.symm`, and
+  pushes it onto `second.tm.k₀`; and `fillInput_iteration_empty`, which resets
+  the second state to `second.tm.initialState` and enters `second.tm.main`.
+- **Files:** `LeanNPHardness/MachineControl.lean`,
+  `LeanNPHardness/MachineTransfer.lean`, `LeanNPHardness/Audit.lean`,
+  `README.md`, `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** targeted transfer and audit builds passed; full
+  `lake build` passed 1,137 jobs; `git diff --check` passed. The new axiom
+  audits report `propext`, `Classical.choice`, and `Quot.sound` for the
+  nonempty theorem, and `propext` and `Quot.sound` for the empty theorem. The
+  Lean-source scan found no `sorry`, `admit`, project-defined `axiom`, or
+  `unsafe`; `proof_wanted` remains only in the existing explanatory comment.
+- **Failed approaches/blockers:** initially retaining the old program name as
+  an abbreviation did not unfold the new dispatcher far enough in existing
+  proofs; stating the iteration theorems directly over `transferProgram`
+  exposed the concrete action cases. The scratch-pop goals also needed
+  explicit list simplification, and the dependent second-stack push needed
+  `transferRightIndex` exposed before applying `extendStacks_update`. No
+  semantic or API blocker remains for this stage. Whole-list execution and
+  runtime accounting are still unproved.
+- **Useful API discovery:** `FinTM2.main` and `FinTM2.initialState` are exactly
+  the control values required after transfer exhaustion. A canonical `Γ₁`
+  symbol is converted to the private second-input alphabet by
+  `second.inputAlphabet.symm`; two stack reversals therefore restore the
+  original encoded-list order. Rechecking
+  `phd-thesis-coq/theories/Hardness.v` again found only relation-level
+  construction via `reducesPolyMO_intro` and `red_NPhard`, not a reusable
+  machine-stack transfer proof.
+- **Ending state:** both per-symbol transfer phases and both exhaustion
+  transitions are executable, checked, and audited. The intermediate-output
+  transfer loop remains pending until repeated whole-list execution is proved.
+- **Best next experiment:** prove a whole-list `fillInput` reachability theorem
+  by induction, with an exact `2 * scratch.length + 2` step count and an input
+  accumulator; then prove the reverse-output whole-list theorem and combine
+  them into the order-preserving transfer result.

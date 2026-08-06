@@ -229,6 +229,19 @@ def transferActionCfg {Γ₀ Γ₁ Γ₂ : Type}
   var := state
   stk := extendStacks first second contents scratch
 
+/-- The configuration that starts the second machine after transfer, with
+explicit combined-stack and scratch contents. -/
+def rightEntryCfg {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (scratch : List Γ₁) :
+    TM2.Cfg (TransferStackAlphabet first second)
+      (ControlLabel first second) (ControlState first second) where
+  l := some (rightLabel first second second.tm.main)
+  var := rightState first second second.tm.initialState
+  stk := extendStacks first second contents scratch
+
 /-- Pop one symbol from the first machine's output stack, translate it to the
 canonical middle alphabet, and select the corresponding scratch-push action.
 An empty output stack selects the `none` action. -/
@@ -257,9 +270,38 @@ def reversePushStmt {Γ₀ Γ₁ Γ₂ : Type}
       .push (scratchIndex first second) (fun _ => symbol)
         (.goto (fun _ => transferLabel first second))
 
-/-- The executable reverse-output fragment of the eventual composed program.
-Component labels and the not-yet-implemented fill-input phase halt. -/
-def reverseOutputProgram {Γ₀ Γ₁ Γ₂ : Type}
+/-- Pop one canonical symbol from scratch and select the corresponding
+second-input push action. An empty scratch stack selects the `none` action. -/
+def fillInputStmt {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) :
+    TM2.Stmt (TransferStackAlphabet first second)
+      (ControlLabel first second) (ControlState first second) :=
+  .pop (scratchIndex first second)
+    (fun _ symbol => transferState first second symbol)
+    (.goto (fun state =>
+      fillPushLabel first second (transferStateValue first second state)))
+
+/-- Complete a fill-input iteration after its scratch pop. A present canonical
+symbol is converted and pushed to the second input stack; absence resets the
+second machine's state and enters its main label. -/
+def fillPushStmt {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) (symbol : Option Γ₁) :
+    TM2.Stmt (TransferStackAlphabet first second)
+      (ControlLabel first second) (ControlState first second) :=
+  match symbol with
+  | none =>
+      .load (fun _ => rightState first second second.tm.initialState)
+        (.goto (fun _ => rightLabel first second second.tm.main))
+  | some symbol =>
+      .push (transferRightIndex first second second.tm.k₀)
+        (fun _ => second.inputAlphabet.symm symbol)
+        (.goto (fun _ => fillInputLabel first second))
+
+/-- The executable two-stage transfer program. Component labels halt; they
+will be supplied by the eventual composed program. -/
+def transferProgram {Γ₀ Γ₁ Γ₂ : Type}
     (first : TM2ComputableAux Γ₀ Γ₁)
     (second : TM2ComputableAux Γ₁ Γ₂) :
     ControlLabel first second →
@@ -269,7 +311,18 @@ def reverseOutputProgram {Γ₀ Γ₁ Γ₂ : Type}
       reverseOutputStmt first second
   | Sum.inr (Sum.inl (.reversePush symbol)) =>
       reversePushStmt first second symbol
+  | Sum.inr (Sum.inl (.phase .fillInput)) =>
+      fillInputStmt first second
+  | Sum.inr (Sum.inl (.fillPush symbol)) =>
+      fillPushStmt first second symbol
   | _ => .halt
+
+/-- Compatibility name for the transfer program introduced first with only
+the reverse-output phase. -/
+abbrev reverseOutputProgram {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) :=
+  transferProgram first second
 
 /-- A reverse-output pop on a nonempty source records the translated head
 symbol and removes it from the first output stack. -/
@@ -280,7 +333,7 @@ theorem reverseOutput_step_nonempty {Γ₀ Γ₁ Γ₂ : Type}
     (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
     (scratch : List Γ₁) (head : first.tm.Γ first.tm.k₁)
     (tail : List (first.tm.Γ first.tm.k₁)) :
-    TM2.step (reverseOutputProgram first second)
+    TM2.step (transferProgram first second)
         (transferActionCfg first second (.phase .reverseOutput) state
           (Function.update contents (Sum.inl first.tm.k₁) (head :: tail))
           scratch) =
@@ -288,7 +341,7 @@ theorem reverseOutput_step_nonempty {Γ₀ Γ₁ Γ₂ : Type}
         (.reversePush (some (first.outputAlphabet head)))
         (transferState first second (some (first.outputAlphabet head)))
         (Function.update contents (Sum.inl first.tm.k₁) tail) scratch) := by
-  simp only [TM2.step, reverseOutputProgram, reverseOutputStmt, TM2.stepAux,
+  simp only [TM2.step, transferProgram, reverseOutputStmt, TM2.stepAux,
     transferActionCfg, transferActionLabel, reversePushLabel,
     transferStateValue_transferState]
   rw [extendStacks_update, extendStacks_update]
@@ -302,13 +355,13 @@ theorem reverseOutput_step_empty {Γ₀ Γ₁ Γ₂ : Type}
     (state : ControlState first second)
     (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
     (scratch : List Γ₁) :
-    TM2.step (reverseOutputProgram first second)
+    TM2.step (transferProgram first second)
         (transferActionCfg first second (.phase .reverseOutput) state
           (Function.update contents (Sum.inl first.tm.k₁) []) scratch) =
       some (transferActionCfg first second (.reversePush none)
         (transferState first second none)
         (Function.update contents (Sum.inl first.tm.k₁) []) scratch) := by
-  simp only [TM2.step, reverseOutputProgram, reverseOutputStmt, TM2.stepAux,
+  simp only [TM2.step, transferProgram, reverseOutputStmt, TM2.stepAux,
     transferActionCfg, transferActionLabel, reversePushLabel,
     transferStateValue_transferState]
   rw [extendStacks_update]
@@ -322,12 +375,12 @@ theorem reversePush_step_some {Γ₀ Γ₁ Γ₂ : Type}
     (state : ControlState first second)
     (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
     (scratch : List Γ₁) :
-    TM2.step (reverseOutputProgram first second)
+    TM2.step (transferProgram first second)
         (transferActionCfg first second (.reversePush (some symbol)) state
           contents scratch) =
       some (transferActionCfg first second (.phase .reverseOutput) state
         contents (symbol :: scratch)) := by
-  simp only [TM2.step, reverseOutputProgram, reversePushStmt, TM2.stepAux,
+  simp only [TM2.step, transferProgram, reversePushStmt, TM2.stepAux,
     transferActionCfg, transferActionLabel, transferLabel,
     transferPhaseLabel]
   simp only [extendStacks_scratch]
@@ -341,7 +394,7 @@ theorem reversePush_step_none {Γ₀ Γ₁ Γ₂ : Type}
     (state : ControlState first second)
     (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
     (scratch : List Γ₁) :
-    TM2.step (reverseOutputProgram first second)
+    TM2.step (transferProgram first second)
         (transferActionCfg first second (.reversePush none) state
           contents scratch) =
       some (transferActionCfg first second (.phase .fillInput) state
@@ -357,10 +410,10 @@ theorem reverseOutput_iteration_nonempty {Γ₀ Γ₁ Γ₂ : Type}
     (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
     (scratch : List Γ₁) (head : first.tm.Γ first.tm.k₁)
     (tail : List (first.tm.Γ first.tm.k₁)) :
-    (TM2.step (reverseOutputProgram first second)
+    (TM2.step (transferProgram first second)
         (transferActionCfg first second (.phase .reverseOutput) state
           (Function.update contents (Sum.inl first.tm.k₁) (head :: tail))
-          scratch)).bind (TM2.step (reverseOutputProgram first second)) =
+          scratch)).bind (TM2.step (transferProgram first second)) =
       some (transferActionCfg first second (.phase .reverseOutput)
         (transferState first second (some (first.outputAlphabet head)))
         (Function.update contents (Sum.inl first.tm.k₁) tail)
@@ -375,14 +428,117 @@ theorem reverseOutput_iteration_empty {Γ₀ Γ₁ Γ₂ : Type}
     (state : ControlState first second)
     (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
     (scratch : List Γ₁) :
-    (TM2.step (reverseOutputProgram first second)
+    (TM2.step (transferProgram first second)
         (transferActionCfg first second (.phase .reverseOutput) state
           (Function.update contents (Sum.inl first.tm.k₁) []) scratch)).bind
-        (TM2.step (reverseOutputProgram first second)) =
+        (TM2.step (transferProgram first second)) =
       some (transferActionCfg first second (.phase .fillInput)
         (transferState first second none)
         (Function.update contents (Sum.inl first.tm.k₁) []) scratch) := by
   rw [reverseOutput_step_empty, Option.bind_some, reversePush_step_none]
+
+/-- A fill-input pop on nonempty scratch records and removes its canonical
+head symbol. -/
+theorem fillInput_step_nonempty {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (head : Γ₁) (tail : List Γ₁) :
+    TM2.step (transferProgram first second)
+        (transferActionCfg first second (.phase .fillInput) state contents
+          (head :: tail)) =
+      some (transferActionCfg first second (.fillPush (some head))
+        (transferState first second (some head)) contents tail) := by
+  simp only [TM2.step, transferProgram, fillInputStmt, TM2.stepAux,
+    transferActionCfg, transferActionLabel, fillPushLabel,
+    transferStateValue_transferState, extendStacks_scratch]
+  rw [extendStacks_scratch_update]
+  simp
+
+/-- A fill-input pop on empty scratch records exhaustion and leaves all stacks
+unchanged. -/
+theorem fillInput_step_empty {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k)) :
+    TM2.step (transferProgram first second)
+        (transferActionCfg first second (.phase .fillInput) state contents []) =
+      some (transferActionCfg first second (.fillPush none)
+        (transferState first second none) contents []) := by
+  simp only [TM2.step, transferProgram, fillInputStmt, TM2.stepAux,
+    transferActionCfg, transferActionLabel, fillPushLabel,
+    transferStateValue_transferState, extendStacks_scratch]
+  rw [extendStacks_scratch_update]
+  simp
+
+/-- The symbol-carrying fill action converts its canonical symbol to the
+second machine's private input alphabet and pushes it onto that input stack. -/
+theorem fillPush_step_some {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) (symbol : Γ₁)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (input : List (second.tm.Γ second.tm.k₀)) (scratch : List Γ₁) :
+    TM2.step (transferProgram first second)
+        (transferActionCfg first second (.fillPush (some symbol)) state
+          (Function.update contents (Sum.inr second.tm.k₀) input) scratch) =
+      some (transferActionCfg first second (.phase .fillInput) state
+        (Function.update contents (Sum.inr second.tm.k₀)
+          (second.inputAlphabet.symm symbol :: input)) scratch) := by
+  simp only [TM2.step, transferProgram, fillPushStmt, TM2.stepAux,
+    transferActionCfg, transferActionLabel, fillInputLabel,
+    transferPhaseLabel]
+  simp only [transferRightIndex, extendStacks]
+  rw [← extendStacks_update]
+  simp
+
+/-- The exhausted-scratch action resets the second machine's state and enters
+its declared main label without changing any stack. -/
+theorem fillPush_step_none {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (scratch : List Γ₁) :
+    TM2.step (transferProgram first second)
+        (transferActionCfg first second (.fillPush none) state contents scratch) =
+      some (rightEntryCfg first second contents scratch) := by
+  rfl
+
+/-- Two program steps implement one nonempty fill-input iteration: the scratch
+head is removed, converted, and pushed onto the second input stack. -/
+theorem fillInput_iteration_nonempty {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (input : List (second.tm.Γ second.tm.k₀))
+    (head : Γ₁) (tail : List Γ₁) :
+    (TM2.step (transferProgram first second)
+        (transferActionCfg first second (.phase .fillInput) state
+          (Function.update contents (Sum.inr second.tm.k₀) input)
+          (head :: tail))).bind (TM2.step (transferProgram first second)) =
+      some (transferActionCfg first second (.phase .fillInput)
+        (transferState first second (some head))
+        (Function.update contents (Sum.inr second.tm.k₀)
+          (second.inputAlphabet.symm head :: input)) tail) := by
+  rw [fillInput_step_nonempty, Option.bind_some, fillPush_step_some]
+
+/-- Two program steps detect empty scratch storage, reset the second machine,
+and enter its main label without changing the transferred input. -/
+theorem fillInput_iteration_empty {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k)) :
+    Option.bind
+        (TM2.step (transferProgram first second)
+          (transferActionCfg first second (.phase .fillInput) state contents []))
+        (TM2.step (transferProgram first second)) =
+      some (rightEntryCfg first second contents []) := by
+  rw [fillInput_step_empty, Option.bind_some, fillPush_step_none]
 
 /-- Lift a statement over the combined component stacks into the
 scratch-extended stack family. Labels, state, and statement behavior are

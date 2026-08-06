@@ -12,13 +12,13 @@ inductive TransferPhase
   | fillInput
   deriving DecidableEq, Fintype
 
-/-- Executable transfer actions. The intermediate `reversePush` action carries
-the optional canonical symbol read from the first output stack, so an empty
-stack can advance to `fillInput` without assuming an arbitrary inhabitant of
-the middle alphabet. -/
+/-- Executable transfer actions. The intermediate push actions carry optional
+canonical symbols read from the source stack, so an empty source can advance
+without assuming an arbitrary inhabitant of the middle alphabet. -/
 inductive TransferAction (Γ : Type)
   | phase (phase : TransferPhase)
   | reversePush (symbol : Option Γ)
+  | fillPush (symbol : Option Γ)
   deriving DecidableEq, Fintype
 
 /-- Labels for the two component programs and the executable transfer
@@ -80,6 +80,15 @@ def reversePushLabel {Γ₀ Γ₁ Γ₂ : Type}
     (second : TM2ComputableAux Γ₁ Γ₂) (symbol : Option Γ₁) :
     ControlLabel first second :=
   transferActionLabel first second (.reversePush symbol)
+
+/-- The action label following a scratch pop. A present canonical symbol is
+converted and pushed to the second input stack; absence starts the second
+machine. -/
+def fillPushLabel {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) (symbol : Option Γ₁) :
+    ControlLabel first second :=
+  transferActionLabel first second (.fillPush symbol)
 
 /-- Inject a second-machine label into combined control. -/
 def rightLabel {Γ₀ Γ₁ Γ₂ : Type}
