@@ -540,6 +540,50 @@ theorem fillInput_iteration_empty {Γ₀ Γ₁ Γ₂ : Type}
       some (rightEntryCfg first second contents []) := by
   rw [fillInput_step_empty, Option.bind_some, fillPush_step_none]
 
+/-- Repeated fill-input iterations consume the whole scratch stack in exactly
+two steps per symbol plus two exhaustion steps. Each canonical symbol is
+converted to the second machine's private input alphabet; because pushing
+reverses the consumed scratch order, the converted scratch contents are
+prepended in reverse order to the existing second input stack. -/
+theorem fillInput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (input : List (second.tm.Γ second.tm.k₀)) (scratch : List Γ₁) :
+    (flip Option.bind (TM2.step (transferProgram first second)))^[
+        2 * scratch.length + 2]
+      (some (transferActionCfg first second (.phase .fillInput) state
+        (Function.update contents (Sum.inr second.tm.k₀) input) scratch)) =
+      some (rightEntryCfg first second
+        (Function.update contents (Sum.inr second.tm.k₀)
+          ((scratch.map second.inputAlphabet.symm).reverse ++ input)) []) := by
+  induction scratch generalizing state input with
+  | nil =>
+      simpa [Function.iterate_succ_apply'] using
+        fillInput_iteration_empty first second state
+          (Function.update contents (Sum.inr second.tm.k₀) input)
+  | cons head tail ih =>
+      have firstIteration :=
+        fillInput_iteration_nonempty first second state contents input head tail
+      rw [List.length_cons]
+      have stepCount : 2 * (tail.length + 1) + 2 =
+          (2 * tail.length + 2) + 2 := by omega
+      rw [stepCount, Function.iterate_add_apply]
+      rw [show
+        (flip Option.bind (TM2.step (transferProgram first second)))^[2]
+          (some (transferActionCfg first second (.phase .fillInput) state
+            (Function.update contents (Sum.inr second.tm.k₀) input)
+            (head :: tail))) =
+          some (transferActionCfg first second (.phase .fillInput)
+            (transferState first second (some head))
+            (Function.update contents (Sum.inr second.tm.k₀)
+              (second.inputAlphabet.symm head :: input)) tail) by
+        simpa [Function.iterate_succ_apply'] using firstIteration]
+      simpa [List.map, List.reverse_cons, List.append_assoc] using
+        ih (transferState first second (some head))
+          (second.inputAlphabet.symm head :: input)
+
 /-- Lift a statement over the combined component stacks into the
 scratch-extended stack family. Labels, state, and statement behavior are
 unchanged; every component-stack index is injected on the left. -/

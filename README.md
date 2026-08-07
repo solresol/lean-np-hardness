@@ -56,7 +56,11 @@ The initial checked layer contains:
   and
 - finite symbol-carrying fill-transfer actions with checked nonempty and empty
   two-step iterations from scratch into the second input stack, including the
-  checked transition to the second machine's initial control configuration.
+  checked transition to the second machine's initial control configuration;
+  and
+- exact whole-list fill-input execution in `2 * scratch.length + 2` steps,
+  preserving an existing second-input accumulator and proving the resulting
+  converted-list order.
 
 The generic polynomial-time composition theorem, P, NP, SAT, exact 3-SAT, and
 Cook--Levin remain pending. See [THEOREM_STATUS.md](THEOREM_STATUS.md) and

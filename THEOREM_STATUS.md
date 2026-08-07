@@ -20,6 +20,7 @@
 | Combined-control scratch-stack simulation | Complete | `MachineComposition.liftScratch_step` |
 | Reverse-output transfer iteration | Complete | `MachineComposition.reverseOutput_iteration_nonempty` and `reverseOutput_iteration_empty` |
 | Fill-input transfer iteration | Complete | `MachineComposition.fillInput_iteration_nonempty` and `fillInput_iteration_empty` |
+| Fill-input whole-list execution | Complete | `MachineComposition.fillInput_whole_list` |
 | Intermediate-output transfer loop | Pending | Implement and verify the order-preserving two-stage copy from the first output stack through canonical middle-alphabet scratch storage to the second input stack. |
 | Generic polynomial-time machine composition | Pending | Construct the composed `FinTM2`; do not rely on mathlib's `proof_wanted` declaration as a completed proof. |
 | Closed polynomial-time reduction composition | Pending | Derive `PolytimeManyOneReduction.comp` from the preceding machine theorem. |
@@ -68,6 +69,8 @@ The initial declarations build with the pinned Lean and mathlib revisions.
 - `MachineComposition.fillInput_iteration_nonempty` depends on `propext`,
   `Classical.choice`, and `Quot.sound`; and
   `fillInput_iteration_empty` depends on `propext` and `Quot.sound`.
+- `MachineComposition.fillInput_whole_list` depends on `propext`,
+  `Classical.choice`, and `Quot.sound`.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
 `unsafe` declaration.

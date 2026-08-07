@@ -464,3 +464,45 @@ avoid failed routes, and choose a materially different experiment when blocked.
   by induction, with an exact `2 * scratch.length + 2` step count and an input
   accumulator; then prove the reverse-output whole-list theorem and combine
   them into the order-preserving transfer result.
+
+## 2026-08-08 — exact whole-list fill-input execution
+
+- **Starting commit:** `3f2ccabb51f9804e403ccb4b3046805e17c269db`.
+- **Goal:** lift the checked two-step fill-input iterations to an exact
+  whole-list execution theorem while preserving an existing second-input
+  accumulator.
+- **Checked increment:** added `fillInput_whole_list`. For arbitrary scratch
+  contents, it proves that iterating the lifted transfer step exactly
+  `2 * scratch.length + 2` times empties scratch, enters the second machine's
+  initial control configuration, and replaces its input stack by
+  `(scratch.map second.inputAlphabet.symm).reverse ++ input`. The theorem is
+  proved by list induction using the existing nonempty and exhaustion
+  iterations, so it records both execution and output order.
+- **Files:** `LeanNPHardness/MachineTransfer.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** a standalone proof probe passed; targeted transfer
+  and audit builds passed; full `lake build` passed 1,137 jobs;
+  `git diff --check` passed. `#print axioms` reports only `propext`,
+  `Classical.choice`, and `Quot.sound` for `fillInput_whole_list`. The
+  Lean-source scan found no `sorry`, `admit`, project-defined `axiom`, or
+  `unsafe`; `proof_wanted` remains only in the existing explanatory comment.
+- **Failed approaches/blockers:** no proof route failed. An exploratory API
+  check confirmed that this pinned mathlib has no `Function.update_same`
+  theorem under that name, but the induction does not need it. The full
+  order-preserving transfer theorem remains pending on the symmetric
+  reverse-output whole-list execution result.
+- **Useful API discovery:** `Function.iterate_add_apply` composes the exact
+  two-step iteration with the induction hypothesis in the needed order.
+  `List.reverse_cons` and associativity then normalize the accumulator result.
+  Rechecking `phd-thesis-coq/theories/Hardness.v` found only relation-level
+  construction through `reducesPolyMO_intro` and `red_NPhard`, not a reusable
+  machine-stack transfer proof for this mathlib API.
+- **Ending state:** whole-list fill-input execution is machine-checked,
+  documented, and audited; the broader intermediate-output transfer loop and
+  composed machine remain pending.
+- **Best next experiment:** prove an exact whole-list reverse-output theorem
+  with source and scratch accumulators, yielding the converted source in
+  reverse order on scratch after `2 * output.length + 2` steps. Then compose it
+  with `fillInput_whole_list` to obtain the first complete order-preserving
+  transfer theorem and its summed exact step count.
