@@ -26,6 +26,7 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.liftScratch_step
 #print axioms LeanNPHardness.MachineComposition.reverseOutput_iteration_nonempty
 #print axioms LeanNPHardness.MachineComposition.reverseOutput_iteration_empty
+#print axioms LeanNPHardness.MachineComposition.reverseOutput_whole_list
 #print axioms LeanNPHardness.MachineComposition.fillInput_iteration_nonempty
 #print axioms LeanNPHardness.MachineComposition.fillInput_iteration_empty
 #print axioms LeanNPHardness.MachineComposition.fillInput_whole_list

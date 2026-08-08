@@ -19,6 +19,7 @@
 | Two-stage transfer control and scratch-stack layout | Complete | `MachineComposition.TransferPhase`, `TransferStackIndex`, `transferLeftStacks_update`, and `transferRightStacks_update` |
 | Combined-control scratch-stack simulation | Complete | `MachineComposition.liftScratch_step` |
 | Reverse-output transfer iteration | Complete | `MachineComposition.reverseOutput_iteration_nonempty` and `reverseOutput_iteration_empty` |
+| Reverse-output whole-list execution | Complete | `MachineComposition.reverseOutput_whole_list` |
 | Fill-input transfer iteration | Complete | `MachineComposition.fillInput_iteration_nonempty` and `fillInput_iteration_empty` |
 | Fill-input whole-list execution | Complete | `MachineComposition.fillInput_whole_list` |
 | Intermediate-output transfer loop | Pending | Implement and verify the order-preserving two-stage copy from the first output stack through canonical middle-alphabet scratch storage to the second input stack. |
@@ -66,6 +67,8 @@ The initial declarations build with the pinned Lean and mathlib revisions.
 - `MachineComposition.reverseOutput_iteration_nonempty` and
   `reverseOutput_iteration_empty` depend on `propext`, `Classical.choice`, and
   `Quot.sound`.
+- `MachineComposition.reverseOutput_whole_list` depends on `propext`,
+  `Classical.choice`, and `Quot.sound`.
 - `MachineComposition.fillInput_iteration_nonempty` depends on `propext`,
   `Classical.choice`, and `Quot.sound`; and
   `fillInput_iteration_empty` depends on `propext` and `Quot.sound`.

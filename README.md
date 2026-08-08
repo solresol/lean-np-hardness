@@ -54,6 +54,9 @@ The initial checked layer contains:
 - finite symbol-carrying reverse-transfer actions with checked nonempty and
   empty two-step iterations from the first output stack onto scratch storage;
   and
+- exact whole-list reverse-output execution in `2 * output.length + 2` steps,
+  preserving existing scratch contents and proving the resulting
+  canonical-list order; and
 - finite symbol-carrying fill-transfer actions with checked nonempty and empty
   two-step iterations from scratch into the second input stack, including the
   checked transition to the second machine's initial control configuration;

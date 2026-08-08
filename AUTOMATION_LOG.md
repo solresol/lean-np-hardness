@@ -506,3 +506,42 @@ avoid failed routes, and choose a materially different experiment when blocked.
   reverse order on scratch after `2 * output.length + 2` steps. Then compose it
   with `fillInput_whole_list` to obtain the first complete order-preserving
   transfer theorem and its summed exact step count.
+
+## 2026-08-09 — exact whole-list reverse-output execution
+
+- **Starting commit:** `d675fe391b9f19684d90a983082e87d6d0bf5a1c`.
+- **Goal:** lift the checked two-step reverse-output iterations to an exact
+  whole-list execution theorem while preserving existing scratch contents.
+- **Checked increment:** added `reverseOutput_whole_list`. For an arbitrary
+  first-output list and scratch accumulator, it proves that iterating the
+  transfer step exactly `2 * output.length + 2` times empties the first output
+  stack, enters `fillInput`, and produces
+  `(output.map first.outputAlphabet).reverse ++ scratch`. The theorem is proved
+  by list induction from the existing nonempty and exhaustion iterations.
+- **Files:** `LeanNPHardness/MachineTransfer.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** targeted transfer and audit build passed 1,135 jobs;
+  full `lake build` passed 1,137 jobs; `git diff --check` passed.
+  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`
+  for `reverseOutput_whole_list`. The Lean-source scan found no `sorry`,
+  `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in
+  the existing explanatory dependency-boundary comment.
+- **Failed approaches/blockers:** no proof route failed. The complete
+  order-preserving transfer theorem remains pending on composing this result
+  with `fillInput_whole_list`; the composed `FinTM2` and polynomial runtime
+  remain later blockers.
+- **Useful API discovery:** the same `Function.iterate_add_apply` decomposition
+  used by the fill-input proof composes each exact two-step reverse iteration
+  with the induction hypothesis. `List.reverse_cons` and append associativity
+  normalize the scratch accumulator without an auxiliary list lemma.
+  Rechecking `phd-thesis-coq/theories/Hardness.v` found only relation-level
+  construction through `reducesPolyMO_intro` and `red_NPhard`, not a reusable
+  whole-list machine-transfer proof for this mathlib API.
+- **Ending state:** both transfer phases now have exact whole-list execution
+  theorems with accumulator and step-count specifications, but the combined
+  order-preserving theorem is not yet claimed.
+- **Best next experiment:** compose `reverseOutput_whole_list` with
+  `fillInput_whole_list`, simplifying the two reversals and both alphabet
+  equivalences to prove that a source output list is prepended in its original
+  order to the second input stack with the summed exact step count.

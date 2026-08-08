@@ -437,6 +437,51 @@ theorem reverseOutput_iteration_empty {Γ₀ Γ₁ Γ₂ : Type}
         (Function.update contents (Sum.inl first.tm.k₁) []) scratch) := by
   rw [reverseOutput_step_empty, Option.bind_some, reversePush_step_none]
 
+/-- Repeated reverse-output iterations consume the whole first output stack in
+exactly two steps per symbol plus two exhaustion steps. Each private output
+symbol is converted to the canonical middle alphabet; because each converted
+symbol is pushed onto scratch, the converted output is prepended in reverse
+order to the existing scratch contents. -/
+theorem reverseOutput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (output : List (first.tm.Γ first.tm.k₁)) (scratch : List Γ₁) :
+    (flip Option.bind (TM2.step (transferProgram first second)))^[
+        2 * output.length + 2]
+      (some (transferActionCfg first second (.phase .reverseOutput) state
+        (Function.update contents (Sum.inl first.tm.k₁) output) scratch)) =
+      some (transferActionCfg first second (.phase .fillInput)
+        (transferState first second none)
+        (Function.update contents (Sum.inl first.tm.k₁) [])
+        ((output.map first.outputAlphabet).reverse ++ scratch)) := by
+  induction output generalizing state scratch with
+  | nil =>
+      simpa [Function.iterate_succ_apply'] using
+        reverseOutput_iteration_empty first second state contents scratch
+  | cons head tail ih =>
+      have firstIteration :=
+        reverseOutput_iteration_nonempty first second state contents scratch
+          head tail
+      rw [List.length_cons]
+      have stepCount : 2 * (tail.length + 1) + 2 =
+          (2 * tail.length + 2) + 2 := by omega
+      rw [stepCount, Function.iterate_add_apply]
+      rw [show
+        (flip Option.bind (TM2.step (transferProgram first second)))^[2]
+          (some (transferActionCfg first second (.phase .reverseOutput) state
+            (Function.update contents (Sum.inl first.tm.k₁) (head :: tail))
+            scratch)) =
+          some (transferActionCfg first second (.phase .reverseOutput)
+            (transferState first second (some (first.outputAlphabet head)))
+            (Function.update contents (Sum.inl first.tm.k₁) tail)
+            (first.outputAlphabet head :: scratch)) by
+        simpa [Function.iterate_succ_apply'] using firstIteration]
+      simpa [List.map, List.reverse_cons, List.append_assoc] using
+        ih (transferState first second (some (first.outputAlphabet head)))
+          (first.outputAlphabet head :: scratch)
+
 /-- A fill-input pop on nonempty scratch records and removes its canonical
 head symbol. -/
 theorem fillInput_step_nonempty {Γ₀ Γ₁ Γ₂ : Type}
