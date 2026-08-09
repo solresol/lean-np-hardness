@@ -629,6 +629,70 @@ theorem fillInput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
         ih (transferState first second (some head))
           (second.inputAlphabet.symm head :: input)
 
+/-- The complete two-stage transfer preserves the first output stack's order.
+Starting with empty scratch storage, it consumes the first output stack,
+converts every symbol through the shared middle alphabet, prepends the result
+to the second input stack, and enters the second machine's initial control
+configuration. The exact transfer cost is four steps per output symbol plus
+four exhaustion steps. -/
+theorem transfer_whole_list {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (output : List (first.tm.Γ first.tm.k₁))
+    (input : List (second.tm.Γ second.tm.k₀)) :
+    (flip Option.bind (TM2.step (transferProgram first second)))^[
+        4 * output.length + 4]
+      (some (transferActionCfg first second (.phase .reverseOutput) state
+        (Function.update
+          (Function.update contents (Sum.inr second.tm.k₀) input)
+          (Sum.inl first.tm.k₁) output) [])) =
+      some (rightEntryCfg first second
+        (Function.update
+          (Function.update contents (Sum.inl first.tm.k₁) [])
+          (Sum.inr second.tm.k₀)
+          (output.map (middleAlphabetEquiv first second) ++ input)) []) := by
+  have reverseRun :
+      (flip Option.bind (TM2.step (transferProgram first second)))^[
+          2 * output.length + 2]
+        (some (transferActionCfg first second (.phase .reverseOutput) state
+          (Function.update
+            (Function.update contents (Sum.inr second.tm.k₀) input)
+            (Sum.inl first.tm.k₁) output) [])) =
+        some (transferActionCfg first second (.phase .fillInput)
+          (transferState first second none)
+          (Function.update
+            (Function.update contents (Sum.inr second.tm.k₀) input)
+            (Sum.inl first.tm.k₁) [])
+          (output.map first.outputAlphabet).reverse) := by
+    simpa using
+      reverseOutput_whole_list first second state
+        (Function.update contents (Sum.inr second.tm.k₀) input) output []
+  have updatesCommute :
+      Function.update
+          (Function.update contents (Sum.inr second.tm.k₀) input)
+          (Sum.inl first.tm.k₁) [] =
+        Function.update
+          (Function.update contents (Sum.inl first.tm.k₁) [])
+          (Sum.inr second.tm.k₀) input := by
+    exact Function.update_comm
+      (a := (Sum.inr second.tm.k₀ : StackIndex first.tm second.tm))
+      (b := Sum.inl first.tm.k₁) (by simp) input [] contents
+  have fillRun :=
+    fillInput_whole_list first second (transferState first second none)
+      (Function.update contents (Sum.inl first.tm.k₁) []) input
+      ((output.map first.outputAlphabet).reverse)
+  have stepCount :
+      4 * output.length + 4 =
+        (2 * (output.map first.outputAlphabet).reverse.length + 2) +
+          (2 * output.length + 2) := by
+    simp
+    omega
+  rw [stepCount, Function.iterate_add_apply, reverseRun, updatesCommute, fillRun]
+  simp [List.map_reverse, List.map_map, Function.comp_def,
+    middleAlphabetEquiv]
+
 /-- Lift a statement over the combined component stacks into the
 scratch-extended stack family. Labels, state, and statement behavior are
 unchanged; every component-stack index is injected on the left. -/

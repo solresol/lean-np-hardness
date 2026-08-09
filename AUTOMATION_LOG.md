@@ -545,3 +545,48 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `fillInput_whole_list`, simplifying the two reversals and both alphabet
   equivalences to prove that a source output list is prepended in its original
   order to the second input stack with the summed exact step count.
+
+## 2026-08-10 — complete order-preserving intermediate transfer
+
+- **Starting commit:** `2a95106fdfa11258046ce9457d65536407942def`.
+- **Goal:** compose the two checked whole-list transfer phases into one exact,
+  order-preserving intermediate-output theorem.
+- **Checked increment:** added `transfer_whole_list`. Starting with empty
+  scratch storage, it consumes the first output stack, converts its symbols
+  through `middleAlphabetEquiv`, prepends them in their original order to the
+  existing second input stack, empties scratch, and enters the second machine's
+  initial control configuration in exactly `4 * output.length + 4` steps.
+- **Files:** `LeanNPHardness/MachineTransfer.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** direct transfer-module checking passed; targeted
+  transfer and audit build passed 1,135 jobs; full `lake build` passed 1,137
+  jobs; `git diff --check` passed. `#print axioms` reports only `propext`,
+  `Classical.choice`, and `Quot.sound` for `transfer_whole_list`. The
+  Lean-source scan found no `sorry`, `admit`, project-defined `axiom`, or
+  `unsafe`; `proof_wanted` remains only in the existing explanatory comment.
+- **Failed approaches/blockers:** implicit inference for the dependent
+  `Function.update_comm` call selected `Type` as the index; explicitly naming
+  the two disjoint `Sum` indices fixed it. The first phase theorem retained a
+  syntactic `scratch ++ []`, so a typed `simpa` intermediate was needed before
+  rewriting with `fillInput_whole_list`. Running the audit directly before
+  rebuilding the transfer module read its stale `.olean` and could not find
+  the new declaration; the targeted Lake build refreshed dependencies. Generic
+  machine construction and polynomial runtime accounting remain pending.
+- **Useful API discovery:** `Function.iterate_add_apply` composes the fill
+  phase after the reverse phase when the total count is written as fill steps
+  plus reverse steps. `Function.update_comm` works for the dependent stack
+  family once both distinct indices are explicit. `List.map_reverse`,
+  `List.map_map`, and the definition of `middleAlphabetEquiv` reduce the two
+  reversals and alphabet conversions to the order-preserving map. The Coq
+  comparison still composes `reducesPolyMO` through its higher-level
+  `polyTimeComputable` relation and provides no corresponding TM2 stack-copy
+  proof.
+- **Ending state:** the intermediate-output transfer loop is complete,
+  machine-checked, documented, and audited. A total composed `FinTM2`, its
+  multi-step component simulation, and its polynomial runtime bound remain.
+- **Best next experiment:** define the final scratch-layout program that
+  dispatches left labels through the halt-to-transfer lift, transfer labels
+  through `transferProgram`, and right labels through the right-control lift.
+  First prove exact one-step simulations for the left and right dispatch cases;
+  defer the `FinTM2` runtime witness until that total program builds.

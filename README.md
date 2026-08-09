@@ -63,7 +63,11 @@ The initial checked layer contains:
   and
 - exact whole-list fill-input execution in `2 * scratch.length + 2` steps,
   preserving an existing second-input accumulator and proving the resulting
-  converted-list order.
+  converted-list order; and
+- a complete order-preserving intermediate-output transfer theorem in
+  `4 * output.length + 4` steps, which empties scratch storage, prepends the
+  converted output to the second input stack, and enters the second machine's
+  initial control configuration.
 
 The generic polynomial-time composition theorem, P, NP, SAT, exact 3-SAT, and
 Cook--Levin remain pending. See [THEOREM_STATUS.md](THEOREM_STATUS.md) and

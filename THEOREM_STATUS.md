@@ -22,7 +22,7 @@
 | Reverse-output whole-list execution | Complete | `MachineComposition.reverseOutput_whole_list` |
 | Fill-input transfer iteration | Complete | `MachineComposition.fillInput_iteration_nonempty` and `fillInput_iteration_empty` |
 | Fill-input whole-list execution | Complete | `MachineComposition.fillInput_whole_list` |
-| Intermediate-output transfer loop | Pending | Implement and verify the order-preserving two-stage copy from the first output stack through canonical middle-alphabet scratch storage to the second input stack. |
+| Intermediate-output transfer loop | Complete | `MachineComposition.transfer_whole_list` |
 | Generic polynomial-time machine composition | Pending | Construct the composed `FinTM2`; do not rely on mathlib's `proof_wanted` declaration as a completed proof. |
 | Closed polynomial-time reduction composition | Pending | Derive `PolytimeManyOneReduction.comp` from the preceding machine theorem. |
 | P | Pending | Define deterministic polynomial-time decidability for encoded languages. |
@@ -73,6 +73,8 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   `Classical.choice`, and `Quot.sound`; and
   `fillInput_iteration_empty` depends on `propext` and `Quot.sound`.
 - `MachineComposition.fillInput_whole_list` depends on `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- `MachineComposition.transfer_whole_list` depends on `propext`,
   `Classical.choice`, and `Quot.sound`.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or

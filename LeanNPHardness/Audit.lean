@@ -30,5 +30,6 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.fillInput_iteration_nonempty
 #print axioms LeanNPHardness.MachineComposition.fillInput_iteration_empty
 #print axioms LeanNPHardness.MachineComposition.fillInput_whole_list
+#print axioms LeanNPHardness.MachineComposition.transfer_whole_list
 
 end LeanNPHardness.Audit
