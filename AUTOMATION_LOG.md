@@ -590,3 +590,49 @@ avoid failed routes, and choose a materially different experiment when blocked.
   through `transferProgram`, and right labels through the right-control lift.
   First prove exact one-step simulations for the left and right dispatch cases;
   defer the `FinTM2` runtime witness until that total program builds.
+
+## 2026-08-11 — total composition program and finite machine
+
+- **Starting commit:** `516000d93cafcab18e084b67fb787c9244fb0a50`.
+- **Goal:** assemble the checked component and transfer programs on the final
+  scratch layout, then verify exact left- and right-phase dispatch before
+  attempting whole-computation or runtime proofs.
+- **Checked increment:** added `compositionProgram`, a total dispatcher for
+  left, transfer-action, and right labels; `compositionMachine`, the resulting
+  finite machine with the first input and second output stacks exposed; and
+  `compositionAux`, which records the external alphabet equivalences without
+  claiming computation or runtime. Proved the pointwise dispatch lemmas and
+  exact `compositionProgram_left_step` and `compositionProgram_right_step`
+  simulations, preserving arbitrary scratch contents.
+- **Files:** `LeanNPHardness/MachineCompositionProgram.lean`,
+  `LeanNPHardness/Audit.lean`, `LeanNPHardness.lean`, `README.md`,
+  `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** targeted program and audit builds passed; full
+  `lake build` passed 1,138 jobs; `git diff --check` passed. Axiom audit reports
+  `propext`, `Classical.choice`, and `Quot.sound` for `compositionAux`, and only
+  `propext` and `Quot.sound` for both component-step theorems. The Lean-source
+  scan found no `sorry`, `admit`, project-defined `axiom`, or `unsafe`;
+  `proof_wanted` remains only in the existing explanatory comment.
+- **Failed approaches/blockers:** after rewriting with the two existing
+  statement simulations, Lean retained explicit configuration structure on one
+  side of each component-step goal; a final definitional `rfl` closed both.
+  No semantic blocker was encountered. Whole-run component simulation,
+  transfer execution under the total dispatcher, and polynomial runtime remain
+  unproved.
+- **Useful API discovery:** the final machine requires only `[Fintype Γ₁]`,
+  which is available from the shared middle `FinEncoding`; the input-stack
+  finiteness field reduces definitionally to `first.tm.Γk₀Fin`. Transfer actions
+  can be delegated definitionally to `transferProgram`, while left and right
+  statements reuse `liftScratchStmt`. The Coq comparison still composes via
+  `reducesPolyMO_intro` and `polyTimeComputable`, and pinned mathlib still marks
+  `TM2ComputableInPolyTime.comp` as `proof_wanted`, so neither supplies Lean
+  evidence for this machine layer.
+- **Ending state:** the full finite machine structure now builds and both
+  component phases have exact one-step semantics under its total program. No
+  claim yet states that `compositionAux` computes function composition or has a
+  polynomial runtime.
+- **Best next experiment:** transport `transfer_whole_list` from
+  `transferProgram` to `compositionProgram` by proving that every reachable
+  transfer-action configuration takes the same next step. Then lift the left
+  and right one-step simulations to exact repeated execution before combining
+  the phase runtimes.

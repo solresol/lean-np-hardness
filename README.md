@@ -67,7 +67,13 @@ The initial checked layer contains:
 - a complete order-preserving intermediate-output transfer theorem in
   `4 * output.length + 4` steps, which empties scratch storage, prepends the
   converted output to the second input stack, and enters the second machine's
-  initial control configuration.
+  initial control configuration; and
+- a total program on the final scratch layout that dispatches first-machine,
+  transfer-action, and second-machine labels, with exact checked one-step
+  simulations for both component phases; and
+- a finite composed machine and external input/output alphabet bridge, kept
+  structurally separate from the still-pending computation and polynomial
+  runtime proofs.
 
 The generic polynomial-time composition theorem, P, NP, SAT, exact 3-SAT, and
 Cook--Levin remain pending. See [THEOREM_STATUS.md](THEOREM_STATUS.md) and

@@ -1,6 +1,7 @@
 import LeanNPHardness.MachineEmbedding
 import LeanNPHardness.MachineControl
 import LeanNPHardness.MachineControlSimulation
+import LeanNPHardness.MachineCompositionProgram
 import LeanNPHardness.MachineTransfer
 import LeanNPHardness.PolytimeComposition
 
@@ -31,5 +32,8 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.fillInput_iteration_empty
 #print axioms LeanNPHardness.MachineComposition.fillInput_whole_list
 #print axioms LeanNPHardness.MachineComposition.transfer_whole_list
+#print axioms LeanNPHardness.MachineComposition.compositionAux
+#print axioms LeanNPHardness.MachineComposition.compositionProgram_left_step
+#print axioms LeanNPHardness.MachineComposition.compositionProgram_right_step
 
 end LeanNPHardness.Audit
