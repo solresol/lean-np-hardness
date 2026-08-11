@@ -133,4 +133,241 @@ theorem compositionProgram_right_step {Γ₀ Γ₁ Γ₂ : Type}
           rw [liftScratch_stepAux, liftRightControl_stepAux]
           rfl
 
+/-- On a transfer-action configuration, one step of the total composition
+program is exactly one step of the isolated transfer program. -/
+theorem compositionProgram_transfer_step {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) (action : TransferAction Γ₁)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (scratch : List Γ₁) :
+    TM2.step (compositionProgram first second)
+        (transferActionCfg first second action state contents scratch) =
+      TM2.step (transferProgram first second)
+        (transferActionCfg first second action state contents scratch) := by
+  rfl
+
+/-- Two total-program steps implement one nonempty reverse-output iteration. -/
+theorem compositionProgram_reverseOutput_iteration_nonempty
+    {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (scratch : List Γ₁) (head : first.tm.Γ first.tm.k₁)
+    (tail : List (first.tm.Γ first.tm.k₁)) :
+    (TM2.step (compositionProgram first second)
+        (transferActionCfg first second (.phase .reverseOutput) state
+          (Function.update contents (Sum.inl first.tm.k₁) (head :: tail))
+          scratch)).bind (TM2.step (compositionProgram first second)) =
+      some (transferActionCfg first second (.phase .reverseOutput)
+        (transferState first second (some (first.outputAlphabet head)))
+        (Function.update contents (Sum.inl first.tm.k₁) tail)
+        (first.outputAlphabet head :: scratch)) := by
+  rw [compositionProgram_transfer_step, reverseOutput_step_nonempty,
+    Option.bind_some, compositionProgram_transfer_step, reversePush_step_some]
+
+/-- Two total-program steps detect an empty first output stack and enter the
+fill-input phase. -/
+theorem compositionProgram_reverseOutput_iteration_empty
+    {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (scratch : List Γ₁) :
+    (TM2.step (compositionProgram first second)
+        (transferActionCfg first second (.phase .reverseOutput) state
+          (Function.update contents (Sum.inl first.tm.k₁) []) scratch)).bind
+        (TM2.step (compositionProgram first second)) =
+      some (transferActionCfg first second (.phase .fillInput)
+        (transferState first second none)
+        (Function.update contents (Sum.inl first.tm.k₁) []) scratch) := by
+  rw [compositionProgram_transfer_step, reverseOutput_step_empty,
+    Option.bind_some, compositionProgram_transfer_step, reversePush_step_none]
+
+/-- Under the total composition program, repeated reverse-output iterations
+consume the whole first output stack in exactly two steps per symbol plus two
+exhaustion steps. -/
+theorem compositionProgram_reverseOutput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (output : List (first.tm.Γ first.tm.k₁)) (scratch : List Γ₁) :
+    (flip Option.bind (TM2.step (compositionProgram first second)))^[
+        2 * output.length + 2]
+      (some (transferActionCfg first second (.phase .reverseOutput) state
+        (Function.update contents (Sum.inl first.tm.k₁) output) scratch)) =
+      some (transferActionCfg first second (.phase .fillInput)
+        (transferState first second none)
+        (Function.update contents (Sum.inl first.tm.k₁) [])
+        ((output.map first.outputAlphabet).reverse ++ scratch)) := by
+  induction output generalizing state scratch with
+  | nil =>
+      simpa [Function.iterate_succ_apply'] using
+        compositionProgram_reverseOutput_iteration_empty first second state
+          contents scratch
+  | cons head tail ih =>
+      have firstIteration :=
+        compositionProgram_reverseOutput_iteration_nonempty first second state
+          contents scratch head tail
+      rw [List.length_cons]
+      have stepCount : 2 * (tail.length + 1) + 2 =
+          (2 * tail.length + 2) + 2 := by omega
+      rw [stepCount, Function.iterate_add_apply]
+      rw [show
+        (flip Option.bind (TM2.step (compositionProgram first second)))^[2]
+          (some (transferActionCfg first second (.phase .reverseOutput) state
+            (Function.update contents (Sum.inl first.tm.k₁) (head :: tail))
+            scratch)) =
+          some (transferActionCfg first second (.phase .reverseOutput)
+            (transferState first second (some (first.outputAlphabet head)))
+            (Function.update contents (Sum.inl first.tm.k₁) tail)
+            (first.outputAlphabet head :: scratch)) by
+        simpa [Function.iterate_succ_apply'] using firstIteration]
+      simpa [List.map, List.reverse_cons, List.append_assoc] using
+        ih (transferState first second (some (first.outputAlphabet head)))
+          (first.outputAlphabet head :: scratch)
+
+/-- Two total-program steps implement one nonempty fill-input iteration. -/
+theorem compositionProgram_fillInput_iteration_nonempty
+    {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (input : List (second.tm.Γ second.tm.k₀))
+    (head : Γ₁) (tail : List Γ₁) :
+    (TM2.step (compositionProgram first second)
+        (transferActionCfg first second (.phase .fillInput) state
+          (Function.update contents (Sum.inr second.tm.k₀) input)
+          (head :: tail))).bind (TM2.step (compositionProgram first second)) =
+      some (transferActionCfg first second (.phase .fillInput)
+        (transferState first second (some head))
+        (Function.update contents (Sum.inr second.tm.k₀)
+          (second.inputAlphabet.symm head :: input)) tail) := by
+  rw [compositionProgram_transfer_step, fillInput_step_nonempty,
+    Option.bind_some, compositionProgram_transfer_step, fillPush_step_some]
+
+/-- Two total-program steps detect empty scratch storage and enter the second
+machine's main label. -/
+theorem compositionProgram_fillInput_iteration_empty {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k)) :
+    Option.bind
+        (TM2.step (compositionProgram first second)
+          (transferActionCfg first second (.phase .fillInput) state contents []))
+        (TM2.step (compositionProgram first second)) =
+      some (rightEntryCfg first second contents []) := by
+  rw [compositionProgram_transfer_step, fillInput_step_empty,
+    Option.bind_some, compositionProgram_transfer_step, fillPush_step_none]
+
+/-- Under the total composition program, repeated fill-input iterations
+consume the whole scratch stack in exactly two steps per symbol plus two
+exhaustion steps. -/
+theorem compositionProgram_fillInput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (input : List (second.tm.Γ second.tm.k₀)) (scratch : List Γ₁) :
+    (flip Option.bind (TM2.step (compositionProgram first second)))^[
+        2 * scratch.length + 2]
+      (some (transferActionCfg first second (.phase .fillInput) state
+        (Function.update contents (Sum.inr second.tm.k₀) input) scratch)) =
+      some (rightEntryCfg first second
+        (Function.update contents (Sum.inr second.tm.k₀)
+          ((scratch.map second.inputAlphabet.symm).reverse ++ input)) []) := by
+  induction scratch generalizing state input with
+  | nil =>
+      simpa [Function.iterate_succ_apply'] using
+        compositionProgram_fillInput_iteration_empty first second state
+          (Function.update contents (Sum.inr second.tm.k₀) input)
+  | cons head tail ih =>
+      have firstIteration :=
+        compositionProgram_fillInput_iteration_nonempty first second state
+          contents input head tail
+      rw [List.length_cons]
+      have stepCount : 2 * (tail.length + 1) + 2 =
+          (2 * tail.length + 2) + 2 := by omega
+      rw [stepCount, Function.iterate_add_apply]
+      rw [show
+        (flip Option.bind (TM2.step (compositionProgram first second)))^[2]
+          (some (transferActionCfg first second (.phase .fillInput) state
+            (Function.update contents (Sum.inr second.tm.k₀) input)
+            (head :: tail))) =
+          some (transferActionCfg first second (.phase .fillInput)
+            (transferState first second (some head))
+            (Function.update contents (Sum.inr second.tm.k₀)
+              (second.inputAlphabet.symm head :: input)) tail) by
+        simpa [Function.iterate_succ_apply'] using firstIteration]
+      simpa [List.map, List.reverse_cons, List.append_assoc] using
+        ih (transferState first second (some head))
+          (second.inputAlphabet.symm head :: input)
+
+/-- The total composition program executes the complete order-preserving
+transfer in exactly four steps per first-output symbol plus four exhaustion
+steps, then enters the second machine's initial control configuration. -/
+theorem compositionProgram_transfer_whole_list {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : ControlState first second)
+    (contents : ∀ k, List (StackAlphabet first.tm second.tm k))
+    (output : List (first.tm.Γ first.tm.k₁))
+    (input : List (second.tm.Γ second.tm.k₀)) :
+    (flip Option.bind (TM2.step (compositionProgram first second)))^[
+        4 * output.length + 4]
+      (some (transferActionCfg first second (.phase .reverseOutput) state
+        (Function.update
+          (Function.update contents (Sum.inr second.tm.k₀) input)
+          (Sum.inl first.tm.k₁) output) [])) =
+      some (rightEntryCfg first second
+        (Function.update
+          (Function.update contents (Sum.inl first.tm.k₁) [])
+          (Sum.inr second.tm.k₀)
+          (output.map (middleAlphabetEquiv first second) ++ input)) []) := by
+  have reverseRun :
+      (flip Option.bind (TM2.step (compositionProgram first second)))^[
+          2 * output.length + 2]
+        (some (transferActionCfg first second (.phase .reverseOutput) state
+          (Function.update
+            (Function.update contents (Sum.inr second.tm.k₀) input)
+            (Sum.inl first.tm.k₁) output) [])) =
+        some (transferActionCfg first second (.phase .fillInput)
+          (transferState first second none)
+          (Function.update
+            (Function.update contents (Sum.inr second.tm.k₀) input)
+            (Sum.inl first.tm.k₁) [])
+          (output.map first.outputAlphabet).reverse) := by
+    simpa using
+      compositionProgram_reverseOutput_whole_list first second state
+        (Function.update contents (Sum.inr second.tm.k₀) input) output []
+  have updatesCommute :
+      Function.update
+          (Function.update contents (Sum.inr second.tm.k₀) input)
+          (Sum.inl first.tm.k₁) [] =
+        Function.update
+          (Function.update contents (Sum.inl first.tm.k₁) [])
+          (Sum.inr second.tm.k₀) input := by
+    exact Function.update_comm
+      (a := (Sum.inr second.tm.k₀ : StackIndex first.tm second.tm))
+      (b := Sum.inl first.tm.k₁) (by simp) input [] contents
+  have fillRun :=
+    compositionProgram_fillInput_whole_list first second
+      (transferState first second none)
+      (Function.update contents (Sum.inl first.tm.k₁) []) input
+      ((output.map first.outputAlphabet).reverse)
+  have stepCount :
+      4 * output.length + 4 =
+        (2 * (output.map first.outputAlphabet).reverse.length + 2) +
+          (2 * output.length + 2) := by
+    simp
+    omega
+  rw [stepCount, Function.iterate_add_apply, reverseRun, updatesCommute, fillRun]
+  simp [List.map_reverse, List.map_map, Function.comp_def,
+    middleAlphabetEquiv]
+
 end LeanNPHardness.MachineComposition

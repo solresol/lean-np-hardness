@@ -26,6 +26,7 @@
 | Total scratch-layout program dispatch | Complete | `MachineComposition.compositionProgram` |
 | Composed finite machine structure | Complete | `MachineComposition.compositionMachine` and `compositionAux` |
 | Component steps under total dispatch | Complete | `MachineComposition.compositionProgram_left_step` and `compositionProgram_right_step` |
+| Transfer execution under total dispatch | Complete | `MachineComposition.compositionProgram_transfer_whole_list` |
 | Generic polynomial-time machine composition | Pending | Prove that `compositionAux` computes function composition with a polynomial runtime; do not rely on mathlib's `proof_wanted` declaration as a completed proof. |
 | Closed polynomial-time reduction composition | Pending | Derive `PolytimeManyOneReduction.comp` from the preceding machine theorem. |
 | P | Pending | Define deterministic polynomial-time decidability for encoded languages. |
@@ -81,6 +82,11 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   `Classical.choice`, and `Quot.sound`.
 - `MachineComposition.compositionProgram_left_step` and
   `compositionProgram_right_step` depend on `propext` and `Quot.sound`.
+- `MachineComposition.compositionProgram_transfer_step` depends on `propext`
+  and `Quot.sound`; and `compositionProgram_reverseOutput_whole_list`,
+  `compositionProgram_fillInput_whole_list`, and
+  `compositionProgram_transfer_whole_list` depend on `propext`,
+  `Classical.choice`, and `Quot.sound`.
 - `MachineComposition.compositionAux` depends on `propext`,
   `Classical.choice`, and `Quot.sound`.
 

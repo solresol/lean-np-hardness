@@ -636,3 +636,49 @@ avoid failed routes, and choose a materially different experiment when blocked.
   transfer-action configuration takes the same next step. Then lift the left
   and right one-step simulations to exact repeated execution before combining
   the phase runtimes.
+
+## 2026-08-12 — exact transfer execution under total dispatch
+
+- **Starting commit:** `85c5c181662b2d33eb71b3a22e8a05bd44d2810c`.
+- **Goal:** transport the complete intermediate-stack transfer proof from the
+  isolated transfer program to the total composition dispatcher without
+  assuming that the two programs are globally equal.
+- **Checked increment:** added `compositionProgram_transfer_step`, exact
+  two-step iteration lemmas for nonempty and exhausted reverse-output and
+  fill-input stages, whole-list dispatcher theorems for both stages, and the
+  headline `compositionProgram_transfer_whole_list`. The total program now
+  consumes the first output, preserves its order through the alphabet bridge,
+  prepends it to the second input, empties scratch, and enters the second
+  machine's initial control configuration in exactly
+  `4 * output.length + 4` steps.
+- **Files:** `LeanNPHardness/MachineCompositionProgram.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** the targeted composition-program build passed 1,132
+  jobs; the audit build passed 1,136 jobs; full `lake build` passed 1,138
+  jobs; and `git diff --check` passed. `#print axioms` reports `propext` and
+  `Quot.sound` for `compositionProgram_transfer_step`, and additionally
+  `Classical.choice` for the three dispatcher whole-list theorems. The source
+  scan found no `sorry`, `admit`, project-defined `axiom`, or `unsafe`;
+  `proof_wanted` occurs only in the existing explanatory dependency-boundary
+  comment.
+- **Failed approaches/blockers:** no Lean proof route failed. The first status
+  draft incorrectly described the definitional one-step bridge as axiom-free;
+  its explicit audit showed `propext` and `Quot.sound`, and the status was
+  corrected before commit. Repeated component execution and polynomial
+  runtime composition remain unproved.
+- **Useful API discovery:** `compositionProgram` and `transferProgram` are
+  definitionally equal at every injected `TransferAction` label, which gives
+  the one-step bridge by `rfl`. They are not globally equal as functions, so
+  exact iteration must follow the reachable action configurations; reusing the
+  prior two-step and list-induction decomposition provides that evidence. The
+  Coq comparison still composes with `reducesPolyMO_intro` and `red_NPhard`,
+  while mathlib's `TM2ComputableInPolyTime.comp` remains `proof_wanted`.
+- **Ending state:** all three phases of the finite composition program now
+  have checked local semantics, and the complete transfer phase has an exact
+  multi-step theorem under the actual total dispatcher. No computation or
+  polynomial-runtime claim has been added to `compositionAux`.
+- **Best next experiment:** prove an exact repeated-execution lift for the
+  first component that ends at the transfer entry after the original machine
+  halts, then prove the symmetric second-component lift. Keep these execution
+  theorems separate from the later sum-of-polynomials runtime construction.

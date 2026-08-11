@@ -71,6 +71,8 @@ The initial checked layer contains:
 - a total program on the final scratch layout that dispatches first-machine,
   transfer-action, and second-machine labels, with exact checked one-step
   simulations for both component phases; and
+- exact whole-list execution of the order-preserving intermediate transfer
+  under that total dispatcher in `4 * output.length + 4` steps; and
 - a finite composed machine and external input/output alphabet bridge, kept
   structurally separate from the still-pending computation and polynomial
   runtime proofs.
