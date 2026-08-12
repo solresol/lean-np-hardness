@@ -73,6 +73,9 @@ The initial checked layer contains:
   simulations for both component phases; and
 - exact whole-list execution of the order-preserving intermediate transfer
   under that total dispatcher in `4 * output.length + 4` steps; and
+- exact repeated execution of the first component under the total dispatcher,
+  preserving its step count and scratch contents and redirecting a halted
+  endpoint to the canonical transfer entry; and
 - a finite composed machine and external input/output alphabet bridge, kept
   structurally separate from the still-pending computation and polynomial
   runtime proofs.

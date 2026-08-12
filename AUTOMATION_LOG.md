@@ -682,3 +682,47 @@ avoid failed routes, and choose a materially different experiment when blocked.
   first component that ends at the transfer entry after the original machine
   halts, then prove the symmetric second-component lift. Keep these execution
   theorems separate from the later sum-of-polynomials runtime construction.
+
+## 2026-08-13 — exact repeated first-component execution
+
+- **Starting commit:** `41bbee6e21b1d19f397cf8539d47955eab0cc4f4`.
+- **Goal:** lift an arbitrary exact first-machine run through the total
+  composition dispatcher, preserving its step count and redirecting a halted
+  endpoint into transfer.
+- **Checked increment:** added `compositionProgram_left_run`, which reproduces
+  any finite run starting at a live first-machine label in exactly the same
+  number of dispatcher steps while preserving scratch contents. Added the
+  halted-endpoint corollary `compositionProgram_left_run_to_transfer` and the
+  `EvalsTo` adapter `compositionProgram_left_evalsTo_transfer`, whose recorded
+  step count is definitionally the original witness's count.
+- **Files:** `LeanNPHardness/MachineCompositionExecution.lean`,
+  `LeanNPHardness/Audit.lean`, `LeanNPHardness.lean`, `README.md`,
+  `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** direct execution-module checking passed; the targeted
+  execution and audit build passed 1,137 jobs; full `lake build` passed 1,139
+  jobs; and `git diff --check` passed. The Lean-source scan found no `sorry`,
+  `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in
+  the existing explanatory dependency-boundary comment. `#print axioms`
+  reports only `propext` and `Quot.sound` for all three new declarations.
+- **Failed approaches/blockers:** an initial declaration of the `EvalsTo`
+  adapter as a `theorem` failed because `EvalsTo` is a structure in `Type`, not
+  a proposition; defining the adapter with `def` matches mathlib's own
+  execution-witness API. In the induction, a halted intermediate configuration
+  cannot be passed to the live-label induction hypothesis; isolating the facts
+  that a halted `TM2` configuration steps to `none` and that `none` remains
+  `none` under option-bound iteration discharged this case.
+- **Useful API discovery:** mathlib's `EvalsTo` stores an exact iteration count,
+  so the lift can reuse `run.steps` without runtime overhead. A run that still
+  produces `some` after another step cannot already be halted, which supplies
+  the live-label invariant needed by the induction. The Coq comparison still
+  constructs and composes reductions through `reducesPolyMO_intro` and
+  `red_NPhard`; it does not provide this mathlib-specific execution lift.
+- **Ending state:** complete first-machine executions now reach the canonical
+  transfer entry under the actual total dispatcher with a checked, unchanged
+  component step count. The symmetric repeated second-machine execution and
+  the combined polynomial runtime remain pending.
+- **Best next experiment:** prove an exact repeated-execution lift for the
+  second component from `rightEntryCfg` to its ordinary halted output, then use
+  both component witnesses and `compositionProgram_transfer_whole_list` to
+  assemble an end-to-end exact step-count expression before bounding it by a
+  polynomial.

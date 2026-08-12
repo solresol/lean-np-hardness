@@ -1,4 +1,5 @@
 import LeanNPHardness.Audit
+import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram
 import LeanNPHardness.MachineControl
 import LeanNPHardness.MachineControlSimulation
