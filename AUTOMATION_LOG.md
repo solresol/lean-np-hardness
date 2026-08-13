@@ -726,3 +726,50 @@ avoid failed routes, and choose a materially different experiment when blocked.
   both component witnesses and `compositionProgram_transfer_whole_list` to
   assemble an end-to-end exact step-count expression before bounding it by a
   polynomial.
+
+## 2026-08-14 — exact repeated second-component execution
+
+- **Starting commit:** `7e59f0b9ad72f69720394c6092472906611b4e61`.
+- **Goal:** lift exact second-machine runs through the total composition
+  dispatcher from the canonical entry produced by transfer, without erasing
+  the first machine's residual work stacks.
+- **Checked increment:** added `rightPhaseStacks` and `rightPhaseCfg`, which
+  embed a second-machine configuration while preserving arbitrary first-stack
+  and scratch contents; proved the exact one-step theorem
+  `compositionProgram_right_step_preserving_left`, repeated execution theorem
+  `compositionProgram_right_run`, and exact `EvalsTo` adapter
+  `compositionProgram_right_evalsTo`. Added `rightEntryMachineCfg`, proved
+  `rightEntryCfg_eq_rightPhaseCfg`, and exposed
+  `compositionProgram_rightEntry_evalsTo` directly at the transfer-produced
+  start configuration. All lifted witnesses retain the original second-run
+  step count.
+- **Files:** `LeanNPHardness/MachineCompositionExecution.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** direct execution-module checking passed; targeted
+  execution/audit build passed 1,137 jobs; full `lake build` passed 1,139 jobs;
+  and `git diff --check` passed. The Lean-source scan found no `sorry`,
+  `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in
+  the explanatory dependency-boundary comment. All six new public axiom audits
+  report only `propext` and `Quot.sound`.
+- **Failed approaches/blockers:** the existing `liftRightControlCfg` cannot be
+  used after transfer because it replaces every first-machine stack with an
+  empty list, whereas `rightEntryCfg` preserves the actual combined stack
+  family. A new preserving embedding resolved this semantic mismatch. An
+  initial extensionality proof tried the unavailable generated name
+  `TM2.Cfg.ext`; structure congruence plus dependent function extensionality
+  proved the exact configuration equality. End-to-end computation and the
+  polynomial runtime bound remain pending.
+- **Useful API discovery:** second-program statements touch only injected
+  `Sum.inr` stack indices, so their constructor induction generalizes from
+  empty first stacks to arbitrary preserved first stacks. Mathlib's `EvalsTo`
+  again carries an exact reusable step count. The Coq comparison still composes
+  via `reducesPolyMO_intro` and `red_NPhard`, not a TM2 execution lift.
+- **Ending state:** both component phases and the transfer phase now have exact
+  repeated execution results under the actual total dispatcher. Generic
+  computation correctness and polynomial runtime composition are not claimed.
+- **Best next experiment:** combine the first-component `EvalsTo` lift, the
+  exact `4 * output.length + 4` transfer theorem, and the new right-entry
+  `EvalsTo` lift into one end-to-end execution witness with an explicit summed
+  step count. Then isolate the encoded intermediate-output length bound needed
+  for the polynomial runtime.

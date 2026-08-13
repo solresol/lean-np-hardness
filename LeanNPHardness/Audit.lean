@@ -43,5 +43,11 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.compositionProgram_left_run
 #print axioms LeanNPHardness.MachineComposition.compositionProgram_left_run_to_transfer
 #print axioms LeanNPHardness.MachineComposition.compositionProgram_left_evalsTo_transfer
+#print axioms LeanNPHardness.MachineComposition.rightPhaseStacks_update
+#print axioms LeanNPHardness.MachineComposition.compositionProgram_right_step_preserving_left
+#print axioms LeanNPHardness.MachineComposition.compositionProgram_right_run
+#print axioms LeanNPHardness.MachineComposition.compositionProgram_right_evalsTo
+#print axioms LeanNPHardness.MachineComposition.rightEntryCfg_eq_rightPhaseCfg
+#print axioms LeanNPHardness.MachineComposition.compositionProgram_rightEntry_evalsTo
 
 end LeanNPHardness.Audit

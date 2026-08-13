@@ -76,6 +76,9 @@ The initial checked layer contains:
 - exact repeated execution of the first component under the total dispatcher,
   preserving its step count and scratch contents and redirecting a halted
   endpoint to the canonical transfer entry; and
+- exact repeated execution of the second component under the total dispatcher,
+  preserving its step count, the first component's work stacks, and scratch
+  contents from the canonical transfer-produced right entry; and
 - a finite composed machine and external input/output alphabet bridge, kept
   structurally separate from the still-pending computation and polynomial
   runtime proofs.
