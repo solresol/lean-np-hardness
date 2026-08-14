@@ -434,4 +434,142 @@ def compositionProgram_rightEntry_evalsTo {Γ₀ Γ₁ Γ₂ : Type}
       (rightEntryMachineCfg first second contents) finalCfg
       (fun k => contents (Sum.inl k)) scratch run.evals_in_steps
 
+/-- The combined component stacks after the transfer phase has emptied the
+first output stack and copied its order-preserving alphabet conversion into
+the second input stack. -/
+def transferredContents {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (contents : ∀ k, List (first.tm.Γ k)) :
+    ∀ k, List (StackAlphabet first.tm second.tm k) :=
+  Function.update
+    (Function.update (leftStacks first.tm second.tm contents)
+      (Sum.inl first.tm.k₁) [])
+    (Sum.inr second.tm.k₀)
+    ((contents first.tm.k₁).map (middleAlphabetEquiv first second))
+
+/-- The lifted transfer entry produced by a halted first-machine run is the
+exact starting configuration expected by the whole-list transfer theorem.
+The explicit no-op updates record the empty second input and unchanged first
+output needed by that theorem's accumulator interface. -/
+theorem liftScratch_leftTransferEntryCfg_eq_transferStart
+    {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (state : first.tm.σ)
+    (contents : ∀ k, List (first.tm.Γ k)) :
+    liftScratchCfg first second []
+        (leftTransferEntryCfg first second state contents) =
+      transferActionCfg first second (.phase .reverseOutput)
+        (leftState first second state)
+        (Function.update
+          (Function.update (leftStacks first.tm second.tm contents)
+            (Sum.inr second.tm.k₀) [])
+          (Sum.inl first.tm.k₁) (contents first.tm.k₁)) [] := by
+  unfold liftScratchCfg leftTransferEntryCfg transferActionCfg
+  congr 1
+  funext index
+  cases index with
+  | inl combinedIndex =>
+      cases combinedIndex with
+      | inl index =>
+          by_cases h : index = first.tm.k₁
+          · subst index
+            simp [extendStacks, leftStacks]
+          · have hsum :
+                (Sum.inl index : StackIndex first.tm second.tm) ≠
+                  Sum.inl first.tm.k₁ := by
+                intro equality
+                exact h (Sum.inl.inj equality)
+            simp [extendStacks, leftStacks, hsum]
+      | inr index =>
+          by_cases h : index = second.tm.k₀
+          · subst index
+            simp [extendStacks, leftStacks]
+          · have hsum :
+                (Sum.inr index : StackIndex first.tm second.tm) ≠
+                  Sum.inr second.tm.k₀ := by
+                intro equality
+                exact h (Sum.inr.inj equality)
+            simp [extendStacks, leftStacks, hsum]
+  | inr unitIndex =>
+      cases unitIndex
+      simp [extendStacks]
+
+/-- The total composition program reproduces a complete first-machine run,
+the order-preserving intermediate transfer, and a complete second-machine run.
+Its exact step count is the sum of the two component witnesses and
+`4 * intermediate.length + 4` transfer steps. -/
+theorem compositionProgram_complete_run {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (firstCfg firstFinal : TM2.Cfg first.tm.Γ first.tm.Λ first.tm.σ)
+    (firstLabel : first.tm.Λ)
+    (firstRun : EvalsTo (TM2.step first.tm.m) firstCfg (some firstFinal))
+    (hlabel : firstCfg.l = some firstLabel)
+    (hhalt : firstFinal.l = none)
+    (secondFinal : TM2.Cfg second.tm.Γ second.tm.Λ second.tm.σ)
+    (secondRun : EvalsTo (TM2.step second.tm.m)
+      (rightEntryMachineCfg first second
+        (transferredContents first second firstFinal.stk))
+      (some secondFinal)) :
+    (flip Option.bind (TM2.step (compositionProgram first second)))^[
+        secondRun.steps +
+          (4 * (firstFinal.stk first.tm.k₁).length + 4 + firstRun.steps)]
+      (some (liftScratchCfg first second []
+        (liftLeftControlCfg first second firstCfg))) =
+      some (rightPhaseCfg first second
+        (fun k =>
+          transferredContents first second firstFinal.stk (Sum.inl k))
+        [] secondFinal) := by
+  have leftRun :=
+    compositionProgram_left_run_to_transfer first second firstRun.steps
+      firstCfg firstFinal firstLabel [] hlabel firstRun.evals_in_steps hhalt
+  have transferRun :=
+    compositionProgram_transfer_whole_list first second
+      (leftState first second firstFinal.var)
+      (leftStacks first.tm second.tm firstFinal.stk)
+      (firstFinal.stk first.tm.k₁) []
+  have leftAndTransfer :
+      (flip Option.bind (TM2.step (compositionProgram first second)))^[
+          4 * (firstFinal.stk first.tm.k₁).length + 4 + firstRun.steps]
+        (some (liftScratchCfg first second []
+          (liftLeftControlCfg first second firstCfg))) =
+        some (rightEntryCfg first second
+          (transferredContents first second firstFinal.stk) []) := by
+    rw [Function.iterate_add_apply, leftRun]
+    rw [liftScratch_leftTransferEntryCfg_eq_transferStart]
+    simpa [transferredContents] using transferRun
+  rw [Function.iterate_add_apply, leftAndTransfer]
+  exact (compositionProgram_rightEntry_evalsTo first second
+    (transferredContents first second firstFinal.stk) [] secondFinal
+    secondRun).evals_in_steps
+
+/-- Package `compositionProgram_complete_run` as mathlib's exact execution
+witness, retaining the explicit summed step count. -/
+def compositionProgram_complete_evalsTo {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (firstCfg firstFinal : TM2.Cfg first.tm.Γ first.tm.Λ first.tm.σ)
+    (firstLabel : first.tm.Λ)
+    (firstRun : EvalsTo (TM2.step first.tm.m) firstCfg (some firstFinal))
+    (hlabel : firstCfg.l = some firstLabel)
+    (hhalt : firstFinal.l = none)
+    (secondFinal : TM2.Cfg second.tm.Γ second.tm.Λ second.tm.σ)
+    (secondRun : EvalsTo (TM2.step second.tm.m)
+      (rightEntryMachineCfg first second
+        (transferredContents first second firstFinal.stk))
+      (some secondFinal)) :
+    EvalsTo (TM2.step (compositionProgram first second))
+      (liftScratchCfg first second []
+        (liftLeftControlCfg first second firstCfg))
+      (some (rightPhaseCfg first second
+        (fun k =>
+          transferredContents first second firstFinal.stk (Sum.inl k))
+        [] secondFinal)) where
+  steps := secondRun.steps +
+    (4 * (firstFinal.stk first.tm.k₁).length + 4 + firstRun.steps)
+  evals_in_steps := compositionProgram_complete_run first second firstCfg
+    firstFinal firstLabel firstRun hlabel hhalt secondFinal secondRun
+
 end LeanNPHardness.MachineComposition

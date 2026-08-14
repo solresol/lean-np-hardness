@@ -773,3 +773,54 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `EvalsTo` lift into one end-to-end execution witness with an explicit summed
   step count. Then isolate the encoded intermediate-output length bound needed
   for the polynomial runtime.
+
+## 2026-08-15 — exact three-phase composition execution
+
+- **Starting commit:** `367ff9dac248488d7a7f454d41c36c0b02a7f6c6`.
+- **Goal:** compose the checked first execution, exact transfer, and checked
+  second execution into one end-to-end witness with an explicit summed step
+  count.
+- **Checked increment:** added `transferredContents`, which names the exact
+  post-transfer component-stack layout;
+  `liftScratch_leftTransferEntryCfg_eq_transferStart`, which connects the
+  first-run endpoint to the transfer theorem's accumulator interface; and
+  `compositionProgram_complete_run`, which executes all three phases in
+  exactly `secondRun.steps + (4 * intermediate.length + 4 +
+  firstRun.steps)` steps. Added the packaged exact witness
+  `compositionProgram_complete_evalsTo`.
+- **Files:** `LeanNPHardness/MachineCompositionExecution.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** direct execution-module checking passed; targeted
+  execution/audit build passed 1,137 jobs; full `lake build` passed 1,139
+  jobs; and `git diff --check` passed. The Lean-source scan found no `sorry`,
+  `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted` remains only
+  in the explanatory dependency-boundary comment. The transfer-entry bridge
+  audit reports only `propext` and `Quot.sound`; both complete-run declarations
+  report `propext`, `Classical.choice`, and `Quot.sound`.
+- **Failed approaches/blockers:** an exploratory specialization to mathlib's
+  canonical `TM2Outputs` endpoint found a state-normalization mismatch. A
+  lifted second-machine `haltList` ends with
+  `rightState second.tm.initialState`, while
+  `haltList (compositionMachine first second)` requires the composed machine's
+  `leftState first.tm.initialState`; these are distinct control-state tags.
+  Therefore this increment claims exact three-phase execution to the checked
+  right-phase endpoint, not yet canonical composed-machine output. The
+  initial composed configuration and transfer stack layouts are otherwise
+  compatible. No failed Coq proof route was reused: the comparison development
+  still composes only at the `reducesPolyMO_intro` relation layer.
+- **Useful API discovery:** nested `Function.iterate_add_apply` rewrites put
+  the exact costs in execution order without arithmetic weakening. Naming the
+  post-transfer dependent stack family avoids discarding the first component's
+  stacks when passing the right-entry witness. A right-statement lift can
+  potentially normalize a reached `halt` with a `.load` followed by `.halt`
+  inside the same `TM2.stepAux` step, preserving the exact component count.
+- **Ending state:** the total dispatcher has one checked witness spanning all
+  three phases with the explicit exact sum. Generic `TM2Outputs` correctness
+  and the polynomial runtime bound remain pending.
+- **Best next experiment:** define and prove a right-component statement lift
+  that resets a reached halt to the composed machine's initial control state
+  without adding a counted step. After swapping it into the dispatcher and
+  updating the right-run endpoint theorem, specialize the complete run to
+  canonical `initList`/`haltList`; then isolate the encoded intermediate-output
+  length bound required for the polynomial runtime.
