@@ -824,3 +824,53 @@ avoid failed routes, and choose a materially different experiment when blocked.
   updating the right-run endpoint theorem, specialize the complete run to
   canonical `initList`/`haltList`; then isolate the encoded intermediate-output
   length bound required for the polynomial runtime.
+
+## 2026-08-16 — canonical list-output composition correctness
+
+- **Starting commit:** `d867de1e06290dc42d8c38f4134e8eb58a774efa`.
+- **Goal:** remove the right-state halt mismatch and specialize the checked
+  three-phase execution to mathlib's canonical `TM2Outputs` interface.
+- **Checked increment:** added `liftRightThenHaltStmt`,
+  `liftRightThenHaltCfg`, and `liftRightThenHalt_stepAux`. A reached
+  second-machine halt now loads the composed machine's initial state and halts
+  inside the same counted `TM2.stepAux` step. Updated the total dispatcher and
+  right-phase execution lift accordingly. Added canonical configuration bridge
+  lemmas and `compositionMachine_outputs`, which composes two list-level
+  `TM2Outputs` witnesses after applying `middleAlphabetEquiv` to the
+  intermediate list.
+- **Files:** `LeanNPHardness/MachineControlSimulation.lean`,
+  `LeanNPHardness/MachineCompositionProgram.lean`,
+  `LeanNPHardness/MachineCompositionExecution.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** direct execution-module checking passed; targeted
+  execution/audit build passed 1,137 jobs; full `lake build` passed 1,139
+  jobs; and `git diff --check` passed. The Lean-source scan found no `sorry`,
+  `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in
+  the explanatory dependency-boundary comment. `#print axioms` reports
+  `propext` and `Quot.sound` for `liftRightThenHalt_stepAux`, and additionally
+  `Classical.choice` for `rightPhaseCfg_haltList` and
+  `compositionMachine_outputs`.
+- **Failed approaches/blockers:** a direct downstream check initially read a
+  stale control-simulation `.olean`; rebuilding that dependency exposed the
+  new declarations. Initial canonical stack-equality probes left dependent
+  `dite` cast goals under plain simplification; explicit inequalities for the
+  nested sum indices closed them. No semantic blocker remains for canonical
+  list output. Generic function-level correctness and the polynomial runtime
+  bound are still pending.
+- **Useful API discovery:** `TM2.stepAux` evaluates a `.load` followed by
+  `.halt` within one counted step, so canonical state normalization adds no
+  runtime overhead. Conditioning `rightPhaseCfg.var` on the underlying label
+  preserves right-tagged running states and produces the composed initial state
+  only at halt. The Coq comparison still packages polynomial computation via
+  `reducesPolyMO_intro` and `polyTimeComputable`; it supplies no proof term for
+  this mathlib-specific machine composition.
+- **Ending state:** `compositionMachine` now has checked canonical list-level
+  composition semantics. The structural `compositionAux` still lacks a
+  function-level `TM2Computable` wrapper and a polynomial time witness.
+- **Best next experiment:** prove that mapping a canonical middle encoding
+  through `first.outputAlphabet.symm` and then `middleAlphabetEquiv` equals
+  mapping it through `second.inputAlphabet.symm`. Use that lemma with
+  `compositionMachine_outputs` and both components' `outputsFun` witnesses to
+  construct function-level computation correctness before isolating the
+  intermediate-output length bound needed for the polynomial runtime.

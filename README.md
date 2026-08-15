@@ -78,13 +78,15 @@ The initial checked layer contains:
   endpoint to the canonical transfer entry; and
 - exact repeated execution of the second component under the total dispatcher,
   preserving its step count, the first component's work stacks, and scratch
-  contents from the canonical transfer-produced right entry; and
+  contents from the canonical transfer-produced right entry, while resetting
+  a reached halt to the composed machine's canonical initial state inside the
+  same counted step; and
 - one exact three-phase execution theorem that composes the first run,
   `4 * intermediate.length + 4` transfer steps, and the second run into a
   single summed step count while retaining the checked transferred layout; and
-- a finite composed machine and external input/output alphabet bridge, kept
-  structurally separate from the still-pending computation and polynomial
-  runtime proofs.
+- a finite composed machine and external input/output alphabet bridge, plus a
+  canonical `TM2Outputs` constructor proving list-level output composition;
+  the polynomial runtime proof remains separate and pending.
 
 The generic polynomial-time composition theorem, P, NP, SAT, exact 3-SAT, and
 Cook--Levin remain pending. See [THEOREM_STATUS.md](THEOREM_STATUS.md) and

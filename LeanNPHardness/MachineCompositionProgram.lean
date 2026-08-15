@@ -8,7 +8,8 @@ open Turing
 /-- The total program for sequential machine composition on the final
 scratch-extended stack layout. First-machine labels run with reached halts
 redirected to transfer, transfer actions run the order-preserving copy loop,
-and second-machine labels run with ordinary halting behavior. -/
+and second-machine labels reset reached halts to the composed machine's
+canonical initial state. -/
 def compositionProgram {Γ₀ Γ₁ Γ₂ : Type}
     (first : TM2ComputableAux Γ₀ Γ₁)
     (second : TM2ComputableAux Γ₁ Γ₂) :
@@ -23,7 +24,7 @@ def compositionProgram {Γ₀ Γ₁ Γ₂ : Type}
         (transferActionLabel first second action)
   | Sum.inr (Sum.inr label) =>
       liftScratchStmt first second
-        (liftRightControlStmt first second (second.tm.m label))
+        (liftRightThenHaltStmt first second (second.tm.m label))
 
 /-- The finite two-stack-style machine carrying out the sequential program.
 Its external input stack is the first machine's input stack, and its external
@@ -80,7 +81,7 @@ theorem compositionProgram_right {Γ₀ Γ₁ Γ₂ : Type}
     (second : TM2ComputableAux Γ₁ Γ₂) (label : second.tm.Λ) :
     compositionProgram first second (rightLabel first second label) =
       liftScratchStmt first second
-        (liftRightControlStmt first second (second.tm.m label)) :=
+        (liftRightThenHaltStmt first second (second.tm.m label)) :=
   rfl
 
 /-- One first-machine step is simulated exactly by the total composition
@@ -109,8 +110,8 @@ theorem compositionProgram_left_step {Γ₀ Γ₁ Γ₂ : Type}
           rfl
 
 /-- One second-machine step is simulated exactly by the total composition
-program after adding scratch storage. Ordinary second-machine halting behavior
-is preserved, and the scratch contents are unchanged. -/
+program after adding scratch storage. A reached halt resets to the composed
+machine's canonical initial state, and the scratch contents are unchanged. -/
 theorem compositionProgram_right_step {Γ₀ Γ₁ Γ₂ : Type}
     (first : TM2ComputableAux Γ₀ Γ₁)
     (second : TM2ComputableAux Γ₁ Γ₂)
@@ -120,7 +121,7 @@ theorem compositionProgram_right_step {Γ₀ Γ₁ Γ₂ : Type}
         (liftScratchCfg first second scratch
           (liftRightControlCfg first second cfg)) =
       Option.map (liftScratchCfg first second scratch)
-        (Option.map (liftRightControlCfg first second)
+        (Option.map (liftRightThenHaltCfg first second)
           (TM2.step second.tm.m cfg)) := by
   cases cfg with
   | mk label state contents =>
@@ -130,7 +131,7 @@ theorem compositionProgram_right_step {Γ₀ Γ₁ Γ₂ : Type}
       | some label =>
           simp only [liftScratchCfg, liftRightControlCfg, TM2.step,
             Option.map_some, compositionProgram, rightLabel]
-          rw [liftScratch_stepAux, liftRightControl_stepAux]
+          rw [liftScratch_stepAux, liftRightThenHalt_stepAux]
           rfl
 
 /-- On a transfer-action configuration, one step of the total composition

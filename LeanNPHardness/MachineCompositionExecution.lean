@@ -252,51 +252,56 @@ def rightPhaseCfg {Γ₀ Γ₁ Γ₂ : Type}
     TM2.Cfg (TransferStackAlphabet first second)
       (ControlLabel first second) (ControlState first second) where
   l := cfg.l.map (rightLabel first second)
-  var := rightState first second cfg.var
+  var := cfg.l.elim
+    (leftState first second first.tm.initialState)
+    (fun _ => rightState first second cfg.var)
   stk := extendStacks first second
     (rightPhaseStacks first second leftContents cfg.stk) scratch
 
 /-- Lifting a second-machine statement into combined control preserves
 arbitrary first-machine stack contents. -/
-private theorem liftRightControl_stepAux_preserving_left {Γ₀ Γ₁ Γ₂ : Type}
+private theorem liftRightThenHalt_stepAux_preserving_left {Γ₀ Γ₁ Γ₂ : Type}
     (first : TM2ComputableAux Γ₀ Γ₁)
     (second : TM2ComputableAux Γ₁ Γ₂)
     (stmt : TM2.Stmt second.tm.Γ second.tm.Λ second.tm.σ)
     (state : second.tm.σ)
     (leftContents : ∀ k, List (first.tm.Γ k))
     (rightContents : ∀ k, List (second.tm.Γ k)) :
-    TM2.stepAux (liftRightControlStmt first second stmt)
+    TM2.stepAux (liftRightThenHaltStmt first second stmt)
         (rightState first second state)
         (rightPhaseStacks first second leftContents rightContents) =
       { l := (TM2.stepAux stmt state rightContents).l.map
           (rightLabel first second)
-        var := rightState first second (TM2.stepAux stmt state rightContents).var
+        var := (TM2.stepAux stmt state rightContents).l.elim
+          (leftState first second first.tm.initialState)
+          (fun _ => rightState first second
+            (TM2.stepAux stmt state rightContents).var)
         stk := rightPhaseStacks first second leftContents
           (TM2.stepAux stmt state rightContents).stk } := by
   induction stmt generalizing state rightContents with
   | push k write next ih =>
-      simp only [liftRightControlStmt, TM2.stepAux,
+      simp only [liftRightThenHaltStmt, TM2.stepAux,
         rightStateValue_rightState]
       rw [← rightPhaseStacks_update]
       exact ih _ _
   | peek k read next ih =>
-      simpa only [liftRightControlStmt, TM2.stepAux,
+      simpa only [liftRightThenHaltStmt, TM2.stepAux,
         rightStateValue_rightState, rightPhaseStacks_right] using
         ih (read state (rightContents k).head?) rightContents
   | pop k read next ih =>
-      simp only [liftRightControlStmt, TM2.stepAux,
+      simp only [liftRightThenHaltStmt, TM2.stepAux,
         rightStateValue_rightState, rightPhaseStacks_right]
       rw [← rightPhaseStacks_update]
       exact ih _ _
   | load update next ih =>
-      simpa only [liftRightControlStmt, TM2.stepAux,
+      simpa only [liftRightThenHaltStmt, TM2.stepAux,
         rightStateValue_rightState] using ih (update state) rightContents
   | branch test yes no ihYes ihNo =>
       by_cases h : test state
-      · simpa only [liftRightControlStmt, TM2.stepAux,
+      · simpa only [liftRightThenHaltStmt, TM2.stepAux,
           rightStateValue_rightState, h, cond_true] using
           ihYes state rightContents
-      · simpa only [liftRightControlStmt, TM2.stepAux,
+      · simpa only [liftRightThenHaltStmt, TM2.stepAux,
           rightStateValue_rightState, h, cond_false] using
           ihNo state rightContents
   | goto next =>
@@ -305,7 +310,8 @@ private theorem liftRightControl_stepAux_preserving_left {Γ₀ Γ₁ Γ₂ : Ty
       rfl
 
 /-- One second-machine step is simulated by the total composition program
-while arbitrary first-machine stacks and scratch contents remain unchanged. -/
+while arbitrary first-machine stacks and scratch contents remain unchanged.
+A reached halt uses the composed machine's canonical initial state. -/
 theorem compositionProgram_right_step_preserving_left {Γ₀ Γ₁ Γ₂ : Type}
     (first : TM2ComputableAux Γ₀ Γ₁)
     (second : TM2ComputableAux Γ₁ Γ₂)
@@ -321,10 +327,10 @@ theorem compositionProgram_right_step_preserving_left {Γ₀ Γ₁ Γ₂ : Type}
       | none =>
           rfl
       | some label =>
-          simp only [rightPhaseCfg, TM2.step, Option.map_some,
+          simp only [rightPhaseCfg, TM2.step, Option.map_some, Option.elim_some,
             compositionProgram, rightLabel]
           rw [liftScratch_stepAux,
-            liftRightControl_stepAux_preserving_left]
+            liftRightThenHalt_stepAux_preserving_left]
           rfl
 
 /-- Any exact finite second-machine run is reproduced by the total
@@ -571,5 +577,152 @@ def compositionProgram_complete_evalsTo {Γ₀ Γ₁ Γ₂ : Type}
     (4 * (firstFinal.stk first.tm.k₁).length + 4 + firstRun.steps)
   evals_in_steps := compositionProgram_complete_run first second firstCfg
     firstFinal firstLabel firstRun hlabel hhalt secondFinal secondRun
+
+/-- The composed machine's canonical input configuration is exactly the
+scratch-layout embedding of the first machine's canonical input
+configuration. -/
+theorem compositionMachine_initList {Γ₀ Γ₁ Γ₂ : Type} [Fintype Γ₁]
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (input : List (first.tm.Γ first.tm.k₀)) :
+    initList (compositionMachine first second) input =
+      liftScratchCfg first second []
+        (liftLeftControlCfg first second (initList first.tm input)) := by
+  unfold initList compositionMachine liftScratchCfg liftLeftControlCfg
+  congr 1
+  funext index
+  cases index with
+  | inl combinedIndex =>
+      cases combinedIndex with
+      | inl k =>
+          by_cases h : k = first.tm.k₀
+          · subst k
+            simp [extendStacks, leftStacks, transferLeftIndex]
+          · have hbase :
+                (Sum.inl k : StackIndex first.tm second.tm) ≠
+                  Sum.inl first.tm.k₀ := by
+              intro equality
+              exact h (Sum.inl.inj equality)
+            have hinput :
+                (Sum.inl (Sum.inl k) : TransferStackIndex first second) ≠
+                  Sum.inl (Sum.inl first.tm.k₀) := by
+              intro equality
+              exact hbase (Sum.inl.inj equality)
+            simp [extendStacks, leftStacks, transferLeftIndex, h, hinput]
+      | inr k =>
+          have hinput :
+              (Sum.inl (Sum.inr k) : TransferStackIndex first second) ≠
+                Sum.inl (Sum.inl first.tm.k₀) := by
+            simp
+          simp [extendStacks, leftStacks, transferLeftIndex, hinput]
+  | inr unitIndex =>
+      cases unitIndex
+      simp [extendStacks, transferLeftIndex]
+
+/-- After a canonical first-machine halt and the transfer update, the
+represented second-machine entry is its canonical input configuration with
+the intermediate alphabet conversion applied. -/
+theorem rightEntryMachineCfg_transferred_haltList {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (intermediate : List (first.tm.Γ first.tm.k₁)) :
+    rightEntryMachineCfg first second
+        (transferredContents first second
+          (haltList first.tm intermediate).stk) =
+      initList second.tm
+        (intermediate.map (middleAlphabetEquiv first second)) := by
+  unfold rightEntryMachineCfg initList
+  congr 1
+  funext k
+  by_cases h : k = second.tm.k₀
+  · subst k
+    simp [transferredContents, haltList]
+  · have hsum :
+        (Sum.inr k : StackIndex first.tm second.tm) ≠ Sum.inr second.tm.k₀ := by
+      intro equality
+      exact h (Sum.inr.inj equality)
+    simp [transferredContents, haltList, h, hsum]
+
+/-- A canonical second-machine halt, combined with the emptied canonical
+first-machine stacks and scratch stack, is exactly the composed machine's
+canonical halt configuration. -/
+theorem rightPhaseCfg_haltList {Γ₀ Γ₁ Γ₂ : Type} [Fintype Γ₁]
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (intermediate : List (first.tm.Γ first.tm.k₁))
+    (output : List (second.tm.Γ second.tm.k₁)) :
+    rightPhaseCfg first second
+        (fun k => transferredContents first second
+          (haltList first.tm intermediate).stk (Sum.inl k)) []
+        (haltList second.tm output) =
+      haltList (compositionMachine first second) output := by
+  unfold rightPhaseCfg haltList compositionMachine
+  congr 1
+  funext index
+  cases index with
+  | inl combinedIndex =>
+      cases combinedIndex with
+      | inl k =>
+          have hout :
+              (Sum.inl (Sum.inl k) : TransferStackIndex first second) ≠
+                Sum.inl (Sum.inr second.tm.k₁) := by
+            simp
+          by_cases h : k = first.tm.k₁
+          · subst k
+            simp [rightPhaseStacks, transferredContents, extendStacks,
+              transferRightIndex, hout]
+          · have hsum :
+                (Sum.inl k : StackIndex first.tm second.tm) ≠
+                  Sum.inl first.tm.k₁ := by
+                intro equality
+                exact h (Sum.inl.inj equality)
+            simp [rightPhaseStacks, transferredContents, extendStacks,
+              leftStacks, h, transferRightIndex, hsum, hout]
+      | inr k =>
+          by_cases h : k = second.tm.k₁
+          · subst k
+            simp [rightPhaseStacks, extendStacks, transferRightIndex]
+          · have hbase :
+                (Sum.inr k : StackIndex first.tm second.tm) ≠
+                  Sum.inr second.tm.k₁ := by
+              intro equality
+              exact h (Sum.inr.inj equality)
+            have houtput :
+                (Sum.inl (Sum.inr k) : TransferStackIndex first second) ≠
+                  Sum.inl (Sum.inr second.tm.k₁) := by
+              intro equality
+              exact hbase (Sum.inl.inj equality)
+            simp [rightPhaseStacks, extendStacks, h, transferRightIndex,
+              houtput]
+  | inr unitIndex =>
+      cases unitIndex
+      simp [extendStacks, transferRightIndex]
+
+/-- Canonical list-level output witnesses for two component machines compose
+through `compositionMachine`. The first output is converted through the shared
+middle alphabet before becoming the second input. -/
+def compositionMachine_outputs {Γ₀ Γ₁ Γ₂ : Type} [Fintype Γ₁]
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (input : List (first.tm.Γ first.tm.k₀))
+    (intermediate : List (first.tm.Γ first.tm.k₁))
+    (output : List (second.tm.Γ second.tm.k₁))
+    (firstRun : TM2Outputs first.tm input (some intermediate))
+    (secondRun : TM2Outputs second.tm
+      (intermediate.map (middleAlphabetEquiv first second)) (some output)) :
+    TM2Outputs (compositionMachine first second) input (some output) := by
+  let liftedSecondRun : EvalsTo (TM2.step second.tm.m)
+      (rightEntryMachineCfg first second
+        (transferredContents first second (haltList first.tm intermediate).stk))
+      (some (haltList second.tm output)) := by
+    rw [rightEntryMachineCfg_transferred_haltList]
+    exact secondRun
+  have complete := compositionProgram_complete_evalsTo first second
+    (initList first.tm input) (haltList first.tm intermediate) first.tm.main
+    firstRun rfl rfl (haltList second.tm output) liftedSecondRun
+  unfold TM2Outputs
+  rw [compositionMachine_initList]
+  simpa [FinTM2.step, compositionMachine,
+    rightPhaseCfg_haltList first second intermediate output] using complete
 
 end LeanNPHardness.MachineComposition

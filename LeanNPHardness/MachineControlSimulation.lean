@@ -488,4 +488,120 @@ theorem liftRightControl_step {Γ₀ Γ₁ Γ₂ : Type}
           rw [liftRightControl_stepAux]
           rfl
 
+/-- Lift a second-machine statement into combined control, resetting a reached
+`halt` to the first machine's injected initial state. This is the canonical
+internal state required by `haltList` for the composed machine. The reset is a
+`load` followed by `halt`, both evaluated inside the same counted `TM2.stepAux`
+step. -/
+def liftRightThenHaltStmt {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) :
+    TM2.Stmt second.tm.Γ second.tm.Λ second.tm.σ →
+      TM2.Stmt (StackAlphabet first.tm second.tm)
+        (ControlLabel first second) (ControlState first second)
+  | .push k write next =>
+      .push (Sum.inr k)
+        (fun state => write (rightStateValue first second state))
+        (liftRightThenHaltStmt first second next)
+  | .peek k read next =>
+      .peek (Sum.inr k)
+        (fun state symbol =>
+          rightState first second
+            (read (rightStateValue first second state) symbol))
+        (liftRightThenHaltStmt first second next)
+  | .pop k read next =>
+      .pop (Sum.inr k)
+        (fun state symbol =>
+          rightState first second
+            (read (rightStateValue first second state) symbol))
+        (liftRightThenHaltStmt first second next)
+  | .load update next =>
+      .load
+        (fun state =>
+          rightState first second
+            (update (rightStateValue first second state)))
+        (liftRightThenHaltStmt first second next)
+  | .branch test yes no =>
+      .branch
+        (fun state => test (rightStateValue first second state))
+        (liftRightThenHaltStmt first second yes)
+        (liftRightThenHaltStmt first second no)
+  | .goto next =>
+      .goto
+        (fun state =>
+          rightLabel first second (next (rightStateValue first second state)))
+  | .halt =>
+      .load (fun _ => leftState first second first.tm.initialState) .halt
+
+/-- Embed the result of a second-machine statement into combined control. A
+running result retains its injected right state; a halted result uses the
+composed machine's canonical initial state. -/
+def liftRightThenHaltCfg {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (cfg : TM2.Cfg second.tm.Γ second.tm.Λ second.tm.σ) :
+    TM2.Cfg (StackAlphabet first.tm second.tm)
+      (ControlLabel first second) (ControlState first second) where
+  l := cfg.l.map (rightLabel first second)
+  var := cfg.l.elim
+    (leftState first second first.tm.initialState)
+    (fun _ => rightState first second cfg.var)
+  stk := rightStacks first.tm second.tm cfg.stk
+
+@[simp]
+theorem liftRightThenHaltCfg_running {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂) (label : second.tm.Λ)
+    (state : second.tm.σ) (contents : ∀ k, List (second.tm.Γ k)) :
+    liftRightThenHaltCfg first second
+        (TM2.Cfg.mk (some label) state contents) =
+      liftRightControlCfg first second
+        (TM2.Cfg.mk (some label) state contents) :=
+  rfl
+
+/-- Resetting reached second-machine halts commutes with execution of one
+complete statement and does not add a counted machine step. -/
+theorem liftRightThenHalt_stepAux {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (stmt : TM2.Stmt second.tm.Γ second.tm.Λ second.tm.σ)
+    (state : second.tm.σ)
+    (contents : ∀ k, List (second.tm.Γ k)) :
+    TM2.stepAux (liftRightThenHaltStmt first second stmt)
+        (rightState first second state)
+        (rightStacks first.tm second.tm contents) =
+      liftRightThenHaltCfg first second
+        (TM2.stepAux stmt state contents) := by
+  induction stmt generalizing state contents with
+  | push k write next ih =>
+      simp only [liftRightThenHaltStmt, TM2.stepAux,
+        rightStateValue_rightState]
+      rw [← rightStacks_update]
+      exact ih _ _
+  | peek k read next ih =>
+      simpa only [liftRightThenHaltStmt, TM2.stepAux,
+        rightStateValue_rightState, rightStacks_inr] using
+        ih (read state (contents k).head?) contents
+  | pop k read next ih =>
+      simp only [liftRightThenHaltStmt, TM2.stepAux,
+        rightStateValue_rightState, rightStacks_inr]
+      rw [← rightStacks_update]
+      exact ih _ _
+  | load update next ih =>
+      simpa only [liftRightThenHaltStmt, TM2.stepAux,
+        rightStateValue_rightState] using
+        ih (update state) contents
+  | branch test yes no ihYes ihNo =>
+      by_cases h : test state
+      · simpa only [liftRightThenHaltStmt, TM2.stepAux,
+          rightStateValue_rightState, h, cond_true] using
+          ihYes state contents
+      · simpa only [liftRightThenHaltStmt, TM2.stepAux,
+          rightStateValue_rightState, h, cond_false] using
+          ihNo state contents
+  | goto next =>
+      rfl
+  | halt =>
+      rfl
+
 end LeanNPHardness.MachineComposition

@@ -22,6 +22,7 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.liftLeftThenTransfer_step
 #print axioms LeanNPHardness.MachineComposition.liftLeftThenTransfer_step_of_halt
 #print axioms LeanNPHardness.MachineComposition.liftRightControl_step
+#print axioms LeanNPHardness.MachineComposition.liftRightThenHalt_stepAux
 #print axioms LeanNPHardness.MachineComposition.transferLabel_ne_fillInputLabel
 #print axioms LeanNPHardness.MachineComposition.transferLeftStacks_update
 #print axioms LeanNPHardness.MachineComposition.transferRightStacks_update
@@ -52,5 +53,7 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.liftScratch_leftTransferEntryCfg_eq_transferStart
 #print axioms LeanNPHardness.MachineComposition.compositionProgram_complete_run
 #print axioms LeanNPHardness.MachineComposition.compositionProgram_complete_evalsTo
+#print axioms LeanNPHardness.MachineComposition.rightPhaseCfg_haltList
+#print axioms LeanNPHardness.MachineComposition.compositionMachine_outputs
 
 end LeanNPHardness.Audit
