@@ -86,7 +86,11 @@ The initial checked layer contains:
   single summed step count while retaining the checked transferred layout; and
 - a finite composed machine and external input/output alphabet bridge, plus a
   canonical `TM2Outputs` constructor proving list-level output composition;
-  the polynomial runtime proof remains separate and pending.
+  and
+- a checked `TM2Computable` constructor proving function-level composition
+  from the component `outputsFun` witnesses, with the middle encoding mapped
+  exactly between the two machine alphabets; the polynomial runtime proof
+  remains separate and pending.
 
 The generic polynomial-time composition theorem, P, NP, SAT, exact 3-SAT, and
 Cook--Levin remain pending. See [THEOREM_STATUS.md](THEOREM_STATUS.md) and

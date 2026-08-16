@@ -31,7 +31,8 @@
 | Second-component repeated execution under total dispatch | Complete | `MachineComposition.liftRightThenHalt_stepAux`, `compositionProgram_right_step_preserving_left`, `compositionProgram_right_run`, `compositionProgram_right_evalsTo`, and `compositionProgram_rightEntry_evalsTo` |
 | Three-phase exact composition execution | Complete | `MachineComposition.compositionProgram_complete_run` and `compositionProgram_complete_evalsTo` |
 | Canonical list-output composition correctness | Complete | `MachineComposition.compositionMachine_outputs` |
-| Generic polynomial-time machine composition | Pending | Prove that `compositionAux` computes function composition with a polynomial runtime; do not rely on mathlib's `proof_wanted` declaration as a completed proof. |
+| Function-level machine composition correctness | Complete | `MachineComposition.map_outputAlphabet_invFun_middleAlphabetEquiv` and `compositionComputable` |
+| Generic polynomial-time machine composition | Pending | Extend the checked `compositionComputable` construction with a polynomial runtime; do not rely on mathlib's `proof_wanted` declaration as a completed proof. |
 | Closed polynomial-time reduction composition | Pending | Derive `PolytimeManyOneReduction.comp` from the preceding machine theorem. |
 | P | Pending | Define deterministic polynomial-time decidability for encoded languages. |
 | NP | Pending | Define verifier-based NP with polynomial certificate bounds. |
@@ -111,6 +112,9 @@ The initial declarations build with the pinned Lean and mathlib revisions.
 - `MachineComposition.rightPhaseCfg_haltList` and
   `compositionMachine_outputs` depend on `propext`, `Classical.choice`, and
   `Quot.sound`.
+- `MachineComposition.map_outputAlphabet_invFun_middleAlphabetEquiv` depends
+  on `propext` and `Quot.sound`; `compositionComputable` additionally depends
+  on `Classical.choice`.
 - `MachineComposition.compositionAux` depends on `propext`,
   `Classical.choice`, and `Quot.sound`.
 

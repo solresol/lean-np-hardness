@@ -874,3 +874,51 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `compositionMachine_outputs` and both components' `outputsFun` witnesses to
   construct function-level computation correctness before isolating the
   intermediate-output length bound needed for the polynomial runtime.
+
+## 2026-08-17 — function-level machine composition correctness
+
+- **Starting commit:** `ed4478c09fa26c1146b648e0ab4d32c08bc1d41b`.
+- **Goal:** bridge the two canonical middle-alphabet representations and lift
+  the checked list-output composition theorem to mathlib's function-level
+  `TM2Computable` interface without making a runtime claim.
+- **Checked increment:** added
+  `map_outputAlphabet_invFun_middleAlphabetEquiv`, proving that the first
+  output-alphabet inverse followed by `middleAlphabetEquiv` is exactly the
+  second input-alphabet inverse on encoded lists. Added
+  `compositionComputable`, which applies `compositionMachine_outputs` to the
+  component `outputsFun` witnesses and bundles the result over
+  `compositionAux` as a checked computation of `g ∘ f`.
+- **Files:** `LeanNPHardness/MachineCompositionExecution.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** direct execution-module checking passed; targeted
+  execution/audit build passed 1,137 jobs; full `lake build` passed 1,139
+  jobs; and `git diff --check` passed. The Lean-source scan found no `sorry`,
+  `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in
+  the existing explanatory dependency-boundary comment. `#print axioms`
+  reports `propext` and `Quot.sound` for the list-map bridge, and additionally
+  `Classical.choice` for `compositionComputable`.
+- **Failed approaches/blockers:** the first integrated module check failed
+  because the scratch proof had opened `Computability` but the target module
+  had not, leaving `FinEncoding` unresolved; opening the namespace fixed the
+  elaboration. A first `simpa` for the second-machine witness flattened the
+  nested maps with `List.map_map` before the bridge could match; rewriting the
+  bridge explicitly and then applying `second.outputsFun` closed the goal.
+  Polynomial runtime composition remains blocked on a checked polynomial
+  bound for the encoded intermediate-output length.
+- **Useful API discovery:** the component `outputsFun` fields already provide
+  canonical `TM2Outputs` witnesses, so no new execution induction is needed
+  at the function-correctness layer. The Coq library's
+  `polyTimeComputable_composition` separately invokes
+  `resSizePoly_composition`; it confirms that a result-size polynomial is an
+  explicit composition obligation, not evidence that Lean's missing bound is
+  already proved. Mathlib exposes no ready `TM2OutputsInTime` output-length
+  lemma at the pinned revision.
+- **Ending state:** the structural composed machine now has checked canonical
+  list semantics and checked function-level `TM2Computable` semantics. Only
+  the explicit polynomial time and intermediate-size bounds remain before a
+  generic `TM2ComputableInPolyTime` composition constructor can be claimed.
+- **Best next experiment:** define a recursive per-statement push bound, prove
+  one `TM2.stepAux` increases any stack length by at most that bound, maximize
+  it over the finite first-machine labels, and lift the result across an
+  `EvalsToInTime` run to bound the intermediate encoded output length.

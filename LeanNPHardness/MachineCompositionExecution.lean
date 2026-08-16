@@ -2,7 +2,7 @@ import LeanNPHardness.MachineCompositionProgram
 
 namespace LeanNPHardness.MachineComposition
 
-open Turing
+open Computability Turing
 
 /-- Iterating an option-valued transition from `none` remains at `none`. -/
 private theorem iterate_bind_none {α : Type} (step : α → Option α) (steps : ℕ) :
@@ -724,5 +724,42 @@ def compositionMachine_outputs {Γ₀ Γ₁ Γ₂ : Type} [Fintype Γ₁]
   rw [compositionMachine_initList]
   simpa [FinTM2.step, compositionMachine,
     rightPhaseCfg_haltList first second intermediate output] using complete
+
+/-- Mapping a canonical middle-alphabet list into the first machine's output
+alphabet and then across the composition bridge is the same as mapping it
+directly into the second machine's input alphabet. -/
+theorem map_outputAlphabet_invFun_middleAlphabetEquiv
+    {Γ₀ Γ₁ Γ₂ : Type}
+    (first : TM2ComputableAux Γ₀ Γ₁)
+    (second : TM2ComputableAux Γ₁ Γ₂)
+    (symbols : List Γ₁) :
+    (symbols.map first.outputAlphabet.invFun).map
+        (middleAlphabetEquiv first second) =
+      symbols.map second.inputAlphabet.invFun := by
+  simp [middleAlphabetEquiv, List.map_map]
+
+/-- Checked function-level correctness of sequential machine composition.
+This bundles the structural composition machine with the two component
+`outputsFun` witnesses. Its polynomial runtime bound remains separate. -/
+def compositionComputable {α β γ : Type}
+    (sourceEncoding : FinEncoding α)
+    (middleEncoding : FinEncoding β)
+    (targetEncoding : FinEncoding γ)
+    (f : α → β) (g : β → γ)
+    (first : TM2Computable sourceEncoding middleEncoding f)
+    (second : TM2Computable middleEncoding targetEncoding g) :
+    TM2Computable sourceEncoding targetEncoding (g ∘ f) where
+  toTM2ComputableAux :=
+    compositionAux first.toTM2ComputableAux second.toTM2ComputableAux
+  outputsFun a := by
+    apply compositionMachine_outputs first.toTM2ComputableAux
+      second.toTM2ComputableAux
+      (List.map first.inputAlphabet.invFun (sourceEncoding.encode a))
+      (List.map first.outputAlphabet.invFun (middleEncoding.encode (f a)))
+      (List.map second.outputAlphabet.invFun
+        (targetEncoding.encode (g (f a))))
+      (first.outputsFun a)
+    rw [map_outputAlphabet_invFun_middleAlphabetEquiv]
+    exact second.outputsFun (f a)
 
 end LeanNPHardness.MachineComposition

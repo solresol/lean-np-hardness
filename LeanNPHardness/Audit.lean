@@ -55,5 +55,7 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.compositionProgram_complete_evalsTo
 #print axioms LeanNPHardness.MachineComposition.rightPhaseCfg_haltList
 #print axioms LeanNPHardness.MachineComposition.compositionMachine_outputs
+#print axioms LeanNPHardness.MachineComposition.map_outputAlphabet_invFun_middleAlphabetEquiv
+#print axioms LeanNPHardness.MachineComposition.compositionComputable
 
 end LeanNPHardness.Audit
