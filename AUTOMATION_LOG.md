@@ -922,3 +922,49 @@ avoid failed routes, and choose a materially different experiment when blocked.
   one `TM2.stepAux` increases any stack length by at most that bound, maximize
   it over the finite first-machine labels, and lift the result across an
   `EvalsToInTime` run to bound the intermediate encoded output length.
+
+## 2026-08-18 — polynomial-time encoded-output length bound
+
+- **Starting commit:** `6a40461ad2c84a907d3d3bfd9e0324d30813b1c4`.
+- **Goal:** prove the intermediate encoded-output length bound needed before
+  the exact three-phase composition runtime can be bounded by a polynomial.
+- **Checked increment:** added execution-path `stmtPushBound`, finite-program
+  `machinePushBound`, and one-step and exact-run stack-growth theorems through
+  `stepAux_stack_length_le` and `run_stack_length_le`. Lifted the result through
+  `EvalsTo` and `EvalsToInTime`, then proved
+  `outputsInTime_output_length_le` and the headline
+  `computableInPolyTime_output_length_le`. The latter bounds encoded result
+  length by encoded input length plus `time(input.length)` multiplied by the
+  finite machine's constant push bound.
+- **Files:** `LeanNPHardness/MachineRuntimeBounds.lean`,
+  `LeanNPHardness/Audit.lean`, `LeanNPHardness.lean`, `README.md`,
+  `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** direct module checking passed; targeted runtime/audit
+  build passed 1,139 jobs; full `lake build` passed 1,141 jobs; and
+  `git diff --check` passed. The source scan found no `sorry`, `admit`,
+  project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in the
+  existing explanatory comment. All four new audited theorems report only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+- **Failed approaches/blockers:** plain simplification did not reduce dependent
+  `Function.update` applications, and the guessed `Function.update_noteq` name
+  is absent in this toolchain; the checked proof uses `Function.update_self`
+  and `Function.update_of_ne`. Direct elimination of the projected equality
+  `tm.k₁ = tm.k₀` failed in the canonical-input length case; a small generic
+  `Eq.mpr` length lemma over unconstrained indices handles the dependent cast.
+  The remaining blocker is polynomial accounting, not output-size existence.
+- **Useful API discovery:** `Finset.univ.sup` and `Finset.le_sup` turn the
+  recursive statement bound into a finite machine constant. Mathlib's exact
+  `EvalsTo.steps` and `EvalsToInTime.steps_le_m` lift the one-step bound without
+  changing its cost model. The comparison Coq library proves
+  `polyTimeComputable_composition` through a separate `resSizePoly` result-size
+  bound; the new Lean theorem supplies the analogous TM2-level inequality but
+  does not import Coq evidence.
+- **Ending state:** polynomial-time TM2 computations now have a checked encoded
+  output-length bound. Generic polynomial-time machine composition and closed
+  reduction composition remain pending.
+- **Best next experiment:** define an explicit polynomial evaluating to
+  `n + first.time.eval n * machinePushBound first.tm`, prove the second
+  polynomial runtime is monotone at the intermediate-length bound, and combine
+  both component `outputsFun` bounds with the exact
+  `secondRun.steps + (4 * intermediate.length + 4 + firstRun.steps)` execution
+  count.

@@ -32,6 +32,7 @@
 | Three-phase exact composition execution | Complete | `MachineComposition.compositionProgram_complete_run` and `compositionProgram_complete_evalsTo` |
 | Canonical list-output composition correctness | Complete | `MachineComposition.compositionMachine_outputs` |
 | Function-level machine composition correctness | Complete | `MachineComposition.map_outputAlphabet_invFun_middleAlphabetEquiv` and `compositionComputable` |
+| Polynomial-time encoded-output length bound | Complete | `MachineRuntime.computableInPolyTime_output_length_le` bounds encoded output length by encoded input length plus the declared time bound times a finite machine push constant. |
 | Generic polynomial-time machine composition | Pending | Extend the checked `compositionComputable` construction with a polynomial runtime; do not rely on mathlib's `proof_wanted` declaration as a completed proof. |
 | Closed polynomial-time reduction composition | Pending | Derive `PolytimeManyOneReduction.comp` from the preceding machine theorem. |
 | P | Pending | Define deterministic polynomial-time decidability for encoded languages. |
@@ -115,6 +116,10 @@ The initial declarations build with the pinned Lean and mathlib revisions.
 - `MachineComposition.map_outputAlphabet_invFun_middleAlphabetEquiv` depends
   on `propext` and `Quot.sound`; `compositionComputable` additionally depends
   on `Classical.choice`.
+- `MachineRuntime.stepAux_stack_length_le`, `run_stack_length_le`,
+  `outputsInTime_output_length_le`, and
+  `computableInPolyTime_output_length_le` depend on `propext`,
+  `Classical.choice`, and `Quot.sound`.
 - `MachineComposition.compositionAux` depends on `propext`,
   `Classical.choice`, and `Quot.sound`.
 

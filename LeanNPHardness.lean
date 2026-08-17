@@ -4,6 +4,7 @@ import LeanNPHardness.MachineCompositionProgram
 import LeanNPHardness.MachineControl
 import LeanNPHardness.MachineControlSimulation
 import LeanNPHardness.MachineEmbedding
+import LeanNPHardness.MachineRuntimeBounds
 import LeanNPHardness.MachineTransfer
 import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.PolytimeReduction
