@@ -89,16 +89,17 @@ The initial checked layer contains:
   and
 - a checked `TM2Computable` constructor proving function-level composition
   from the component `outputsFun` witnesses, with the middle encoding mapped
-  exactly between the two machine alphabets; the polynomial runtime proof
-  remains separate and pending; and
+  exactly between the two machine alphabets; and
 - a checked finite-program push bound, lifted from individual `TM2.stepAux`
   calls through exact and time-bounded runs, proving that a polynomial-time
   machine's encoded output length is bounded by encoded input length plus its
-  declared time multiplied by a machine constant.
+  declared time multiplied by a machine constant; and
+- an explicit polynomial runtime for the concrete sequential machine, giving
+  generic `TM2ComputableInPolyTime` composition without using mathlib's
+  unfinished declaration, plus closed `PolytimeManyOneReduction.comp`.
 
-The generic polynomial-time composition theorem, P, NP, SAT, exact 3-SAT, and
-Cook--Levin remain pending. See [THEOREM_STATUS.md](THEOREM_STATUS.md) and
-[ROADMAP.md](ROADMAP.md).
+P, NP, SAT, exact 3-SAT, and Cook--Levin remain pending. See
+[THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).
 
 ## Toolchain
 

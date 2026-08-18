@@ -968,3 +968,47 @@ avoid failed routes, and choose a materially different experiment when blocked.
   both component `outputsFun` bounds with the exact
   `secondRun.steps + (4 * intermediate.length + 4 + firstRun.steps)` execution
   count.
+
+## 2026-08-19 — polynomial-time machine and reduction composition
+
+- **Starting commit:** `020763e0a494befbe2e032580945e31c57c6b6ef`.
+- **Goal:** close the generic polynomial runtime bound for the checked
+  sequential TM2 construction, then derive closed polynomial many-one
+  reduction composition without using mathlib's `proof_wanted` declaration.
+- **Checked increment:** added monotonicity of natural-coefficient polynomial
+  evaluation, the explicit first-output size polynomial, and a composition
+  polynomial evaluating to the second runtime at that size bound plus the
+  exact linear transfer cost and first runtime. Added
+  `compositionMachine_outputsInTime` and the headline
+  `compositionComputableInPolyTime`, then derived
+  `PolytimeManyOneReduction.comp`.
+- **Files:** `LeanNPHardness/MachineCompositionRuntime.lean`,
+  `LeanNPHardness/PolytimeComposition.lean`, `LeanNPHardness/Audit.lean`,
+  `LeanNPHardness.lean`, `README.md`, `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** direct runtime-module checking and targeted runtime,
+  reduction-composition, and audit builds passed; full `lake build` passed
+  1,142 jobs; and `git diff --check` passed. The Lean-source scan found no
+  `sorry`, `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted`
+  remains only in the explanatory dependency-boundary comment. All six new
+  audited declarations report only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- **Failed approaches/blockers:** the first output-size polynomial needed an
+  explicit `noncomputable` declaration because `Polynomial.X` has no compiler
+  implementation. An initially tactic-built lifted second run hid its exact
+  step count from reduction, so the checked version constructs `EvalsTo`
+  explicitly with `secondRun.steps`. Final arithmetic also required naming the
+  equality between mapped private-alphabet length and canonical encoding
+  length, and stating polynomial monotonicity with an explicit result type.
+  No composition blocker remains.
+- **Useful API discovery:** `Polynomial.induction_on'` proves evaluation
+  monotonicity over `Polynomial ℕ`; `Polynomial.eval_comp` turns the composed
+  runtime into the required nested evaluation. `EvalsToInTime.steps_le_m`
+  combines with the prior output-size theorem and the exact three-phase count.
+  The completed Coq development confirms the separation between result-size
+  and runtime composition but supplies no Lean evidence.
+- **Ending state:** Milestone 1's generic machine-composition runtime and
+  closed reduction composition are machine-checked, audited, and documented.
+- **Best next experiment:** begin Milestone 2 with a minimal encoded decision-
+  language API and a deterministic polynomial-time decidability definition,
+  keeping positive and negative decision outputs explicit at the encoding
+  boundary before proving transport along `PolytimeManyOneReduction.comp`.

@@ -33,8 +33,8 @@
 | Canonical list-output composition correctness | Complete | `MachineComposition.compositionMachine_outputs` |
 | Function-level machine composition correctness | Complete | `MachineComposition.map_outputAlphabet_invFun_middleAlphabetEquiv` and `compositionComputable` |
 | Polynomial-time encoded-output length bound | Complete | `MachineRuntime.computableInPolyTime_output_length_le` bounds encoded output length by encoded input length plus the declared time bound times a finite machine push constant. |
-| Generic polynomial-time machine composition | Pending | Extend the checked `compositionComputable` construction with a polynomial runtime; do not rely on mathlib's `proof_wanted` declaration as a completed proof. |
-| Closed polynomial-time reduction composition | Pending | Derive `PolytimeManyOneReduction.comp` from the preceding machine theorem. |
+| Generic polynomial-time machine composition | Complete | `MachineComposition.compositionComputableInPolyTime` uses the concrete sequential machine, the checked first-output size polynomial, and the exact three-phase runtime. |
+| Closed polynomial-time reduction composition | Complete | `PolytimeManyOneReduction.comp` derives its witness from `compositionComputableInPolyTime`. |
 | P | Pending | Define deterministic polynomial-time decidability for encoded languages. |
 | NP | Pending | Define verifier-based NP with polynomial certificate bounds. |
 | NP-hardness and NP-completeness | Pending | Define using the checked polynomial reduction relation and prove foundational transport lemmas. |
@@ -120,6 +120,13 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   `outputsInTime_output_length_le`, and
   `computableInPolyTime_output_length_le` depend on `propext`,
   `Classical.choice`, and `Quot.sound`.
+- `MachineRuntime.polynomial_eval_mono`,
+  `MachineComposition.outputSizePolynomial_eval`,
+  `compositionTimePolynomial_eval`, `compositionMachine_outputsInTime`, and
+  `compositionComputableInPolyTime` depend on `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- `PolytimeManyOneReduction.comp` depends on `propext`, `Classical.choice`,
+  and `Quot.sound`.
 - `MachineComposition.compositionAux` depends on `propext`,
   `Classical.choice`, and `Quot.sound`.
 

@@ -1,4 +1,5 @@
 import LeanNPHardness.MachineEmbedding
+import LeanNPHardness.MachineCompositionRuntime
 import LeanNPHardness.MachineRuntimeBounds
 import LeanNPHardness.MachineControl
 import LeanNPHardness.MachineControlSimulation
@@ -62,5 +63,11 @@ open Computability
 #print axioms LeanNPHardness.MachineRuntime.run_stack_length_le
 #print axioms LeanNPHardness.MachineRuntime.outputsInTime_output_length_le
 #print axioms LeanNPHardness.MachineRuntime.computableInPolyTime_output_length_le
+#print axioms LeanNPHardness.MachineRuntime.polynomial_eval_mono
+#print axioms LeanNPHardness.MachineComposition.outputSizePolynomial_eval
+#print axioms LeanNPHardness.MachineComposition.compositionTimePolynomial_eval
+#print axioms LeanNPHardness.MachineComposition.compositionMachine_outputsInTime
+#print axioms LeanNPHardness.MachineComposition.compositionComputableInPolyTime
+#print axioms LeanNPHardness.PolytimeManyOneReduction.comp
 
 end LeanNPHardness.Audit
