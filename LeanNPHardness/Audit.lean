@@ -7,6 +7,7 @@ import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram
 import LeanNPHardness.MachineTransfer
 import LeanNPHardness.PolytimeComposition
+import LeanNPHardness.ComplexityClasses
 
 namespace LeanNPHardness.Audit
 
@@ -69,5 +70,9 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.compositionMachine_outputsInTime
 #print axioms LeanNPHardness.MachineComposition.compositionComputableInPolyTime
 #print axioms LeanNPHardness.PolytimeManyOneReduction.comp
+#print axioms LeanNPHardness.EncodedLanguage.PolytimeReducesTo
+#print axioms LeanNPHardness.EncodedLanguage.InP
+#print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.ofAcceptsIff
+#print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.toInP
 
 end LeanNPHardness.Audit

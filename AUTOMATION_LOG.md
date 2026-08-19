@@ -1012,3 +1012,46 @@ avoid failed routes, and choose a materially different experiment when blocked.
   language API and a deterministic polynomial-time decidability definition,
   keeping positive and negative decision outputs explicit at the encoding
   boundary before proving transport along `PolytimeManyOneReduction.comp`.
+
+## 2026-08-20 — encoded languages and deterministic polynomial time
+
+- **Starting commit:** `527e16c1d0b5616a3e388c907a12added116806a`.
+- **Goal:** begin Milestone 2 with an encoded decision-language boundary and a
+  deterministic polynomial-time decidability definition whose accepting and
+  rejecting outputs are both explicit.
+- **Checked increment:** added `EncodedLanguage`, bundling a predicate with the
+  `FinEncoding` that fixes its input-size measure; added
+  `EncodedLanguage.PolytimeReducesTo`; and added `PolytimeDecider` with exact
+  `true`/`false` semantics and a `TM2ComputableInPolyTime` witness over
+  mathlib's canonical Boolean encoding. Added the constructive smart
+  constructor `PolytimeDecider.ofAcceptsIff`, the class predicate
+  `EncodedLanguage.InP`, and `PolytimeDecider.toInP`.
+- **Files:** `LeanNPHardness/ComplexityClasses.lean`,
+  `LeanNPHardness/Audit.lean`, `LeanNPHardness.lean`, `README.md`,
+  `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** direct checking of the new module passed; the targeted
+  audit build passed 1,141 jobs; full `lake build` passed 1,143 jobs; and
+  `git diff --check` passed. The Lean-source scan found no `sorry`, `admit`,
+  project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in the
+  existing explanatory comment. All four new audited declarations report only
+  `propext` and `Quot.sound`.
+- **Failed approaches/blockers:** the first status draft described the new
+  constructors as axiom-free, but `#print axioms` showed that their public
+  polynomial/TM types inherit `propext` and `Quot.sound`; the status was
+  corrected before commit. No Lean proof route failed. Verifier-based NP still
+  needs an explicit encoding for paired input/certificate values; pinned
+  mathlib exposes no ready `FinEncoding` product constructor.
+- **Useful API discovery:** pinned mathlib's
+  `Computability.finEncodingBoolBool` makes the decision output a one-symbol
+  canonical Boolean encoding. A single accepting-output equivalence
+  constructively determines the rejecting-output equivalence by case analysis
+  on total `Bool`. The comparison Coq library likewise defines `inP` using a
+  total decider and polynomial bound, but its `encodable` product machinery is
+  not Lean evidence and was not imported.
+- **Ending state:** encoded decision languages and deterministic P are now
+  machine-checked, audited, and documented. Verifier-based NP is the earliest
+  pending roadmap item.
+- **Best next experiment:** define and verify a delimiter-safe finite encoding
+  for paired input/certificate values, then use it to state a verifier-based NP
+  predicate with a polynomial certificate-length bound and a
+  `PolytimeDecider` verifier.

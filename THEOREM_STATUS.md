@@ -35,7 +35,8 @@
 | Polynomial-time encoded-output length bound | Complete | `MachineRuntime.computableInPolyTime_output_length_le` bounds encoded output length by encoded input length plus the declared time bound times a finite machine push constant. |
 | Generic polynomial-time machine composition | Complete | `MachineComposition.compositionComputableInPolyTime` uses the concrete sequential machine, the checked first-output size polynomial, and the exact three-phase runtime. |
 | Closed polynomial-time reduction composition | Complete | `PolytimeManyOneReduction.comp` derives its witness from `compositionComputableInPolyTime`. |
-| P | Pending | Define deterministic polynomial-time decidability for encoded languages. |
+| Encoded decision language | Complete | `EncodedLanguage` bundles a predicate with the `FinEncoding` that fixes its input-size measure; `EncodedLanguage.PolytimeReducesTo` specializes the checked reduction relation. |
+| P | Complete | `EncodedLanguage.PolytimeDecider` specifies both Boolean outcomes and a `TM2ComputableInPolyTime` witness; `EncodedLanguage.InP` is deterministic polynomial-time decidability. |
 | NP | Pending | Define verifier-based NP with polynomial certificate bounds. |
 | NP-hardness and NP-completeness | Pending | Define using the checked polynomial reduction relation and prove foundational transport lemmas. |
 | CNF-SAT language and encoding | Pending | Concrete syntax, semantics, and finite encoding. |
@@ -127,6 +128,10 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   `Classical.choice`, and `Quot.sound`.
 - `PolytimeManyOneReduction.comp` depends on `propext`, `Classical.choice`,
   and `Quot.sound`.
+- `EncodedLanguage.PolytimeReducesTo`, `EncodedLanguage.InP`,
+  `EncodedLanguage.PolytimeDecider.ofAcceptsIff`, and
+  `EncodedLanguage.PolytimeDecider.toInP` depend on `propext` and
+  `Quot.sound`.
 - `MachineComposition.compositionAux` depends on `propext`,
   `Classical.choice`, and `Quot.sound`.
 

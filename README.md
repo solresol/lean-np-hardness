@@ -96,9 +96,12 @@ The initial checked layer contains:
   declared time multiplied by a machine constant; and
 - an explicit polynomial runtime for the concrete sequential machine, giving
   generic `TM2ComputableInPolyTime` composition without using mathlib's
-  unfinished declaration, plus closed `PolytimeManyOneReduction.comp`.
+  unfinished declaration, plus closed `PolytimeManyOneReduction.comp`; and
+- encoded decision languages whose `FinEncoding` fixes the bit-level input
+  size, plus deterministic polynomial-time Boolean deciders with explicit
+  acceptance and rejection semantics.
 
-P, NP, SAT, exact 3-SAT, and Cook--Levin remain pending. See
+NP, SAT, exact 3-SAT, and Cook--Levin remain pending. See
 [THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).
 
 ## Toolchain
