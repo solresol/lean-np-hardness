@@ -6,6 +6,7 @@ import LeanNPHardness.MachineControlSimulation
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram
 import LeanNPHardness.MachineTransfer
+import LeanNPHardness.PairEncoding
 import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.ComplexityClasses
 
@@ -70,9 +71,14 @@ open Computability
 #print axioms LeanNPHardness.MachineComposition.compositionMachine_outputsInTime
 #print axioms LeanNPHardness.MachineComposition.compositionComputableInPolyTime
 #print axioms LeanNPHardness.PolytimeManyOneReduction.comp
+#print axioms LeanNPHardness.PairEncoding.finEncoding
+#print axioms LeanNPHardness.PairEncoding.finEncoding_encode_length
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeReducesTo
 #print axioms LeanNPHardness.EncodedLanguage.InP
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.ofAcceptsIff
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.toInP
+#print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.accepts_iff_exists_certificate
+#print axioms LeanNPHardness.EncodedLanguage.InNP
+#print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.toInNP
 
 end LeanNPHardness.Audit

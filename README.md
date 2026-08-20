@@ -99,9 +99,12 @@ The initial checked layer contains:
   unfinished declaration, plus closed `PolytimeManyOneReduction.comp`; and
 - encoded decision languages whose `FinEncoding` fixes the bit-level input
   size, plus deterministic polynomial-time Boolean deciders with explicit
-  acceptance and rejection semantics.
+  acceptance and rejection semantics; and
+- a tagged finite encoding of input/certificate pairs with exact additive
+  length, plus verifier-based NP with separate soundness, polynomially bounded
+  completeness, and a checked polynomial-time Boolean verifier.
 
-NP, SAT, exact 3-SAT, and Cook--Levin remain pending. See
+NP-hardness, NP-completeness, SAT, exact 3-SAT, and Cook--Levin remain pending. See
 [THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).
 
 ## Toolchain

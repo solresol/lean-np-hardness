@@ -1,3 +1,4 @@
+import LeanNPHardness.PairEncoding
 import LeanNPHardness.PolytimeComposition
 
 namespace LeanNPHardness
@@ -67,6 +68,56 @@ def InP {α : Type} (problem : EncodedLanguage α) : Prop :=
 theorem PolytimeDecider.toInP {α : Type} {problem : EncodedLanguage α}
     (decider : PolytimeDecider problem) : problem.InP :=
   ⟨decider⟩
+
+/-- A polynomial-time verifier with an explicit polynomial bound on encoded
+certificate length. Soundness applies to every accepting certificate, while
+completeness supplies a certificate satisfying the size bound. -/
+structure PolytimeVerifier {α certificate : Type}
+    (problem : EncodedLanguage α) where
+  certificateEncoding : FinEncoding certificate
+  verify : α × certificate → Bool
+  certificateBound : Polynomial ℕ
+  sound : ∀ input witness, verify (input, witness) = true → problem.accepts input
+  complete : ∀ input, problem.accepts input → ∃ witness,
+    (certificateEncoding.encode witness).length ≤
+        certificateBound.eval (problem.encoding.encode input).length ∧
+      verify (input, witness) = true
+  polytime :
+    Nonempty
+      (Turing.TM2ComputableInPolyTime
+        (PairEncoding.finEncoding problem.encoding certificateEncoding)
+        finEncodingBoolBool verify)
+
+/-- Verifier-based nondeterministic polynomial time for an encoded language.
+The existential certificate type carries its own finite encoding. -/
+def InNP {α : Type} (problem : EncodedLanguage α) : Prop :=
+  ∃ certificate : Type,
+    Nonempty (PolytimeVerifier (certificate := certificate) problem)
+
+namespace PolytimeVerifier
+
+/-- Membership is equivalent to the existence of an accepting certificate
+whose encoded length satisfies the verifier's explicit polynomial bound. -/
+theorem accepts_iff_exists_certificate {α certificate : Type}
+    {problem : EncodedLanguage α}
+    (verifier : PolytimeVerifier (certificate := certificate) problem)
+    (input : α) :
+    problem.accepts input ↔ ∃ witness,
+      (verifier.certificateEncoding.encode witness).length ≤
+          verifier.certificateBound.eval (problem.encoding.encode input).length ∧
+        verifier.verify (input, witness) = true := by
+  constructor
+  · exact verifier.complete input
+  · rintro ⟨witness, _, haccepts⟩
+    exact verifier.sound input witness haccepts
+
+/-- A checked verifier places its encoded language in `NP`. -/
+theorem toInNP {α certificate : Type} {problem : EncodedLanguage α}
+    (verifier : PolytimeVerifier (certificate := certificate) problem) :
+    problem.InNP :=
+  ⟨certificate, ⟨verifier⟩⟩
+
+end PolytimeVerifier
 
 end EncodedLanguage
 

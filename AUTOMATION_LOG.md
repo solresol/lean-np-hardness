@@ -1055,3 +1055,45 @@ avoid failed routes, and choose a materially different experiment when blocked.
   for paired input/certificate values, then use it to state a verifier-based NP
   predicate with a polynomial certificate-length bound and a
   `PolytimeDecider` verifier.
+
+## 2026-08-21 — tagged pair encoding and verifier-based NP
+
+- **Starting commit:** `b28f357bc55b7e822a6585e2cfbe44300872cc09`.
+- **Goal:** advance the earliest pending Milestone 2 item by giving
+  input/certificate pairs an explicit finite encoding and defining NP through a
+  checked polynomial-time verifier with an encoded certificate-size bound.
+- **Checked increment:** added `PairEncoding.finEncoding`, whose disjoint-sum
+  alphabet separates the two component encodings even when one is empty, and
+  proved exact additive length in `finEncoding_encode_length`. Added
+  `EncodedLanguage.PolytimeVerifier` with separate soundness, bounded
+  completeness, and `TM2ComputableInPolyTime` evidence over the pair encoding;
+  added `accepts_iff_exists_certificate`, `InNP`, and `toInNP`.
+- **Files:** `LeanNPHardness/PairEncoding.lean`,
+  `LeanNPHardness/ComplexityClasses.lean`, `LeanNPHardness/Audit.lean`,
+  `LeanNPHardness.lean`, `README.md`, `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** targeted pair-encoding, complexity-class, and audit
+  builds passed; full `lake build` passed 1,144 jobs; and `git diff --check`
+  passed. The source scan found no `sorry`, `admit`, project-defined `axiom`,
+  or `unsafe`; `proof_wanted` remains only in the explanatory dependency
+  comment. All new headline audits report only `propext`, `Classical.choice`,
+  and `Quot.sound`.
+- **Failed approaches/blockers:** the first decoder proof tried to simplify
+  the component projections through an append directly, but the recursive
+  projection definitions had no append lemmas. Adding checked left/right
+  distributivity lemmas made the encoding round trip reduce. An initial status
+  draft understated the inherited axioms; the audit output corrected it before
+  commit. No verifier-definition blocker remains.
+- **Useful API discovery:** a `Sum` of the component alphabets gives a finite,
+  delimiter-safe pair alphabet and avoids requiring decidable equality or a
+  delimiter search. The exact pair input length is the sum of the input and
+  certificate lengths. The Coq comparison likewise separates verifier
+  soundness from bounded completeness, but its fixed `term` certificates and
+  `encodable` product machinery supply no Lean evidence.
+- **Ending state:** verifier-based NP and the generic input/certificate
+  encoding are machine-checked, audited, and documented. Closure/transport
+  lemmas, NP-hardness, and NP-completeness remain pending.
+- **Best next experiment:** prove the first P-to-NP inclusion increment. Start
+  with a finite encoding of `Unit`, then isolate a checked TM2 lift that runs a
+  decider on the input side of an input/`Unit` pair while ignoring the empty
+  certificate, rather than assuming the original machine accepts the changed
+  tagged alphabet directly.
