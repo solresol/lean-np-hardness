@@ -58,6 +58,26 @@
 - Add further NP-hardness reductions without coupling them to thesis-specific
   mathematics.
 
+## Milestone 6: Palomar registration
+
+Long-term publication target: register one or more research-level results from
+this repository in [Palomar](https://palomar-registry.org/) once the relevant
+foundations and headline theorems are mature. Palomar records an individual
+result at an immutable public-repository commit rather than registering a
+repository as a whole.
+
+- Select a self-contained headline theorem with a concise informal account.
+- Expose the statement in a small, readable `Challenge.lean` module and the
+  proved declaration in a matching `Solution.lean` module.
+- Add the Comparator configuration, `formalization.yaml`, and a root licence,
+  with accurate provenance, automation, review, and limitation disclosures.
+- Pass the full build, unfinished-proof scan, axiom audit, and Palomar's
+  Comparator checks.
+- Commit and push the exact public snapshot before submission.
+
+This milestone records a future target; it does not claim that the repository
+has been submitted to or registered by Palomar.
+
 ## Non-goals for the initial foundation
 
 - Reproducing every theorem in the Coq Undecidability Library.
