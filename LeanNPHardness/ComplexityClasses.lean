@@ -5,6 +5,33 @@ namespace LeanNPHardness
 
 open Computability
 
+namespace MachineAdapters
+
+/-- Reuse a polynomial-time machine on the left component of a pair whose
+right component has the empty `Unit` encoding. The machine and time polynomial
+are unchanged; only the external input-alphabet equivalence is adjusted. -/
+noncomputable def ignoreUnitCertificate {α β : Type}
+    (sourceEncoding : FinEncoding α) (targetEncoding : FinEncoding β)
+    {f : α → β}
+    (computer :
+      Turing.TM2ComputableInPolyTime sourceEncoding targetEncoding f) :
+    Turing.TM2ComputableInPolyTime
+      (PairEncoding.finEncoding sourceEncoding UnitEncoding.finEncoding)
+      targetEncoding (fun pair => f pair.1) where
+  tm := computer.tm
+  inputAlphabet :=
+    computer.inputAlphabet.trans
+      (Equiv.sumEmpty sourceEncoding.Γ Empty).symm
+  outputAlphabet := computer.outputAlphabet
+  time := computer.time
+  outputsFun pair := by
+    rcases pair with ⟨input, witness⟩
+    rcases witness with ⟨⟩
+    simpa [PairEncoding.finEncoding, UnitEncoding.finEncoding] using
+      computer.outputsFun input
+
+end MachineAdapters
+
 /-- A decision language together with the finite encoding that fixes its input
 size measure. -/
 structure EncodedLanguage (α : Type) where
@@ -118,6 +145,33 @@ theorem toInNP {α certificate : Type} {problem : EncodedLanguage α}
   ⟨certificate, ⟨verifier⟩⟩
 
 end PolytimeVerifier
+
+namespace PolytimeDecider
+
+/-- Regard a deterministic polynomial-time decider as a verifier using the
+unique empty certificate. -/
+noncomputable def toUnitVerifier {α : Type}
+    {problem : EncodedLanguage α} (decider : PolytimeDecider problem) :
+    PolytimeVerifier (certificate := Unit) problem where
+  certificateEncoding := UnitEncoding.finEncoding
+  verify pair := decider.decide pair.1
+  certificateBound := 0
+  sound input _ haccepts := (decider.accepts_iff input).1 haccepts
+  complete input haccepts := by
+    refine ⟨(), ?_, (decider.accepts_iff input).2 haccepts⟩
+    simp [UnitEncoding.finEncoding]
+  polytime := decider.polytime.map fun computer =>
+    MachineAdapters.ignoreUnitCertificate problem.encoding
+      finEncodingBoolBool computer
+
+end PolytimeDecider
+
+/-- Every encoded language in deterministic polynomial time is in verifier-
+based nondeterministic polynomial time. -/
+theorem inP_toInNP {α : Type} {problem : EncodedLanguage α} :
+    problem.InP → problem.InNP := by
+  rintro ⟨decider⟩
+  exact decider.toUnitVerifier.toInNP
 
 end EncodedLanguage
 

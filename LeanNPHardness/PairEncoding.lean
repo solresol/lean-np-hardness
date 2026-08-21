@@ -4,6 +4,24 @@ namespace LeanNPHardness
 
 open Computability
 
+namespace UnitEncoding
+
+/-- The unique `Unit` value encoded over the empty alphabet. This makes the
+certificate contribute exactly zero symbols when paired with an input. -/
+def finEncoding : FinEncoding Unit where
+  Γ := Empty
+  encode _ := []
+  decode _ := some ()
+  decode_encode _ := rfl
+  ΓFin := inferInstance
+
+@[simp]
+theorem finEncoding_encode (value : Unit) :
+    finEncoding.encode value = [] :=
+  rfl
+
+end UnitEncoding
+
 namespace PairEncoding
 
 /-- Project the symbols belonging to the left component of a tagged alphabet. -/

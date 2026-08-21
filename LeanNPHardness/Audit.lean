@@ -73,6 +73,8 @@ open Computability
 #print axioms LeanNPHardness.PolytimeManyOneReduction.comp
 #print axioms LeanNPHardness.PairEncoding.finEncoding
 #print axioms LeanNPHardness.PairEncoding.finEncoding_encode_length
+#print axioms LeanNPHardness.UnitEncoding.finEncoding
+#print axioms LeanNPHardness.MachineAdapters.ignoreUnitCertificate
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeReducesTo
 #print axioms LeanNPHardness.EncodedLanguage.InP
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.ofAcceptsIff
@@ -80,5 +82,7 @@ open Computability
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.accepts_iff_exists_certificate
 #print axioms LeanNPHardness.EncodedLanguage.InNP
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.toInNP
+#print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.toUnitVerifier
+#print axioms LeanNPHardness.EncodedLanguage.inP_toInNP
 
 end LeanNPHardness.Audit

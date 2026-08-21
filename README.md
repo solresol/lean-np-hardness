@@ -102,7 +102,9 @@ The initial checked layer contains:
   acceptance and rejection semantics; and
 - a tagged finite encoding of input/certificate pairs with exact additive
   length, plus verifier-based NP with separate soundness, polynomially bounded
-  completeness, and a checked polynomial-time Boolean verifier.
+  completeness, and a checked polynomial-time Boolean verifier; and
+- a checked inclusion from P into NP using the empty encoding of the unique
+  `Unit` certificate, reusing the decider machine and its runtime unchanged.
 
 NP-hardness, NP-completeness, SAT, exact 3-SAT, and Cook--Levin remain pending. See
 [THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).

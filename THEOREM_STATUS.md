@@ -39,6 +39,7 @@
 | Encoded decision language | Complete | `EncodedLanguage` bundles a predicate with the `FinEncoding` that fixes its input-size measure; `EncodedLanguage.PolytimeReducesTo` specializes the checked reduction relation. |
 | P | Complete | `EncodedLanguage.PolytimeDecider` specifies both Boolean outcomes and a `TM2ComputableInPolyTime` witness; `EncodedLanguage.InP` is deterministic polynomial-time decidability. |
 | NP | Complete | `EncodedLanguage.PolytimeVerifier` separates soundness, bounded completeness, and the checked polynomial-time verifier; `EncodedLanguage.InNP` existentially quantifies the finitely encoded certificate type, with constructor `PolytimeVerifier.toInNP`. |
+| P is contained in NP | Complete | `EncodedLanguage.inP_toInNP` uses `PolytimeDecider.toUnitVerifier`, the zero-length `UnitEncoding.finEncoding`, and `MachineAdapters.ignoreUnitCertificate` to reuse the checked decider machine and runtime. |
 | NP-hardness and NP-completeness | Pending | Define using the checked polynomial reduction relation and prove foundational transport lemmas. |
 | CNF-SAT language and encoding | Pending | Concrete syntax, semantics, and finite encoding. |
 | Exact 3-SAT is in NP | Pending | Checked verifier and runtime bound. |
@@ -137,6 +138,10 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   `EncodedLanguage.PolytimeVerifier.accepts_iff_exists_certificate`, and
   `EncodedLanguage.InNP`, and `EncodedLanguage.PolytimeVerifier.toInNP` depend
   on `propext`, `Classical.choice`, and `Quot.sound`.
+- `UnitEncoding.finEncoding` depends on `propext` and `Quot.sound`;
+  `MachineAdapters.ignoreUnitCertificate`,
+  `EncodedLanguage.PolytimeDecider.toUnitVerifier`, and
+  `EncodedLanguage.inP_toInNP` additionally depend on `Classical.choice`.
 - `MachineComposition.compositionAux` depends on `propext`,
   `Classical.choice`, and `Quot.sound`.
 

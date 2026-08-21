@@ -1097,3 +1097,41 @@ avoid failed routes, and choose a materially different experiment when blocked.
   decider on the input side of an input/`Unit` pair while ignoring the empty
   certificate, rather than assuming the original machine accepts the changed
   tagged alphabet directly.
+
+## 2026-08-22 — deterministic P is contained in verifier-based NP
+
+- **Starting commit:** `7ede17421d2b7213417187e933dc9e8d8d4fdc96`.
+- **Goal:** advance the earliest Milestone 2 closure work with a checked
+  inclusion from deterministic polynomial time into verifier-based NP.
+- **Checked increment:** added `UnitEncoding.finEncoding` over `Empty`, so the
+  unique certificate has encoded length zero. Added
+  `MachineAdapters.ignoreUnitCertificate`, which adjusts only the external
+  input-alphabet equivalence and reuses a decider's machine, output bridge,
+  time polynomial, and execution proof unchanged. Added
+  `PolytimeDecider.toUnitVerifier` with constant-zero certificate bound and the
+  headline `EncodedLanguage.inP_toInNP`.
+- **Files:** `LeanNPHardness/PairEncoding.lean`,
+  `LeanNPHardness/ComplexityClasses.lean`, `LeanNPHardness/Audit.lean`,
+  `README.md`, `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** targeted pair-encoding and complexity-class builds
+  passed; the targeted audit build passed 1,142 jobs; full `lake build` passed
+  1,144 jobs; and `git diff --check` passed. The source scan found no `sorry`,
+  `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in
+  the existing explanatory dependency comment. The new audits report only
+  `propext`, `Classical.choice`, and `Quot.sound` (the unit encoding itself does
+  not use `Classical.choice`).
+- **Failed approaches/blockers:** a direct complexity-module check initially
+  imported the stale built `PairEncoding` object and could not see the new unit
+  encoding; rebuilding the dependency through Lake resolved it. No proof
+  blocker remains for P-to-NP inclusion.
+- **Useful API discovery:** `Equiv.sumEmpty` identifies the tagged alphabet
+  `sourceEncoding.Γ ⊕ Empty` with the original input alphabet. Its inverse
+  maps every encoded left symbol back to the decider's existing input bridge,
+  so neither a preprocessing machine nor an enlarged time bound is needed.
+  The Coq comparison uses the same `Unit`-certificate idea but supplies no Lean
+  evidence.
+- **Ending state:** P-to-NP inclusion is machine-checked and audited. General
+  reduction transport, NP-hardness, and NP-completeness remain pending.
+- **Best next experiment:** define encoded NP-hardness and NP-completeness, then
+  prove that NP-hardness transports forward along a checked polynomial
+  reduction using `PolytimeManyOneReduction.comp`.
