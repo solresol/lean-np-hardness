@@ -105,8 +105,12 @@ The initial checked layer contains:
   completeness, and a checked polynomial-time Boolean verifier; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged.
+- encoded NP-hardness and NP-completeness as propositions carrying nonempty
+  checked reduction witnesses, with hardness transported forward by the
+  closed polynomial-reduction composition theorem and a corresponding
+  NP-completeness constructor.
 
-NP-hardness, NP-completeness, SAT, exact 3-SAT, and Cook--Levin remain pending. See
+SAT, exact 3-SAT, and Cook--Levin remain pending. See
 [THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).
 
 ## Toolchain

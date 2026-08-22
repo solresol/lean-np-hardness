@@ -1135,3 +1135,44 @@ avoid failed routes, and choose a materially different experiment when blocked.
 - **Best next experiment:** define encoded NP-hardness and NP-completeness, then
   prove that NP-hardness transports forward along a checked polynomial
   reduction using `PolytimeManyOneReduction.comp`.
+
+## 2026-08-23 — encoded NP-hardness and forward transport
+
+- **Starting commit:** `850af1c4024e585c7fa1893c489028cf90219621`.
+- **Goal:** define encoded NP-hardness and NP-completeness, then prove the
+  foundational forward hardness-transport theorem using only the checked
+  polynomial reduction relation and its closed composition constructor.
+- **Checked increment:** added `EncodedLanguage.NPHard`, which quantifies over
+  all encoded NP languages and supplies a nonempty checked reduction witness;
+  added `EncodedLanguage.NPComplete`; and proved
+  `NPHard.of_reduction`, the `NPComplete` projections, and
+  `NPComplete.of_reduction`. The latter combines transported source hardness
+  with separately proved target membership in NP.
+- **Files:** `LeanNPHardness/ComplexityClasses.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** the targeted complexity-class build passed 1,141
+  jobs; the targeted audit build passed 1,142 jobs; full `lake build` passed
+  1,144 jobs; and `git diff --check` passed. The Lean-source scan found no
+  `sorry`, `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted`
+  remains only in the existing explanatory dependency comment. All new audits
+  report only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Failed approaches/blockers:** no Lean proof route failed. A direct
+  universal function returning `PolytimeReducesTo` would live in `Type`, not
+  `Prop`; wrapping each checked witness in `Nonempty` keeps NP-hardness a
+  proposition without choosing a reduction globally. No hardness-transport
+  blocker remains.
+- **Useful API discovery:** the Saarland Coq library defines `NPhard` by
+  universal polynomial reduction from NP and proves `red_NPhard` by reduction
+  transitivity. The Lean analogue uses `PolytimeManyOneReduction.comp`; the
+  Coq terms are only a decomposition guide and supply no Lean evidence.
+- **Ending state:** encoded NP-hardness and NP-completeness are now
+  machine-checked, audited, and documented, including forward hardness
+  transport and the standard reduction-plus-membership completeness
+  constructor. Deterministic and nondeterministic membership transport remain
+  pending.
+- **Best next experiment:** define a checked pullback constructor for
+  `PolytimeDecider` along `PolytimeReducesTo`, compose the reduction map with
+  the target Boolean decider using the existing polynomial-time machine
+  composition theorem, and derive that reductions preserve membership in P
+  backward.

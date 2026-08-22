@@ -40,7 +40,7 @@
 | P | Complete | `EncodedLanguage.PolytimeDecider` specifies both Boolean outcomes and a `TM2ComputableInPolyTime` witness; `EncodedLanguage.InP` is deterministic polynomial-time decidability. |
 | NP | Complete | `EncodedLanguage.PolytimeVerifier` separates soundness, bounded completeness, and the checked polynomial-time verifier; `EncodedLanguage.InNP` existentially quantifies the finitely encoded certificate type, with constructor `PolytimeVerifier.toInNP`. |
 | P is contained in NP | Complete | `EncodedLanguage.inP_toInNP` uses `PolytimeDecider.toUnitVerifier`, the zero-length `UnitEncoding.finEncoding`, and `MachineAdapters.ignoreUnitCertificate` to reuse the checked decider machine and runtime. |
-| NP-hardness and NP-completeness | Pending | Define using the checked polynomial reduction relation and prove foundational transport lemmas. |
+| NP-hardness and NP-completeness | Complete | `EncodedLanguage.NPHard` universally supplies nonempty checked reductions from encoded NP languages; `EncodedLanguage.NPComplete` pairs hardness with NP membership. `NPHard.of_reduction` transports hardness forward by `PolytimeManyOneReduction.comp`, and `NPComplete.of_reduction` combines that transport with separate target membership. |
 | CNF-SAT language and encoding | Pending | Concrete syntax, semantics, and finite encoding. |
 | Exact 3-SAT is in NP | Pending | Checked verifier and runtime bound. |
 | Cook--Levin | Pending | Polynomial reduction from every NP language to SAT. |
@@ -142,6 +142,10 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   `MachineAdapters.ignoreUnitCertificate`,
   `EncodedLanguage.PolytimeDecider.toUnitVerifier`, and
   `EncodedLanguage.inP_toInNP` additionally depend on `Classical.choice`.
+- `EncodedLanguage.NPHard`, `EncodedLanguage.NPComplete`,
+  `EncodedLanguage.NPHard.of_reduction`, and the `EncodedLanguage.NPComplete`
+  projection and construction theorems depend on `propext`,
+  `Classical.choice`, and `Quot.sound`.
 - `MachineComposition.compositionAux` depends on `propext`,
   `Classical.choice`, and `Quot.sound`.
 

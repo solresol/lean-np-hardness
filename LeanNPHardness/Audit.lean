@@ -84,5 +84,11 @@ open Computability
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.toInNP
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.toUnitVerifier
 #print axioms LeanNPHardness.EncodedLanguage.inP_toInNP
+#print axioms LeanNPHardness.EncodedLanguage.NPHard
+#print axioms LeanNPHardness.EncodedLanguage.NPComplete
+#print axioms LeanNPHardness.EncodedLanguage.NPHard.of_reduction
+#print axioms LeanNPHardness.EncodedLanguage.NPComplete.nphard
+#print axioms LeanNPHardness.EncodedLanguage.NPComplete.inNP
+#print axioms LeanNPHardness.EncodedLanguage.NPComplete.of_reduction
 
 end LeanNPHardness.Audit

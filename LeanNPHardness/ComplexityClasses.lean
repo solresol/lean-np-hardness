@@ -121,6 +121,54 @@ def InNP {α : Type} (problem : EncodedLanguage α) : Prop :=
   ∃ certificate : Type,
     Nonempty (PolytimeVerifier (certificate := certificate) problem)
 
+/-- An encoded language is NP-hard when every encoded language in NP has a
+checked polynomial-time many-one reduction to it. `Nonempty` keeps hardness a
+proposition while retaining the reduction witness supplied by each use. -/
+def NPHard {α : Type} (problem : EncodedLanguage α) : Prop :=
+  ∀ {β : Type} (source : EncodedLanguage β),
+    source.InNP → Nonempty (source.PolytimeReducesTo problem)
+
+/-- An encoded language is NP-complete when it is both NP-hard and in NP. -/
+def NPComplete {α : Type} (problem : EncodedLanguage α) : Prop :=
+  problem.NPHard ∧ problem.InNP
+
+namespace NPHard
+
+/-- NP-hardness transports forward along a checked polynomial-time many-one
+reduction. -/
+theorem of_reduction {α β : Type}
+    {source : EncodedLanguage α} {target : EncodedLanguage β}
+    (reduction : source.PolytimeReducesTo target)
+    (sourceHard : source.NPHard) : target.NPHard := by
+  intro γ problem problemInNP
+  rcases sourceHard problem problemInNP with ⟨toSource⟩
+  exact ⟨toSource.comp reduction⟩
+
+end NPHard
+
+namespace NPComplete
+
+/-- The hardness component of NP-completeness. -/
+theorem nphard {α : Type} {problem : EncodedLanguage α}
+    (complete : problem.NPComplete) : problem.NPHard :=
+  complete.1
+
+/-- The membership component of NP-completeness. -/
+theorem inNP {α : Type} {problem : EncodedLanguage α}
+    (complete : problem.NPComplete) : problem.InNP :=
+  complete.2
+
+/-- Build NP-completeness by transporting hardness along a checked reduction
+and proving target membership in NP separately. -/
+theorem of_reduction {α β : Type}
+    {source : EncodedLanguage α} {target : EncodedLanguage β}
+    (sourceHard : source.NPHard)
+    (reduction : source.PolytimeReducesTo target)
+    (targetInNP : target.InNP) : target.NPComplete :=
+  ⟨sourceHard.of_reduction reduction, targetInNP⟩
+
+end NPComplete
+
 namespace PolytimeVerifier
 
 /-- Membership is equivalent to the existence of an accepting certificate
