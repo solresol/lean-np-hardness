@@ -79,6 +79,8 @@ open Computability
 #print axioms LeanNPHardness.EncodedLanguage.InP
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.ofAcceptsIff
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.toInP
+#print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.pullback
+#print axioms LeanNPHardness.EncodedLanguage.InP.of_reduction
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.accepts_iff_exists_certificate
 #print axioms LeanNPHardness.EncodedLanguage.InNP
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.toInNP

@@ -83,6 +83,28 @@ def ofAcceptsIff {α : Type} {problem : EncodedLanguage α}
           exact (hrejects ((accepts_iff input).1 hdecision)).elim
   polytime := polytime
 
+/-- Pull a polynomial-time decider back along a checked polynomial-time
+many-one reduction. The resulting machine first computes the reduction map and
+then runs the target decider. -/
+noncomputable def pullback {α β : Type}
+    {source : EncodedLanguage α} {target : EncodedLanguage β}
+    (targetDecider : PolytimeDecider target)
+    (reduction : source.PolytimeReducesTo target) :
+    PolytimeDecider source where
+  decide input := targetDecider.decide (reduction.map input)
+  accepts_iff input :=
+    (targetDecider.accepts_iff (reduction.map input)).trans
+      (reduction.correct input).symm
+  rejects_iff input :=
+    (targetDecider.rejects_iff (reduction.map input)).trans
+      (not_congr (reduction.correct input)).symm
+  polytime := by
+    rcases reduction.polytime with ⟨reductionComputer⟩
+    rcases targetDecider.polytime with ⟨deciderComputer⟩
+    exact ⟨MachineComposition.compositionComputableInPolyTime
+      source.encoding target.encoding finEncodingBoolBool reduction.map
+      targetDecider.decide reductionComputer deciderComputer⟩
+
 end PolytimeDecider
 
 /-- Deterministic polynomial-time decidability for an encoded language. The
@@ -95,6 +117,19 @@ def InP {α : Type} (problem : EncodedLanguage α) : Prop :=
 theorem PolytimeDecider.toInP {α : Type} {problem : EncodedLanguage α}
     (decider : PolytimeDecider problem) : problem.InP :=
   ⟨decider⟩
+
+namespace InP
+
+/-- Membership in deterministic polynomial time transports backward along a
+checked polynomial-time many-one reduction. -/
+theorem of_reduction {α β : Type}
+    {source : EncodedLanguage α} {target : EncodedLanguage β}
+    (reduction : source.PolytimeReducesTo target)
+    (targetInP : target.InP) : source.InP := by
+  rcases targetInP with ⟨targetDecider⟩
+  exact targetDecider.pullback reduction |>.toInP
+
+end InP
 
 /-- A polynomial-time verifier with an explicit polynomial bound on encoded
 certificate length. Soundness applies to every accepting certificate, while

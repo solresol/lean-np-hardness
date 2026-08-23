@@ -40,6 +40,7 @@
 | P | Complete | `EncodedLanguage.PolytimeDecider` specifies both Boolean outcomes and a `TM2ComputableInPolyTime` witness; `EncodedLanguage.InP` is deterministic polynomial-time decidability. |
 | NP | Complete | `EncodedLanguage.PolytimeVerifier` separates soundness, bounded completeness, and the checked polynomial-time verifier; `EncodedLanguage.InNP` existentially quantifies the finitely encoded certificate type, with constructor `PolytimeVerifier.toInNP`. |
 | P is contained in NP | Complete | `EncodedLanguage.inP_toInNP` uses `PolytimeDecider.toUnitVerifier`, the zero-length `UnitEncoding.finEncoding`, and `MachineAdapters.ignoreUnitCertificate` to reuse the checked decider machine and runtime. |
+| P transport along reductions | Complete | `PolytimeDecider.pullback` composes a checked reduction map with the target Boolean decider, preserving both Boolean semantics; `EncodedLanguage.InP.of_reduction` transports deterministic polynomial-time membership backward. |
 | NP-hardness and NP-completeness | Complete | `EncodedLanguage.NPHard` universally supplies nonempty checked reductions from encoded NP languages; `EncodedLanguage.NPComplete` pairs hardness with NP membership. `NPHard.of_reduction` transports hardness forward by `PolytimeManyOneReduction.comp`, and `NPComplete.of_reduction` combines that transport with separate target membership. |
 | CNF-SAT language and encoding | Pending | Concrete syntax, semantics, and finite encoding. |
 | Exact 3-SAT is in NP | Pending | Checked verifier and runtime bound. |
@@ -134,6 +135,9 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   `EncodedLanguage.PolytimeDecider.ofAcceptsIff`, and
   `EncodedLanguage.PolytimeDecider.toInP` depend on `propext` and
   `Quot.sound`.
+- `EncodedLanguage.PolytimeDecider.pullback` and
+  `EncodedLanguage.InP.of_reduction` depend on `propext`,
+  `Classical.choice`, and `Quot.sound`.
 - `PairEncoding.finEncoding`, `finEncoding_encode_length`,
   `EncodedLanguage.PolytimeVerifier.accepts_iff_exists_certificate`, and
   `EncodedLanguage.InNP`, and `EncodedLanguage.PolytimeVerifier.toInNP` depend

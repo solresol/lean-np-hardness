@@ -1176,3 +1176,42 @@ avoid failed routes, and choose a materially different experiment when blocked.
   the target Boolean decider using the existing polynomial-time machine
   composition theorem, and derive that reductions preserve membership in P
   backward.
+
+## 2026-08-24 — deterministic P transport along reductions
+
+- **Starting commit:** `e416760763f22b4dba5ef2f6c92b55cd47d7447a`.
+- **Goal:** prove that deterministic polynomial-time membership transports
+  backward along a checked polynomial-time many-one reduction.
+- **Checked increment:** added `PolytimeDecider.pullback`, which decides a
+  source input by running the reduction map and then the target Boolean
+  decider, with explicit proofs for both Boolean outcomes. Added the headline
+  `EncodedLanguage.InP.of_reduction`, which packages this construction as
+  backward closure of P under checked reductions.
+- **Files:** `LeanNPHardness/ComplexityClasses.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** the targeted complexity-class and audit build passed
+  1,142 jobs; full `lake build` passed 1,144 jobs; and `git diff --check`
+  passed. The Lean-source scan found no `sorry`, `admit`, project-defined
+  `axiom`, or `unsafe`; `proof_wanted` remains only in the existing explanatory
+  dependency comment. The two new axiom audits report only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- **Failed approaches/blockers:** no Lean proof route failed. The remaining NP
+  transport theorem cannot reuse this unary composition directly: its verifier
+  consumes an input/certificate pair, so it first needs a checked
+  polynomial-time construction for `(input, certificate) ↦
+  (reduction.map input, certificate)` under the tagged pair encodings.
+- **Useful API discovery:** the existing concrete
+  `compositionComputableInPolyTime` theorem directly composes the reduction
+  witness with the Boolean decider witness, and `not_congr` transports the
+  explicit rejection equivalence. The comparison Coq library's `red_inNP`
+  uses the verifier relation `R (f x) certificate`, composes its certificate
+  bound with a polynomial output-size bound for `f`, and separately verifies
+  the paired computation; this is a decomposition guide, not Lean evidence.
+- **Ending state:** backward P transport is machine-checked, audited, and
+  documented. Backward NP transport is the remaining Milestone 2 closure item.
+- **Best next experiment:** isolate a checked pair-left machine adapter for
+  `(input, certificate) ↦ (reduction.map input, certificate)` over
+  `PairEncoding.finEncoding`, preserving the certificate symbols and proving
+  an explicit polynomial runtime. Then use the reduction computer's checked
+  output-size polynomial to compose the target verifier's certificate bound.
