@@ -1215,3 +1215,48 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `PairEncoding.finEncoding`, preserving the certificate symbols and proving
   an explicit polynomial runtime. Then use the reduction computer's checked
   output-size polynomial to compose the target verifier's certificate bound.
+
+## 2026-08-25 — certificate-bound half of NP transport
+
+- **Starting commit:** `744c3b4d001012be016c98f0691468c37ce20b7c`.
+- **Goal:** advance backward NP transport by closing the certificate-size
+  obligation independently of the still-missing paired verifier-machine
+  construction.
+- **Checked increment:** added
+  `PolytimeVerifier.pullbackCertificateBound`, which composes a target
+  verifier's certificate polynomial with the reduction machine's checked
+  encoded-output-size polynomial; its exact evaluation theorem; and
+  `PolytimeVerifier.pullback_complete`, which transports bounded completeness
+  through reduction correctness and the checked machine output-length bound.
+- **Files:** `LeanNPHardness/ComplexityClasses.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** targeted complexity-class build passed 1,141 jobs;
+  targeted audit build passed 1,142 jobs; full `lake build` passed 1,144 jobs;
+  and `git diff --check` passed. The source scan found no `sorry`, `admit`,
+  project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in the
+  existing explanatory comment. All three new audits report only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- **Failed approaches/blockers:** no Lean proof route failed. Full NP
+  transport remains blocked on an executable polynomial-time adapter for
+  `(input, certificate) ↦ (reduction.map input, certificate)`. Unlike the
+  existing `Unit` adapter, an arbitrary certificate alphabet cannot be erased
+  through an external alphabet equivalence: the tagged certificate suffix
+  must be split from the input, preserved while the reduction machine runs,
+  and reassembled after its output.
+- **Useful API discovery:**
+  `MachineRuntime.computableInPolyTime_output_length_le` supplies exactly the
+  intermediate-size inequality, and
+  `MachineRuntime.polynomial_eval_mono` lifts it through the target certificate
+  polynomial. The Saarland Coq library's `red_inNP` uses the same separation:
+  it composes the certificate bound with a result-size polynomial independently
+  of its paired verifier computation; those Coq terms were used only as a
+  decomposition guide.
+- **Ending state:** the semantic bounded-completeness and certificate-size
+  half of backward NP transport is machine-checked, audited, and documented.
+  `EncodedLanguage.InNP.of_reduction` is not claimed because the paired
+  polynomial-time verifier machine is still absent.
+- **Best next experiment:** define the first executable phase of the pair-left
+  adapter: split the tagged pair input into ordered input and certificate stack
+  families using explicit scratch storage, and prove exact whole-list
+  execution with a linear step count before lifting the reduction machine.

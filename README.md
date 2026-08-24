@@ -107,6 +107,10 @@ The initial checked layer contains:
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,
   by sequentially composing the reduction machine with the target decider; and
+- the certificate-size half of backward NP transport, composing a target
+  verifier's certificate polynomial with the reduction machine's checked
+  encoded-output-size polynomial and proving transported bounded completeness;
+  and
 - encoded NP-hardness and NP-completeness as propositions carrying nonempty
   checked reduction witnesses, with hardness transported forward by the
   closed polynomial-reduction composition theorem and a corresponding

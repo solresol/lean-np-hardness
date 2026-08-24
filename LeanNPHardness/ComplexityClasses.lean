@@ -206,6 +206,66 @@ end NPComplete
 
 namespace PolytimeVerifier
 
+/-- The certificate bound obtained by pulling a verifier back along a checked
+reduction. The target verifier's bound is evaluated at the reduction
+computer's checked polynomial upper bound on encoded output length. -/
+noncomputable def pullbackCertificateBound {α β certificate : Type}
+    {source : EncodedLanguage α} {target : EncodedLanguage β}
+    (targetVerifier : PolytimeVerifier (certificate := certificate) target)
+    (reduction : source.PolytimeReducesTo target)
+    (reductionComputer :
+      Turing.TM2ComputableInPolyTime source.encoding target.encoding
+        reduction.map) :
+    Polynomial ℕ :=
+  targetVerifier.certificateBound.comp
+    (MachineComposition.outputSizePolynomial source.encoding target.encoding
+      reduction.map reductionComputer)
+
+@[simp]
+theorem pullbackCertificateBound_eval {α β certificate : Type}
+    {source : EncodedLanguage α} {target : EncodedLanguage β}
+    (targetVerifier : PolytimeVerifier (certificate := certificate) target)
+    (reduction : source.PolytimeReducesTo target)
+    (reductionComputer :
+      Turing.TM2ComputableInPolyTime source.encoding target.encoding
+        reduction.map)
+    (n : ℕ) :
+    (pullbackCertificateBound targetVerifier reduction reductionComputer).eval n =
+      targetVerifier.certificateBound.eval
+        (n + reductionComputer.time.eval n *
+          MachineRuntime.machinePushBound reductionComputer.tm) := by
+  simp [pullbackCertificateBound, Polynomial.eval_comp]
+
+/-- Completeness certificates for the target verifier satisfy the composed
+bound after pulling the verifier relation back along a checked reduction. This
+is the certificate-size half of backward NP transport; the polynomial-time
+machine for the paired map `(input, certificate) ↦
+(reduction.map input, certificate)` remains a separate obligation. -/
+theorem pullback_complete {α β certificate : Type}
+    {source : EncodedLanguage α} {target : EncodedLanguage β}
+    (targetVerifier : PolytimeVerifier (certificate := certificate) target)
+    (reduction : source.PolytimeReducesTo target)
+    (reductionComputer :
+      Turing.TM2ComputableInPolyTime source.encoding target.encoding
+        reduction.map)
+    (input : α) (haccepts : source.accepts input) :
+    ∃ witness,
+      (targetVerifier.certificateEncoding.encode witness).length ≤
+          (pullbackCertificateBound targetVerifier reduction
+            reductionComputer).eval
+            (source.encoding.encode input).length ∧
+        targetVerifier.verify (reduction.map input, witness) = true := by
+  rcases targetVerifier.complete (reduction.map input)
+      ((reduction.correct input).1 haccepts) with
+    ⟨witness, hwitness, hverifies⟩
+  refine ⟨witness, ?_, hverifies⟩
+  exact hwitness.trans (by
+    rw [pullbackCertificateBound_eval]
+    exact MachineRuntime.polynomial_eval_mono
+      targetVerifier.certificateBound
+      (MachineRuntime.computableInPolyTime_output_length_le
+        source.encoding target.encoding reduction.map reductionComputer input))
+
 /-- Membership is equivalent to the existence of an accepting certificate
 whose encoded length satisfies the verifier's explicit polynomial bound. -/
 theorem accepts_iff_exists_certificate {α certificate : Type}
