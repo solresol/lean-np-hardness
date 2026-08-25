@@ -1260,3 +1260,57 @@ avoid failed routes, and choose a materially different experiment when blocked.
   adapter: split the tagged pair input into ordered input and certificate stack
   families using explicit scratch storage, and prove exact whole-list
   execution with a linear step count before lifting the reduction machine.
+
+## 2026-08-26 — executable tagged-pair classification pass
+
+- **Starting commit:** `1c0b1ce11276cbf9fa4af98b1693aec4db6e32ac`.
+- **Goal:** begin the missing polynomial-time pair-left adapter with a finite
+  executable phase that separates the tagged input and certificate alphabets
+  without assuming either alphabet is inhabited.
+- **Checked increment:** added finite `PairSplitStackIndex` and
+  `PairSplitAction`, the dependent `PairSplitStackAlphabet`, explicit stack and
+  configuration constructors, and total `pairSplitProgram`. Proved exact scan
+  and push steps, two-step iterations for left, right, and exhaustion cases,
+  `pairSplit_whole_list`, its `EvalsTo` packaging, and
+  `pairSplit_finEncoding_whole_list`. The complete pass consumes any tagged
+  list in `2 * source.length + 2` steps and leaves the two tag projections on
+  separate reverse stacks; the canonical specialization produces exactly the
+  reversed input and certificate encodings.
+- **Files:** `LeanNPHardness/PairMachine.lean`,
+  `LeanNPHardness/Audit.lean`, `LeanNPHardness.lean`, `README.md`,
+  `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** targeted pair-machine build passed 1,129 jobs;
+  targeted pair-machine and audit build passed 1,143 jobs; full `lake build`
+  passed 1,145 jobs; and `git diff --check` passed. The Lean-source scan found
+  no `sorry`, `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted`
+  remains only in the existing explanatory dependency comment. Axiom audits
+  report only `propext` and `Quot.sound` for the generic whole-list and
+  `EvalsTo` declarations, with `Classical.choice` additionally inherited by
+  the canonical `FinEncoding` specialization.
+- **Failed approaches/blockers:** the first module check imported only the
+  encoding API and therefore could not resolve `Turing`, `TM2`, or `EvalsTo`;
+  adding the explicit `Mathlib.Computability.TMComputable` import exposed the
+  required machine API. The first scan-step proofs left `List.head?` and
+  `List.tail` unreduced after the dependent stack update; a final concrete
+  list simplification closed them. The canonical specialization initially did
+  not simplify component projections until `PairEncoding.finEncoding` was
+  explicitly unfolded. No order-restoration or runtime-packaging claim is
+  made yet.
+- **Useful API discovery:** carrying `Option (Sum Γ Δ)` in the finite control
+  action totalizes the typed push step without `Inhabited Γ` or `Inhabited Δ`.
+  The existing `PairEncoding.leftSymbols` and `rightSymbols` lemmas let one
+  induction handle arbitrary tag interleavings and specialize cleanly to the
+  canonical left-prefix/right-suffix encoding. Rechecking the completed Coq
+  `Hardness.v` confirms it composes through relation-level
+  `reducesPolyMO_intro` and `red_NPhard`; it supplies no machine-level evidence
+  for this Lean adapter.
+- **Ending state:** the first executable pair-adapter phase is checked and
+  audited, but its component stacks are intentionally reversed. Full backward
+  NP transport remains pending on order restoration, reduction-machine
+  simulation with the certificate preserved, output reassembly, and a
+  polynomial runtime witness.
+- **Best next experiment:** extend the pair stack layout with ordered input and
+  certificate stacks, then add finite symbol-carrying restoration actions that
+  pop each reverse stack and push onto its ordered stack. Prove exact
+  whole-list restoration and its linear step count before injecting the
+  reduction machine.

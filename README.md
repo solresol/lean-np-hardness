@@ -103,6 +103,10 @@ The initial checked layer contains:
 - a tagged finite encoding of input/certificate pairs with exact additive
   length, plus verifier-based NP with separate soundness, polynomially bounded
   completeness, and a checked polynomial-time Boolean verifier; and
+- an executable finite-control classification pass for tagged pair encodings,
+  consuming a source in exactly two steps per symbol plus two exhaustion steps
+  and separating the two components onto private reverse stacks, with an exact
+  specialization to the canonical input/certificate encoding; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,

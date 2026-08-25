@@ -36,13 +36,14 @@
 | Generic polynomial-time machine composition | Complete | `MachineComposition.compositionComputableInPolyTime` uses the concrete sequential machine, the checked first-output size polynomial, and the exact three-phase runtime. |
 | Closed polynomial-time reduction composition | Complete | `PolytimeManyOneReduction.comp` derives its witness from `compositionComputableInPolyTime`. |
 | Tagged finite encoding of pairs | Complete | `PairEncoding.finEncoding` uses disjoint component alphabets; `finEncoding_encode_length` proves exact additive encoded length. |
+| Tagged-pair classification pass | Complete | `MachineAdapters.pairSplit_whole_list` consumes an arbitrary tagged list in exactly two steps per symbol plus two exhaustion steps and separates its projections onto private reverse stacks; `pairSplit_finEncoding_whole_list` specializes this to the canonical input/certificate encoding. |
 | Encoded decision language | Complete | `EncodedLanguage` bundles a predicate with the `FinEncoding` that fixes its input-size measure; `EncodedLanguage.PolytimeReducesTo` specializes the checked reduction relation. |
 | P | Complete | `EncodedLanguage.PolytimeDecider` specifies both Boolean outcomes and a `TM2ComputableInPolyTime` witness; `EncodedLanguage.InP` is deterministic polynomial-time decidability. |
 | NP | Complete | `EncodedLanguage.PolytimeVerifier` separates soundness, bounded completeness, and the checked polynomial-time verifier; `EncodedLanguage.InNP` existentially quantifies the finitely encoded certificate type, with constructor `PolytimeVerifier.toInNP`. |
 | P is contained in NP | Complete | `EncodedLanguage.inP_toInNP` uses `PolytimeDecider.toUnitVerifier`, the zero-length `UnitEncoding.finEncoding`, and `MachineAdapters.ignoreUnitCertificate` to reuse the checked decider machine and runtime. |
 | P transport along reductions | Complete | `PolytimeDecider.pullback` composes a checked reduction map with the target Boolean decider, preserving both Boolean semantics; `EncodedLanguage.InP.of_reduction` transports deterministic polynomial-time membership backward. |
 | NP certificate-bound transport along reductions | Complete | `PolytimeVerifier.pullbackCertificateBound` composes the target certificate polynomial with the reduction machine's checked encoded-output-size polynomial; `pullback_complete` proves that transported completeness certificates satisfy that bound. |
-| NP transport along reductions | Pending | Construct and verify the polynomial-time paired map `(input, certificate) ↦ (reduction.map input, certificate)`, then combine it with the checked certificate-bound transport. |
+| NP transport along reductions | Pending | The tagged input classification pass is checked; restore both private stacks to canonical order, lift the reduction machine while preserving the certificate, reassemble the output pair, and combine that polynomial-time adapter with the checked certificate-bound transport. |
 | NP-hardness and NP-completeness | Complete | `EncodedLanguage.NPHard` universally supplies nonempty checked reductions from encoded NP languages; `EncodedLanguage.NPComplete` pairs hardness with NP membership. `NPHard.of_reduction` transports hardness forward by `PolytimeManyOneReduction.comp`, and `NPComplete.of_reduction` combines that transport with separate target membership. |
 | CNF-SAT language and encoding | Pending | Concrete syntax, semantics, and finite encoding. |
 | Exact 3-SAT is in NP | Pending | Checked verifier and runtime bound. |
@@ -133,6 +134,10 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   `Classical.choice`, and `Quot.sound`.
 - `PolytimeManyOneReduction.comp` depends on `propext`, `Classical.choice`,
   and `Quot.sound`.
+- `MachineAdapters.pairSplit_whole_list` and `pairSplit_evalsTo` depend on
+  `propext` and `Quot.sound`; the canonical-encoding specialization
+  `pairSplit_finEncoding_whole_list` additionally depends on
+  `Classical.choice`.
 - `EncodedLanguage.PolytimeReducesTo`, `EncodedLanguage.InP`,
   `EncodedLanguage.PolytimeDecider.ofAcceptsIff`, and
   `EncodedLanguage.PolytimeDecider.toInP` depend on `propext` and
