@@ -107,6 +107,9 @@ The initial checked layer contains:
   consuming a source in exactly two steps per symbol plus two exhaustion steps
   and separating the two components onto private reverse stacks, with an exact
   specialization to the canonical input/certificate encoding; and
+- an executable finite-control order-restoration phase that reverses both
+  private component stacks onto ordered stacks with an exact linear step count
+  and recovers the canonical input and certificate encodings; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,

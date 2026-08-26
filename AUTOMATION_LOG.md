@@ -1314,3 +1314,48 @@ avoid failed routes, and choose a materially different experiment when blocked.
   pop each reverse stack and push onto its ordered stack. Prove exact
   whole-list restoration and its linear step count before injecting the
   reduction machine.
+
+## 2026-08-27 — executable tagged-pair order restoration
+
+- **Starting commit:** `9ee16bb006e04c1ac049f2a67bff5bb5ce1e6c10`.
+- **Goal:** implement the next pair-left adapter phase as a finite machine that
+  restores the classified input and certificate stacks to canonical order,
+  while keeping reduction-machine integration and runtime packaging separate.
+- **Checked increment:** added finite `PairRestoreStackIndex` and
+  `PairRestoreAction`, the dependent `PairRestoreStackAlphabet`, explicit
+  four-stack configurations, and total `pairRestoreProgram`. Proved exact
+  scan/push iterations, `pairRestore_left_whole_list`,
+  `pairRestore_right_whole_list`, the combined `pairRestore_whole_list`, its
+  `EvalsTo` packaging, and `pairRestore_finEncoding_whole_list`. The combined
+  phase restores both component orders in exactly
+  `2 * left.length + 2 * right.length + 4` steps.
+- **Files:** `LeanNPHardness/PairMachine.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** targeted pair-machine build passed 1,129 jobs;
+  targeted audit build passed 1,143 jobs; full `lake build` passed 1,145 jobs;
+  and `git diff --check` passed. The source scan found no `sorry`, `admit`,
+  project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in the
+  existing explanatory comment. All three new headline audits report only
+  `propext` and `Quot.sound`.
+- **Failed approaches/blockers:** the first combined whole-list proof could
+  not rewrite the right-phase theorem because the left-phase endpoint retained
+  the syntactic accumulator `leftReverse.reverse ++ []`. Normalizing both
+  phase results with typed `simpa` intermediates made the exact configurations
+  match. Classification and restoration still use separate stack/control
+  layouts, so they are checked phases but not yet one executable adapter.
+- **Useful API discovery:** the two-step symbol-carrying pattern works for both
+  component alphabets with a shared `Option (Sum Γ Δ)` control state and no
+  `Inhabited` assumptions. Writing the total step count as right-phase cost
+  plus left-phase cost aligns `Function.iterate_add_apply` with execution
+  order. The completed Coq `Hardness.v` still provides only relation-level
+  reduction construction and no machine-stack restoration evidence.
+- **Ending state:** tagged-pair classification and canonical order restoration
+  are separately executable, machine-checked, audited, and documented. Full
+  backward NP transport remains pending on integrating these phases, running
+  the reduction machine while preserving the ordered certificate, reassembling
+  the output pair, and packaging a polynomial runtime.
+- **Best next experiment:** introduce one finite five-stack adapter layout and
+  lift `pairSplitProgram` and `pairRestoreProgram` into it under a total phase
+  dispatcher. Prove exact classification-to-restoration execution before
+  injecting the reduction machine.

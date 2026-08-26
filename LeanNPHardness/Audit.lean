@@ -77,6 +77,9 @@ open Computability
 #print axioms LeanNPHardness.MachineAdapters.pairSplit_whole_list
 #print axioms LeanNPHardness.MachineAdapters.pairSplit_evalsTo
 #print axioms LeanNPHardness.MachineAdapters.pairSplit_finEncoding_whole_list
+#print axioms LeanNPHardness.MachineAdapters.pairRestore_whole_list
+#print axioms LeanNPHardness.MachineAdapters.pairRestore_evalsTo
+#print axioms LeanNPHardness.MachineAdapters.pairRestore_finEncoding_whole_list
 #print axioms LeanNPHardness.UnitEncoding.finEncoding
 #print axioms LeanNPHardness.MachineAdapters.ignoreUnitCertificate
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeReducesTo

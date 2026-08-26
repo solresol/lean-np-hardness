@@ -37,6 +37,7 @@
 | Closed polynomial-time reduction composition | Complete | `PolytimeManyOneReduction.comp` derives its witness from `compositionComputableInPolyTime`. |
 | Tagged finite encoding of pairs | Complete | `PairEncoding.finEncoding` uses disjoint component alphabets; `finEncoding_encode_length` proves exact additive encoded length. |
 | Tagged-pair classification pass | Complete | `MachineAdapters.pairSplit_whole_list` consumes an arbitrary tagged list in exactly two steps per symbol plus two exhaustion steps and separates its projections onto private reverse stacks; `pairSplit_finEncoding_whole_list` specializes this to the canonical input/certificate encoding. |
+| Tagged-pair order restoration | Complete | `MachineAdapters.pairRestore_whole_list` reverses both private component stacks into ordered stacks in exactly two steps per symbol plus two exhaustion steps per component; `pairRestore_finEncoding_whole_list` recovers the canonical input and certificate encodings. This is a standalone checked phase; integration with classification and the reduction machine remains pending. |
 | Encoded decision language | Complete | `EncodedLanguage` bundles a predicate with the `FinEncoding` that fixes its input-size measure; `EncodedLanguage.PolytimeReducesTo` specializes the checked reduction relation. |
 | P | Complete | `EncodedLanguage.PolytimeDecider` specifies both Boolean outcomes and a `TM2ComputableInPolyTime` witness; `EncodedLanguage.InP` is deterministic polynomial-time decidability. |
 | NP | Complete | `EncodedLanguage.PolytimeVerifier` separates soundness, bounded completeness, and the checked polynomial-time verifier; `EncodedLanguage.InNP` existentially quantifies the finitely encoded certificate type, with constructor `PolytimeVerifier.toInNP`. |
@@ -138,6 +139,8 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   `propext` and `Quot.sound`; the canonical-encoding specialization
   `pairSplit_finEncoding_whole_list` additionally depends on
   `Classical.choice`.
+- `MachineAdapters.pairRestore_whole_list`, `pairRestore_evalsTo`, and
+  `pairRestore_finEncoding_whole_list` depend on `propext` and `Quot.sound`.
 - `EncodedLanguage.PolytimeReducesTo`, `EncodedLanguage.InP`,
   `EncodedLanguage.PolytimeDecider.ofAcceptsIff`, and
   `EncodedLanguage.PolytimeDecider.toInP` depend on `propext` and
