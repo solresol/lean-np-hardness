@@ -110,6 +110,9 @@ The initial checked layer contains:
 - an executable finite-control order-restoration phase that reverses both
   private component stacks onto ordered stacks with an exact linear step count
   and recovers the canonical input and certificate encodings; and
+- one finite total preprocessing dispatcher on a shared five-stack layout,
+  composing tagged classification, the phase transition, and order restoration
+  in exactly four steps per tagged symbol plus seven fixed steps; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,

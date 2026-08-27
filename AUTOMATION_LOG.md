@@ -1359,3 +1359,50 @@ avoid failed routes, and choose a materially different experiment when blocked.
   lift `pairSplitProgram` and `pairRestoreProgram` into it under a total phase
   dispatcher. Prove exact classification-to-restoration execution before
   injecting the reduction machine.
+
+## 2026-08-28 — integrated tagged-pair preprocessing dispatcher
+
+- **Starting commit:** `db130fb7041f0035355783c2b24569838a1fe27f`.
+- **Goal:** integrate tagged classification and order restoration under one
+  finite control and stack layout, without yet claiming the reduction-machine
+  or polynomial-runtime parts of backward NP transport.
+- **Checked increment:** added `PairAdapterStackIndex`,
+  `PairAdapterStackAlphabet`, finite phase-tagged `PairAdapterLabel`, explicit
+  five-stack configurations, and total `pairAdapterProgram`. Proved both
+  component phases in the shared layout, the split-to-restore transition,
+  `pairAdapter_whole_list`, its `EvalsTo` packaging, and
+  `pairAdapter_finEncoding_whole_list`. The integrated run classifies an
+  arbitrary tagged source and restores both projections in exactly
+  `4 * source.length + 7` steps. Added the projection-length partition lemma
+  used by that exact cost proof.
+- **Files:** `LeanNPHardness/PairAdapter.lean`,
+  `LeanNPHardness/PairEncoding.lean`, `LeanNPHardness/Audit.lean`,
+  `LeanNPHardness.lean`, `README.md`, `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** targeted pair-adapter build passed 1,130 jobs;
+  targeted audit build passed 1,144 jobs; full `lake build` passed 1,146 jobs;
+  and `git diff --check` passed. The Lean-source scan found no `sorry`,
+  `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted` remains only
+  in the existing explanatory dependency comment. The generic integrated run
+  and `EvalsTo` declarations use only `propext` and `Quot.sound`; the canonical
+  `FinEncoding` specialization additionally uses `Classical.choice`.
+- **Failed approaches/blockers:** the first proof of the tag-projection length
+  partition left reassociation goals after simplification; case splitting plus
+  `omega` closed the exact arithmetic. No machine proof route failed. The new
+  dispatcher deliberately stops after preprocessing: it is not yet packaged
+  as the pair-left reduction adapter and makes no polynomial-time claim.
+- **Useful API discovery:** the existing two-step symbol-carrying loops port
+  directly to one dependent five-stack family. `Function.iterate_add_apply`
+  composes the exact split, one-step phase transition, and restore runs, while
+  the projection-length partition reduces their combined cost to `4 * n + 7`.
+  Rechecking the Saarland Coq library's `red_inNP` confirmed that it separately
+  composes verifier computation and result-size/certificate bounds; it does
+  not provide machine-stack evidence for this Lean adapter.
+- **Ending state:** classification and order restoration now form one
+  executable, checked, audited preprocessing program. Backward NP transport
+  still needs the reduction-machine run with the ordered certificate
+  preserved, output/certificate reassembly, and a polynomial runtime witness.
+- **Best next experiment:** extend the shared layout with the reduction
+  machine's stacks. Reuse the emptied left reverse stack as scratch to move the
+  ordered input through `inputAlphabet.symm` into the reduction machine's
+  input stack without reversing it, then prove a one-step lift of the
+  reduction program that preserves the ordered certificate stack.

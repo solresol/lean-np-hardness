@@ -8,6 +8,7 @@ import LeanNPHardness.MachineCompositionProgram
 import LeanNPHardness.MachineTransfer
 import LeanNPHardness.PairEncoding
 import LeanNPHardness.PairMachine
+import LeanNPHardness.PairAdapter
 import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.ComplexityClasses
 
@@ -74,12 +75,16 @@ open Computability
 #print axioms LeanNPHardness.PolytimeManyOneReduction.comp
 #print axioms LeanNPHardness.PairEncoding.finEncoding
 #print axioms LeanNPHardness.PairEncoding.finEncoding_encode_length
+#print axioms LeanNPHardness.PairEncoding.leftSymbols_length_add_rightSymbols_length
 #print axioms LeanNPHardness.MachineAdapters.pairSplit_whole_list
 #print axioms LeanNPHardness.MachineAdapters.pairSplit_evalsTo
 #print axioms LeanNPHardness.MachineAdapters.pairSplit_finEncoding_whole_list
 #print axioms LeanNPHardness.MachineAdapters.pairRestore_whole_list
 #print axioms LeanNPHardness.MachineAdapters.pairRestore_evalsTo
 #print axioms LeanNPHardness.MachineAdapters.pairRestore_finEncoding_whole_list
+#print axioms LeanNPHardness.MachineAdapters.pairAdapter_whole_list
+#print axioms LeanNPHardness.MachineAdapters.pairAdapter_evalsTo
+#print axioms LeanNPHardness.MachineAdapters.pairAdapter_finEncoding_whole_list
 #print axioms LeanNPHardness.UnitEncoding.finEncoding
 #print axioms LeanNPHardness.MachineAdapters.ignoreUnitCertificate
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeReducesTo

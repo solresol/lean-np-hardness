@@ -10,6 +10,7 @@ import LeanNPHardness.MachineRuntimeBounds
 import LeanNPHardness.MachineTransfer
 import LeanNPHardness.PairEncoding
 import LeanNPHardness.PairMachine
+import LeanNPHardness.PairAdapter
 import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.PolytimeReduction
 import LeanNPHardness.SemanticReduction

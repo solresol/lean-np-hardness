@@ -36,6 +36,18 @@ def rightSymbols {Γ Δ : Type} : List (Sum Γ Δ) → List Δ
   | Sum.inl _ :: symbols => rightSymbols symbols
   | Sum.inr symbol :: symbols => symbol :: rightSymbols symbols
 
+/-- The two tag projections partition an arbitrary tagged list by length. -/
+@[simp]
+theorem leftSymbols_length_add_rightSymbols_length {Γ Δ : Type}
+    (symbols : List (Sum Γ Δ)) :
+    (leftSymbols symbols).length + (rightSymbols symbols).length =
+      symbols.length := by
+  induction symbols with
+  | nil => rfl
+  | cons symbol symbols ih =>
+      cases symbol <;> simp only [leftSymbols, rightSymbols, List.length_cons]
+        <;> omega
+
 @[simp]
 theorem leftSymbols_append {Γ Δ : Type} (first second : List (Sum Γ Δ)) :
     leftSymbols (first ++ second) = leftSymbols first ++ leftSymbols second := by
