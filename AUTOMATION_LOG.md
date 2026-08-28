@@ -1406,3 +1406,46 @@ avoid failed routes, and choose a materially different experiment when blocked.
   ordered input through `inputAlphabet.symm` into the reduction machine's
   input stack without reversing it, then prove a one-step lift of the
   reduction program that preserves the ordered certificate stack.
+
+## 2026-08-29 — certificate-preserving reduction-machine stack lift
+
+- **Starting commit:** `aff35e5959c5d4a8e3cc120009323f113ddc9ffd`.
+- **Goal:** extend the integrated pair-preprocessing layout with the reduction
+  machine's private stacks and prove that a reduction step leaves the restored
+  certificate and all other preprocessing stacks unchanged.
+- **Checked increment:** added finite `PairReductionStackIndex` and dependent
+  `PairReductionStackAlphabet`, the arbitrary-content embedding
+  `pairReductionStacks`, its machine-stack update theorem, exact statement and
+  configuration lifts, and `liftReduction_stepAux` and `liftReduction_step`.
+  The one-step theorem commutes lifted and original execution with the same
+  five-stack `adapterContents` parameter on both sides, explicitly preserving
+  the ordered certificate during reduction execution.
+- **Files:** `LeanNPHardness/PairReduction.lean`,
+  `LeanNPHardness/Audit.lean`, `LeanNPHardness.lean`, `README.md`,
+  `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** standalone module check passed; targeted
+  pair-reduction and audit build passed 1,145 jobs; full `lake build` passed
+  1,147 jobs; and `git diff --check` passed. The Lean-source scan found no
+  `sorry`, `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted`
+  remains only in the existing explanatory dependency comment. Both new
+  headline audits report only `propext` and `Quot.sound`.
+- **Failed approaches/blockers:** no Lean proof route failed. The combined
+  layout does not yet execute the ordered-input transfer or redirect a reached
+  reduction halt, so it is not yet a total pair-left adapter and makes no
+  polynomial-runtime claim.
+- **Useful API discovery:** a dependent disjoint-sum stack family supports a
+  direct reduction-statement lift; proving that private-stack updates commute
+  with this embedding is sufficient for exact induction over every `TM2.Stmt`
+  constructor. The completed Coq development and its complexity-library use
+  remain relation-level decomposition guides and supply no corresponding
+  machine-stack evidence.
+- **Ending state:** the reduction machine can now be simulated one checked step
+  at a time in a finite layout that retains the restored input, certificate,
+  and scratch stacks verbatim. Backward NP transport remains pending on the
+  input transfer, repeated reduction execution with halt redirection,
+  output/certificate reassembly, and polynomial-time packaging.
+- **Best next experiment:** add finite pop/push transfer actions in the new
+  layout. First reverse `leftOrdered` onto the emptied `leftReverse` stack,
+  then pop that scratch stack through `computer.inputAlphabet.symm` onto the
+  reduction input stack, proving exact order preservation and a linear step
+  count before integrating total phase control.

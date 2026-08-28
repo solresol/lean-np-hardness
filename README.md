@@ -113,6 +113,9 @@ The initial checked layer contains:
 - one finite total preprocessing dispatcher on a shared five-stack layout,
   composing tagged classification, the phase transition, and order restoration
   in exactly four steps per tagged symbol plus seven fixed steps; and
+- a finite extension of that layout with every private reduction-machine stack,
+  plus an exact one-step reduction-program lift that leaves all five
+  preprocessing stacks, including the ordered certificate, unchanged; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,
