@@ -1449,3 +1449,52 @@ avoid failed routes, and choose a materially different experiment when blocked.
   then pop that scratch stack through `computer.inputAlphabet.symm` onto the
   reduction input stack, proving exact order preservation and a linear step
   count before integrating total phase control.
+
+## 2026-08-30 — exact ordered-input transfer into the reduction machine
+
+- **Starting commit:** `3718fe5a90615ed99c04a406427efcc3c0238080`.
+- **Goal:** implement the order-preserving transfer from the restored left
+  input stack into the reduction machine's private input stack, while retaining
+  the certificate and deferring total adapter integration.
+- **Checked increment:** added the adapter-side combined-stack update lemma,
+  finite `PairInputTransferLabel`, explicit transfer configurations, and the
+  total standalone `pairInputTransferProgram`. Proved exact reverse and fill
+  iterations, `pairInputTransfer_reverse_whole_list`,
+  `pairInputTransfer_fill_whole_list`, and the headline
+  `pairInputTransfer_whole_list`. Starting with empty left scratch, the
+  two-phase run converts the restored input through
+  `computer.inputAlphabet.symm` into canonical private-machine order in exactly
+  `4 * input.length + 4` steps while preserving the ordered certificate and all
+  other stacks.
+- **Files:** `LeanNPHardness/PairReduction.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** standalone module check passed; targeted
+  pair-reduction and audit build passed 1,145 jobs; full `lake build` passed
+  1,147 jobs; and `git diff --check` passed. The Lean-source scan found no
+  `sorry`, `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted`
+  remains only in the existing explanatory dependency comment. The adapter
+  update and reverse whole-list audits use only `propext` and `Quot.sound`;
+  the fill and complete transfer audits additionally use `Classical.choice`.
+- **Failed approaches/blockers:** the first complete-run proof left the final
+  linear step-count equality after `simp`; adding `omega` closed that isolated
+  arithmetic goal. No unresolved Lean proof blocker remains in this increment.
+  The comparison Coq development still supplies relation-level decomposition,
+  not machine-stack evidence for this mathlib-specific transfer.
+- **Useful API discovery:** a symmetric
+  `pairReductionStacks_adapter_update` lemma lets the same dependent combined
+  layout support both preprocessing-stack and private-machine updates. The
+  existing two-step symbol-carrying pattern composes cleanly through
+  `Function.iterate_add_apply`; reversing onto scratch and then pushing from
+  scratch simplifies to `input.map computer.inputAlphabet.symm` in original
+  order.
+- **Ending state:** pair preprocessing, exact ordered-input transfer, and
+  certificate-preserving one-step reduction simulation are separately checked
+  and audited. They are not yet one total pair-left machine, and no polynomial
+  runtime or output/certificate reassembly is claimed.
+- **Best next experiment:** introduce one finite phase-tagged control type over
+  the extended stack layout, lift the existing pair preprocessing program,
+  dispatch the checked input-transfer actions, and redirect the transfer's
+  `done` endpoint into the reduction machine's declared initial configuration.
+  Prove the combined preprocessing-plus-transfer execution before adding the
+  repeated reduction run or output reassembly.

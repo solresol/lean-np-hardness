@@ -116,6 +116,11 @@ The initial checked layer contains:
 - a finite extension of that layout with every private reduction-machine stack,
   plus an exact one-step reduction-program lift that leaves all five
   preprocessing stacks, including the ordered certificate, unchanged; and
+- a finite two-phase ordered-input transfer in that extended layout, which
+  reverses through the emptied left scratch stack, converts through the
+  reduction machine's input equivalence, and fills its private input stack in
+  exactly four steps per input symbol plus four exhaustion steps while
+  preserving the certificate; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,
