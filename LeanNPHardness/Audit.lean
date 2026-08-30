@@ -10,6 +10,7 @@ import LeanNPHardness.PairEncoding
 import LeanNPHardness.PairMachine
 import LeanNPHardness.PairAdapter
 import LeanNPHardness.PairReduction
+import LeanNPHardness.PairReductionProgram
 import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.ComplexityClasses
 
@@ -92,6 +93,10 @@ open Computability
 #print axioms LeanNPHardness.MachineAdapters.pairInputTransfer_reverse_whole_list
 #print axioms LeanNPHardness.MachineAdapters.pairInputTransfer_fill_whole_list
 #print axioms LeanNPHardness.MachineAdapters.pairInputTransfer_whole_list
+#print axioms LeanNPHardness.MachineAdapters.liftPairAdapter_stepAux
+#print axioms LeanNPHardness.MachineAdapters.liftPairAdapter_step
+#print axioms LeanNPHardness.MachineAdapters.liftPairAdapter_run
+#print axioms LeanNPHardness.MachineAdapters.liftPairAdapter_whole_list
 #print axioms LeanNPHardness.UnitEncoding.finEncoding
 #print axioms LeanNPHardness.MachineAdapters.ignoreUnitCertificate
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeReducesTo

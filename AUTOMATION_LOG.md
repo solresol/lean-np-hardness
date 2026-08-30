@@ -1498,3 +1498,48 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `done` endpoint into the reduction machine's declared initial configuration.
   Prove the combined preprocessing-plus-transfer execution before adding the
   repeated reduction run or output reassembly.
+
+## 2026-08-31 — exact preprocessing lift over reduction stacks
+
+- **Starting commit:** `bbda24607069652e00e54541387e01505f6411df`.
+- **Goal:** move the already-checked tagged-pair preprocessing program onto the
+  extended pair/reduction stack family while proving that all private reduction
+  stacks are preserved, before adding shared phase control.
+- **Checked increment:** added `liftPairAdapterStmt`,
+  `liftPairAdapterCfg`, and `liftPairAdapterProgram`; exact statement and
+  one-step simulations; the generic same-cost finite-run theorem
+  `liftPairAdapter_run`; and `liftPairAdapter_whole_list`. The complete
+  preprocessing execution now runs over `PairReductionStackAlphabet` in the
+  original `4 * source.length + 7` steps and retains arbitrary contents on
+  every private reduction-machine stack.
+- **Files:** `LeanNPHardness/PairReductionProgram.lean`, root imports,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** standalone module checking passed; targeted
+  pair-reduction-program and audit build passed 1,146 jobs; full `lake build`
+  passed 1,148 jobs; and `git diff --check` passed. The source scan found no
+  `sorry`, `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted`
+  remains only in the existing explanatory comment. All four new axiom audits
+  report only `propext` and `Quot.sound`.
+- **Failed approaches/blockers:** Lean could not infer the certificate alphabet
+  in a locally inferred `Option.map` embedding used by the generic run proof;
+  giving the embedding its full source and target configuration types resolved
+  the ambiguity. No semantic blocker remains for the stack lift. The phase
+  endpoints still use separate label and state types, so no combined dispatcher
+  or polynomial-time adapter is claimed.
+- **Useful API discovery:** `Function.Semiconj.iterate_right` lifts the exact
+  one-step commuting square to every finite iteration without reproving the
+  preprocessing loop. The adapter-side dependent update theorem is sufficient
+  to show that every preprocessing statement leaves private machine stacks
+  untouched. The completed Coq `Hardness.v` remains a relation-level
+  decomposition guide and supplies no machine-stack proof for this Lean API.
+- **Ending state:** preprocessing and ordered-input transfer now both execute
+  on the same extended stack family, and the reduction program has a separate
+  checked one-step lift preserving the ordered certificate. Their control
+  endpoints are not yet connected.
+- **Best next experiment:** define finite phase-tagged labels and state for one
+  total extended-layout dispatcher. Redirect preprocessing `restore.done` to
+  `PairInputTransferLabel.reverseScan`, redirect transfer `done` to the
+  reduction machine's initial state and `main` label, and prove the combined
+  preprocessing-plus-transfer exact run before lifting repeated reduction
+  execution.

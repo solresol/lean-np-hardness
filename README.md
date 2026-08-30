@@ -121,6 +121,9 @@ The initial checked layer contains:
   reduction machine's input equivalence, and fills its private input stack in
   exactly four steps per input symbol plus four exhaustion steps while
   preserving the certificate; and
+- an exact lift of the complete tagged-pair preprocessing run to that extended
+  layout, retaining the original `4 * source.length + 7` cost while preserving
+  every private reduction-machine stack; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,
