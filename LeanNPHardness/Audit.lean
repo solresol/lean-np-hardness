@@ -97,6 +97,12 @@ open Computability
 #print axioms LeanNPHardness.MachineAdapters.liftPairAdapter_step
 #print axioms LeanNPHardness.MachineAdapters.liftPairAdapter_run
 #print axioms LeanNPHardness.MachineAdapters.liftPairAdapter_whole_list
+#print axioms LeanNPHardness.MachineAdapters.liftPairAdapterThenTransfer_stepAux
+#print axioms LeanNPHardness.MachineAdapters.liftPairInputTransferThenReduction_stepAux
+#print axioms LeanNPHardness.MachineAdapters.liftReductionMachineControl_stepAux
+#print axioms LeanNPHardness.MachineAdapters.pairReductionProgram_adapter_run
+#print axioms LeanNPHardness.MachineAdapters.pairReductionProgram_transfer_run
+#print axioms LeanNPHardness.MachineAdapters.pairReductionProgram_preprocess_transfer_whole_list
 #print axioms LeanNPHardness.UnitEncoding.finEncoding
 #print axioms LeanNPHardness.MachineAdapters.ignoreUnitCertificate
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeReducesTo

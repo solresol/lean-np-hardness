@@ -124,6 +124,10 @@ The initial checked layer contains:
 - an exact lift of the complete tagged-pair preprocessing run to that extended
   layout, retaining the original `4 * source.length + 7` cost while preserving
   every private reduction-machine stack; and
+- one finite phase-tagged dispatcher connecting preprocessing, ordered-input
+  transfer, and reduction-machine control, with an exact
+  `4 * source.length + 4 * left.length + 13` run that preserves the ordered
+  certificate and enters the reduction machine's declared initial control; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,

@@ -195,4 +195,709 @@ theorem liftPairAdapter_whole_list {Γ₀ Γ₁ Δ : Type}
   rw [pairAdapter_whole_list]
   rfl
 
+/-- Finite phase-tagged labels for preprocessing a tagged pair, transferring
+its left component into the reduction machine, and then running that machine.
+-/
+def PairReductionControlLabel {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) :=
+  PairAdapterLabel Γ₀ Δ ⊕ (PairInputTransferLabel Γ₀ ⊕ computer.tm.Λ)
+
+instance {Γ₀ Γ₁ Δ : Type} [Fintype Γ₀] [Fintype Δ]
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    Fintype (PairReductionControlLabel (Δ := Δ) computer) := by
+  letI : Fintype computer.tm.Λ := computer.tm.ΛFin
+  exact inferInstanceAs
+    (Fintype
+      (PairAdapterLabel Γ₀ Δ ⊕
+        (PairInputTransferLabel Γ₀ ⊕ computer.tm.Λ)))
+
+/-- Preprocessing and input transfer share a tagged optional-symbol state.
+The reduction machine occupies the other state branch once transfer ends. -/
+def PairReductionControlState {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) :=
+  Option (Sum Γ₀ Δ) ⊕ computer.tm.σ
+
+instance {Γ₀ Γ₁ Δ : Type} [Fintype Γ₀] [Fintype Δ]
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    Fintype (PairReductionControlState (Δ := Δ) computer) := by
+  letI : Fintype computer.tm.σ := computer.tm.σFin
+  exact inferInstanceAs
+    (Fintype (Option (Sum Γ₀ Δ) ⊕ computer.tm.σ))
+
+def pairAdapterControlLabel {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (label : PairAdapterLabel Γ₀ Δ) :
+    PairReductionControlLabel (Δ := Δ) computer :=
+  Sum.inl label
+
+def pairInputTransferControlLabel {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (label : PairInputTransferLabel Γ₀) :
+    PairReductionControlLabel (Δ := Δ) computer :=
+  Sum.inr (Sum.inl label)
+
+def reductionMachineControlLabel {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) (label : computer.tm.Λ) :
+    PairReductionControlLabel (Δ := Δ) computer :=
+  Sum.inr (Sum.inr label)
+
+def pairAdapterControlState {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) (state : Option (Sum Γ₀ Δ)) :
+    PairReductionControlState (Δ := Δ) computer :=
+  Sum.inl state
+
+def pairInputTransferControlState {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) (state : Option Γ₀) :
+    PairReductionControlState (Δ := Δ) computer :=
+  Sum.inl (state.map Sum.inl)
+
+def reductionMachineControlState {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) (state : computer.tm.σ) :
+    PairReductionControlState (Δ := Δ) computer :=
+  Sum.inr state
+
+def pairAdapterControlStateValue {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    PairReductionControlState (Δ := Δ) computer → Option (Sum Γ₀ Δ)
+  | Sum.inl state => state
+  | Sum.inr _ => none
+
+def pairInputTransferControlStateValue {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    PairReductionControlState (Δ := Δ) computer → Option Γ₀
+  | Sum.inl (some (Sum.inl symbol)) => some symbol
+  | _ => none
+
+def reductionMachineControlStateValue {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    PairReductionControlState (Δ := Δ) computer → computer.tm.σ
+  | Sum.inr state => state
+  | Sum.inl _ => computer.tm.initialState
+
+@[simp]
+theorem pairAdapterControlStateValue_adapter {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) (state : Option (Sum Γ₀ Δ)) :
+    pairAdapterControlStateValue computer
+        (pairAdapterControlState computer state) = state :=
+  rfl
+
+@[simp]
+theorem pairInputTransferControlStateValue_transfer {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) (state : Option Γ₀) :
+    pairInputTransferControlStateValue computer
+        (pairInputTransferControlState (Δ := Δ) computer state) = state := by
+  cases state <;> rfl
+
+@[simp]
+theorem reductionMachineControlStateValue_machine {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) (state : computer.tm.σ) :
+    reductionMachineControlStateValue (Δ := Δ) computer
+        (reductionMachineControlState computer state) = state :=
+  rfl
+
+/-- Lift preprocessing control to the total dispatcher. A reached halt is
+redirected to the ordered-input transfer entry label. -/
+def liftPairAdapterThenTransferStmt {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    TM2.Stmt (PairReductionStackAlphabet computer Δ)
+        (PairAdapterLabel Γ₀ Δ) (Option (Sum Γ₀ Δ)) →
+      TM2.Stmt (PairReductionStackAlphabet computer Δ)
+        (PairReductionControlLabel (Δ := Δ) computer)
+        (PairReductionControlState (Δ := Δ) computer)
+  | .push index write next =>
+      .push index
+        (fun state => write (pairAdapterControlStateValue computer state))
+        (liftPairAdapterThenTransferStmt computer next)
+  | .peek index read next =>
+      .peek index
+        (fun state symbol => pairAdapterControlState computer
+          (read (pairAdapterControlStateValue computer state) symbol))
+        (liftPairAdapterThenTransferStmt computer next)
+  | .pop index read next =>
+      .pop index
+        (fun state symbol => pairAdapterControlState computer
+          (read (pairAdapterControlStateValue computer state) symbol))
+        (liftPairAdapterThenTransferStmt computer next)
+  | .load update next =>
+      .load
+        (fun state => pairAdapterControlState computer
+          (update (pairAdapterControlStateValue computer state)))
+        (liftPairAdapterThenTransferStmt computer next)
+  | .branch test yes no =>
+      .branch
+        (fun state => test (pairAdapterControlStateValue computer state))
+        (liftPairAdapterThenTransferStmt computer yes)
+        (liftPairAdapterThenTransferStmt computer no)
+  | .goto next =>
+      .goto (fun state => pairAdapterControlLabel computer
+        (next (pairAdapterControlStateValue computer state)))
+  | .halt =>
+      .goto (fun _ => pairInputTransferControlLabel computer .reverseScan)
+
+/-- Lift input-transfer control to the total dispatcher. A reached halt loads
+the reduction machine's declared initial state and enters its main label. -/
+def liftPairInputTransferThenReductionStmt {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    TM2.Stmt (PairReductionStackAlphabet computer Δ)
+        (PairInputTransferLabel Γ₀) (Option Γ₀) →
+      TM2.Stmt (PairReductionStackAlphabet computer Δ)
+        (PairReductionControlLabel (Δ := Δ) computer)
+        (PairReductionControlState (Δ := Δ) computer)
+  | .push index write next =>
+      .push index
+        (fun state => write (pairInputTransferControlStateValue computer state))
+        (liftPairInputTransferThenReductionStmt computer next)
+  | .peek index read next =>
+      .peek index
+        (fun state symbol => pairInputTransferControlState computer
+          (read (pairInputTransferControlStateValue computer state) symbol))
+        (liftPairInputTransferThenReductionStmt computer next)
+  | .pop index read next =>
+      .pop index
+        (fun state symbol => pairInputTransferControlState computer
+          (read (pairInputTransferControlStateValue computer state) symbol))
+        (liftPairInputTransferThenReductionStmt computer next)
+  | .load update next =>
+      .load
+        (fun state => pairInputTransferControlState computer
+          (update (pairInputTransferControlStateValue computer state)))
+        (liftPairInputTransferThenReductionStmt computer next)
+  | .branch test yes no =>
+      .branch
+        (fun state => test
+          (pairInputTransferControlStateValue computer state))
+        (liftPairInputTransferThenReductionStmt computer yes)
+        (liftPairInputTransferThenReductionStmt computer no)
+  | .goto next =>
+      .goto (fun state => pairInputTransferControlLabel computer
+        (next (pairInputTransferControlStateValue computer state)))
+  | .halt =>
+      .load (fun _ => reductionMachineControlState computer
+          computer.tm.initialState)
+        (.goto (fun _ => reductionMachineControlLabel computer
+          computer.tm.main))
+
+/-- Lift reduction-machine control to the total dispatcher while preserving
+the reduction machine's eventual halt. -/
+def liftReductionMachineControlStmt {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    TM2.Stmt (PairReductionStackAlphabet computer Δ)
+        computer.tm.Λ computer.tm.σ →
+      TM2.Stmt (PairReductionStackAlphabet computer Δ)
+        (PairReductionControlLabel (Δ := Δ) computer)
+        (PairReductionControlState (Δ := Δ) computer)
+  | .push index write next =>
+      .push index
+        (fun state => write (reductionMachineControlStateValue computer state))
+        (liftReductionMachineControlStmt computer next)
+  | .peek index read next =>
+      .peek index
+        (fun state symbol => reductionMachineControlState computer
+          (read (reductionMachineControlStateValue computer state) symbol))
+        (liftReductionMachineControlStmt computer next)
+  | .pop index read next =>
+      .pop index
+        (fun state symbol => reductionMachineControlState computer
+          (read (reductionMachineControlStateValue computer state) symbol))
+        (liftReductionMachineControlStmt computer next)
+  | .load update next =>
+      .load
+        (fun state => reductionMachineControlState computer
+          (update (reductionMachineControlStateValue computer state)))
+        (liftReductionMachineControlStmt computer next)
+  | .branch test yes no =>
+      .branch
+        (fun state => test (reductionMachineControlStateValue computer state))
+        (liftReductionMachineControlStmt computer yes)
+        (liftReductionMachineControlStmt computer no)
+  | .goto next =>
+      .goto (fun state => reductionMachineControlLabel computer
+        (next (reductionMachineControlStateValue computer state)))
+  | .halt => .halt
+
+/-- One total dispatcher over the extended pair/reduction stack layout. -/
+def pairReductionProgram {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    PairReductionControlLabel (Δ := Δ) computer →
+      TM2.Stmt (PairReductionStackAlphabet computer Δ)
+        (PairReductionControlLabel (Δ := Δ) computer)
+        (PairReductionControlState (Δ := Δ) computer)
+  | Sum.inl label =>
+      liftPairAdapterThenTransferStmt computer
+        (liftPairAdapterProgram computer pairAdapterProgram label)
+  | Sum.inr (Sum.inl label) =>
+      liftPairInputTransferThenReductionStmt computer
+        (pairInputTransferProgram computer label)
+  | Sum.inr (Sum.inr label) =>
+      liftReductionMachineControlStmt computer
+        (liftReductionProgram computer computer.tm.m label)
+
+/-- Embed a preprocessing configuration into the total control. A halted
+preprocessing configuration denotes the input-transfer entry point. -/
+def liftPairAdapterThenTransferCfg {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (cfg : TM2.Cfg (PairReductionStackAlphabet computer Δ)
+      (PairAdapterLabel Γ₀ Δ) (Option (Sum Γ₀ Δ))) :
+    TM2.Cfg (PairReductionStackAlphabet computer Δ)
+      (PairReductionControlLabel (Δ := Δ) computer)
+      (PairReductionControlState (Δ := Δ) computer) where
+  l := some (cfg.l.elim
+    (pairInputTransferControlLabel computer .reverseScan)
+    (pairAdapterControlLabel computer))
+  var := pairAdapterControlState computer cfg.var
+  stk := cfg.stk
+
+/-- Embed an input-transfer configuration into total control. A halted
+transfer configuration denotes the reduction machine's initial control. -/
+def liftPairInputTransferThenReductionCfg {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (cfg : TM2.Cfg (PairReductionStackAlphabet computer Δ)
+      (PairInputTransferLabel Γ₀) (Option Γ₀)) :
+    TM2.Cfg (PairReductionStackAlphabet computer Δ)
+      (PairReductionControlLabel (Δ := Δ) computer)
+      (PairReductionControlState (Δ := Δ) computer) where
+  l := some (cfg.l.elim
+    (reductionMachineControlLabel computer computer.tm.main)
+    (pairInputTransferControlLabel computer))
+  var := cfg.l.elim
+    (reductionMachineControlState computer computer.tm.initialState)
+    (fun _ => pairInputTransferControlState computer cfg.var)
+  stk := cfg.stk
+
+/-- Embed a running or halted reduction-machine configuration into total
+control. -/
+def liftReductionMachineControlCfg {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (cfg : TM2.Cfg (PairReductionStackAlphabet computer Δ)
+      computer.tm.Λ computer.tm.σ) :
+    TM2.Cfg (PairReductionStackAlphabet computer Δ)
+      (PairReductionControlLabel (Δ := Δ) computer)
+      (PairReductionControlState (Δ := Δ) computer) where
+  l := cfg.l.map (reductionMachineControlLabel computer)
+  var := reductionMachineControlState computer cfg.var
+  stk := cfg.stk
+
+/-- Preprocessing statement execution commutes with the total-control lift,
+including the reached-halt transition into input transfer. -/
+theorem liftPairAdapterThenTransfer_stepAux {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (stmt : TM2.Stmt (PairReductionStackAlphabet computer Δ)
+      (PairAdapterLabel Γ₀ Δ) (Option (Sum Γ₀ Δ)))
+    (state : Option (Sum Γ₀ Δ))
+    (contents : ∀ index,
+      List (PairReductionStackAlphabet computer Δ index)) :
+    TM2.stepAux (liftPairAdapterThenTransferStmt computer stmt)
+        (pairAdapterControlState computer state) contents =
+      liftPairAdapterThenTransferCfg computer
+        (TM2.stepAux stmt state contents) := by
+  induction stmt generalizing state contents with
+  | push index write next ih =>
+      simpa only [liftPairAdapterThenTransferStmt, TM2.stepAux,
+        pairAdapterControlStateValue_adapter] using ih state _
+  | peek index read next ih =>
+      simpa only [liftPairAdapterThenTransferStmt, TM2.stepAux,
+        pairAdapterControlStateValue_adapter] using
+        ih (read state (contents index).head?) contents
+  | pop index read next ih =>
+      simpa only [liftPairAdapterThenTransferStmt, TM2.stepAux,
+        pairAdapterControlStateValue_adapter] using
+        ih (read state (contents index).head?) _
+  | load update next ih =>
+      simpa only [liftPairAdapterThenTransferStmt, TM2.stepAux,
+        pairAdapterControlStateValue_adapter] using ih (update state) contents
+  | branch test yes no ihYes ihNo =>
+      by_cases h : test state
+      · simpa only [liftPairAdapterThenTransferStmt, TM2.stepAux,
+          pairAdapterControlStateValue_adapter, h, cond_true] using
+          ihYes state contents
+      · simpa only [liftPairAdapterThenTransferStmt, TM2.stepAux,
+          pairAdapterControlStateValue_adapter, h, cond_false] using
+          ihNo state contents
+  | goto next =>
+      rfl
+  | halt =>
+      rfl
+
+/-- One live preprocessing-label step is reproduced by the total dispatcher.
+-/
+theorem pairReductionProgram_adapter_step {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (label : PairAdapterLabel Γ₀ Δ) (state : Option (Sum Γ₀ Δ))
+    (contents : ∀ index,
+      List (PairReductionStackAlphabet computer Δ index)) :
+    TM2.step (pairReductionProgram computer)
+        (liftPairAdapterThenTransferCfg computer
+          (TM2.Cfg.mk (some label) state contents)) =
+      some (liftPairAdapterThenTransferCfg computer
+        (TM2.stepAux
+          (liftPairAdapterProgram computer pairAdapterProgram label)
+          state contents)) := by
+  change some (TM2.stepAux
+    (liftPairAdapterThenTransferStmt computer
+      (liftPairAdapterProgram computer pairAdapterProgram label))
+    (pairAdapterControlState computer state) contents) = _
+  rw [liftPairAdapterThenTransfer_stepAux]
+
+/-- Input-transfer execution commutes with the total-control lift, including
+the reached-halt transition into the reduction machine's initial control. -/
+theorem liftPairInputTransferThenReduction_stepAux {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (stmt : TM2.Stmt (PairReductionStackAlphabet computer Δ)
+      (PairInputTransferLabel Γ₀) (Option Γ₀))
+    (state : Option Γ₀)
+    (contents : ∀ index,
+      List (PairReductionStackAlphabet computer Δ index)) :
+    TM2.stepAux (liftPairInputTransferThenReductionStmt computer stmt)
+        (pairInputTransferControlState computer state) contents =
+      liftPairInputTransferThenReductionCfg computer
+        (TM2.stepAux stmt state contents) := by
+  induction stmt generalizing state contents with
+  | push index write next ih =>
+      simpa only [liftPairInputTransferThenReductionStmt, TM2.stepAux,
+        pairInputTransferControlStateValue_transfer] using ih state _
+  | peek index read next ih =>
+      simpa only [liftPairInputTransferThenReductionStmt, TM2.stepAux,
+        pairInputTransferControlStateValue_transfer] using
+        ih (read state (contents index).head?) contents
+  | pop index read next ih =>
+      simpa only [liftPairInputTransferThenReductionStmt, TM2.stepAux,
+        pairInputTransferControlStateValue_transfer] using
+        ih (read state (contents index).head?) _
+  | load update next ih =>
+      simpa only [liftPairInputTransferThenReductionStmt, TM2.stepAux,
+        pairInputTransferControlStateValue_transfer] using
+        ih (update state) contents
+  | branch test yes no ihYes ihNo =>
+      by_cases h : test state
+      · simpa only [liftPairInputTransferThenReductionStmt, TM2.stepAux,
+          pairInputTransferControlStateValue_transfer, h, cond_true] using
+          ihYes state contents
+      · simpa only [liftPairInputTransferThenReductionStmt, TM2.stepAux,
+          pairInputTransferControlStateValue_transfer, h, cond_false] using
+          ihNo state contents
+  | goto next =>
+      simp only [liftPairInputTransferThenReductionStmt, TM2.stepAux,
+        pairInputTransferControlStateValue_transfer,
+        liftPairInputTransferThenReductionCfg, Option.elim_some]
+  | halt =>
+      rfl
+
+/-- One live input-transfer-label step is reproduced by the total dispatcher.
+-/
+theorem pairReductionProgram_transfer_step {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (label : PairInputTransferLabel Γ₀) (state : Option Γ₀)
+    (contents : ∀ index,
+      List (PairReductionStackAlphabet computer Δ index)) :
+    TM2.step (pairReductionProgram computer)
+        (liftPairInputTransferThenReductionCfg computer
+          (TM2.Cfg.mk (some label) state contents)) =
+      some (liftPairInputTransferThenReductionCfg computer
+        (TM2.stepAux (pairInputTransferProgram computer label)
+          state contents)) := by
+  change some (TM2.stepAux
+    (liftPairInputTransferThenReductionStmt computer
+      (pairInputTransferProgram computer label))
+    (pairInputTransferControlState computer state) contents) = _
+  rw [liftPairInputTransferThenReduction_stepAux]
+
+/-- Reduction-machine execution commutes exactly with the total-control lift.
+-/
+theorem liftReductionMachineControl_stepAux {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (stmt : TM2.Stmt (PairReductionStackAlphabet computer Δ)
+      computer.tm.Λ computer.tm.σ)
+    (state : computer.tm.σ)
+    (contents : ∀ index,
+      List (PairReductionStackAlphabet computer Δ index)) :
+    TM2.stepAux (liftReductionMachineControlStmt computer stmt)
+        (reductionMachineControlState computer state) contents =
+      liftReductionMachineControlCfg computer
+        (TM2.stepAux stmt state contents) := by
+  induction stmt generalizing state contents with
+  | push index write next ih =>
+      simpa only [liftReductionMachineControlStmt, TM2.stepAux,
+        reductionMachineControlStateValue_machine] using ih state _
+  | peek index read next ih =>
+      simpa only [liftReductionMachineControlStmt, TM2.stepAux,
+        reductionMachineControlStateValue_machine] using
+        ih (read state (contents index).head?) contents
+  | pop index read next ih =>
+      simpa only [liftReductionMachineControlStmt, TM2.stepAux,
+        reductionMachineControlStateValue_machine] using
+        ih (read state (contents index).head?) _
+  | load update next ih =>
+      simpa only [liftReductionMachineControlStmt, TM2.stepAux,
+        reductionMachineControlStateValue_machine] using
+        ih (update state) contents
+  | branch test yes no ihYes ihNo =>
+      by_cases h : test state
+      · simpa only [liftReductionMachineControlStmt, TM2.stepAux,
+          reductionMachineControlStateValue_machine, h, cond_true] using
+          ihYes state contents
+      · simpa only [liftReductionMachineControlStmt, TM2.stepAux,
+          reductionMachineControlStateValue_machine, h, cond_false] using
+          ihNo state contents
+  | goto next =>
+      rfl
+  | halt =>
+      rfl
+
+/-- One live reduction-machine-label step is reproduced by the total
+dispatcher. -/
+theorem pairReductionProgram_machine_step {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) (label : computer.tm.Λ)
+    (state : computer.tm.σ)
+    (contents : ∀ index,
+      List (PairReductionStackAlphabet computer Δ index)) :
+    TM2.step (pairReductionProgram computer)
+        (liftReductionMachineControlCfg computer
+          (TM2.Cfg.mk (some label) state contents)) =
+      some (liftReductionMachineControlCfg computer
+        (TM2.stepAux (liftReductionProgram computer computer.tm.m label)
+          state contents)) := by
+  change some (TM2.stepAux
+    (liftReductionMachineControlStmt computer
+      (liftReductionProgram computer computer.tm.m label))
+    (reductionMachineControlState computer state) contents) = _
+  rw [liftReductionMachineControl_stepAux]
+
+private theorem pairReduction_iterate_bind_none {α : Type}
+    (step : α → Option α) (steps : ℕ) :
+    (flip Option.bind step)^[steps] none = none := by
+  induction steps with
+  | zero => rfl
+  | succ steps ih =>
+      rw [Function.iterate_succ_apply]
+      exact ih
+
+/-- Any exact finite preprocessing run is reproduced by the total dispatcher.
+The final configuration is not stepped, so it may still carry the standalone
+preprocessing program's `done` label. -/
+theorem pairReductionProgram_adapter_run {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) (steps : ℕ)
+    (cfg finalCfg : TM2.Cfg (PairReductionStackAlphabet computer Δ)
+      (PairAdapterLabel Γ₀ Δ) (Option (Sum Γ₀ Δ)))
+    (run :
+      (flip Option.bind
+        (TM2.step (liftPairAdapterProgram computer pairAdapterProgram)))^[
+          steps] (some cfg) = some finalCfg) :
+    (flip Option.bind (TM2.step (pairReductionProgram computer)))^[steps]
+        (some (liftPairAdapterThenTransferCfg computer cfg)) =
+      some (liftPairAdapterThenTransferCfg computer finalCfg) := by
+  induction steps generalizing cfg with
+  | zero =>
+      simp only [Function.iterate_zero_apply, Option.some.injEq] at run ⊢
+      subst finalCfg
+      rfl
+  | succ steps ih =>
+      rw [Function.iterate_succ_apply] at run ⊢
+      cases cfg with
+      | mk label state contents =>
+          cases label with
+          | none =>
+              simp only [flip, Option.bind_some, TM2.step] at run
+              rw [pairReduction_iterate_bind_none] at run
+              contradiction
+          | some label =>
+              simp only [flip, Option.bind_some, TM2.step] at run
+              change
+                (flip Option.bind
+                    (TM2.step (pairReductionProgram computer)))^[steps]
+                    (TM2.step (pairReductionProgram computer)
+                      (liftPairAdapterThenTransferCfg computer
+                        (TM2.Cfg.mk (some label) state contents))) =
+                  some (liftPairAdapterThenTransferCfg computer finalCfg)
+              rw [pairReductionProgram_adapter_step]
+              exact ih _ run
+
+/-- Any exact finite input-transfer run is reproduced by the total dispatcher.
+The final standalone `done` label remains available for the checked boundary
+step into reduction-machine control. -/
+theorem pairReductionProgram_transfer_run {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) (steps : ℕ)
+    (cfg finalCfg : TM2.Cfg (PairReductionStackAlphabet computer Δ)
+      (PairInputTransferLabel Γ₀) (Option Γ₀))
+    (run :
+      (flip Option.bind (TM2.step (pairInputTransferProgram computer)))^[
+        steps] (some cfg) = some finalCfg) :
+    (flip Option.bind (TM2.step (pairReductionProgram computer)))^[steps]
+        (some (liftPairInputTransferThenReductionCfg computer cfg)) =
+      some (liftPairInputTransferThenReductionCfg computer finalCfg) := by
+  induction steps generalizing cfg with
+  | zero =>
+      simp only [Function.iterate_zero_apply, Option.some.injEq] at run ⊢
+      subst finalCfg
+      rfl
+  | succ steps ih =>
+      rw [Function.iterate_succ_apply] at run ⊢
+      cases cfg with
+      | mk label state contents =>
+          cases label with
+          | none =>
+              simp only [flip, Option.bind_some, TM2.step] at run
+              rw [pairReduction_iterate_bind_none] at run
+              contradiction
+          | some label =>
+              simp only [flip, Option.bind_some, TM2.step] at run
+              change
+                (flip Option.bind
+                    (TM2.step (pairReductionProgram computer)))^[steps]
+                    (TM2.step (pairReductionProgram computer)
+                      (liftPairInputTransferThenReductionCfg computer
+                        (TM2.Cfg.mk (some label) state contents))) =
+                  some
+                    (liftPairInputTransferThenReductionCfg computer finalCfg)
+              rw [pairReductionProgram_transfer_step]
+              exact ih _ run
+
+/-- The preprocessing `done` label crosses into ordered-input transfer in one
+total-dispatcher step without changing any stack. -/
+theorem pairReductionProgram_adapter_done_step {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (contents : ∀ index,
+      List (PairReductionStackAlphabet computer Δ index)) :
+    TM2.step (pairReductionProgram computer)
+        (liftPairAdapterThenTransferCfg computer
+          (TM2.Cfg.mk (some (.restore .done)) none contents)) =
+      some (liftPairInputTransferThenReductionCfg computer
+        (TM2.Cfg.mk (some .reverseScan) none contents)) := by
+  rw [pairReductionProgram_adapter_step]
+  rfl
+
+/-- The input-transfer `done` label crosses into the reduction machine's main
+label and declared initial state in one total-dispatcher step. -/
+theorem pairReductionProgram_transfer_done_step {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (contents : ∀ index,
+      List (PairReductionStackAlphabet computer Δ index)) :
+    TM2.step (pairReductionProgram computer)
+        (liftPairInputTransferThenReductionCfg computer
+          (TM2.Cfg.mk (some .done) none contents)) =
+      some (liftReductionMachineControlCfg computer
+        (TM2.Cfg.mk (some computer.tm.main) computer.tm.initialState
+          contents)) := by
+  rw [pairReductionProgram_transfer_step]
+  rfl
+
+/-- The total dispatcher preprocesses an arbitrary tagged pair, transfers its
+left projection in order into the reduction machine's private input stack,
+preserves the right projection as the ordered certificate, and enters the
+reduction machine's declared initial control. The exact cost is linear in the
+tagged source and its left projection. -/
+theorem pairReductionProgram_preprocess_transfer_whole_list
+    {Γ₀ Γ₁ Δ : Type} (computer : TM2ComputableAux Γ₀ Γ₁)
+    (source : List (Sum Γ₀ Δ))
+    (machineContents : ∀ index, List (computer.tm.Γ index)) :
+    (flip Option.bind (TM2.step (pairReductionProgram computer)))^[
+        4 * source.length +
+          4 * (PairEncoding.leftSymbols source).length + 13]
+      (some (liftPairAdapterThenTransferCfg computer
+        (liftPairAdapterCfg computer machineContents
+          (pairAdapterCfg (.split .scan) none source [] [] [] [])))) =
+      some (liftReductionMachineControlCfg computer
+        (TM2.Cfg.mk (some computer.tm.main) computer.tm.initialState
+          (pairReductionStacks computer
+            (pairAdapterStacks [] [] [] []
+              (PairEncoding.rightSymbols source))
+            (Function.update machineContents computer.tm.k₀
+              ((PairEncoding.leftSymbols source).map
+                  computer.inputAlphabet.symm ++
+                machineContents computer.tm.k₀))))) := by
+  have preprocessRun :
+      (flip Option.bind (TM2.step (pairReductionProgram computer)))^[
+          4 * source.length + 7]
+        (some (liftPairAdapterThenTransferCfg computer
+          (liftPairAdapterCfg computer machineContents
+            (pairAdapterCfg (.split .scan) none source [] [] [] [])))) =
+        some (liftPairAdapterThenTransferCfg computer
+          (liftPairAdapterCfg computer machineContents
+            (pairAdapterCfg (.restore .done) none [] []
+              (PairEncoding.leftSymbols source) []
+              (PairEncoding.rightSymbols source)))) :=
+    pairReductionProgram_adapter_run computer (4 * source.length + 7)
+      _ _ (liftPairAdapter_whole_list computer none source machineContents)
+  have preprocessBridge :
+      (flip Option.bind (TM2.step (pairReductionProgram computer)))^[1]
+        (some (liftPairAdapterThenTransferCfg computer
+          (liftPairAdapterCfg computer machineContents
+            (pairAdapterCfg (.restore .done) none [] []
+              (PairEncoding.leftSymbols source) []
+              (PairEncoding.rightSymbols source))))) =
+        some (liftPairInputTransferThenReductionCfg computer
+          (pairInputTransferCfg computer .reverseScan none [] []
+            (PairEncoding.leftSymbols source) []
+            (PairEncoding.rightSymbols source) machineContents)) := by
+    simpa [Function.iterate_succ_apply', liftPairAdapterCfg,
+      pairAdapterCfg, pairInputTransferCfg] using
+      pairReductionProgram_adapter_done_step computer
+        (pairReductionStacks computer
+          (pairAdapterStacks [] [] (PairEncoding.leftSymbols source) []
+            (PairEncoding.rightSymbols source)) machineContents)
+  have transferRun :
+      (flip Option.bind (TM2.step (pairReductionProgram computer)))^[
+          4 * (PairEncoding.leftSymbols source).length + 4]
+        (some (liftPairInputTransferThenReductionCfg computer
+          (pairInputTransferCfg computer .reverseScan none [] []
+            (PairEncoding.leftSymbols source) []
+            (PairEncoding.rightSymbols source) machineContents))) =
+        some (liftPairInputTransferThenReductionCfg computer
+          (pairInputTransferCfg computer .done none [] [] [] []
+            (PairEncoding.rightSymbols source)
+            (Function.update machineContents computer.tm.k₀
+              ((PairEncoding.leftSymbols source).map
+                  computer.inputAlphabet.symm ++
+                machineContents computer.tm.k₀)))) :=
+    pairReductionProgram_transfer_run computer
+      (4 * (PairEncoding.leftSymbols source).length + 4) _ _
+      (pairInputTransfer_whole_list computer none []
+        (PairEncoding.leftSymbols source) []
+        (PairEncoding.rightSymbols source) machineContents)
+  have machineBridge :
+      (flip Option.bind (TM2.step (pairReductionProgram computer)))^[1]
+        (some (liftPairInputTransferThenReductionCfg computer
+          (pairInputTransferCfg computer .done none [] [] [] []
+            (PairEncoding.rightSymbols source)
+            (Function.update machineContents computer.tm.k₀
+              ((PairEncoding.leftSymbols source).map
+                  computer.inputAlphabet.symm ++
+                machineContents computer.tm.k₀))))) =
+        some (liftReductionMachineControlCfg computer
+          (TM2.Cfg.mk (some computer.tm.main) computer.tm.initialState
+            (pairReductionStacks computer
+              (pairAdapterStacks [] [] [] []
+                (PairEncoding.rightSymbols source))
+              (Function.update machineContents computer.tm.k₀
+                ((PairEncoding.leftSymbols source).map
+                    computer.inputAlphabet.symm ++
+                  machineContents computer.tm.k₀))))) := by
+    simpa [Function.iterate_succ_apply', pairInputTransferCfg] using
+      pairReductionProgram_transfer_done_step computer
+        (pairReductionStacks computer
+          (pairAdapterStacks [] [] [] []
+            (PairEncoding.rightSymbols source))
+          (Function.update machineContents computer.tm.k₀
+            ((PairEncoding.leftSymbols source).map
+                computer.inputAlphabet.symm ++
+              machineContents computer.tm.k₀)))
+  have stepCount :
+      4 * source.length +
+          4 * (PairEncoding.leftSymbols source).length + 13 =
+        1 + ((4 * (PairEncoding.leftSymbols source).length + 4) +
+          (1 + (4 * source.length + 7))) := by
+    omega
+  rw [stepCount]
+  rw [Function.iterate_add_apply
+    (flip Option.bind (TM2.step (pairReductionProgram computer))) 1
+    ((4 * (PairEncoding.leftSymbols source).length + 4) +
+      (1 + (4 * source.length + 7)))]
+  rw [Function.iterate_add_apply
+    (flip Option.bind (TM2.step (pairReductionProgram computer)))
+    (4 * (PairEncoding.leftSymbols source).length + 4)
+    (1 + (4 * source.length + 7))]
+  rw [Function.iterate_add_apply
+    (flip Option.bind (TM2.step (pairReductionProgram computer))) 1
+    (4 * source.length + 7)]
+  rw [preprocessRun, preprocessBridge, transferRun, machineBridge]
+
 end LeanNPHardness.MachineAdapters

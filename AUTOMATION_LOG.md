@@ -1543,3 +1543,61 @@ avoid failed routes, and choose a materially different experiment when blocked.
   reduction machine's initial state and `main` label, and prove the combined
   preprocessing-plus-transfer exact run before lifting repeated reduction
   execution.
+
+## 2026-09-01 — total preprocessing-to-reduction dispatcher
+
+- **Starting commit:** `fb9798fc8fe959c3aea8981520c56ef593b4f875`.
+- **Goal:** connect the checked extended-layout preprocessing and ordered-input
+  transfer phases under one finite total dispatcher and enter the reduction
+  machine's declared initial control.
+- **Checked increment:** added finite `PairReductionControlLabel` and
+  `PairReductionControlState`, phase-specific statement/configuration lifts,
+  and total `pairReductionProgram`. Proved exact statement and live-step
+  simulations for preprocessing, transfer, and reduction control; generic
+  finite-run lifts for the first two phases; checked boundary steps; and the
+  headline `pairReductionProgram_preprocess_transfer_whole_list`. The combined
+  run takes exactly
+  `4 * source.length + 4 * (PairEncoding.leftSymbols source).length + 13`
+  steps, puts the left projection onto the private reduction input stack in
+  order, preserves the right projection on the ordered certificate stack, and
+  reaches `computer.tm.main` with `computer.tm.initialState`.
+- **Files:** `LeanNPHardness/PairReductionProgram.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** standalone module checking passed; targeted
+  pair-reduction-program and audit build passed 1,146 jobs; full `lake build`
+  passed 1,148 jobs; and `git diff --check` passed. The Lean-source scan found
+  no `sorry`, `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted`
+  remains only in the existing explanatory dependency comment. The three
+  statement simulations and two finite-run lifts use only `propext` and
+  `Quot.sound`; the combined headline additionally inherits
+  `Classical.choice`.
+- **Failed approaches/blockers:** the first typecheck applied the implicit
+  certificate alphabet as an explicit argument to the new control aliases;
+  named `(Δ := Δ)` arguments fixed the ambiguity. Transfer `goto` was not
+  definitionally equal because its endpoint embedding branches on the reached
+  label; explicitly simplifying the `some` case closed it. The first exact-run
+  induction used `Function.iterate_succ_apply'`, which exposes the last rather
+  than first transition; switching to `Function.iterate_succ_apply` aligned the
+  induction with `TM2.step`. Finally, unrestricted rewriting with
+  `Function.iterate_add_apply` split an inner arithmetic subterm; supplying its
+  step-count arguments explicitly selected the three intended phase joins.
+- **Useful API discovery:** `TM2.step` returns `some (stepAux ...)` even when a
+  statement reaches `.halt`; the resulting configuration has label `none`.
+  A configuration lift can therefore translate that reached halt into the
+  next phase's live control in the same counted step. Sharing
+  `Option (Sum Γ₀ Δ)` between preprocessing and transfer also makes their
+  `none` boundary state definitionally identical. Rechecking the comparison
+  Coq library's `red_inNP` confirmed its higher-level proof separately composes
+  verifier computation and the reduction result-size/certificate polynomial;
+  it does not expose the machine-level pair-stack dispatcher required here.
+- **Ending state:** tagged-pair preprocessing and ordered-input transfer now
+  execute under one finite dispatcher and reach the reduction machine's
+  initial control with the certificate retained. Repeated reduction execution,
+  reduced-output/certificate reassembly, and polynomial-time packaging remain
+  pending, so backward NP transport is not complete.
+- **Best next experiment:** lift an arbitrary exact finite reduction-machine
+  run under `pairReductionProgram_machine_step`, preserving the five adapter
+  stacks. Then add an output-transfer phase that converts the private reduction
+  output into the tagged left component while appending the preserved ordered
+  certificate.
