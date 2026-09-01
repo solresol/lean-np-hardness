@@ -671,6 +671,101 @@ private theorem pairReduction_iterate_bind_none {α : Type}
       rw [Function.iterate_succ_apply]
       exact ih
 
+/-- One reduction-machine step is reproduced by the total dispatcher while
+all five preprocessing stacks remain unchanged. In particular, the ordered
+certificate is preserved explicitly by the fixed `adapterContents` argument.
+-/
+theorem pairReductionProgram_machine_step_preserving_adapter
+    {Γ₀ Γ₁ Δ : Type} (computer : TM2ComputableAux Γ₀ Γ₁)
+    (adapterContents :
+      ∀ index, List (PairAdapterStackAlphabet Γ₀ Δ index))
+    (cfg : TM2.Cfg computer.tm.Γ computer.tm.Λ computer.tm.σ) :
+    TM2.step (pairReductionProgram computer)
+        (liftReductionMachineControlCfg computer
+          (liftReductionCfg computer adapterContents cfg)) =
+      Option.map
+        (fun nextCfg => liftReductionMachineControlCfg computer
+          (liftReductionCfg computer adapterContents nextCfg))
+        (TM2.step computer.tm.m cfg) := by
+  cases cfg with
+  | mk label state machineContents =>
+      cases label with
+      | none =>
+          rfl
+      | some label =>
+          change TM2.step (pairReductionProgram computer)
+              (liftReductionMachineControlCfg computer
+                (TM2.Cfg.mk (some label) state
+                  (pairReductionStacks computer adapterContents
+                    machineContents))) = _
+          rw [pairReductionProgram_machine_step]
+          simp only [liftReductionProgram]
+          rw [liftReduction_stepAux]
+          rfl
+
+/-- Any exact finite reduction-machine run is reproduced by the total
+dispatcher with the same step count, preserving all five adapter stacks.
+-/
+theorem pairReductionProgram_machine_run {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁) (steps : ℕ)
+    (cfg finalCfg : TM2.Cfg computer.tm.Γ computer.tm.Λ computer.tm.σ)
+    (adapterContents :
+      ∀ index, List (PairAdapterStackAlphabet Γ₀ Δ index))
+    (run :
+      (flip Option.bind (TM2.step computer.tm.m))^[steps] (some cfg) =
+        some finalCfg) :
+    (flip Option.bind (TM2.step (pairReductionProgram computer)))^[steps]
+        (some (liftReductionMachineControlCfg computer
+          (liftReductionCfg computer adapterContents cfg))) =
+      some (liftReductionMachineControlCfg computer
+        (liftReductionCfg computer adapterContents finalCfg)) := by
+  induction steps generalizing cfg with
+  | zero =>
+      simp only [Function.iterate_zero_apply, Option.some.injEq] at run ⊢
+      subst finalCfg
+      rfl
+  | succ steps ih =>
+      rw [Function.iterate_succ_apply] at run ⊢
+      change
+        (flip Option.bind (TM2.step computer.tm.m))^[steps]
+            (TM2.step computer.tm.m cfg) = some finalCfg at run
+      change
+        (flip Option.bind (TM2.step (pairReductionProgram computer)))^[steps]
+            (TM2.step (pairReductionProgram computer)
+              (liftReductionMachineControlCfg computer
+                (liftReductionCfg computer adapterContents cfg))) =
+          some (liftReductionMachineControlCfg computer
+            (liftReductionCfg computer adapterContents finalCfg))
+      rw [pairReductionProgram_machine_step_preserving_adapter]
+      cases hstep : TM2.step computer.tm.m cfg with
+      | none =>
+          rw [hstep] at run
+          rw [pairReduction_iterate_bind_none] at run
+          contradiction
+      | some stepped =>
+          simp only [Option.map_some]
+          rw [hstep] at run
+          exact ih stepped run
+
+/-- Package an exact reduction-machine execution witness under the total
+dispatcher without changing its step count or any adapter stack.
+-/
+def pairReductionProgram_machine_evalsTo {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (cfg finalCfg : TM2.Cfg computer.tm.Γ computer.tm.Λ computer.tm.σ)
+    (adapterContents :
+      ∀ index, List (PairAdapterStackAlphabet Γ₀ Δ index))
+    (run : EvalsTo (TM2.step computer.tm.m) cfg (some finalCfg)) :
+    EvalsTo (TM2.step (pairReductionProgram computer))
+      (liftReductionMachineControlCfg computer
+        (liftReductionCfg computer adapterContents cfg))
+      (some (liftReductionMachineControlCfg computer
+        (liftReductionCfg computer adapterContents finalCfg))) where
+  steps := run.steps
+  evals_in_steps :=
+    pairReductionProgram_machine_run computer run.steps cfg finalCfg
+      adapterContents run.evals_in_steps
+
 /-- Any exact finite preprocessing run is reproduced by the total dispatcher.
 The final configuration is not stepped, so it may still carry the standalone
 preprocessing program's `done` label. -/

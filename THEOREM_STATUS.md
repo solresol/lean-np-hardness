@@ -43,13 +43,14 @@
 | Ordered reduction-input transfer | Complete | `MachineAdapters.pairInputTransfer_whole_list` reverses the restored input through the emptied left scratch stack and fills the reduction machine's private input stack through `computer.inputAlphabet.symm` in exactly `4 * input.length + 4` steps, preserving the certificate and all other stacks. |
 | Extended-layout pair preprocessing | Complete | `MachineAdapters.liftPairAdapter_whole_list` lifts the complete tagged-pair preprocessing run into `PairReductionStackAlphabet` with the same exact `4 * source.length + 7` cost while preserving every private reduction-machine stack. |
 | Total pair-reduction preprocessing and input transfer | Complete | `MachineAdapters.pairReductionProgram` dispatches preprocessing, ordered-input transfer, and reduction-machine control under one finite phase-tagged label/state space; `pairReductionProgram_preprocess_transfer_whole_list` enters the reduction machine's declared `main` label and `initialState` in exactly `4 * source.length + 4 * (PairEncoding.leftSymbols source).length + 13` steps while preserving the ordered right projection. |
+| Reduction execution under total pair dispatcher | Complete | `MachineAdapters.pairReductionProgram_machine_step_preserving_adapter`, `pairReductionProgram_machine_run`, and `pairReductionProgram_machine_evalsTo` lift any exact finite reduction-machine execution with the same step count while preserving all five adapter stacks, including the ordered certificate. |
 | Encoded decision language | Complete | `EncodedLanguage` bundles a predicate with the `FinEncoding` that fixes its input-size measure; `EncodedLanguage.PolytimeReducesTo` specializes the checked reduction relation. |
 | P | Complete | `EncodedLanguage.PolytimeDecider` specifies both Boolean outcomes and a `TM2ComputableInPolyTime` witness; `EncodedLanguage.InP` is deterministic polynomial-time decidability. |
 | NP | Complete | `EncodedLanguage.PolytimeVerifier` separates soundness, bounded completeness, and the checked polynomial-time verifier; `EncodedLanguage.InNP` existentially quantifies the finitely encoded certificate type, with constructor `PolytimeVerifier.toInNP`. |
 | P is contained in NP | Complete | `EncodedLanguage.inP_toInNP` uses `PolytimeDecider.toUnitVerifier`, the zero-length `UnitEncoding.finEncoding`, and `MachineAdapters.ignoreUnitCertificate` to reuse the checked decider machine and runtime. |
 | P transport along reductions | Complete | `PolytimeDecider.pullback` composes a checked reduction map with the target Boolean decider, preserving both Boolean semantics; `EncodedLanguage.InP.of_reduction` transports deterministic polynomial-time membership backward. |
 | NP certificate-bound transport along reductions | Complete | `PolytimeVerifier.pullbackCertificateBound` composes the target certificate polynomial with the reduction machine's checked encoded-output-size polynomial; `pullback_complete` proves that transported completeness certificates satisfy that bound. |
-| NP transport along reductions | Pending | The total dispatcher now connects preprocessing and ordered-input transfer to the reduction machine's initial control while preserving the certificate. Lift repeated reduction execution under that dispatcher, reassemble the reduced output/certificate pair, and combine the resulting polynomial-time adapter with the checked certificate-bound transport. |
+| NP transport along reductions | Pending | The total dispatcher now connects preprocessing and ordered-input transfer to the reduction machine's initial control and lifts arbitrary exact reduction execution while preserving the certificate. Reassemble the reduced output/certificate pair, prove the complete polynomial runtime, and combine that adapter with the checked certificate-bound transport. |
 | NP-hardness and NP-completeness | Complete | `EncodedLanguage.NPHard` universally supplies nonempty checked reductions from encoded NP languages; `EncodedLanguage.NPComplete` pairs hardness with NP membership. `NPHard.of_reduction` transports hardness forward by `PolytimeManyOneReduction.comp`, and `NPComplete.of_reduction` combines that transport with separate target membership. |
 | CNF-SAT language and encoding | Pending | Concrete syntax, semantics, and finite encoding. |
 | Exact 3-SAT is in NP | Pending | Checked verifier and runtime bound. |
@@ -161,7 +162,10 @@ The initial declarations build with the pinned Lean and mathlib revisions.
 - `MachineAdapters.liftPairAdapterThenTransfer_stepAux`,
   `liftPairInputTransferThenReduction_stepAux`,
   `liftReductionMachineControl_stepAux`, `pairReductionProgram_adapter_run`,
-  and `pairReductionProgram_transfer_run` depend on `propext` and
+  `pairReductionProgram_transfer_run`,
+  `pairReductionProgram_machine_step_preserving_adapter`,
+  `pairReductionProgram_machine_run`, and
+  `pairReductionProgram_machine_evalsTo` depend on `propext` and
   `Quot.sound`; `pairReductionProgram_preprocess_transfer_whole_list`
   additionally depends on `Classical.choice`.
 - `EncodedLanguage.PolytimeReducesTo`, `EncodedLanguage.InP`,

@@ -1601,3 +1601,45 @@ avoid failed routes, and choose a materially different experiment when blocked.
   stacks. Then add an output-transfer phase that converts the private reduction
   output into the tagged left component while appending the preserved ordered
   certificate.
+
+## 2026-09-02 — exact reduction execution under total dispatcher
+
+- **Starting commit:** `e80f20bdc5f5238a504ac28927cebc69b8b957d9`.
+- **Goal:** lift arbitrary exact reduction-machine execution through the total
+  pair dispatcher while making preservation of all five adapter stacks,
+  especially the ordered certificate, explicit.
+- **Checked increment:** proved
+  `pairReductionProgram_machine_step_preserving_adapter` and
+  `pairReductionProgram_machine_run`, then packaged the unchanged step count as
+  `pairReductionProgram_machine_evalsTo`. The fixed `adapterContents` parameter
+  is retained across every simulated step and at the final configuration.
+- **Files:** `LeanNPHardness/PairReductionProgram.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** standalone module checking passed; targeted
+  pair-reduction-program and audit build passed 1,146 jobs; full `lake build`
+  passed 1,148 jobs; and `git diff --check` passed. The Lean-source scan found
+  no `sorry`, `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted`
+  remains only in the existing explanatory dependency comment. All three new
+  declarations depend only on `propext` and `Quot.sound`.
+- **Failed approaches/blockers:** directly rewriting with
+  `pairReductionProgram_machine_step` did not match the nested
+  `liftReductionCfg` representation. Exposing its `pairReductionStacks`
+  contents and unfolding `liftReductionProgram` allowed the existing
+  `liftReduction_stepAux` theorem to close the composed one-step simulation.
+  No unresolved Lean proof blocker remains in this increment.
+- **Useful API discovery:** composing the machine-stack lift with the
+  total-control lift gives a direct `Option.map` commuting square. Induction
+  using `Function.iterate_succ_apply` then transports exact executions without
+  changing their step count; the existing bind-on-`none` lemma excludes an
+  impossible prematurely halted source run.
+- **Ending state:** preprocessing, ordered-input transfer, and arbitrary exact
+  reduction execution now share one finite dispatcher and preserve the
+  certificate throughout. Reduced-output/certificate reassembly and the
+  complete polynomial runtime remain pending, so backward NP transport is not
+  complete.
+- **Best next experiment:** add a finite output-transfer phase that drains the
+  reduction machine's private output stack through
+  `computer.outputAlphabet`, emits tagged left symbols in canonical order,
+  appends the preserved ordered certificate as tagged right symbols, and prove
+  its exact linear cost before polynomial-time packaging.

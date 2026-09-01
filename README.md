@@ -128,6 +128,9 @@ The initial checked layer contains:
   transfer, and reduction-machine control, with an exact
   `4 * source.length + 4 * left.length + 13` run that preserves the ordered
   certificate and enters the reduction machine's declared initial control; and
+- exact arbitrary finite reduction-machine execution under that total
+  dispatcher with the original step count and all five adapter stacks,
+  including the ordered certificate, preserved; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,
