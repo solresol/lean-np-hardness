@@ -131,6 +131,10 @@ The initial checked layer contains:
 - exact arbitrary finite reduction-machine execution under that total
   dispatcher with the original step count and all five adapter stacks,
   including the ordered certificate, preserved; and
+- a standalone finite output-reassembly program on an extended stack layout,
+  with an exact `4 * reduced.length + 4 * certificate.length + 8` execution
+  theorem that empties the private reduction output and preserved certificate,
+  then constructs their canonical tagged pair encoding; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,

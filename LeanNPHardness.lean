@@ -12,6 +12,7 @@ import LeanNPHardness.PairEncoding
 import LeanNPHardness.PairMachine
 import LeanNPHardness.PairAdapter
 import LeanNPHardness.PairReduction
+import LeanNPHardness.PairOutputTransfer
 import LeanNPHardness.PairReductionProgram
 import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.PolytimeReduction

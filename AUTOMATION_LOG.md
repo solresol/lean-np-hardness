@@ -1643,3 +1643,52 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `computer.outputAlphabet`, emits tagged left symbols in canonical order,
   appends the preserved ordered certificate as tagged right symbols, and prove
   its exact linear cost before polynomial-time packaging.
+
+## 2026-09-03 — exact standalone output and certificate reassembly
+
+- **Starting commit:** `c262973e844d7f3d3292816adc30af18276ac185`.
+- **Goal:** implement the finite output-transfer phase needed after a checked
+  reduction run, keeping integration with the existing total dispatcher and
+  polynomial-time packaging separate.
+- **Checked increment:** added `PairOutputStackIndex` and
+  `PairOutputStackAlphabet`, extending the working layout with a `Γ₁` reversal
+  stack and a tagged `Sum Γ₁ Δ` result stack. Added the finite four-loop
+  `pairOutputTransferProgram` and exact whole-list theorems for certificate
+  reversal/fill and reduced-output reversal/fill. The headline
+  `pairOutputTransfer_whole_list` empties the private reduction output and
+  preserved ordered certificate, constructs the canonical tagged pair in
+  exactly `4 * privateOutput.length + 4 * certificate.length + 8` steps, and
+  preserves every unrelated stack.
+- **Files:** `LeanNPHardness/PairOutputTransfer.lean`, root imports,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** standalone module checking passed; targeted
+  output-transfer and audit build passed 1,147 jobs; full `lake build` passed
+  1,149 jobs; and `git diff --check` passed. The Lean-source scan found no
+  `sorry`, `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted`
+  remains only in the existing explanatory dependency comment. The headline
+  theorem depends only on `propext`, `Classical.choice`, and `Quot.sound`.
+- **Failed approaches/blockers:** the first structural update proofs left
+  dependent `Function.update` goals at the other new stack constructor;
+  supplying explicit injected-index disequalities closed them. After each
+  first pop step, the newly exposed second `stepAux` had to be unfolded before
+  the stack-update theorem matched. The final four-phase composition also
+  needed typed intermediate equalities to normalize reversed mapped lists
+  before the next exact run could rewrite. No unresolved proof blocker remains
+  in the standalone program.
+- **Useful API discovery:** the existing tagged source stack cannot also be
+  the result stack because it has alphabet `Sum Γ₀ Δ`, whereas reduction
+  output requires `Sum Γ₁ Δ`; a separate result stack is required when the
+  input and output alphabets differ. Building the certificate first and then
+  prepending the twice-reversed reduced output yields exactly the pair
+  encoding order without identifying private machine symbols with canonical
+  output symbols. The completed Coq development still packages this closure
+  at the relation level and supplies no machine-stack reassembly proof.
+- **Ending state:** standalone output/certificate reassembly is executable,
+  machine-checked, documented, and audited. It is not yet connected to the
+  preprocessing/reduction dispatcher and has no polynomial-time machine
+  wrapper, so backward NP transport remains pending.
+- **Best next experiment:** lift `pairReductionProgram` unchanged over
+  `PairOutputStackAlphabet`, preserving the two new output stacks, then replace
+  its reached reduction halt with the `certificateReverseScan` entry and prove
+  the exact boundary step before composing the complete run.
