@@ -135,6 +135,10 @@ The initial checked layer contains:
   with an exact `4 * reduced.length + 4 * certificate.length + 8` execution
   theorem that empties the private reduction output and preserved certificate,
   then constructs their canonical tagged pair encoding; and
+- one finite total dispatcher lifting the complete pair/reduction pipeline onto
+  the output-extended layout, preserving both new stacks, redirecting a reached
+  reduction halt into certificate reassembly in the same counted step, and
+  exactly lifting finite runs of both constituent dispatchers; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,

@@ -1692,3 +1692,49 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `PairOutputStackAlphabet`, preserving the two new output stacks, then replace
   its reached reduction halt with the `certificateReverseScan` entry and prove
   the exact boundary step before composing the complete run.
+
+## 2026-09-04 — total reduction-to-output dispatcher
+
+- **Starting commit:** `863291d64ba4f3da798d4232514e98b9933917ea`.
+- **Goal:** lift the checked pair/reduction dispatcher onto the output-extended
+  stack layout, redirect its reached halt into certificate reassembly, and
+  retain exact phase step counts.
+- **Checked increment:** added finite `PairReductionOutputControlLabel` and
+  `PairReductionOutputControlState`, the total
+  `pairReductionOutputProgram`, exact statement/configuration lifts for both
+  constituent programs, and their one-step and arbitrary finite-run
+  simulations. `pairReductionOutputProgram_halt_to_output` proves that an old
+  dispatcher step reaching halt enters `certificateReverseScan` in the same
+  counted step while preserving both output-only stacks.
+- **Files:** `LeanNPHardness/PairReductionOutputProgram.lean`, root imports,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** standalone module checking passed; targeted
+  dispatcher/audit build passed 1,148 jobs; full `lake build` passed 1,150
+  jobs; and `git diff --check` passed. The source scan found no `sorry`,
+  `admit`, project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in
+  the existing explanatory dependency comment. All five new public audits
+  report only `propext` and `Quot.sound`.
+- **Failed approaches/blockers:** no Lean proof route failed. The complete
+  composed execution, finite machine wrapper, canonical-output theorem, and
+  polynomial runtime remain deliberately unclaimed. The pinned Coq library
+  was not available through the global opam configuration, so its exact
+  `red_inNP` source was inspected from a temporary checkout at the repository's
+  pinned commit instead.
+- **Useful API discovery:** a disjoint combined state can totalize both phase
+  programs without new inhabitance assumptions by using their existing
+  canonical empty/initial states only on unreachable opposite branches.
+  `TM2.stepAux` executes the halt replacement's `load` and `goto` inside one
+  machine step, so no extra boundary cost is introduced. The pinned Coq
+  `red_inNP` proof confirms the same high-level decomposition into paired
+  verifier computation and a separately composed certificate/output-size
+  bound, but supplies no mathlib `TM2` dispatcher evidence.
+- **Ending state:** preprocessing, ordered-input transfer, arbitrary reduction
+  execution, and output reassembly now share one finite total dispatcher with
+  exact run lifts and a checked halt-to-reassembly boundary. Backward NP
+  transport still lacks the composed end-to-end execution/output theorem and
+  polynomial-time machine packaging.
+- **Best next experiment:** specialize the two generic run lifts to the
+  existing reduction execution and `pairOutputTransfer_whole_list`, compose
+  them into one exact end-to-end run with an explicit summed cost, then expose
+  the finite input/result stacks before deriving the polynomial runtime.
