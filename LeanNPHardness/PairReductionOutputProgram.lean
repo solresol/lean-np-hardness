@@ -471,4 +471,150 @@ theorem pairReductionOutputProgram_output_run {Γ₀ Γ₁ Δ : Type}
               rw [pairReductionOutputProgram_output_step]
               exact ih _ run
 
+/-- The total dispatcher reproduces the complete pair-left computation: it
+preprocesses an arbitrary tagged source, transfers its left projection into
+the reduction machine, executes a supplied exact reduction run, and reassembles
+the private reduction output with the preserved right projection. The exact
+cost keeps preprocessing, reduction, and output reassembly separate. -/
+theorem pairReductionOutputProgram_complete_run {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (source : List (Sum Γ₀ Δ))
+    (machineContents finalMachineContents :
+      ∀ index, List (computer.tm.Γ index))
+    (finalState : computer.tm.σ)
+    (privateOutput : List (computer.tm.Γ computer.tm.k₁))
+    (reductionRun : EvalsTo (TM2.step computer.tm.m)
+      (TM2.Cfg.mk (some computer.tm.main) computer.tm.initialState
+        (Function.update machineContents computer.tm.k₀
+          ((PairEncoding.leftSymbols source).map
+              computer.inputAlphabet.symm ++
+            machineContents computer.tm.k₀)))
+      (some (TM2.Cfg.mk none finalState
+        (Function.update finalMachineContents computer.tm.k₁
+          privateOutput)))) :
+    (flip Option.bind
+        (TM2.step (pairReductionOutputProgram computer)))^[
+      (4 * privateOutput.length +
+          4 * (PairEncoding.rightSymbols source).length + 8) +
+        (reductionRun.steps +
+          (4 * source.length +
+            4 * (PairEncoding.leftSymbols source).length + 13))]
+      (some (liftPairReductionThenOutputCfg computer [] []
+        (liftPairAdapterThenTransferCfg computer
+          (liftPairAdapterCfg computer machineContents
+            (pairAdapterCfg (.split .scan) none source [] [] [] []))))) =
+      some (liftPairOutputTransferControlCfg computer
+        (pairOutputTransferCfg computer .done none [] [] [] [] []
+          (Function.update finalMachineContents computer.tm.k₁ []) []
+          ((privateOutput.map computer.outputAlphabet).map
+              (Sum.inl : Γ₁ → Sum Γ₁ Δ) ++
+            (PairEncoding.rightSymbols source).map
+              (Sum.inr : Δ → Sum Γ₁ Δ)))) := by
+  let adapterContents :
+      ∀ index, List (PairAdapterStackAlphabet Γ₀ Δ index) :=
+    pairAdapterStacks [] [] [] [] (PairEncoding.rightSymbols source)
+  let initialCfg : TM2.Cfg computer.tm.Γ computer.tm.Λ computer.tm.σ :=
+    TM2.Cfg.mk (some computer.tm.main) computer.tm.initialState
+      (Function.update machineContents computer.tm.k₀
+        ((PairEncoding.leftSymbols source).map computer.inputAlphabet.symm ++
+          machineContents computer.tm.k₀))
+  let finalCfg : TM2.Cfg computer.tm.Γ computer.tm.Λ computer.tm.σ :=
+    TM2.Cfg.mk none finalState
+      (Function.update finalMachineContents computer.tm.k₁ privateOutput)
+  have preprocessRun :=
+    pairReductionProgram_preprocess_transfer_whole_list computer source
+      machineContents
+  have machineRun :
+      (flip Option.bind (TM2.step (pairReductionProgram computer)))^[
+          reductionRun.steps]
+        (some (liftReductionMachineControlCfg computer
+          (liftReductionCfg computer adapterContents initialCfg))) =
+        some (liftReductionMachineControlCfg computer
+          (liftReductionCfg computer adapterContents finalCfg)) :=
+    pairReductionProgram_machine_run computer reductionRun.steps initialCfg
+      finalCfg adapterContents reductionRun.evals_in_steps
+  have reductionPhases :
+      (flip Option.bind (TM2.step (pairReductionProgram computer)))^[
+          reductionRun.steps +
+            (4 * source.length +
+              4 * (PairEncoding.leftSymbols source).length + 13)]
+        (some (liftPairAdapterThenTransferCfg computer
+          (liftPairAdapterCfg computer machineContents
+            (pairAdapterCfg (.split .scan) none source [] [] [] [])))) =
+        some (liftReductionMachineControlCfg computer
+          (liftReductionCfg computer adapterContents finalCfg)) := by
+    rw [Function.iterate_add_apply, preprocessRun]
+    exact machineRun
+  have liftedReductionPhases :=
+    pairReductionOutputProgram_reduction_run computer
+      (reductionRun.steps +
+        (4 * source.length +
+          4 * (PairEncoding.leftSymbols source).length + 13))
+      (liftPairAdapterThenTransferCfg computer
+        (liftPairAdapterCfg computer machineContents
+          (pairAdapterCfg (.split .scan) none source [] [] [] [])))
+      (liftReductionMachineControlCfg computer
+        (liftReductionCfg computer adapterContents finalCfg)) [] []
+      reductionPhases
+  have outputRun := pairOutputTransfer_whole_list computer [] [] []
+    (PairEncoding.rightSymbols source) privateOutput finalMachineContents
+  have liftedOutputRun :=
+    pairReductionOutputProgram_output_run computer
+      (4 * privateOutput.length +
+        4 * (PairEncoding.rightSymbols source).length + 8)
+      (pairOutputTransferCfg computer .certificateReverseScan none [] [] [] []
+        (PairEncoding.rightSymbols source)
+        (Function.update finalMachineContents computer.tm.k₁ privateOutput) [] [])
+      (pairOutputTransferCfg computer .done none [] [] [] [] []
+        (Function.update finalMachineContents computer.tm.k₁ []) []
+        ((privateOutput.map computer.outputAlphabet).map
+            (Sum.inl : Γ₁ → Sum Γ₁ Δ) ++
+          (PairEncoding.rightSymbols source).map
+            (Sum.inr : Δ → Sum Γ₁ Δ)))
+      outputRun
+  rw [Function.iterate_add_apply, liftedReductionPhases]
+  simpa [adapterContents, finalCfg, liftReductionCfg,
+    liftReductionMachineControlCfg, liftPairOutputTransferControlCfg,
+    liftPairReductionThenOutputCfg, pairOutputTransferCfg] using
+    liftedOutputRun
+
+/-- Package the complete exact pair-left execution as mathlib's `EvalsTo`
+witness without hiding its three-part step count. -/
+def pairReductionOutputProgram_complete_evalsTo {Γ₀ Γ₁ Δ : Type}
+    (computer : TM2ComputableAux Γ₀ Γ₁)
+    (source : List (Sum Γ₀ Δ))
+    (machineContents finalMachineContents :
+      ∀ index, List (computer.tm.Γ index))
+    (finalState : computer.tm.σ)
+    (privateOutput : List (computer.tm.Γ computer.tm.k₁))
+    (reductionRun : EvalsTo (TM2.step computer.tm.m)
+      (TM2.Cfg.mk (some computer.tm.main) computer.tm.initialState
+        (Function.update machineContents computer.tm.k₀
+          ((PairEncoding.leftSymbols source).map
+              computer.inputAlphabet.symm ++
+            machineContents computer.tm.k₀)))
+      (some (TM2.Cfg.mk none finalState
+        (Function.update finalMachineContents computer.tm.k₁
+          privateOutput)))) :
+    EvalsTo (TM2.step (pairReductionOutputProgram computer))
+      (liftPairReductionThenOutputCfg computer [] []
+        (liftPairAdapterThenTransferCfg computer
+          (liftPairAdapterCfg computer machineContents
+            (pairAdapterCfg (.split .scan) none source [] [] [] []))))
+      (some (liftPairOutputTransferControlCfg computer
+        (pairOutputTransferCfg computer .done none [] [] [] [] []
+          (Function.update finalMachineContents computer.tm.k₁ []) []
+          ((privateOutput.map computer.outputAlphabet).map
+              (Sum.inl : Γ₁ → Sum Γ₁ Δ) ++
+            (PairEncoding.rightSymbols source).map
+              (Sum.inr : Δ → Sum Γ₁ Δ))))) where
+  steps :=
+    (4 * privateOutput.length +
+        4 * (PairEncoding.rightSymbols source).length + 8) +
+      (reductionRun.steps +
+        (4 * source.length +
+          4 * (PairEncoding.leftSymbols source).length + 13))
+  evals_in_steps := pairReductionOutputProgram_complete_run computer source
+    machineContents finalMachineContents finalState privateOutput reductionRun
+
 end LeanNPHardness.MachineAdapters

@@ -1738,3 +1738,47 @@ avoid failed routes, and choose a materially different experiment when blocked.
   existing reduction execution and `pairOutputTransfer_whole_list`, compose
   them into one exact end-to-end run with an explicit summed cost, then expose
   the finite input/result stacks before deriving the polynomial runtime.
+
+## 2026-09-05 — exact end-to-end pair-left execution
+
+- **Starting commit:** `f0c5f6d75b7059349ba95744a8320f832110fed1`.
+- **Goal:** compose the checked preprocessing/input-transfer run, an arbitrary
+  exact reduction-machine execution, and checked output/certificate reassembly
+  under the total dispatcher without hiding any phase cost.
+- **Checked increment:** proved
+  `pairReductionOutputProgram_complete_run` and packaged it as
+  `pairReductionOutputProgram_complete_evalsTo`. Given a supplied exact
+  reduction run, the combined dispatcher now starts from an arbitrary tagged
+  source, preserves its right projection, and finishes with
+  `(privateOutput.map outputAlphabet).map Sum.inl ++ certificate.map Sum.inr`.
+  Its step count is the sum of the exact reassembly cost, the supplied
+  reduction witness, and the exact preprocessing/input-transfer cost; the
+  already-counted reduction halt requires no extra bridge step.
+- **Files:** `LeanNPHardness/PairReductionOutputProgram.lean`,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this
+  journal.
+- **Successful checks:** standalone module checking passed; targeted module
+  and audit build passed 1,148 jobs; full `lake build` passed 1,150 jobs; and
+  `git diff --check` passed. The Lean-source scan found no `sorry`, `admit`,
+  project-defined `axiom`, or `unsafe`; `proof_wanted` remains only in the
+  existing explanatory dependency comment. Both new declarations depend only
+  on `propext`, `Classical.choice`, and `Quot.sound`.
+- **Failed approaches/blockers:** no Lean proof route failed and no proof
+  blocker remains in this increment. The first direct standalone audit saw
+  unknown new constants because the root module still referenced the previous
+  compiled object; building `LeanNPHardness.PairReductionOutputProgram` before
+  `LeanNPHardness.Audit` refreshed the import and the audit then passed.
+- **Useful API discovery:** the halted reduction embedding and the standalone
+  reassembly entry are definitionally equal after unfolding their configuration
+  lifts: the reached `none` label selects `certificateReverseScan`, discards the
+  obsolete reduction state, and preserves the complete stack family. This lets
+  the exact phase runs compose with `Function.iterate_add_apply` and no new
+  boundary lemma or step.
+- **Ending state:** the pair-left adapter has a checked exact end-to-end
+  execution theorem and canonical tagged result stack. Backward NP transport
+  remains pending because the combined finite machine, canonical `initList` /
+  `haltList` equalities, and polynomial runtime package are not yet proved.
+- **Best next experiment:** define the finite combined machine around
+  `pairReductionOutputProgram`, prove its canonical input configuration is the
+  theorem's start and its designated output stack is the theorem's tagged
+  result, then package a list-level output theorem before bounding its runtime.

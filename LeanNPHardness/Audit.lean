@@ -114,6 +114,8 @@ open Computability
 #print axioms LeanNPHardness.MachineAdapters.pairReductionOutputProgram_halt_to_output
 #print axioms LeanNPHardness.MachineAdapters.liftPairOutputTransferControl_stepAux
 #print axioms LeanNPHardness.MachineAdapters.pairReductionOutputProgram_output_run
+#print axioms LeanNPHardness.MachineAdapters.pairReductionOutputProgram_complete_run
+#print axioms LeanNPHardness.MachineAdapters.pairReductionOutputProgram_complete_evalsTo
 #print axioms LeanNPHardness.UnitEncoding.finEncoding
 #print axioms LeanNPHardness.MachineAdapters.ignoreUnitCertificate
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeReducesTo

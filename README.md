@@ -139,6 +139,10 @@ The initial checked layer contains:
   the output-extended layout, preserving both new stacks, redirecting a reached
   reduction halt into certificate reassembly in the same counted step, and
   exactly lifting finite runs of both constituent dispatchers; and
+- an exact end-to-end execution theorem for that dispatcher, composing tagged
+  preprocessing, ordered input transfer, an arbitrary checked reduction run,
+  and canonical reduced-output/certificate reassembly while retaining the
+  explicit sum of all three phase costs; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,
