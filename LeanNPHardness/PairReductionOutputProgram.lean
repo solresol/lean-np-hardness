@@ -138,8 +138,9 @@ def liftPairReductionThenOutputStmt {Γ₀ Γ₁ Δ : Type}
         (.goto (fun _ => pairReductionOutputTransferLabel computer
           .certificateReverseScan))
 
-/-- Lift output-transfer control into the combined dispatcher while retaining
-its ordinary final halt. -/
+/-- Lift output-transfer control into the combined dispatcher. A reached halt
+resets the state to the preprocessing entry state inside the same counted step,
+as required by the canonical `haltList` configuration. -/
 def liftPairOutputTransferControlStmt {Γ₀ Γ₁ Δ : Type}
     (computer : TM2ComputableAux Γ₀ Γ₁) :
     TM2.Stmt (PairOutputStackAlphabet computer Δ)
@@ -176,7 +177,9 @@ def liftPairOutputTransferControlStmt {Γ₀ Γ₁ Δ : Type}
   | .goto next =>
       .goto (fun state => pairReductionOutputTransferLabel computer
         (next (pairReductionOutputTransferStateValue computer state)))
-  | .halt => .halt
+  | .halt =>
+      .load (fun _ => pairReductionOutputReductionState computer
+        (pairAdapterControlState computer none)) .halt
 
 /-- Total dispatcher from tagged-pair preprocessing through reduction and
 output/certificate reassembly. -/
@@ -213,7 +216,8 @@ def liftPairReductionThenOutputCfg {Γ₀ Γ₁ Δ : Type}
     (fun _ => pairReductionOutputReductionState computer cfg.var)
   stk := pairOutputStacks computer cfg.stk reducedReverse output
 
-/-- Embed an output-transfer configuration into combined control. -/
+/-- Embed an output-transfer configuration into combined control, resetting a
+halted configuration to the preprocessing entry state. -/
 def liftPairOutputTransferControlCfg {Γ₀ Γ₁ Δ : Type}
     (computer : TM2ComputableAux Γ₀ Γ₁)
     (cfg : TM2.Cfg (PairOutputStackAlphabet computer Δ)
@@ -222,7 +226,10 @@ def liftPairOutputTransferControlCfg {Γ₀ Γ₁ Δ : Type}
       (PairReductionOutputControlLabel (Δ := Δ) computer)
       (PairReductionOutputControlState (Δ := Δ) computer) where
   l := cfg.l.map (pairReductionOutputTransferLabel computer)
-  var := pairReductionOutputTransferState computer cfg.var
+  var := cfg.l.elim
+    (pairReductionOutputReductionState computer
+      (pairAdapterControlState computer none))
+    (fun _ => pairReductionOutputTransferState computer cfg.var)
   stk := cfg.stk
 
 /-- Lifting an old-dispatcher statement commutes with one complete `stepAux`,

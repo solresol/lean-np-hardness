@@ -1782,3 +1782,51 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `pairReductionOutputProgram`, prove its canonical input configuration is the
   theorem's start and its designated output stack is the theorem's tagged
   result, then package a list-level output theorem before bounding its runtime.
+
+## 2026-09-06 — canonical pair-left finite machine and output witness
+
+- **Starting commit:** `be2e978b974bb7b80a62537f4c7090457691e01d`;
+  clean `main`, with fetched upstream unchanged.
+- **Goal:** expose the checked pair-left dispatcher as a finite machine and
+  prove canonical list-output correctness before polynomial-time packaging.
+- **Checked increment:** added `pairReductionMachine`, `pairReductionAux`,
+  `pairReductionMachine_initList`, `pairReductionMachine_done_step`,
+  `pairReductionMachine_outputs`, and `pairReductionMachine_outputs_steps`.
+  The output witness ends with only the tagged result stack populated and the
+  initial control state restored. Its exact cost is
+  `reductionRun.steps + 8 * source.length + 4 * privateOutput.length + 22`.
+  Updated the output-control statement/configuration lifts so a reached final
+  halt resets the state inside its counted step; all existing simulation and
+  complete-execution proofs still check.
+- **Files:** new `LeanNPHardness/PairReductionMachine.lean`,
+  `LeanNPHardness/PairReductionOutputProgram.lean`, root imports, the audit,
+  README, theorem status, and this journal.
+- **Successful checks:** standalone module checking passed; targeted machine
+  and audit build passed 1,149 jobs; full `lake build` passed 1,151 jobs; and
+  `git diff --check` passed. The source scan found no `sorry`, `admit`,
+  project-defined `axiom`, or `unsafe`; the only `proof_wanted` occurrence is
+  the existing explanatory comment. All six new public audits report only
+  `propext`, `Classical.choice`, and `Quot.sound`.
+- **Failed approaches/blockers:** ordinary simplification left impossible
+  dependent stack-index equalities; unfolding both stack-index aliases let
+  simplification close them. Direct simplification did not identify canonical
+  `initList`/`haltList` stack functions with partially applied
+  `Function.update`; pointwise configuration equalities resolved that boundary.
+  Rewriting the completed run under the last-step application failed to match;
+  applying `congrArg` to the execution equality composed it successfully. No
+  unresolved proof blocker remains in this increment.
+- **Useful API discovery:** the earlier complete run ends at the live `.done`
+  label, so canonical `TM2Outputs` requires one additional halt step. Its
+  required state reset can be a `load` followed by `halt` within that step.
+  Keeping the converted reduction witness's original `steps` field explicit
+  makes the exact overhead theorem reduce directly. Read the completed Coq
+  `Hardness.v` and installed complexity library's `red_inNP`: its paired
+  computation and separate certificate-size transport remain the design
+  baseline, with no Coq evidence imported into Lean.
+- **Ending state:** the finite pair-left machine has checked canonical output
+  and exact step accounting. Function-level computation, polynomial runtime,
+  and backward NP transport remain pending.
+- **Best next experiment:** specialize the list-output theorem to a
+  `TM2Computable` witness for `(a, c) ↦ (f a, c)`, then bound the exact cost by
+  `T(N) + 8 * N + 4 * S(N) + 22`, using the reduction time/output-size
+  polynomials and the full tagged input length `N`.

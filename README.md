@@ -143,6 +143,10 @@ The initial checked layer contains:
   preprocessing, ordered input transfer, an arbitrary checked reduction run,
   and canonical reduced-output/certificate reassembly while retaining the
   explicit sum of all three phase costs; and
+- a finite pair-left machine with canonical tagged input/output alphabets and
+  a checked `TM2Outputs` constructor, empty work stacks, and restored initial
+  control at halt, taking exactly the reduction run plus
+  `8 * source.length + 4 * privateOutput.length + 22` steps; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,

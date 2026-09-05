@@ -15,6 +15,7 @@ import LeanNPHardness.PairReduction
 import LeanNPHardness.PairReductionProgram
 import LeanNPHardness.PairOutputTransfer
 import LeanNPHardness.PairReductionOutputProgram
+import LeanNPHardness.PairReductionMachine
 import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.PolytimeReduction
 import LeanNPHardness.SemanticReduction
