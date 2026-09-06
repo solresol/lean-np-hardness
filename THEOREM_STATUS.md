@@ -48,13 +48,15 @@
 | Total reduction-to-output dispatcher | Complete | `MachineAdapters.pairReductionOutputProgram` lifts the existing pair/reduction dispatcher onto `PairOutputStackAlphabet`, preserves the two output-only stacks, redirects a reached reduction halt into `certificateReverseScan` in the same counted step, and exactly lifts finite runs of both component dispatchers. |
 | End-to-end pair-left execution | Complete | `MachineAdapters.pairReductionOutputProgram_complete_run` and `pairReductionOutputProgram_complete_evalsTo` compose preprocessing, ordered input transfer, an arbitrary exact reduction-machine run, and canonical output/certificate reassembly with the explicit sum of their exact costs. |
 | Canonical pair-left machine output | Complete | `MachineAdapters.pairReductionMachine` and `pairReductionAux` expose the finite machine and canonical alphabets; `pairReductionMachine_initList`, `pairReductionMachine_done_step`, and `pairReductionMachine_outputs` prove canonical list output with all work stacks empty and the initial control state restored. `pairReductionMachine_outputs_steps` proves the exact cost `reductionRun.steps + 8 * source.length + 4 * privateOutput.length + 22`, including the final halt step. |
+| Function-level pair-left computation | Complete | `MachineAdapters.pairReductionComputable` specializes the canonical machine to `(a, c) ↦ (f a, c)` under `PairEncoding.finEncoding`; `pairReductionComputable_outputs_steps` preserves the exact reduction step count plus the linear input/output overhead. |
+| Polynomial-time pair-left computation | Complete | `MachineAdapters.pairReductionComputableInPolyTime` uses the same checked machine and the explicit `pairReductionTimePolynomial`, evaluating to `T(N) + 8 * N + 4 * S(N) + 22`, where `N` is the full tagged input length, `T` is the reduction time polynomial, and `S` is its checked encoded-output-size polynomial. No certificate-length restriction is assumed. |
 | Encoded decision language | Complete | `EncodedLanguage` bundles a predicate with the `FinEncoding` that fixes its input-size measure; `EncodedLanguage.PolytimeReducesTo` specializes the checked reduction relation. |
 | P | Complete | `EncodedLanguage.PolytimeDecider` specifies both Boolean outcomes and a `TM2ComputableInPolyTime` witness; `EncodedLanguage.InP` is deterministic polynomial-time decidability. |
 | NP | Complete | `EncodedLanguage.PolytimeVerifier` separates soundness, bounded completeness, and the checked polynomial-time verifier; `EncodedLanguage.InNP` existentially quantifies the finitely encoded certificate type, with constructor `PolytimeVerifier.toInNP`. |
 | P is contained in NP | Complete | `EncodedLanguage.inP_toInNP` uses `PolytimeDecider.toUnitVerifier`, the zero-length `UnitEncoding.finEncoding`, and `MachineAdapters.ignoreUnitCertificate` to reuse the checked decider machine and runtime. |
 | P transport along reductions | Complete | `PolytimeDecider.pullback` composes a checked reduction map with the target Boolean decider, preserving both Boolean semantics; `EncodedLanguage.InP.of_reduction` transports deterministic polynomial-time membership backward. |
 | NP certificate-bound transport along reductions | Complete | `PolytimeVerifier.pullbackCertificateBound` composes the target certificate polynomial with the reduction machine's checked encoded-output-size polynomial; `pullback_complete` proves that transported completeness certificates satisfy that bound. |
-| NP transport along reductions | Pending | The finite pair-left machine now has canonical list-output correctness and an exact linear overhead. Specialize it to function-level paired computation, bound its complete runtime by a polynomial in the tagged input length, and combine it with the checked certificate-bound transport. |
+| NP transport along reductions | Pending | The polynomial-time pair-left adapter and certificate-bound transport are checked separately. Compose `pairReductionComputableInPolyTime` with the target verifier, use `pullback_complete` for bounded completeness, and expose the resulting verifier pullback and `EncodedLanguage.InNP.of_reduction`. |
 | NP-hardness and NP-completeness | Complete | `EncodedLanguage.NPHard` universally supplies nonempty checked reductions from encoded NP languages; `EncodedLanguage.NPComplete` pairs hardness with NP membership. `NPHard.of_reduction` transports hardness forward by `PolytimeManyOneReduction.comp`, and `NPComplete.of_reduction` combines that transport with separate target membership. |
 | CNF-SAT language and encoding | Pending | Concrete syntax, semantics, and finite encoding. |
 | Exact 3-SAT is in NP | Pending | Checked verifier and runtime bound. |
@@ -186,6 +188,10 @@ The initial declarations build with the pinned Lean and mathlib revisions.
 - `MachineAdapters.pairReductionMachine`, `pairReductionAux`,
   `pairReductionMachine_initList`, `pairReductionMachine_done_step`,
   `pairReductionMachine_outputs`, and `pairReductionMachine_outputs_steps`
+  depend on `propext`, `Classical.choice`, and `Quot.sound`.
+- `MachineAdapters.pairReductionComputable`,
+  `pairReductionComputable_outputs_steps`, `pairReductionTimePolynomial`,
+  `pairReductionTimePolynomial_eval`, and `pairReductionComputableInPolyTime`
   depend on `propext`, `Classical.choice`, and `Quot.sound`.
 - `EncodedLanguage.PolytimeReducesTo`, `EncodedLanguage.InP`,
   `EncodedLanguage.PolytimeDecider.ofAcceptsIff`, and

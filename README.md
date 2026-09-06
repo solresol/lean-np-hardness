@@ -147,6 +147,11 @@ The initial checked layer contains:
   a checked `TM2Outputs` constructor, empty work stacks, and restored initial
   control at halt, taking exactly the reduction run plus
   `8 * source.length + 4 * privateOutput.length + 22` steps; and
+- checked function-level and polynomial-time pair-left computation
+  `(a, c) ↦ (f a, c)`, preserving the certificate under the canonical tagged
+  pair encoding, with runtime `T(N) + 8 * N + 4 * S(N) + 22` in the full tagged
+  input length `N`, using the reduction time polynomial `T` and its checked
+  encoded-output-size polynomial `S`; and
 - a checked inclusion from P into NP using the empty encoding of the unique
   `Unit` certificate, reusing the decider machine and its runtime unchanged;
 - backward closure of P under checked polynomial-time many-one reductions,
@@ -160,7 +165,9 @@ The initial checked layer contains:
   closed polynomial-reduction composition theorem and a corresponding
   NP-completeness constructor.
 
-SAT, exact 3-SAT, and Cook--Levin remain pending. See
+Backward NP transport still requires composing the checked pair-left adapter
+with the target verifier and packaging the transported verifier. SAT, exact
+3-SAT, and Cook--Levin remain pending. See
 [THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).
 
 ## Toolchain

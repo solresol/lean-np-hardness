@@ -1830,3 +1830,54 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `TM2Computable` witness for `(a, c) ↦ (f a, c)`, then bound the exact cost by
   `T(N) + 8 * N + 4 * S(N) + 22`, using the reduction time/output-size
   polynomials and the full tagged input length `N`.
+
+## 2026-09-07 — polynomial-time pair-left computation
+
+- **Starting commit:** `3852bc43c125d8f1005662496b6feefd57a00a66`;
+  clean `main`, with fetched upstream unchanged.
+- **Goal:** specialize the canonical pair-left machine to function-level
+  computation and bound its exact cost by a polynomial in the full tagged
+  input length, independently of verifier/certificate-bound transport.
+- **Checked increment:** added `pairReductionComputable` and
+  `pairReductionComputable_outputs_steps`, preserving the original reduction
+  witness's step count at the encoding boundary. Added the explicit
+  `pairReductionTimePolynomial`, its evaluation theorem, and headline
+  `pairReductionComputableInPolyTime`. The machine computes
+  `(a, c) ↦ (f a, c)` under `PairEncoding.finEncoding` within
+  `T(N) + 8 * N + 4 * S(N) + 22` steps, where `N` is the full input/certificate
+  encoding length and `S` is the existing checked reduction output-size
+  polynomial. It assumes no certificate-length bound.
+- **Files:** new `LeanNPHardness/PairReductionComputable.lean`, root imports,
+  `LeanNPHardness/Audit.lean`, `README.md`, `THEOREM_STATUS.md`, and this journal.
+- **Successful checks:** standalone function-level module checking passed;
+  targeted module/audit build passed 1,150 jobs; full `lake build` passed
+  1,152 jobs; and `git diff --check` passed. The Lean-source scan found no
+  `sorry`, `admit`, project-defined `axiom`, or `unsafe`; the only
+  `proof_wanted` occurrence is the existing explanatory comment. All five new
+  public audits report only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Failed approaches/blockers:** using `simpa` to cast the entire reduction
+  output witness left `(cast ... witness).steps = witness.steps` unresolved.
+  Constructing its `steps` explicitly and simplifying only `evals_in_steps`
+  removed that obstruction. Inferred polynomial-monotonicity facts retained
+  lambda applications that `omega` treated as different atoms from direct
+  polynomial evaluations; explicitly typing both inequalities fixed the
+  arithmetic, following the earlier composition-runtime pattern. No unresolved
+  proof blocker remains in this increment.
+- **Useful API discovery:** the exact function-level step equality lets the
+  polynomial witness reuse the same `outputsFun` execution without a second
+  simulation. Monotonicity of both natural-coefficient polynomials lifts the
+  reduction's input-only bounds to the entire tagged input length. Rechecked
+  `phd-thesis-coq/theories/Hardness.v` and `red_inNP` in the temporary Coq
+  library checkout at pinned commit
+  `14b5f413d2fb7adecde79c5451b483f9a1af59a8`; paired verifier computation and
+  certificate-size transport remain separate, with no Coq proof terms used as
+  Lean evidence.
+- **Ending state:** the pair-left adapter now has checked function semantics,
+  exact step accounting, and a polynomial-time witness. Backward NP transport
+  remains pending until the target verifier and certificate-bound result are
+  assembled into a source verifier.
+- **Best next experiment:** define `PolytimeVerifier.pullback` by composing
+  `pairReductionComputableInPolyTime` with the target verifier using
+  `compositionComputableInPolyTime`, reuse `pullback_complete`, transport
+  soundness through reduction correctness, and derive
+  `EncodedLanguage.InNP.of_reduction`.
