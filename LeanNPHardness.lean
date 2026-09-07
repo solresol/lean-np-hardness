@@ -20,3 +20,4 @@ import LeanNPHardness.PairReductionComputable
 import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.PolytimeReduction
 import LeanNPHardness.SemanticReduction
+import LeanNPHardness.VerifierTransport

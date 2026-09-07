@@ -56,7 +56,7 @@
 | P is contained in NP | Complete | `EncodedLanguage.inP_toInNP` uses `PolytimeDecider.toUnitVerifier`, the zero-length `UnitEncoding.finEncoding`, and `MachineAdapters.ignoreUnitCertificate` to reuse the checked decider machine and runtime. |
 | P transport along reductions | Complete | `PolytimeDecider.pullback` composes a checked reduction map with the target Boolean decider, preserving both Boolean semantics; `EncodedLanguage.InP.of_reduction` transports deterministic polynomial-time membership backward. |
 | NP certificate-bound transport along reductions | Complete | `PolytimeVerifier.pullbackCertificateBound` composes the target certificate polynomial with the reduction machine's checked encoded-output-size polynomial; `pullback_complete` proves that transported completeness certificates satisfy that bound. |
-| NP transport along reductions | Pending | The polynomial-time pair-left adapter and certificate-bound transport are checked separately. Compose `pairReductionComputableInPolyTime` with the target verifier, use `pullback_complete` for bounded completeness, and expose the resulting verifier pullback and `EncodedLanguage.InNP.of_reduction`. |
+| NP transport along reductions | Complete | `PolytimeVerifier.pullback` composes the checked pair-left machine with the target verifier, transports soundness through reduction correctness, and uses `pullback_complete` for polynomially bounded completeness. `pullback_verify` and `pullback_certificateEncoding` expose the unchanged certificate interface; `EncodedLanguage.InNP.of_reduction` transports verifier-based NP membership backward. |
 | NP-hardness and NP-completeness | Complete | `EncodedLanguage.NPHard` universally supplies nonempty checked reductions from encoded NP languages; `EncodedLanguage.NPComplete` pairs hardness with NP membership. `NPHard.of_reduction` transports hardness forward by `PolytimeManyOneReduction.comp`, and `NPComplete.of_reduction` combines that transport with separate target membership. |
 | CNF-SAT language and encoding | Pending | Concrete syntax, semantics, and finite encoding. |
 | Exact 3-SAT is in NP | Pending | Checked verifier and runtime bound. |
@@ -203,6 +203,9 @@ The initial declarations build with the pinned Lean and mathlib revisions.
 - `EncodedLanguage.PolytimeVerifier.pullbackCertificateBound`,
   `pullbackCertificateBound_eval`, and `pullback_complete` depend on `propext`,
   `Classical.choice`, and `Quot.sound`.
+- `EncodedLanguage.PolytimeVerifier.pullback`, `pullback_verify`,
+  `pullback_certificateEncoding`, and `EncodedLanguage.InNP.of_reduction`
+  depend on `propext`, `Classical.choice`, and `Quot.sound`.
 - `PairEncoding.finEncoding`, `finEncoding_encode_length`,
   `EncodedLanguage.PolytimeVerifier.accepts_iff_exists_certificate`, and
   `EncodedLanguage.InNP`, and `EncodedLanguage.PolytimeVerifier.toInNP` depend

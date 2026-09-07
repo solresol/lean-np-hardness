@@ -238,9 +238,9 @@ theorem pullbackCertificateBound_eval {α β certificate : Type}
 
 /-- Completeness certificates for the target verifier satisfy the composed
 bound after pulling the verifier relation back along a checked reduction. This
-is the certificate-size half of backward NP transport; the polynomial-time
-machine for the paired map `(input, certificate) ↦
-(reduction.map input, certificate)` remains a separate obligation. -/
+is the certificate-size half of backward NP transport; `VerifierTransport`
+combines it with the separately checked polynomial-time machine for the paired
+map `(input, certificate) ↦ (reduction.map input, certificate)`. -/
 theorem pullback_complete {α β certificate : Type}
     {source : EncodedLanguage α} {target : EncodedLanguage β}
     (targetVerifier : PolytimeVerifier (certificate := certificate) target)

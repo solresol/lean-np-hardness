@@ -17,6 +17,7 @@ import LeanNPHardness.PairReductionMachine
 import LeanNPHardness.PairReductionComputable
 import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.ComplexityClasses
+import LeanNPHardness.VerifierTransport
 
 namespace LeanNPHardness.Audit
 
@@ -140,6 +141,10 @@ open Computability
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.pullbackCertificateBound
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.pullbackCertificateBound_eval
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.pullback_complete
+#print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.pullback
+#print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.pullback_verify
+#print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.pullback_certificateEncoding
+#print axioms LeanNPHardness.EncodedLanguage.InNP.of_reduction
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.accepts_iff_exists_certificate
 #print axioms LeanNPHardness.EncodedLanguage.InNP
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.toInNP

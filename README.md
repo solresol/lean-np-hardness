@@ -160,14 +160,17 @@ The initial checked layer contains:
   verifier's certificate polynomial with the reduction machine's checked
   encoded-output-size polynomial and proving transported bounded completeness;
   and
+- a checked verifier pullback and `EncodedLanguage.InNP.of_reduction`, proving
+  backward closure of NP under polynomial-time many-one reductions by composing
+  the pair-left machine with the target verifier and reusing the transported
+  certificate bound; and
 - encoded NP-hardness and NP-completeness as propositions carrying nonempty
   checked reduction witnesses, with hardness transported forward by the
   closed polynomial-reduction composition theorem and a corresponding
   NP-completeness constructor.
 
-Backward NP transport still requires composing the checked pair-left adapter
-with the target verifier and packaging the transported verifier. SAT, exact
-3-SAT, and Cook--Levin remain pending. See
+Backward transport of both P and NP is checked. SAT, exact 3-SAT, and
+Cook--Levin remain pending. See
 [THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).
 
 ## Toolchain

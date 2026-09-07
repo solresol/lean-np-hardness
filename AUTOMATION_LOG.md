@@ -1881,3 +1881,43 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `compositionComputableInPolyTime`, reuse `pullback_complete`, transport
   soundness through reduction correctness, and derive
   `EncodedLanguage.InNP.of_reduction`.
+
+## 2026-09-08 — backward NP transport along checked reductions
+
+- **Starting commit:** `fb7ca30caecc88ffacea9a91fc292ee35b54fdd7`;
+  clean `main`, with fetched upstream unchanged.
+- **Goal:** assemble the checked pair-left machine and certificate-bound
+  transport into a source verifier and prove backward NP membership transport.
+- **Checked increment:** added `PolytimeVerifier.pullback` in the new
+  `VerifierTransport.lean` module. Its machine composes
+  `pairReductionComputableInPolyTime` with the target verifier through
+  `compositionComputableInPolyTime`; soundness uses reduction correctness and
+  bounded completeness reuses `pullback_complete`. Added `pullback_verify` and
+  `pullback_certificateEncoding` to expose the preserved certificate interface,
+  and headline `EncodedLanguage.InNP.of_reduction`.
+- **Files:** new `LeanNPHardness/VerifierTransport.lean`, root imports,
+  `LeanNPHardness/Audit.lean`, the certificate-bound docstring in
+  `LeanNPHardness/ComplexityClasses.lean`, README, theorem status, and this
+  journal.
+- **Successful checks:** standalone module checking passed; targeted module
+  and audit build passed 1,151 jobs; full `lake build` passed 1,153 jobs; and
+  `git diff --check` passed. The Lean-source scan found no `sorry`, `admit`,
+  project-defined `axiom`, or `unsafe`; the only `proof_wanted` occurrence
+  remains the existing explanatory comment. All four new public audits report
+  only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Failed approaches/blockers:** no Lean proof route failed and no unresolved
+  blocker remains in this increment.
+- **Useful API discovery:** one `Classical.choice reduction.polytime` supplies
+  the same reduction witness to both the composed certificate bound and the
+  paired computation. The sequential composition function matches the pulled
+  back Boolean verifier definitionally, so no encoding cast or new machine
+  simulation is required. Consulted the completed Coq `Hardness.v` and the
+  installed complexity library's `Complexity/NP.v:217` (`red_inNP`): its
+  separation of paired computation and certificate-size transport agrees with
+  this construction; no Coq proof terms were used as Lean evidence.
+- **Ending state:** backward NP transport is checked and its status and axiom
+  audit are recorded. SAT, exact 3-SAT, and Cook--Levin remain pending.
+- **Best next experiment:** begin Milestone 3 with literal syntax and list-based
+  clauses and CNF formulas preserving repeated literals and clauses. Define Boolean
+  evaluation and prove its equivalence to propositional satisfaction before
+  adding finite encodings or making runtime claims.
