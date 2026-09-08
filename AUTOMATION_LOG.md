@@ -1921,3 +1921,49 @@ avoid failed routes, and choose a materially different experiment when blocked.
   clauses and CNF formulas preserving repeated literals and clauses. Define Boolean
   evaluation and prove its equivalence to propositional satisfaction before
   adding finite encodings or making runtime claims.
+
+## 2026-09-09 — CNF syntax and checked Boolean evaluation
+
+- **Starting commit:** `dd5df1a63e0c3970b9bf8b5c012dca9cfe9459b0`;
+  clean `main`, with fetched upstream unchanged.
+- **Goal:** begin Milestone 3 with occurrence-preserving CNF syntax and prove
+  Boolean evaluation equivalent to independent propositional satisfaction.
+- **Checked increment:** added generic `CNF.Literal`, `Clause`, `Formula`, and
+  Boolean `Assignment`; proved `Literal.eval_eq_true`, `Clause.eval_eq_true`,
+  `Formula.eval_eq_true`, and `Formula.satisfiable_iff_exists_eval`. Added
+  evaluation equations for empty lists, cons, and append, plus
+  `Formula.satisfiable_nil`, `not_satisfiable_of_nil_mem`, and
+  `exactWidth_repeated_triple`. Added semantic `SAT`, `ExactKSAT`, and
+  `ExactThreeSAT` over natural-number variables; exact k-SAT requires positive
+  k and counts repeated literal occurrences.
+- **Files:** new `LeanNPHardness/CNF.lean`, root imports,
+  `LeanNPHardness/Audit.lean`, README, theorem status, and this journal.
+- **Successful checks:** targeted CNF/audit build passed 1,152 jobs; full
+  `lake build` passed 1,154 jobs; `git diff --check` passed. The Lean-source
+  scan found no `sorry`, `admit`, project-defined `axiom`, or `unsafe`; the
+  only `proof_wanted` occurrence remains the explanatory dependency comment.
+  The literal correctness audit uses only `propext`; the other six new
+  theorem audits use only `propext` and `Quot.sound`. `SAT` and `ExactKSAT`
+  depend on no axioms.
+- **Failed approaches/blockers:** the first standalone check rejected
+  `variable` as a pattern binder because it is reserved Lean syntax; renaming
+  it to `v` resolved the parse error. No unresolved proof blocker remains in
+  this increment. The initial literal-list design required no normalization,
+  machine simulation, or computational assumptions.
+- **Useful API discovery:** the pinned Lean `List.any_eq_true` and
+  `List.all_eq_true` simplification lemmas directly connect the executable
+  list folds to existential/universal satisfaction. Consulted the completed
+  Coq `theories/Hardness.v` and installed comparison library's `NP/SAT/SAT.v`
+  and `kSAT.v`: lists retain occurrences, empty disjunctions are false, and
+  `kSAT` requires positive width. Coq uses finite lists of true variables;
+  this increment uses total Boolean assignments and does not yet prove an
+  equivalent finite certificate representation. No Coq proof terms were used
+  as Lean evidence.
+- **Ending state:** the semantic CNF layer builds and its axiom audit is
+  recorded. Finite formula/certificate encodings, encoded input-size bounds,
+  polynomial-time verifier machines, and Cook--Levin remain pending.
+- **Best next experiment:** construct a reusable finite encoding of lists
+  from a supplied `FinEncoding`, preserving empty elements and repetitions
+  with explicit delimiters. Prove decoder round-trip and encoded length, then
+  apply it to signed natural-number literals and nested clause/formula lists.
+  Keep the finite-certificate equivalence and TM2 runtime proofs separate.

@@ -18,10 +18,21 @@ import LeanNPHardness.PairReductionComputable
 import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.VerifierTransport
+import LeanNPHardness.CNF
 
 namespace LeanNPHardness.Audit
 
 open Computability
+
+#print axioms LeanNPHardness.CNF.Literal.eval_eq_true
+#print axioms LeanNPHardness.CNF.Clause.eval_eq_true
+#print axioms LeanNPHardness.CNF.Formula.eval_eq_true
+#print axioms LeanNPHardness.CNF.Formula.satisfiable_iff_exists_eval
+#print axioms LeanNPHardness.CNF.Formula.satisfiable_nil
+#print axioms LeanNPHardness.CNF.Formula.not_satisfiable_of_nil_mem
+#print axioms LeanNPHardness.CNF.Formula.exactWidth_repeated_triple
+#print axioms LeanNPHardness.CNF.SAT
+#print axioms LeanNPHardness.CNF.ExactKSAT
 
 #print axioms LeanNPHardness.ManyOneReduction.comp
 #print axioms LeanNPHardness.PolytimeManyOneReduction.refl

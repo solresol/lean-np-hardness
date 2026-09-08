@@ -58,7 +58,9 @@
 | NP certificate-bound transport along reductions | Complete | `PolytimeVerifier.pullbackCertificateBound` composes the target certificate polynomial with the reduction machine's checked encoded-output-size polynomial; `pullback_complete` proves that transported completeness certificates satisfy that bound. |
 | NP transport along reductions | Complete | `PolytimeVerifier.pullback` composes the checked pair-left machine with the target verifier, transports soundness through reduction correctness, and uses `pullback_complete` for polynomially bounded completeness. `pullback_verify` and `pullback_certificateEncoding` expose the unchanged certificate interface; `EncodedLanguage.InNP.of_reduction` transports verifier-based NP membership backward. |
 | NP-hardness and NP-completeness | Complete | `EncodedLanguage.NPHard` universally supplies nonempty checked reductions from encoded NP languages; `EncodedLanguage.NPComplete` pairs hardness with NP membership. `NPHard.of_reduction` transports hardness forward by `PolytimeManyOneReduction.comp`, and `NPComplete.of_reduction` combines that transport with separate target membership. |
-| CNF-SAT language and encoding | Pending | Concrete syntax, semantics, and finite encoding. |
+| CNF syntax and Boolean evaluation correctness | Complete | `CNF.Literal`, `Clause`, and `Formula` retain all occurrences in lists; `Literal.eval_eq_true`, `Clause.eval_eq_true`, and `Formula.eval_eq_true` prove agreement with independently defined propositional satisfaction. `Formula.satisfiable_iff_exists_eval` characterizes satisfying assignments; empty-formula and empty-clause theorems cover the boundary cases. |
+| Semantic SAT and exact k-SAT languages | Complete | `CNF.SAT`, `ExactKSAT`, and `ExactThreeSAT` are predicates over formulas with natural-number variables. `Formula.ExactWidth` counts repeated occurrences; `exactWidth_repeated_triple` proves that three copies of a literal have width three. Exact k-SAT requires positive k, matching the Coq comparison convention. |
+| CNF-SAT finite encoding | Pending | Encode literal signs, natural-number variables, and list boundaries with a checked decoder and explicit encoded-length measure; bundle the semantic language as an `EncodedLanguage`. |
 | Exact 3-SAT is in NP | Pending | Checked verifier and runtime bound. |
 | Cook--Levin | Pending | Polynomial reduction from every NP language to SAT. |
 | Exact 3-SAT is NP-complete | Pending | Checked SAT-to-3-SAT normalization and final composition. |
@@ -220,6 +222,13 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   `Classical.choice`, and `Quot.sound`.
 - `MachineComposition.compositionAux` depends on `propext`,
   `Classical.choice`, and `Quot.sound`.
+- `CNF.Literal.eval_eq_true` depends on `propext`; `Clause.eval_eq_true`,
+  `Formula.eval_eq_true`, `Formula.satisfiable_iff_exists_eval`,
+  `Formula.satisfiable_nil`, `Formula.not_satisfiable_of_nil_mem`, and
+  `Formula.exactWidth_repeated_triple` depend on `propext` and `Quot.sound`.
+  The semantic language definitions `CNF.SAT` and `CNF.ExactKSAT` depend on
+  no axioms. These results do not supply a finite certificate encoding or a
+  polynomial-time machine for evaluating formulas.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
 `unsafe` declaration.
