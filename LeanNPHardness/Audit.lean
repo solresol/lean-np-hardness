@@ -33,6 +33,7 @@ import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.VerifierTransport
 import LeanNPHardness.CNF
+import LeanNPHardness.CNFEncoding
 
 namespace LeanNPHardness.Audit
 
@@ -47,6 +48,21 @@ open Computability
 #print axioms LeanNPHardness.CNF.Formula.exactWidth_repeated_triple
 #print axioms LeanNPHardness.CNF.SAT
 #print axioms LeanNPHardness.CNF.ExactKSAT
+
+#print axioms LeanNPHardness.CNF.Literal.ofNat_toNat
+#print axioms LeanNPHardness.CNF.Literal.toNat_injective
+#print axioms LeanNPHardness.CNF.Formula.ofNatLists_toNatLists
+#print axioms LeanNPHardness.CNF.Formula.toNatLists_clause_lengths
+#print axioms LeanNPHardness.CNF.Formula.decode_encode
+#print axioms LeanNPHardness.CNF.Formula.finEncoding
+#print axioms LeanNPHardness.CNF.Formula.encode_injective
+#print axioms LeanNPHardness.CNF.Formula.encode_length
+#print axioms LeanNPHardness.CNF.Formula.finEncoding_encode_length
+#print axioms LeanNPHardness.CNF.encodedSAT
+#print axioms LeanNPHardness.CNF.encodedExactKSAT
+#print axioms LeanNPHardness.CNF.encodedExactThreeSAT
+#print axioms LeanNPHardness.CNF.encodedSAT_accepts
+#print axioms LeanNPHardness.CNF.encodedExactKSAT_accepts
 
 #print axioms LeanNPHardness.ManyOneReduction.comp
 #print axioms LeanNPHardness.PolytimeManyOneReduction.refl

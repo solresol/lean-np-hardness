@@ -6,8 +6,9 @@ import Mathlib.Data.List.Basic
 
 Literal occurrences, clause order, and repeated clauses are retained in the
 syntax. Boolean evaluation is proved equivalent to propositional satisfaction.
-The languages below are semantic predicates: finite encodings, finite assignment
-certificates, and polynomial-time machine witnesses are separate future results.
+The languages below are semantic predicates. `CNFEncoding` supplies their finite
+encodings; finite assignment certificates and polynomial-time machine witnesses
+remain separate future results.
 -/
 
 namespace LeanNPHardness.CNF
@@ -146,7 +147,8 @@ theorem exactWidth_repeated_triple (literal : Literal α) :
 
 end Formula
 
-/-- Semantic CNF-SAT on natural-number variables; no encoding is bundled yet. -/
+/-- Semantic CNF-SAT on natural-number variables; `encodedSAT` in `CNFEncoding`
+bundles this predicate with a finite encoding. -/
 def SAT : Language (Formula Nat) := Formula.Satisfiable
 
 /-- Semantic exact `k`-SAT, retaining repetitions in the width constraint.

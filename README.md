@@ -206,10 +206,16 @@ The initial checked layer contains:
   occurrences, with Boolean evaluation proved equivalent to propositional
   satisfaction, plus semantic SAT and exact k-SAT predicates on natural-number
   variables. Exact width counts repeated literals; empty conjunctions are
-  satisfiable and formulas containing an empty clause are unsatisfiable.
+  satisfiable and formulas containing an empty clause are unsatisfiable; and
+- a checked binary CNF encoding in `CNFEncoding.lean`, reusing the framed
+  nested-list encoding with even/odd natural codes for literal polarity.
+  `CNF.Formula.decode_encode` and `encode_injective` preserve the full syntax,
+  and `encode_length` proves the exact bit count `encodedSize`.
+  `CNF.encodedSAT`, `encodedExactKSAT`, and `encodedExactThreeSAT` bundle the
+  semantic languages with this finite encoding.
 
-Backward transport of both P and NP is checked. The SAT syntax and semantic
-evaluation layer is checked; finite encodings, finite assignment certificates,
+Backward transport of both P and NP is checked. SAT syntax, semantic evaluation,
+and finite formula encoding are checked; finite assignment certificates,
 polynomial-time verifier machines, exact 3-SAT membership in NP, and
 Cook--Levin remain pending. See
 [THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).

@@ -2030,3 +2030,53 @@ avoid failed routes, and choose a materially different experiment when blocked.
   migration removes generic bodies, preserves public theorem names with
   aliases, and uses generic right-component computation for paired scopes.
   SAT verifier/Cook--Levin statuses and the thesis corollary remain unchanged.
+
+## 2026-09-10 — checked binary encoding of CNF languages
+
+- **Starting commit:** `db20c69186d2f717155392ed08772a3c03de1398`;
+  clean `main`, with fetched upstream unchanged.
+- **Goal:** complete the Milestone 3 finite formula encoding. The intervening
+  extraction supplied `BinaryNatLists`, so reuse its checked nested-list
+  framing instead of building the generic delimiter encoding proposed by the
+  previous daily run.
+- **Checked increment:** new `CNFEncoding.lean` packs positive literals as
+  `2 * v` and negative literals as `2 * v + 1`, with `Literal.ofNat_toNat` and
+  `toNat_injective`. `Formula.ofNatLists_toNatLists` and
+  `toNatLists_clause_lengths` retain list shape and occurrence counts.
+  `Formula.decode_encode`, `finEncoding`, and `encode_injective` provide
+  lossless Boolean serialization; `encode_length` and
+  `finEncoding_encode_length` prove the exact `encodedSize`, including all
+  formula/clause length frames and packed literal frames. Added `encodedSAT`,
+  `encodedExactKSAT`, `encodedExactThreeSAT`, and their acceptance interfaces.
+- **Files:** new `LeanNPHardness/CNFEncoding.lean`, root import, audit,
+  semantic CNF documentation, README, theorem status, and this journal.
+- **Successful checks:** standalone module check passed; targeted module/audit
+  build passed 2,194 jobs; full `lake build` passed 2,196 jobs; and
+  `git diff --check` passed. The scan of all 41 project Lean files found no
+  `sorry`, `admit`, project-defined `axiom`, or `unsafe`; the only
+  `proof_wanted` occurrence remains the explanatory dependency comment.
+  All fourteen new audits use only `propext`, `Classical.choice`, and
+  `Quot.sound` (clause-length preservation and `encode_length` need no choice).
+  No new module warnings were emitted; existing extraction warnings remain.
+- **Failed approaches/blockers:** no Lean proof route failed. The existing
+  encoding decoder and its exact-length theorem discharged the framing work
+  without a new parser or normalization pass. No unresolved encoding blocker.
+- **Useful API discovery/comparison:** `Encoding.encode_injective` derives
+  formula injectivity directly from the finite encoding; nested `List.map_map`
+  simplification lifts literal round-trip and length preservation. Consulted
+  the completed Coq `SourceAdapter.v` and `Hardness.v`, and the comparison
+  library's pinned
+  [SAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT.v)
+  and
+  [kSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/kSAT.v):
+  list occurrences and positive exact width agree. Their lambda-term encoding
+  and runtime evidence are not evidence for this Lean Boolean/TM2 encoding.
+- **Ending state:** CNF-SAT finite formula encoding is checked and audited;
+  finite certificates, verifier runtime, exact 3-SAT NP membership, and
+  Cook--Levin remain pending.
+- **Best next experiment:** prove that evaluation depends only on variables
+  occurring in the formula, and construct a finite list of true occurring
+  variables agreeing with any supplied total Boolean assignment. Retain
+  repetitions if convenient. Bound the certificate by the formula's actual
+  encoded bits, rather than by the possibly large maximum variable index;
+  keep this semantic/size work separate from the TM2 verifier construction.
