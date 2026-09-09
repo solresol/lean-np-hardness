@@ -76,6 +76,16 @@
 | Boolean aggregation | Complete | `MachinePrimitives.allFalseComputableInPolyTime`, linear in the complete Boolean stream length. |
 | Generic pair exchange and right-component computation | Complete | `PairExchange.outputsInTime`, `PairExchange.computableInPolyTime`, and `MachineAdapters.pairRightComputableInPolyTime`; finite alphabets can differ or be empty, with exchange bound `4s+6`. |
 
+The bounded number-theory extraction is also checked:
+`BoundedPrime.selectPrimeAbove_prime`, `lt_selectPrimeAbove`, and
+`selectPrimeAbove_lt_two_mul` give the semantic prime contract, including the
+zero/one conventions. `MachinePrimitives.bertrandCandidatesComputableInPolyTime`,
+`unaryDvdComputableInPolyTime`, `trialDivisionPairsComputableInPolyTime`,
+`unaryCandidatePrimeComputableInPolyTime`, `primeSelectorComputableInPolyTime`,
+and `selectedPrimeComputableInPolyTime` provide actual finite-machine witnesses.
+The final selection bound is `1000(q+1)^6` for **unary** input/output naturals.
+These components complete neither the SAT encoding/verifier nor Cook--Levin.
+
 ## Initial audit
 
 The initial declarations build with the pinned Lean and mathlib revisions.

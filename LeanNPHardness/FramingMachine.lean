@@ -34,7 +34,7 @@ abbrev FrameState := Option Bool
 private def poppedBit (_ : FrameState) (bit : Option Bool) : FrameState :=
   bit
 
-private def heldBit : FrameState → Bool
+def heldBit : FrameState → Bool
   | some bit => bit
   | none => false
 
@@ -85,7 +85,7 @@ private def stackContents
   | .count => count
   | .output => output
 
-private def cfg (label : Option FrameLabel) (state : FrameState)
+def cfg (label : Option FrameLabel) (state : FrameState)
     (input scratch count output : List Bool) : frameComputer.Cfg where
   l := label
   var := state
@@ -153,12 +153,6 @@ private def evalsToInTimeOne
     simpa [Function.iterate_one] using hstep
   steps_le_m := Nat.le_refl 1
 
-private theorem replicate_true_append_cons (n : ℕ) (tail : List Bool) :
-    List.replicate n true ++ true :: tail =
-      true :: (List.replicate n true ++ tail) := by
-  induction n with
-  | zero => rfl
-  | succ n ih => simp [List.replicate_succ, ih]
 
 private def stash_evals
     (input scratch count output : List Bool) (state : FrameState) :

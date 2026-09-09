@@ -49,6 +49,14 @@ formalisation. They import no thesis or p-adic definitions:
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing
   pair-left adapter to process the right component while preserving the left.
 
+`BoundedPrime`, `IntervalMachines`, `UnaryDivisibilityMachine`, and
+`PrimeSelectionMachine` additionally provide checked bounded prime selection.
+`MachinePrimitives.selectedPrimeComputableInPolyTime` maps unary `q` to the
+selected prime in unary within `1000(q+1)^6` steps. Binary successor and
+arithmetic remain binary-input results; trial division and enumeration remain
+explicitly unary/padded-input results. No polynomial bound in the length of
+an arbitrary standalone binary bound is claimed for the prime search.
+
 Their runtime claims use mathlib's standard `TM2ComputableInPolyTime` and
 actual encoded lengths. They are reusable building blocks for SAT encodings
 and downstream reductions; they do not complete the SAT verifier or Cook--Levin.

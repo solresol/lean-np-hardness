@@ -32,3 +32,7 @@ import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine
 import LeanNPHardness.PairExchange
+import LeanNPHardness.BoundedPrime
+import LeanNPHardness.IntervalMachines
+import LeanNPHardness.UnaryDivisibilityMachine
+import LeanNPHardness.PrimeSelectionMachine

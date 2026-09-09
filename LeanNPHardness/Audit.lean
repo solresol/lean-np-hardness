@@ -1,3 +1,7 @@
+import LeanNPHardness.BoundedPrime
+import LeanNPHardness.IntervalMachines
+import LeanNPHardness.UnaryDivisibilityMachine
+import LeanNPHardness.PrimeSelectionMachine
 import LeanNPHardness.BinaryNatLists
 import LeanNPHardness.RawNatEncoding
 import LeanNPHardness.MachineRun
@@ -201,3 +205,18 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.binaryAddComputableInPolyTime
 #print axioms LeanNPHardness.MachinePrimitives.countedRowPayloadStructuredComputableInPolyTime
 #print axioms LeanNPHardness.MachinePrimitives.allFalseComputableInPolyTime
+
+/-! Unary-bounded number-theory components. -/
+#print axioms LeanNPHardness.BoundedPrime.selectPrimeAbove_prime
+#print axioms LeanNPHardness.BoundedPrime.lt_selectPrimeAbove
+#print axioms LeanNPHardness.BoundedPrime.selectPrimeAbove_lt_two_mul
+#print axioms LeanNPHardness.MachinePrimitives.bertrandCandidatesComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.unaryBertrandCandidatesComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.trialPrime_eq_true_iff
+#print axioms LeanNPHardness.MachinePrimitives.unaryDvdComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.trialDivisionPairsComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.pairDivisionResultsComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.allFalseDivisibilityResultsComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.unaryCandidatePrimeComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.primeSelectorComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.selectedPrimeComputableInPolyTime

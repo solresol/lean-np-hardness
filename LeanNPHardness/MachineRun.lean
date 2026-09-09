@@ -20,4 +20,11 @@ def evalsToInTimeMono {configuration : Type*}
   steps_le_m := h.steps_le_m.trans hmn
 
 
+theorem replicate_true_append_cons (n : ℕ) (tail : List Bool) :
+    List.replicate n true ++ true :: tail =
+      true :: (List.replicate n true ++ tail) := by
+  induction n with
+  | zero => rfl
+  | succ n ih => simp [List.replicate_succ, ih]
+
 end LeanNPHardness.MachinePrimitives

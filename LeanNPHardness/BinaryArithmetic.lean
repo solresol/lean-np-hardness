@@ -46,7 +46,7 @@ theorem binarySuccBits_encodeNat (n : ℕ) :
   change encodeNum (Num.ofNat' n).succ = encodeNum (Num.ofNat' (n + 1))
   rw [Num.ofNat'_succ, Num.add_one]
 
-private theorem binarySuccBits_length_le (bits : List Bool) :
+theorem binarySuccBits_length_le (bits : List Bool) :
     (binarySuccBits bits).length ≤ bits.length + 1 := by
   induction bits with
   | nil => simp [binarySuccBits]

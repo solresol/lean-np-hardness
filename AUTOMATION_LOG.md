@@ -1999,3 +1999,34 @@ avoid failed routes, and choose a materially different experiment when blocked.
 - This increment installs the reusable core. The authorized migration continues
   with bounded-prime components and the downstream dependency/implementation
   replacement; the thesis corollary itself remains Partial.
+
+
+## 2026-09-09 — extract unary-bounded prime construction
+
+- Continued the explicitly authorized migration after core extraction commit
+  `7f90b04`. Added `BoundedPrime`, `IntervalMachines`,
+  `UnaryDivisibilityMachine`, and `PrimeSelectionMachine` with no downstream
+  imports. The semantic selection contract is now `BoundedPrime.selectPrimeAbove`.
+- Preserved the exact unary/padded input encodings and runtime theorems:
+  interval generation, divisibility, trial-pair generation, repeated and fused
+  divisibility, candidate primality, first-survivor selection, and final
+  `selectedPrimeComputableInPolyTime` in `1000(q+1)^6` steps for unary `q`.
+  No polynomial-time binary-bound prime search is asserted.
+- Exposed only previously private helper declarations that are used across
+  the extracted modules; their proofs are unchanged. Moved the shared Boolean
+  replication identity into `MachineRun`. The old Boolean fold implementation
+  is reused from `BooleanListMachine` rather than copied into prime selection.
+- The initial extraction exposed one missing import path for that replication
+  identity and a dangling doc comment where the Boolean fold had been removed.
+  Both were fixed. Existing simplifier-style warnings in the prime-selector
+  proofs remain; no proof is incomplete and no warning represents an axiom.
+- Full `lake build` passed (2195 jobs); thirteen new headline audits and the
+  twenty core extraction audits use only `propext`, `Classical.choice`, and
+  `Quot.sound`. Rechecked all 40 Lean files for prohibited code and all library
+  imports for accidental thesis dependencies; both scans passed, as did
+  `git diff --check`. The final tree is rebuilt after the semantic documentation
+  wording change.
+- The upstream library is ready for the downstream pin update. The thesis
+  migration removes generic bodies, preserves public theorem names with
+  aliases, and uses generic right-component computation for paired scopes.
+  SAT verifier/Cook--Levin statuses and the thesis corollary remain unchanged.
