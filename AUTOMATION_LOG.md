@@ -1967,3 +1967,35 @@ avoid failed routes, and choose a materially different experiment when blocked.
   with explicit delimiters. Prove decoder round-trip and encoded length, then
   apply it to signed natural-number literals and nested clause/formula lists.
   Keep the finite-certificate equivalence and TM2 runtime proofs separate.
+
+
+## 2026-09-09 — extract reusable encodings and machines from the thesis
+
+- User explicitly authorized moving reusable components from `phd-thesis-lean`
+  into this repository. Started at clean synchronized `4475e98`; the downstream
+  source snapshot was `84be78db5a287f9a40dcb549252063d6db67de73`.
+- Added ten independent library modules: `BinaryNatLists`, `RawNatEncoding`,
+  `MachineRun`, `FramingMachine`, `SourceOrderMachine`, `BinaryArithmetic`,
+  `CountedNatRows`, `CountedRowMachine`, `BooleanListMachine`, and `PairExchange`.
+  They import no downstream thesis or p-adic declarations. Existing exact
+  encodings, empty-row behavior, output ordering, and time bounds are retained.
+- Generalized the former fixed raw-section exchange to arbitrary finite
+  component alphabets, including empty alphabets. Finite labels carry popped
+  symbols, avoiding any inhabited-alphabet assumption. The new exact interface
+  has a `4s+6` upper bound, versus `2s+3` for the old specialized machine.
+  Added `MachineAdapters.pairRightComputableInPolyTime` by composing exchange
+  with the existing checked left-component adapter.
+- Kept comparison/addition tied to their aligned binary-pair encoding. The
+  new counted-row names describe their generic meaning; CSP-specific indexed
+  occurrence output remains downstream.
+- Extraction checks exposed clipped comment boundaries, which were repaired
+  before building. Generic exchange's empty-list proofs needed explicit
+  intermediate configurations and normalized two-step bounds. All errors
+  were resolved with kernel-checked proofs.
+- Targeted builds passed for all ten modules. Full `lake build` and twenty
+  added headline axiom audits passed; dependencies are only standard
+  `propext`, `Classical.choice`, and `Quot.sound`. Prohibited-code scan of
+  all 36 Lean files and `git diff --check` passed.
+- This increment installs the reusable core. The authorized migration continues
+  with bounded-prime components and the downstream dependency/implementation
+  replacement; the thesis corollary itself remains Partial.

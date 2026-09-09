@@ -1,3 +1,13 @@
+import LeanNPHardness.BinaryNatLists
+import LeanNPHardness.RawNatEncoding
+import LeanNPHardness.MachineRun
+import LeanNPHardness.FramingMachine
+import LeanNPHardness.SourceOrderMachine
+import LeanNPHardness.BinaryArithmetic
+import LeanNPHardness.CountedNatRows
+import LeanNPHardness.CountedRowMachine
+import LeanNPHardness.BooleanListMachine
+import LeanNPHardness.PairExchange
 import LeanNPHardness.MachineEmbedding
 import LeanNPHardness.MachineCompositionRuntime
 import LeanNPHardness.MachineRuntimeBounds
@@ -169,3 +179,25 @@ open Computability
 #print axioms LeanNPHardness.EncodedLanguage.NPComplete.of_reduction
 
 end LeanNPHardness.Audit
+
+/-! Reusable downstream-extracted encodings and machines. -/
+#print axioms LeanNPHardness.BinaryNatLists.decode_encode
+#print axioms LeanNPHardness.BinaryNatLists.encode_length
+#print axioms LeanNPHardness.FramedNat.decode_encode
+#print axioms LeanNPHardness.RawNatLists.decode_encode
+#print axioms LeanNPHardness.SourceOrderRawFields.decode_encode
+#print axioms LeanNPHardness.CountedNatRows.rowPayloadDecode_encode
+#print axioms LeanNPHardness.CountedNatRows.rowFields_injective
+#print axioms LeanNPHardness.PairExchange.outputsInTime
+#print axioms LeanNPHardness.PairExchange.computableInPolyTime
+#print axioms LeanNPHardness.MachineAdapters.pairRightComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.framedNatComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.framedNatListComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.unframedNatListsComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.sourceOrderRawFieldsComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.binarySuccComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.binaryPredComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.binaryLEComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.binaryAddComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.countedRowPayloadStructuredComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.allFalseComputableInPolyTime

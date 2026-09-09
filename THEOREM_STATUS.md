@@ -65,6 +65,17 @@
 | Cook--Levin | Pending | Polynomial reduction from every NP language to SAT. |
 | Exact 3-SAT is NP-complete | Pending | Checked SAT-to-3-SAT normalization and final composition. |
 
+## Reusable encoding and machine library
+
+| Result | Status | Checked declaration or encoding boundary |
+|---|---|---|
+| Binary natural/list/nested-list encoding | Complete | `BinaryNatLists.finEncoding`, `decode_encode`, and `encode_length`; raw encodings in `RawNatEncoding`. |
+| Framing and raw-field conversion | Complete | `MachinePrimitives.framedNatComputableInPolyTime`, `framedNatListComputableInPolyTime`, `unframedNatListsComputableInPolyTime`, and `sourceOrderRawFieldsComputableInPolyTime`. |
+| Binary arithmetic | Complete | `MachinePrimitives.binarySuccComputableInPolyTime`, `binaryPredComputableInPolyTime`, `binaryLEComputableInPolyTime`, and `binaryAddComputableInPolyTime`; the latter two use `BinaryNatPair.finEncoding`. |
+| Counted-row representation and payload extraction | Complete | `CountedNatRows.rowPayloadFinEncoding`, `rowFields_injective`, and `MachinePrimitives.countedRowPayloadStructuredComputableInPolyTime`; empty rows remain distinct. |
+| Boolean aggregation | Complete | `MachinePrimitives.allFalseComputableInPolyTime`, linear in the complete Boolean stream length. |
+| Generic pair exchange and right-component computation | Complete | `PairExchange.outputsInTime`, `PairExchange.computableInPolyTime`, and `MachineAdapters.pairRightComputableInPolyTime`; finite alphabets can differ or be empty, with exchange bound `4s+6`. |
+
 ## Initial audit
 
 The initial declarations build with the pinned Lean and mathlib revisions.

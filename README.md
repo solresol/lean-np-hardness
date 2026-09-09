@@ -27,6 +27,32 @@ machines is marked `proof_wanted`.
 This repository treats that gap as a standalone formalisation project rather
 than hiding it inside a downstream NP-hardness proof.
 
+## Reusable encodings and machine operations
+
+The following checked modules were extracted from the downstream thesis
+formalisation. They import no thesis or p-adic definitions:
+
+- `BinaryNatLists` and `RawNatEncoding`: self-delimiting binary natural/list/
+  nested-list encodings, raw field representations, exact round trips and
+  encoded-length bounds.
+- `FramingMachine` and `SourceOrderMachine`: linear-time framing, unframing,
+  list serialization, and source-order conversion under those exact encodings.
+- `BinaryArithmetic`: linear-time binary successor, saturated predecessor,
+  comparison and addition. Comparison/addition consume the explicitly aligned
+  `MachinePrimitives.BinaryNatPair.finEncoding`; no conversion from the
+  separate tagged `PairEncoding` is implicit.
+- `CountedNatRows` and `CountedRowMachine`: exact counted-row parsing, including
+  empty rows, and a linear-time outer-header removal machine.
+- `BooleanListMachine`: a linear-time Boolean `allFalse` fold.
+- `PairExchange`: canonical pair exchange over arbitrary finite component
+  alphabets in at most `4s+6` steps, including empty alphabets and words;
+  `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing
+  pair-left adapter to process the right component while preserving the left.
+
+Their runtime claims use mathlib's standard `TM2ComputableInPolyTime` and
+actual encoded lengths. They are reusable building blocks for SAT encodings
+and downstream reductions; they do not complete the SAT verifier or Cook--Levin.
+
 ## Current status
 
 The initial checked layer contains:

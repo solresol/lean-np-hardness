@@ -22,3 +22,13 @@ import LeanNPHardness.PolytimeComposition
 import LeanNPHardness.PolytimeReduction
 import LeanNPHardness.SemanticReduction
 import LeanNPHardness.VerifierTransport
+import LeanNPHardness.BinaryNatLists
+import LeanNPHardness.RawNatEncoding
+import LeanNPHardness.MachineRun
+import LeanNPHardness.FramingMachine
+import LeanNPHardness.SourceOrderMachine
+import LeanNPHardness.BinaryArithmetic
+import LeanNPHardness.CountedNatRows
+import LeanNPHardness.CountedRowMachine
+import LeanNPHardness.BooleanListMachine
+import LeanNPHardness.PairExchange
