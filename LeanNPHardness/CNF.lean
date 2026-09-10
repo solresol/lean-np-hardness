@@ -7,8 +7,8 @@ import Mathlib.Data.List.Basic
 Literal occurrences, clause order, and repeated clauses are retained in the
 syntax. Boolean evaluation is proved equivalent to propositional satisfaction.
 The languages below are semantic predicates. `CNFEncoding` supplies their finite
-encodings; finite assignment certificates and polynomial-time machine witnesses
-remain separate future results.
+encodings, and `CNFCertificate` supplies finite assignments and their bit bound.
+Polynomial-time machine witnesses remain separate future results.
 -/
 
 namespace LeanNPHardness.CNF

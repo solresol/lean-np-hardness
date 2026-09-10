@@ -34,6 +34,7 @@ import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.VerifierTransport
 import LeanNPHardness.CNF
 import LeanNPHardness.CNFEncoding
+import LeanNPHardness.CNFCertificate
 
 namespace LeanNPHardness.Audit
 
@@ -63,6 +64,21 @@ open Computability
 #print axioms LeanNPHardness.CNF.encodedExactThreeSAT
 #print axioms LeanNPHardness.CNF.encodedSAT_accepts
 #print axioms LeanNPHardness.CNF.encodedExactKSAT_accepts
+
+#print axioms LeanNPHardness.BinaryNatLists.encodeNat_length_eq_size
+#print axioms LeanNPHardness.BinaryNatLists.natWireSize_mono
+#print axioms LeanNPHardness.CNF.Literal.eval_congr
+#print axioms LeanNPHardness.CNF.Literal.var_le_toNat
+#print axioms LeanNPHardness.CNF.Clause.eval_congr
+#print axioms LeanNPHardness.CNF.Certificate.finEncoding
+#print axioms LeanNPHardness.CNF.Certificate.verify_sound
+#print axioms LeanNPHardness.CNF.Formula.eval_congr
+#print axioms LeanNPHardness.CNF.Formula.assignment_trueVariables
+#print axioms LeanNPHardness.CNF.Formula.eval_trueVariables
+#print axioms LeanNPHardness.CNF.Formula.vars_payloadSize_le_encodedSize
+#print axioms LeanNPHardness.CNF.Formula.vars_length_le_encodedSize
+#print axioms LeanNPHardness.CNF.Formula.trueVariables_encode_length_le
+#print axioms LeanNPHardness.CNF.Formula.satisfiable_iff_exists_bounded_certificate
 
 #print axioms LeanNPHardness.ManyOneReduction.comp
 #print axioms LeanNPHardness.PolytimeManyOneReduction.refl

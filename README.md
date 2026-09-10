@@ -212,11 +212,18 @@ The initial checked layer contains:
   `CNF.Formula.decode_encode` and `encode_injective` preserve the full syntax,
   and `encode_length` proves the exact bit count `encodedSize`.
   `CNF.encodedSAT`, `encodedExactKSAT`, and `encodedExactThreeSAT` bundle the
-  semantic languages with this finite encoding.
+  semantic languages with this finite encoding; and
+- finite assignment certificates in `CNFCertificate.lean`, listing the true
+  occurring variables with repetitions retained. `Formula.eval_trueVariables`
+  proves evaluation agrees with the original total assignment, and
+  `satisfiable_iff_exists_bounded_certificate` characterizes satisfiability by
+  a certificate of at most `3N + 1` bits for formula encoded length `N`.
+  `Certificate.verify_sound` proves semantic soundness independently of that
+  bound; the certificate uses the checked framed binary natural-list encoding.
 
 Backward transport of both P and NP is checked. SAT syntax, semantic evaluation,
-and finite formula encoding are checked; finite assignment certificates,
-polynomial-time verifier machines, exact 3-SAT membership in NP, and
+finite formula/certificate encodings, and a linear certificate-size bound are
+checked. Polynomial-time verifier machines, exact 3-SAT membership in NP, and
 Cook--Levin remain pending. See
 [THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).
 

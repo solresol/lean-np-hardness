@@ -1,6 +1,7 @@
 import LeanNPHardness.Audit
 import LeanNPHardness.CNF
 import LeanNPHardness.CNFEncoding
+import LeanNPHardness.CNFCertificate
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram

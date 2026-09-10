@@ -61,7 +61,8 @@
 | CNF syntax and Boolean evaluation correctness | Complete | `CNF.Literal`, `Clause`, and `Formula` retain all occurrences in lists; `Literal.eval_eq_true`, `Clause.eval_eq_true`, and `Formula.eval_eq_true` prove agreement with independently defined propositional satisfaction. `Formula.satisfiable_iff_exists_eval` characterizes satisfying assignments; empty-formula and empty-clause theorems cover the boundary cases. |
 | Semantic SAT and exact k-SAT languages | Complete | `CNF.SAT`, `ExactKSAT`, and `ExactThreeSAT` are predicates over formulas with natural-number variables. `Formula.ExactWidth` counts repeated occurrences; `exactWidth_repeated_triple` proves that three copies of a literal have width three. Exact k-SAT requires positive k, matching the Coq comparison convention. |
 | CNF-SAT finite encoding | Complete | `CNF.Literal.ofNat_toNat` checks even/odd polarity packing; `Formula.ofNatLists_toNatLists` and `toNatLists_clause_lengths` preserve nested-list syntax and widths. `Formula.finEncoding` reuses `BinaryNatLists` over `Bool`; `decode_encode` and `encode_injective` establish lossless serialization, and `encode_length` / `finEncoding_encode_length` prove the exact bit measure `encodedSize`. `encodedSAT`, `encodedExactKSAT`, and `encodedExactThreeSAT` bundle the semantic languages with this encoding. |
-| Exact 3-SAT is in NP | Pending | Checked verifier and runtime bound. |
+| Finite SAT certificates and linear bit bound | Complete | `CNF.Formula.eval_congr` restricts evaluation dependence to occurring variables; `assignment_trueVariables` and `eval_trueVariables` prove agreement with the finite list of true occurrences. `Certificate.finEncoding` reuses framed binary natural lists, and `Certificate.verify_sound` proves semantic soundness. `Formula.trueVariables_encode_length_le` bounds certificates by `3 * encodedSize + 1`; `satisfiable_iff_exists_bounded_certificate` gives the bounded finite-witness characterization. Repetitions are retained, and no maximum-variable-index bound is used. |
+| Exact 3-SAT is in NP | Pending | A polynomial-time TM2 verifier, including the exact-width check; finite certificates and their linear bit bound are checked separately. |
 | Cook--Levin | Pending | Polynomial reduction from every NP language to SAT. |
 | Exact 3-SAT is NP-complete | Pending | Checked SAT-to-3-SAT normalization and final composition. |
 
@@ -257,6 +258,16 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   `propext` and `Quot.sound`; the other twelve use only `propext`,
   `Classical.choice`, and `Quot.sound`. These encoding results do not supply
   a verifier machine or its runtime bound.
+- The fourteen new finite-certificate and supporting binary-size audits pass.
+  `BinaryNatLists.encodeNat_length_eq_size`, `natWireSize_mono`,
+  `Formula.vars_payloadSize_le_encodedSize`, `vars_length_le_encodedSize`,
+  `trueVariables_encode_length_le`, and
+  `satisfiable_iff_exists_bounded_certificate` use only `propext`,
+  `Classical.choice`, and `Quot.sound`. `Literal.eval_congr` and
+  `Formula.assignment_trueVariables` use only `propext`; the other six use
+  only `propext` and `Quot.sound`. The full build passed 2,197 jobs on
+  2026-09-11. These results establish certificate semantics and bit bounds;
+  they do not supply the polynomial-time TM2 verifier.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
 `unsafe` declaration.

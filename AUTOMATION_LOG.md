@@ -2080,3 +2080,57 @@ avoid failed routes, and choose a materially different experiment when blocked.
   repetitions if convenient. Bound the certificate by the formula's actual
   encoded bits, rather than by the possibly large maximum variable index;
   keep this semantic/size work separate from the TM2 verifier construction.
+
+## 2026-09-11 — finite SAT certificates with a linear bit bound
+
+- **Starting commit:** `9852d948abae3d35c49b5ebd4021bf1627e7328c`;
+  clean `main`, with fetched upstream unchanged and no unpublished commits.
+- **Goal:** construct finite certificates from true occurring variables and
+  bound their encoded bits by the formula encoding, preserving repetitions.
+- **Checked increment:** added `CNFCertificate.lean`: `Literal.var`, clause
+  and formula `vars`, and evaluation congruence at all three levels;
+  `Certificate.assignment`, `finEncoding`, `verify`, and `verify_sound`;
+  `Formula.trueVariables`, `assignment_trueVariables`, and
+  `eval_trueVariables`. The payload and occurrence-count bounds yield
+  `trueVariables_encode_length_le`, with certificate length at most
+  `3 * formula.encodedSize + 1`.
+  `satisfiable_iff_exists_bounded_certificate` proves the full bounded
+  finite-witness characterization. Added reusable
+  `BinaryNatLists.encodeNat_length_eq_size` and `natWireSize_mono` to relate
+  binary variable size to its packed literal size.
+- **Files:** new certificate module, binary encoding helpers, root import,
+  audit, CNF module documentation, README, theorem status, and this journal.
+- **Successful checks:** standalone certificate module checking passed;
+  binary-size build passed 901 jobs and encoding dependency build passed
+  1,145 jobs; full `lake build` passed 2,197 jobs. All fourteen new axiom
+  audits use only `propext`, `Classical.choice`, and `Quot.sound` (several
+  use smaller subsets, recorded in theorem status). The 42-file Lean scan
+  found no prohibited declarations; its sole match is the existing
+  explanatory `proof_wanted` comment. `git diff --check` passed. No new
+  module warnings; the existing prime-selector simplifier warnings remain.
+- **Failed approaches/blockers:** the initial name `variables` is a reserved
+  legacy Lean command, like the singular binder rejected on 2026-09-09;
+  renamed both occurrence lists to `vars`. The semantic and size proof
+  routes then checked without further failures. No unresolved blocker in
+  this increment; machine execution and runtime remain separate obligations.
+- **Useful API discovery/comparison:** `Num.natSize_to_nat` relates the
+  concrete `encodeNat` representation to `Nat.size`; `Nat.size_le_size`
+  proves monotonicity. `List.filter_sublist`, `Sublist.map`, and
+  `Sublist.sum_le_sum` bound the retained occurrence payload without a
+  deduplication pass. Consulted completed Coq `SourceAdapter.v` and
+  `Hardness.v`, and installed complexity-library `SharedSAT.v`, `SAT.v`,
+  and `SAT_inNP.v` (`varsOfCnf_size`, `assignment_small_size`, `sat_NP`).
+  Coq separates compressed finite witnesses from verifier extraction/runtime;
+  its assignment compression uses duplicate freedom for an inclusion bound.
+  Here filtering the occurrence list gives a sublist bound directly. No Coq
+  terms or lambda-calculus runtime results serve as Lean/TM2 evidence.
+- **Ending state:** certificate semantics, encoding, and linear bit bound are
+  checked and audited; the in-scope increment is ready for commit/push on
+  `main`. SAT verifier runtime, exact 3-SAT NP membership, and Cook--Levin
+  remain pending. Final commit and remote parity are recorded in run memory.
+- **Best next experiment:** isolate natural-variable membership in a framed
+  binary certificate list as a finite TM2 machine with an exact output
+  theorem and bit-length runtime bound. Reuse the binary comparison and
+  framing APIs only after proving any required conversion to their aligned
+  input encodings. Then lift literal lookup through clause/formula folds;
+  the exact-width check is an additional obligation for exact k-SAT.

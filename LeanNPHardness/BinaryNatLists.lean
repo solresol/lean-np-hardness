@@ -179,6 +179,23 @@ theorem encode_length (xss : List (List ℕ)) :
 theorem natWireSize_pos (n : ℕ) : 0 < natWireSize n := by
   simp [natWireSize]
 
+/-- The standard natural encoding has exactly its binary digit count. -/
+theorem encodeNat_length_eq_size (n : ℕ) :
+    (Computability.encodeNat n).length = n.size := by
+  have hpos (p : PosNum) :
+      (Computability.encodePosNum p).length = p.natSize := by
+    induction p <;> simp_all [Computability.encodePosNum, PosNum.natSize]
+  have hnum (m : Num) : (Computability.encodeNum m).length = m.natSize := by
+    cases m <;> simp [Computability.encodeNum, Num.natSize, hpos]
+  simpa [Computability.encodeNat] using
+    (hnum (n : Num)).trans (Num.natSize_to_nat (n : Num))
+
+/-- Framed binary size is monotone in the represented natural. -/
+theorem natWireSize_mono : Monotone natWireSize := by
+  intro m n h
+  simp only [natWireSize, encodeNat_length_eq_size]
+  exact Nat.add_le_add_right (Nat.mul_le_mul_left 2 (Nat.size_le_size h)) 1
+
 private theorem encodePosNum_length_le (n : PosNum) :
     (Computability.encodePosNum n).length ≤ (n : ℕ) := by
   induction n with
