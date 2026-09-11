@@ -63,8 +63,9 @@
 | CNF-SAT finite encoding | Complete | `CNF.Literal.ofNat_toNat` checks even/odd polarity packing; `Formula.ofNatLists_toNatLists` and `toNatLists_clause_lengths` preserve nested-list syntax and widths. `Formula.finEncoding` reuses `BinaryNatLists` over `Bool`; `decode_encode` and `encode_injective` establish lossless serialization, and `encode_length` / `finEncoding_encode_length` prove the exact bit measure `encodedSize`. `encodedSAT`, `encodedExactKSAT`, and `encodedExactThreeSAT` bundle the semantic languages with this encoding. |
 | Finite SAT certificates and linear bit bound | Complete | `CNF.Formula.eval_congr` restricts evaluation dependence to occurring variables; `assignment_trueVariables` and `eval_trueVariables` prove agreement with the finite list of true occurrences. `Certificate.finEncoding` reuses framed binary natural lists, and `Certificate.verify_sound` proves semantic soundness. `Formula.trueVariables_encode_length_le` bounds certificates by `3 * encodedSize + 1`; `satisfiable_iff_exists_bounded_certificate` gives the bounded finite-witness characterization. Repetitions are retained, and no maximum-variable-index bound is used. |
 | Exact 3-SAT is in NP | Pending | A polynomial-time TM2 verifier, including the exact-width check; finite certificates and their linear bit bound are checked separately. |
+| At-most-three to exact-three SAT semantics and output size | Complete | `CNF.Clause.normalizeThree` pads one/two-literal clauses, replaces an empty clause by contradictory triples, and retains longer clauses. `Formula.eval_normalizeThree` and `satisfiable_normalizeThree` preserve every assignment's evaluation and satisfiability. `exactWidth_normalizeThree` characterizes exact output width by `AtMostWidth 3` on the input. `atMostThreeToExactThree` packages the semantic reduction, with `normalizeThree_encode_length_le` bounding encoded output by `26 * encodedSize + 1`. The TM2 implementation/runtime and arbitrary-width SAT reduction remain pending. |
 | Cook--Levin | Pending | Polynomial reduction from every NP language to SAT. |
-| Exact 3-SAT is NP-complete | Pending | Checked SAT-to-3-SAT normalization and final composition. |
+| Exact 3-SAT is NP-complete | Pending | A polynomial-time arbitrary-width SAT-to-3-SAT reduction and final composition; short-clause padding semantics and size are checked separately. |
 
 ## Reusable encoding and machine library
 
@@ -268,6 +269,14 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   only `propext` and `Quot.sound`. The full build passed 2,197 jobs on
   2026-09-11. These results establish certificate semantics and bit bounds;
   they do not supply the polynomial-time TM2 verifier.
+
+- The fifteen `CNFNormalization` audits pass. Clause/formula
+  `eval_normalizeThree` use only `propext`; `Formula.encodedSize_eq` and
+  `satisfiable_normalizeThree` use only `propext` and `Quot.sound`; the other
+  eleven use only `propext`, `Classical.choice`, and `Quot.sound`.
+  Full `lake build` passed 2,198 jobs on 2026-09-12. These results establish
+  short-clause normalization semantics and a linear encoded-output bound,
+  with no TM2 runtime or arbitrary-width SAT reduction claimed.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
 `unsafe` declaration.

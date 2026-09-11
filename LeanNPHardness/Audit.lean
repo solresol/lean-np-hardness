@@ -35,6 +35,7 @@ import LeanNPHardness.VerifierTransport
 import LeanNPHardness.CNF
 import LeanNPHardness.CNFEncoding
 import LeanNPHardness.CNFCertificate
+import LeanNPHardness.CNFNormalization
 
 namespace LeanNPHardness.Audit
 
@@ -79,6 +80,22 @@ open Computability
 #print axioms LeanNPHardness.CNF.Formula.vars_length_le_encodedSize
 #print axioms LeanNPHardness.CNF.Formula.trueVariables_encode_length_le
 #print axioms LeanNPHardness.CNF.Formula.satisfiable_iff_exists_bounded_certificate
+
+#print axioms LeanNPHardness.CNF.Clause.encodedSize_pos
+#print axioms LeanNPHardness.CNF.Clause.eval_normalizeThree
+#print axioms LeanNPHardness.CNF.Clause.exactWidth_normalizeThree
+#print axioms LeanNPHardness.CNF.Clause.normalizeThree_length_le
+#print axioms LeanNPHardness.CNF.Clause.normalizeThree_payloadSize_le
+#print axioms LeanNPHardness.CNF.Formula.encodedSize_eq
+#print axioms LeanNPHardness.CNF.Formula.eval_normalizeThree
+#print axioms LeanNPHardness.CNF.Formula.satisfiable_normalizeThree
+#print axioms LeanNPHardness.CNF.Formula.exactWidth_normalizeThree
+#print axioms LeanNPHardness.CNF.Formula.normalizeThree_length_le
+#print axioms LeanNPHardness.CNF.Formula.normalizeThree_payloadSize_le
+#print axioms LeanNPHardness.CNF.Formula.normalizeThree_encode_length_le
+#print axioms LeanNPHardness.CNF.encodedAtMostThreeSAT
+#print axioms LeanNPHardness.CNF.atMostThreeSAT_iff_exactThreeSAT_normalize
+#print axioms LeanNPHardness.CNF.atMostThreeToExactThree
 
 #print axioms LeanNPHardness.ManyOneReduction.comp
 #print axioms LeanNPHardness.PolytimeManyOneReduction.refl

@@ -219,11 +219,20 @@ The initial checked layer contains:
   `satisfiable_iff_exists_bounded_certificate` characterizes satisfiability by
   a certificate of at most `3N + 1` bits for formula encoded length `N`.
   `Certificate.verify_sound` proves semantic soundness independently of that
-  bound; the certificate uses the checked framed binary natural-list encoding.
+  bound; the certificate uses the checked framed binary natural-list encoding; and
+- a checked convention change in `CNFNormalization.lean` from at-most-three to
+  exact-three SAT. Short nonempty clauses repeat existing literals; empty
+  clauses become contradictory triples; longer clauses are retained.
+  `Formula.eval_normalizeThree` preserves every assignment's evaluation,
+  `exactWidth_normalizeThree` characterizes exact output width, and
+  `normalizeThree_encode_length_le` bounds output bits by `26N + 1`.
+  `atMostThreeToExactThree` packages the semantic reduction; its TM2 runtime
+  and the reduction of arbitrary-width SAT remain pending.
 
 Backward transport of both P and NP is checked. SAT syntax, semantic evaluation,
-finite formula/certificate encodings, and a linear certificate-size bound are
-checked. Polynomial-time verifier machines, exact 3-SAT membership in NP, and
+finite formula/certificate encodings, a linear certificate-size bound, and
+short-clause padding semantics and output size are checked.
+Polynomial-time verifier machines, exact 3-SAT membership in NP, and
 Cook--Levin remain pending. See
 [THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).
 

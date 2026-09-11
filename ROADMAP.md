@@ -36,6 +36,9 @@
 - Preserve repeated literals and clauses in the base syntax.
 - Define SAT and exact `k`-SAT as encoded languages.
 - Implement and verify normalization between useful formula conventions.
+  At-most-three to exact-three padding now has checked semantics and a linear
+  encoded-output bound in `CNFNormalization`; its TM2 runtime and the
+  arbitrary-width SAT transformation remain pending.
 - Prove exact 3-SAT belongs to NP.
 
 ## Milestone 4: Cook--Levin

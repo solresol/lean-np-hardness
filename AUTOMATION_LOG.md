@@ -2134,3 +2134,56 @@ avoid failed routes, and choose a materially different experiment when blocked.
   framing APIs only after proving any required conversion to their aligned
   input encodings. Then lift literal lookup through clause/formula folds;
   the exact-width check is an additional obligation for exact k-SAT.
+
+## 2026-09-12 — checked at-most-three to exact-three SAT normalization
+
+- **Starting commit:** `2b546d665ad15040e03938ea0cfe034ff2705d03`;
+  clean `main`, with fetched upstream unchanged and no unpublished commits.
+- **Goal:** take the independent Milestone 3 formula-convention normalization
+  item while keeping certificate lookup and verifier runtime pending.
+- **Checked increment:** added `CNFNormalization.lean`. `Clause.normalizeThree`
+  pads one/two-literal clauses by repeating an existing literal, replaces an
+  empty clause with two contradictory triples on zero, and retains longer
+  clauses. Clause/formula `eval_normalizeThree` preserve every assignment's
+  evaluation; `Formula.satisfiable_normalizeThree` preserves satisfiability.
+  `exactWidth_normalizeThree` characterizes exact width three by input width
+  at most three, and `atMostThreeToExactThree` packages the semantic reduction.
+  Added `encodedAtMostThreeSAT` with the existing binary formula encoding.
+  Clause-count and framed-payload bounds yield
+  `Formula.normalizeThree_encode_length_le`: at most `26 * encodedSize + 1`
+  output bits, including all formula and clause headers. Repeated clauses and
+  all literals of nonempty input clauses are retained.
+- **Files:** new normalization module, root import, fifteen audits, README,
+  roadmap, theorem status, and this journal.
+- **Successful checks:** full `lake build` passed 2,198 jobs; all fifteen new
+  audits use only standard `propext`, `Classical.choice`, and `Quot.sound`
+  (smaller subsets recorded in theorem status). No new module warnings.
+  The 43-file source scan found no prohibited declarations and only the
+  existing explanatory `proof_wanted` comment. Import scan and
+  `git diff --check` passed. Existing prime-selector warnings remain.
+- **Failed approaches/blockers:** `rfl` did not remove the final Boolean
+  conjunction for a singleton formula; `simp` does. Flattened membership
+  quantifiers were in the wrong order for `change`; explicit
+  `List.mem_flatMap` witnesses establish both directions. Direct reduction
+  of small framed sizes failed, `norm_num` is not imported, and ordinary
+  `decide` could not reduce `Nat.size 2` or `Nat.size 3`. Rewriting with
+  `encodeNat_length_eq_size`, expressing the numerals as `Nat.bit`, and
+  applying `Nat.size_bit`/`size_one` solved the constants with checked proofs.
+  No unresolved blocker remains for this increment.
+- **Comparison/API discoveries:** consulted Coq `SourceAdapter.v`, `Hardness.v`,
+  installed `kSAT.v`, and `FSAT/FSAT_to_SAT.v` (`clause_sat_rep3`,
+  `cnf_sat_rep3`, and the duplicated-literal Tseytin clauses). Coq confirms
+  that exact width counts repeated entries; its broader Tseytin construction
+  and lambda-calculus runtime evidence are not reproduced by this padding
+  pass and supply no Lean proof evidence. `List.mem_flatMap` and mapped
+  append/sum identities lift the local semantics and size bound directly.
+- **Ending state:** normalization semantics and encoded output size are
+  checked and audited, ready for commit/push on `main`. TM2 runtime,
+  arbitrary-width SAT conversion, exact 3-SAT NP membership, and Cook--Levin
+  remain pending. Final commit and remote parity are recorded in run memory.
+- **Best next experiment:** return to the verifier path and isolate binary
+  equality of two separately supplied natural encodings with a finite TM2
+  machine and linear bit-length bound. Use that as the certificate-membership
+  kernel; do not silently substitute the aligned `BinaryNatPair` encoding.
+  A separate normalization continuation could prove arbitrary-width clause
+  splitting with fresh variables before applying this checked padding pass.
