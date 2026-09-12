@@ -74,6 +74,7 @@
 | Binary natural/list/nested-list encoding | Complete | `BinaryNatLists.finEncoding`, `decode_encode`, and `encode_length`; raw encodings in `RawNatEncoding`. |
 | Framing and raw-field conversion | Complete | `MachinePrimitives.framedNatComputableInPolyTime`, `framedNatListComputableInPolyTime`, `unframedNatListsComputableInPolyTime`, and `sourceOrderRawFieldsComputableInPolyTime`. |
 | Binary arithmetic | Complete | `MachinePrimitives.binarySuccComputableInPolyTime`, `binaryPredComputableInPolyTime`, `binaryLEComputableInPolyTime`, and `binaryAddComputableInPolyTime`; the latter two use `BinaryNatPair.finEncoding`. |
+| Separate-stack binary equality kernel | Complete | `MachinePrimitives.BinaryEquality.computer` is a finite three-stack TM2 machine. `scan_run` and `whole_list` prove exact execution in `max left.length right.length + 1` steps, exhausting both input words, preserving the output suffix, and restoring initial control. `natural_run` specializes to canonical `Computability.encodeNat`; `evalsToInTime` and `natural_evalsToInTime` bound runtime by the sum of supplied bit lengths plus one. Serialized input loading, framed-certificate traversal, and full verifier integration remain pending. |
 | Counted-row representation and payload extraction | Complete | `CountedNatRows.rowPayloadFinEncoding`, `rowFields_injective`, and `MachinePrimitives.countedRowPayloadStructuredComputableInPolyTime`; empty rows remain distinct. |
 | Boolean aggregation | Complete | `MachinePrimitives.allFalseComputableInPolyTime`, linear in the complete Boolean stream length. |
 | Generic pair exchange and right-component computation | Complete | `PairExchange.outputsInTime`, `PairExchange.computableInPolyTime`, and `MachineAdapters.pairRightComputableInPolyTime`; finite alphabets can differ or be empty, with exchange bound `4s+6`. |
@@ -277,6 +278,14 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   Full `lake build` passed 2,198 jobs on 2026-09-12. These results establish
   short-clause normalization semantics and a linear encoded-output bound,
   with no TM2 runtime or arbitrary-width SAT reduction claimed.
+
+- The seven `BinaryEqualityMachine` audits pass. `encodeNat_eq_iff` uses
+  only `propext` and `Quot.sound`; the other six use only `propext`,
+  `Classical.choice`, and `Quot.sound`. Full `lake build` passed 2,199 jobs
+  on 2026-09-13. The 44-file source/config scan found only the existing
+  explanatory `proof_wanted` comment. Equality starts with two independently
+  supplied Boolean stacks; no serialized-input adapter or SAT verifier is
+  asserted by these kernel results.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
 `unsafe` declaration.

@@ -31,6 +31,7 @@ import LeanNPHardness.MachineRun
 import LeanNPHardness.FramingMachine
 import LeanNPHardness.SourceOrderMachine
 import LeanNPHardness.BinaryArithmetic
+import LeanNPHardness.BinaryEqualityMachine
 import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine

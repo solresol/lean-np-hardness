@@ -29,8 +29,8 @@ than hiding it inside a downstream NP-hardness proof.
 
 ## Reusable encodings and machine operations
 
-The following checked modules were extracted from the downstream thesis
-formalisation. They import no thesis or p-adic definitions:
+The checked library extends reusable modules extracted from the downstream
+thesis formalisation. It imports no thesis or p-adic definitions:
 
 - `BinaryNatLists` and `RawNatEncoding`: self-delimiting binary natural/list/
   nested-list encodings, raw field representations, exact round trips and
@@ -44,6 +44,11 @@ formalisation. They import no thesis or p-adic definitions:
 - `CountedNatRows` and `CountedRowMachine`: exact counted-row parsing, including
   empty rows, and a linear-time outer-header removal machine.
 - `BooleanListMachine`: a linear-time Boolean `allFalse` fold.
+- `BinaryEqualityMachine`: a finite TM2 equality kernel on two separately
+  supplied Boolean stacks. It consumes both words in exactly
+  `max(left.length, right.length) + 1` steps and specializes to canonical
+  binary natural equality. Loading a serialized pair and traversing a SAT
+  certificate remain separate obligations.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing
@@ -57,8 +62,9 @@ arithmetic remain binary-input results; trial division and enumeration remain
 explicitly unary/padded-input results. No polynomial bound in the length of
 an arbitrary standalone binary bound is claimed for the prime search.
 
-Their runtime claims use mathlib's standard `TM2ComputableInPolyTime` and
-actual encoded lengths. They are reusable building blocks for SAT encodings
+Their runtime claims use mathlib's `EvalsToInTime` or
+`TM2ComputableInPolyTime`, with actual encoded lengths and explicit input
+configurations. They are reusable building blocks for SAT encodings
 and downstream reductions; they do not complete the SAT verifier or Cook--Levin.
 
 ## Current status

@@ -2187,3 +2187,59 @@ avoid failed routes, and choose a materially different experiment when blocked.
   kernel; do not silently substitute the aligned `BinaryNatPair` encoding.
   A separate normalization continuation could prove arbitrary-width clause
   splitting with fresh variables before applying this checked padding pass.
+
+## 2026-09-13 — separate-stack binary equality with exact runtime
+
+- **Starting commit:** `127cf2f08b2d83023eb457d705de0fe55ea29935`;
+  clean `main`, fetched upstream unchanged, no unpublished commits.
+- **Goal:** implement the previous run's proposed binary-equality kernel for
+  the Milestone 3 verifier, consuming two separately supplied canonical bit
+  strings without assuming conversion to the aligned `BinaryNatPair` format.
+- **Checked increment:** added `BinaryEqualityMachine.lean` with finite
+  three-stack `BinaryEquality.computer`, one scanning label, and finite
+  symbol/aggregate control. `scan_run` proves execution from any accumulator;
+  `whole_list` computes word equality, empties both inputs, preserves an
+  arbitrary output suffix, and restores initial control in exactly
+  `max left.length right.length + 1` TM2 steps. `encodeNat_eq_iff` and
+  `natural_run` specialize to natural equality using canonical
+  `Computability.encodeNat`. `evalsToInTime` and `natural_evalsToInTime`
+  provide bounds of total supplied bit length plus one. Empty words,
+  unequal lengths, and differing bits are all covered by the general proof.
+- **Files:** new equality module, root import, seven audits, README,
+  roadmap, theorem status, and this journal.
+- **Successful checks:** standalone module check passed; full `lake build`
+  passed 2,199 jobs at 09:11 AEST. All seven new audits and all 222 axiom
+  lists in the build log contain only `propext`, `Classical.choice`, and
+  `Quot.sound`; `encodeNat_eq_iff` needs only `propext` and `Quot.sound`.
+  There are also three axiom-free audit results. The 44-file Lean source/
+  config scan found only the existing explanatory `proof_wanted` comment.
+  No new module warnings; existing prime-selector warnings remain.
+  Import inspection and `git diff --check` passed.
+- **Failed approaches/API discoveries:** `stacks` is a reserved token;
+  renamed the helper `stackContents`. `Nat.max_add_add_right` is absent;
+  `Nat.succ_max_succ` normalizes the simultaneous-cons runtime. Broad `simp`
+  unfolded the machine step in the empty/empty base case before matching the
+  local theorem; restricted `simpa only` preserves the target. The revised
+  proof checked without further failures. `Function.iterate_succ_apply`
+  exposes the first step directly, and `decode_encodeNat` gives injectivity
+  of canonical binary words without a representation conversion.
+- **Coq comparison:** read completed `SourceAdapter.v` and `Hardness.v`,
+  plus pinned comparison-library
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v),
+  [SAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT.v), and
+  [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  `evalVar` uses `list_in_decb Nat.eqb`; extraction separates generic
+  equality, list membership, literal evaluation, and clause/formula folds.
+  This supports the decomposition only: Coq lambda-calculus bounds are not
+  Lean/TM2 evidence and are not transferred to this binary encoding.
+- **Ending state:** the equality kernel and exact/linear runtime are checked
+  and audited, ready for commit/push on `main`; final hash and remote parity
+  are recorded in automation memory. Loading serialized inputs, framed
+  certificate traversal, SAT verifier runtime, exact 3-SAT NP membership,
+  and Cook--Levin remain pending. No unresolved blocker in this increment.
+- **Best next experiment:** construct a query-preserving equality wrapper
+  with a scratch stack and proved restoration cost, so the query can be
+  compared against successive certificate entries. Then connect framed
+  natural extraction and list traversal under a finite dispatcher. Count
+  copying/restoration and delimiter parsing explicitly; do not treat the
+  preloaded two-stack configuration as a `PairEncoding` input machine.
