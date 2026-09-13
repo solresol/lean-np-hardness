@@ -2243,3 +2243,58 @@ avoid failed routes, and choose a materially different experiment when blocked.
   natural extraction and list traversal under a finite dispatcher. Count
   copying/restoration and delimiter parsing explicitly; do not treat the
   preloaded two-stack configuration as a `PairEncoding` input machine.
+
+## 2026-09-14 — binary equality with exact query restoration
+
+- **Starting commit:** `4521457be5529938b585952221da1533fb880177`;
+  clean `main`, fetched upstream unchanged, no unpublished commits.
+- **Goal:** retain the query across a binary comparison for the Milestone 3
+  certificate-membership path, with copying and restoration counted.
+- **Checked increment:** added `PreservingBinaryEqualityMachine.lean` with
+  four Boolean stacks and finite scan/restore control. `scan_run` saves
+  each query bit onto scratch while comparing, proving the arbitrary-suffix
+  invariant `query.reverse ++ scratch`; `restore_run` reverses scratch onto
+  the query and emits the accumulated result. `whole_list` restores the
+  exact original query and initial control, consumes the candidate, empties
+  scratch, and retains the output suffix in exactly `max q c + q + 2` TM2
+  steps for supplied bit lengths `q` and `c`. `evalsToInTime` bounds this
+  by `2q + c + 2`; `natural_run` and `natural_evalsToInTime` specialize to
+  canonical binary naturals using the existing `encodeNat_eq_iff` theorem.
+  Empty words, unequal lengths, all mismatch positions, and repetitions
+  are covered by the general proofs.
+- **Files:** new preserving-comparison module, root import, seven headline
+  audits, README, roadmap, theorem status, and this journal.
+- **Successful checks:** standalone module checking passed on the first
+  attempt; full `lake build` passed 2,200 jobs at 09:06 AEST. All seven new
+  audits and all 229 reported axiom lists use only `propext`,
+  `Classical.choice`, and `Quot.sound`; three further reports are axiom-free.
+  The 45-file Lean source/config scan found only the existing explanatory
+  `proof_wanted` comment. No new module warnings or downstream imports;
+  existing prime-selector simplifier warnings remain. `git diff --check`
+  passed, including the staged increment.
+- **Failed approaches/blockers:** no Lean proof route failed. Instead of
+  copying the query in a separate preliminary pass, the finite comparison
+  statement saves each present query bit during the scan. This uses one
+  additional scratch stack and counts a separate restoration iteration per
+  query bit; both exhaustion transitions are included. No unresolved
+  blocker remains in this kernel. It still starts from two preloaded words.
+- **Useful API/comparison:** `List.reverse_cons` and `List.append_assoc`
+  express the saved-prefix invariant; `Function.iterate_add_apply`
+  composes the exact scan and restoration runs. Read the completed Coq
+  `SourceAdapter.v` and `Hardness.v`, plus installed comparison-library
+  `SharedSAT.v` (`evalVar`, `evalVar_in_iff`) and `SAT_inNP.v`
+  (`_term_list_in_decb`, `_term_evalVar`, `sat_NP`). Their decomposition
+  reuses a query across list membership tests, motivating query retention.
+  Their lambda-calculus extraction bounds are not Lean/TM2 evidence.
+- **Ending state:** query-preserving equality and its exact/linear runtime
+  are checked and audited, ready for commit/push on `main`. Final commit
+  and local/tracking/live-remote parity are recorded in automation memory.
+  Serialized loading, framed certificate traversal, SAT verifier runtime,
+  exact 3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** build a finite TM2 extractor for one
+  `BinaryNatLists.frame bits ++ suffix`, using its unary length prefix to
+  move exactly the payload onto a candidate stack in the original order
+  while preserving the suffix and query. Prove the extraction's exact
+  runtime before connecting this comparison under a certificate-list
+  dispatcher. The outer list length is itself a framed binary natural;
+  keep that header/counting obligation explicit.

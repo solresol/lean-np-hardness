@@ -9,6 +9,7 @@ import LeanNPHardness.FramingMachine
 import LeanNPHardness.SourceOrderMachine
 import LeanNPHardness.BinaryArithmetic
 import LeanNPHardness.BinaryEqualityMachine
+import LeanNPHardness.PreservingBinaryEqualityMachine
 import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine
@@ -260,6 +261,13 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.BinaryEquality.encodeNat_eq_iff
 #print axioms LeanNPHardness.MachinePrimitives.BinaryEquality.natural_run
 #print axioms LeanNPHardness.MachinePrimitives.BinaryEquality.natural_evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.PreservingBinaryEquality.computer
+#print axioms LeanNPHardness.MachinePrimitives.PreservingBinaryEquality.scan_run
+#print axioms LeanNPHardness.MachinePrimitives.PreservingBinaryEquality.restore_run
+#print axioms LeanNPHardness.MachinePrimitives.PreservingBinaryEquality.whole_list
+#print axioms LeanNPHardness.MachinePrimitives.PreservingBinaryEquality.evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.PreservingBinaryEquality.natural_run
+#print axioms LeanNPHardness.MachinePrimitives.PreservingBinaryEquality.natural_evalsToInTime
 #print axioms LeanNPHardness.MachinePrimitives.countedRowPayloadStructuredComputableInPolyTime
 #print axioms LeanNPHardness.MachinePrimitives.allFalseComputableInPolyTime
 

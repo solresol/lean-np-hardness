@@ -49,6 +49,13 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `max(left.length, right.length) + 1` steps and specializes to canonical
   binary natural equality. Loading a serialized pair and traversing a SAT
   certificate remain separate obligations.
+- `PreservingBinaryEqualityMachine`: a finite TM2 comparison kernel that
+  saves query bits while scanning and restores their exact order afterwards.
+  It consumes the candidate, empties scratch, preserves the output suffix,
+  and restores initial control in exactly `max(q, c) + q + 2` steps for
+  supplied bit lengths `q` and `c`, bounded by `2q + c + 2`. The natural
+  interface uses canonical binary encodings. Framed certificate traversal
+  and the composed SAT verifier remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

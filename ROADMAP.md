@@ -42,8 +42,10 @@
 - Prove exact 3-SAT belongs to NP.
   Finite certificates and their bit bound are checked. `BinaryEqualityMachine`
   now supplies a linear-time equality kernel on separate Boolean stacks;
-  loading/traversing framed certificates, literal/formula evaluation, and
-  exact-width checking still need a composed polynomial-time TM2 verifier.
+  `PreservingBinaryEqualityMachine` adds query restoration with an exact
+  linear runtime. Loading/traversing framed certificates, literal/formula
+  evaluation, and exact-width checking still need a composed polynomial-time
+  TM2 verifier.
 
 ## Milestone 4: Cook--Levin
 
