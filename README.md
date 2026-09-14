@@ -56,6 +56,12 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   supplied bit lengths `q` and `c`, bounded by `2q + c + 2`. The natural
   interface uses canonical binary encodings. Framed certificate traversal
   and the composed SAT verifier remain pending.
+- `FrameExtractionMachine`: a finite TM2 kernel extracting one framed word
+  in original bit order while preserving the query, remaining input, and
+  candidate suffix. It empties scratch and the unary counter in exactly
+  `3n + 3` steps for `n` payload bits, bounded by twice the consumed frame's
+  bit length plus one. Its natural interface loads canonical binary words
+  for the equality kernels; outer list counting and traversal remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

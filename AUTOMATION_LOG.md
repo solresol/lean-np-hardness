@@ -2298,3 +2298,63 @@ avoid failed routes, and choose a materially different experiment when blocked.
   runtime before connecting this comparison under a certificate-list
   dispatcher. The outer list length is itself a framed binary natural;
   keep that header/counting obligation explicit.
+
+## 2026-09-15 — ordered single-frame extraction with exact runtime
+
+- **Starting commit:** `ad20a2e92ec5eb85379ac31df255671416f83b3d`;
+  clean `main`, fetched upstream unchanged, no unpublished commits. The
+  sandboxed fetch could not resolve GitHub; the authorized network escalation
+  succeeded and confirmed local/upstream parity before editing.
+- **Goal:** extract a single framed candidate in original bit order for the
+  Milestone 3 certificate-membership path, preserving the query and unread
+  certificate suffix with every parsing/restoration step counted.
+- **Checked increment:** added `FrameExtractionMachine.lean`: five Boolean
+  stacks, finite prefix/payload/restore labels, and an optional Boolean state.
+  `prefix_run` counts the unary prefix; `payload_run` consumes exactly that
+  many bits and retains the input suffix; `restore_run` reverses scratch onto
+  the candidate. `whole_frame` extracts `BinaryNatLists.frame bits ++ suffix`
+  in exactly `3 * bits.length + 3` TM2 steps, including all three phase-ending
+  transitions. It preserves the query and candidate suffix, empties both
+  work stacks, and resets control. `evalsToInTime` bounds runtime by twice
+  the consumed frame length plus one. `natural_run` and
+  `natural_evalsToInTime` load canonical `Computability.encodeNat` words for
+  the equality kernels. Empty frames and arbitrary suffix bits are covered.
+- **Files:** new extraction module, root import, eight audits, README,
+  roadmap, theorem status, and this journal.
+- **Successful checks:** standalone module check passed after proof repairs;
+  full `lake build` passed 2,201 jobs at 09:05 AEST. All eight new audits and
+  all 237 reported axiom lists contain only `propext`, `Classical.choice`,
+  and `Quot.sound`; three further reports are axiom-free. The 46-file Lean
+  source/config scan found only the existing explanatory `proof_wanted`
+  comment. No new module warnings; existing prime-selector simplifier
+  warnings remain. Import inspection and `git diff --check` passed.
+- **Failed approaches/API discoveries:** simplifying both forms of
+  `List.replicate_succ` did not commute the accumulated counter tick; the
+  existing `MachineRun.replicate_true_append_cons` supplies exactly that
+  identity. Two exhaustion-step goals were already discharged by `simp`,
+  so subsequent extensionality was removed. Repeating an unrestricted
+  `iterate_add_apply` rewrite split the outer `length + 1` instead of the
+  intended phase sum; compose one phase at a time with explicit remaining
+  costs. `simp only [← definition]` cannot refold a definition; unfold the
+  natural frame and size on both sides instead. No unresolved proof blocker.
+- **Comparison/design evidence:** inspected `FramingMachine.unframeProgram`
+  and its private prefix/payload proofs. That machine consumes the complete
+  stream and emits reversed, delimiter-tagged raw fields; this new interface
+  stops after one frame and restores payload order. Read completed Coq
+  `SourceAdapter.v` and `Hardness.v`, plus installed `SharedSAT.v`
+  (`evalVar`, `evalVar_in_iff`) and `SAT_inNP.v` (`_term_list_in_decb`,
+  `_term_evalVar`, `sat_NP`). Their equality/membership/evaluator decomposition
+  informs the target, but their extracted lambda-term encoding and runtime
+  are not Lean/TM2 evidence.
+- **Ending state:** single-frame ordered extraction and its exact/linear
+  runtime are checked and audited, ready for commit/push on `main`. Final
+  commit and local/tracking/live-remote parity are recorded in run memory.
+  The contract assumes a complete frame; no malformed-stream parser contract,
+  complete certificate traversal, SAT verifier, exact 3-SAT NP membership,
+  or Cook--Levin completion is claimed.
+- **Best next experiment:** lift extraction and query-preserving equality
+  into one finite dispatcher that consumes one framed candidate, emits its
+  equality result, and preserves the query and unread certificate suffix.
+  Prove the exact sum of both kernel costs and dispatcher transitions. Then
+  traverse the certificate using its outer framed binary list count; parsing
+  that count and bounding binary decrement remain explicit obligations.

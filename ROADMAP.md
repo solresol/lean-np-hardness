@@ -43,9 +43,11 @@
   Finite certificates and their bit bound are checked. `BinaryEqualityMachine`
   now supplies a linear-time equality kernel on separate Boolean stacks;
   `PreservingBinaryEqualityMachine` adds query restoration with an exact
-  linear runtime. Loading/traversing framed certificates, literal/formula
-  evaluation, and exact-width checking still need a composed polynomial-time
-  TM2 verifier.
+  linear runtime. `FrameExtractionMachine` now extracts one framed value in
+  original bit order, preserving the query and remaining input with exact
+  linear runtime. Handling the outer binary list count, traversing framed
+  certificates, literal/formula evaluation, and exact-width checking still
+  need a composed polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
 

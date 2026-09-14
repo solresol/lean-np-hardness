@@ -77,6 +77,7 @@
 | Separate-stack binary equality kernel | Complete | `MachinePrimitives.BinaryEquality.computer` is a finite three-stack TM2 machine. `scan_run` and `whole_list` prove exact execution in `max left.length right.length + 1` steps, exhausting both input words, preserving the output suffix, and restoring initial control. `natural_run` specializes to canonical `Computability.encodeNat`; `evalsToInTime` and `natural_evalsToInTime` bound runtime by the sum of supplied bit lengths plus one. Serialized input loading, framed-certificate traversal, and full verifier integration remain pending. |
 | Binary equality with query restoration | Complete | `MachinePrimitives.PreservingBinaryEquality.computer` has four Boolean stacks and finite scan/restore control. `scan_run` saves the reversed query; `restore_run` restores its order. `whole_list` preserves the query, consumes the candidate, empties scratch, and pushes equality above the unchanged output suffix in exactly `max q c + q + 2` steps for supplied bit lengths `q` and `c`. `evalsToInTime` bounds this by `2q + c + 2`; `natural_run` and `natural_evalsToInTime` specialize to canonical binary naturals. Serialized loading, framed certificate traversal, and verifier integration remain pending. |
 | Counted-row representation and payload extraction | Complete | `CountedNatRows.rowPayloadFinEncoding`, `rowFields_injective`, and `MachinePrimitives.countedRowPayloadStructuredComputableInPolyTime`; empty rows remain distinct. |
+| Ordered extraction of one binary frame | Complete | `MachinePrimitives.FrameExtraction.computer` has five Boolean stacks and finite prefix/payload/restore control. `prefix_run`, `payload_run`, and `restore_run` give exact phase invariants; `whole_frame` extracts `BinaryNatLists.frame bits ++ suffix` in exactly `3 * bits.length + 3` steps, preserving the query, input suffix, and candidate suffix, emptying both work stacks, and resetting control. `evalsToInTime` bounds runtime by twice the consumed frame length plus one; `natural_run` and `natural_evalsToInTime` load the canonical unframed natural encoding. The contract assumes a complete frame; outer binary list counting, certificate traversal, and verifier integration remain pending. |
 | Boolean aggregation | Complete | `MachinePrimitives.allFalseComputableInPolyTime`, linear in the complete Boolean stream length. |
 | Generic pair exchange and right-component computation | Complete | `PairExchange.outputsInTime`, `PairExchange.computableInPolyTime`, and `MachineAdapters.pairRightComputableInPolyTime`; finite alphabets can differ or be empty, with exchange bound `4s+6`. |
 
@@ -296,6 +297,15 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   restoration, complete word/natural execution, and linear bit bounds;
   serialized certificate traversal and a polynomial-time verifier remain
   separate obligations.
+
+- The eight `FrameExtractionMachine` audits pass with only `propext`,
+  `Classical.choice`, and `Quot.sound`. Full `lake build` passed 2,201 jobs
+  on 2026-09-15; all 237 reported axiom lists contain only these standard
+  axioms, with three additional axiom-free reports. The 46-file source/config
+  scan found only the existing explanatory `proof_wanted` comment. These
+  results establish exact ordered extraction and a linear bound for a
+  complete frame, including the empty payload. Outer list counting,
+  certificate traversal, and the full verifier remain separate obligations.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
 `unsafe` declaration.
