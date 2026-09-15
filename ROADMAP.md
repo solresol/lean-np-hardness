@@ -45,7 +45,9 @@
   `PreservingBinaryEqualityMachine` adds query restoration with an exact
   linear runtime. `FrameExtractionMachine` now extracts one framed value in
   original bit order, preserving the query and remaining input with exact
-  linear runtime. Handling the outer binary list count, traversing framed
+  linear runtime. `FrameComparisonMachine` now connects both kernels under
+  one finite dispatcher, with exact summed runtime and preserved query and
+  unread suffix. Handling the outer binary list count, traversing framed
   certificates, literal/formula evaluation, and exact-width checking still
   need a composed polynomial-time TM2 verifier.
 

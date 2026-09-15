@@ -62,6 +62,12 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `3n + 3` steps for `n` payload bits, bounded by twice the consumed frame's
   bit length plus one. Its natural interface loads canonical binary words
   for the equality kernels; outer list counting and traversal remain pending.
+- `FrameComparisonMachine`: one finite six-stack dispatcher extracts a framed
+  candidate and compares it with a preloaded query, preserving the query,
+  unread input, and output suffix. Exact runtime is `3c + max(q, c) + q + 5`
+  for query/payload bit lengths `q`/`c`, bounded by `2q + 2f + 3` for consumed
+  frame length `f`. The candidate and work stacks finish empty. Canonical
+  natural equality is checked; outer list counting and traversal are pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

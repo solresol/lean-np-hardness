@@ -2358,3 +2358,61 @@ avoid failed routes, and choose a materially different experiment when blocked.
   Prove the exact sum of both kernel costs and dispatcher transitions. Then
   traverse the certificate using its outer framed binary list count; parsing
   that count and bounding binary decrement remain explicit obligations.
+
+
+## 2026-09-16 — framed comparison with query restoration
+
+- **Starting commit:** `11479ccca957fe8d460d3fc7b4a5dcf1f2fa5e1c`;
+  clean `main`, fetched upstream unchanged, no unpublished commits.
+- **Goal:** connect the ordered frame extractor and query-preserving equality
+  under one finite TM2 dispatcher for Milestone 3 certificate membership.
+- **Checked increment:** added `FrameComparisonMachine.lean` with six Boolean
+  stacks, finite phase labels, and paired finite state. Extraction and
+  comparison reuse scratch. `extract_stepAux` / `compare_stepAux` and
+  `extract_run` / `compare_run` lift the existing kernels with exactly the
+  same step counts and preserve the stacks outside each kernel.
+  `whole_frame` consumes one complete frame, emits equality, restores the
+  preloaded query, preserves unread input/output suffixes, empties
+  candidate/scratch/count, and resets control in exactly
+  `3c + max(q, c) + q + 5` steps for query/payload bit lengths `q`/`c`.
+  `evalsToInTime` bounds this by `2q + 2f + 3` for consumed frame length `f`.
+  `natural_run` and `natural_evalsToInTime` specialize to canonical binary
+  naturals. Empty frames, unequal lengths, and arbitrary suffixes are covered.
+- **Files:** new comparison module, root import, nine audits, README,
+  roadmap, theorem status, and this journal.
+- **Successful checks:** standalone module check passed after the repair
+  below; full `lake build` passed 2,202 jobs. All nine new audits and all 246
+  reported axiom lists contain only `propext`, `Classical.choice`, and
+  `Quot.sound`; three further reports are axiom-free. The 47-file Lean
+  source/config scan found only the existing explanatory `proof_wanted`
+  comment. No new module warnings; existing prime-selector simplifier
+  warnings remain. Explicit imports and `git diff --check` passed.
+- **Failed approaches/API discoveries:** both first-pass statement proofs
+  failed only in `push`: after the dependent update rewrite, the appended
+  stack tail still contained an embedded lookup. Adding the existing local
+  `extractContents_apply` / `compareContents_apply` simplification before
+  rewriting the update closes the inductive case. No other proof route
+  failed. A reached extraction halt becomes a state reset plus comparison
+  `goto` inside the same `TM2.stepAux` call, so no dispatcher step is added.
+  Exact finite-run induction excludes stepping past an original halt by
+  showing iteration from `none` stays `none`.
+- **Comparison/design evidence:** read completed Coq `SourceAdapter.v` and
+  `Hardness.v`, and installed `SharedSAT.v` (`evalVar`, `evalVar_in_iff`) /
+  `SAT_inNP.v` (`_term_list_in_decb`, `_term_evalVar`, `sat_NP`). Membership
+  composes repeated equality and feeds literal/CNF evaluation. Their
+  lambda-calculus runtime does not establish this Lean/TM2 binary runtime.
+  Rechecked Lean's existing `PairReductionOutputProgram` halt redirection
+  and `TM2.stepAux`; the new proof reuses the component theorems directly.
+- **Ending state:** framed-candidate comparison is checked and audited,
+  ready for commit/push on `main`; final commit and local/tracking/live-remote
+  parity are recorded in run memory. The contract assumes a complete frame
+  and a preloaded query. Outer list counting, full certificate traversal,
+  SAT verifier runtime, exact 3-SAT NP membership, and Cook--Levin remain
+  pending; no malformed-input rejection contract is asserted.
+- **Best next experiment:** extract the outer framed binary list length onto
+  a dedicated remaining-count stack, retaining query and framed payload.
+  Lift the existing binary predecessor into that extended layout and prove
+  one nonzero-count traversal iteration: one framed comparison followed by
+  counted decrement and Boolean membership accumulation. The existing
+  `CountedRowMachine` skips a raw count instead of retaining/decrementing it,
+  so it does not discharge this obligation.

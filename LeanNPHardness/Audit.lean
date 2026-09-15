@@ -11,6 +11,7 @@ import LeanNPHardness.BinaryArithmetic
 import LeanNPHardness.BinaryEqualityMachine
 import LeanNPHardness.PreservingBinaryEqualityMachine
 import LeanNPHardness.FrameExtractionMachine
+import LeanNPHardness.FrameComparisonMachine
 import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine
@@ -277,6 +278,15 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.FrameExtraction.evalsToInTime
 #print axioms LeanNPHardness.MachinePrimitives.FrameExtraction.natural_run
 #print axioms LeanNPHardness.MachinePrimitives.FrameExtraction.natural_evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.FrameComparison.computer
+#print axioms LeanNPHardness.MachinePrimitives.FrameComparison.extract_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.FrameComparison.compare_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.FrameComparison.extract_run
+#print axioms LeanNPHardness.MachinePrimitives.FrameComparison.compare_run
+#print axioms LeanNPHardness.MachinePrimitives.FrameComparison.whole_frame
+#print axioms LeanNPHardness.MachinePrimitives.FrameComparison.evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.FrameComparison.natural_run
+#print axioms LeanNPHardness.MachinePrimitives.FrameComparison.natural_evalsToInTime
 #print axioms LeanNPHardness.MachinePrimitives.countedRowPayloadStructuredComputableInPolyTime
 #print axioms LeanNPHardness.MachinePrimitives.allFalseComputableInPolyTime
 
