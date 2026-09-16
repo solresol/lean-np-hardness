@@ -2416,3 +2416,62 @@ avoid failed routes, and choose a materially different experiment when blocked.
   counted decrement and Boolean membership accumulation. The existing
   `CountedRowMachine` skips a raw count instead of retaining/decrementing it,
   so it does not discharge this obligation.
+
+
+## 2026-09-17 — retained certificate-list count and zero test
+
+- **Starting commit:** `4409f67508fba7e4bbb52b99a2b88047960d1ea7`;
+  clean `main`, fetched upstream unchanged, no unpublished commits.
+- **Goal:** load and retain the outer framed binary list count for Milestone 3
+  certificate traversal, preserving the preloaded query and unread body.
+- **Checked increment:** added `CertificateCountMachine.lean` with seven
+  Boolean stacks and finite extraction/check/continuation labels. The
+  extractor writes to a dedicated `remaining` stack while retaining the
+  private candidate and output stacks. `extract_stepAux` / `extract_run`
+  lift exact executions without additional dispatcher steps. `whole_frame`
+  loads the header, and `check_step` peeks without consuming the count.
+  `checked_frame` / `natural_run` reach the correct zero/nonzero continuation
+  in exactly `3b + 4` TM2 steps for binary count length `b`; `list_run`
+  specializes to `BinaryNatLists.encodeNatList`, preserving every framed
+  element and trailing suffix. `natural_evalsToInTime` bounds the cost by
+  `2h + 2` for framed-header length `h`; `list_evalsToInTime` gives `2N + 2`
+  for certificate length `N`. Both work stacks empty and control resets.
+- **Files:** new module, root import, eleven headline audits, README,
+  roadmap, theorem status, and this journal.
+- **Successful checks:** standalone Lean check and full `lake build` passed
+  (2,203 jobs). All eleven new audits and all 257 reported axiom lists use
+  only `propext`, `Classical.choice`, and `Quot.sound`; three further reports
+  are axiom-free. The zero characterization uses only `propext` and
+  `Quot.sound`. The 48-file Lean source/config scan found only the existing
+  explanatory `proof_wanted` comment. No new module warnings; existing
+  prime-selector simplifier warnings remain. `git diff --check` passed.
+- **Failed approaches/API discoveries:** the first canonical-zero proof
+  used broad `simp [decodeNat, decodeNum]`, which unfolded the decoder before
+  its round-trip lemma could apply. Explicitly rewriting `decode_encodeNat`
+  first closes the forward direction. `encodeNat 0 = []` is not closed by
+  `rfl` through the natural-to-Num conversion; `simp [encodeNat, encodeNum]`
+  closes the reverse direction. All machine simulation proofs passed their
+  first check. `Option.isSome` tests count-stack presence, not the low bit:
+  positive even counts must take the nonempty branch. No unresolved blocker
+  remains in this initialization kernel.
+- **Comparison/design evidence:** read completed Coq `SourceAdapter.v` and
+  `Hardness.v`, and the pinned comparison-library
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Their membership/evaluator decomposition uses recursive lists; it does
+  not discharge this Lean encoding's framed binary count obligation or its
+  TM2 runtime. Reused the existing Lean frame-extraction proof directly.
+- **Ending state:** count initialization and non-destructive zero testing
+  are checked and audited, ready for commit/push on `main`; final commit and
+  local/tracking/live-remote parity are recorded in run memory. The exact
+  cost ends at a continuation label before its halt. Canonical complete
+  headers are assumed; no malformed-input rejection or header/body
+  consistency validation is asserted. Count decrement, certificate traversal,
+  the SAT verifier, exact 3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** lift `FrameComparison` into the seven-stack
+  layout while preserving `remaining`, and prove one complete-frame run at
+  the same exact cost. Then lift the existing binary predecessor with input
+  `remaining`, work `scratch`, and output `candidate`; count the ordered
+  transfer back to `remaining` before closing a nonzero-count iteration with
+  Boolean membership accumulation. Do not treat the predecessor's separate
+  output stack as an in-place decrement.

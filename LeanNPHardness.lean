@@ -35,6 +35,7 @@ import LeanNPHardness.BinaryEqualityMachine
 import LeanNPHardness.PreservingBinaryEqualityMachine
 import LeanNPHardness.FrameExtractionMachine
 import LeanNPHardness.FrameComparisonMachine
+import LeanNPHardness.CertificateCountMachine
 import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine

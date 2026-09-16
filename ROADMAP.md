@@ -47,9 +47,11 @@
   original bit order, preserving the query and remaining input with exact
   linear runtime. `FrameComparisonMachine` now connects both kernels under
   one finite dispatcher, with exact summed runtime and preserved query and
-  unread suffix. Handling the outer binary list count, traversing framed
-  certificates, literal/formula evaluation, and exact-width checking still
-  need a composed polynomial-time TM2 verifier.
+  unread suffix. `CertificateCountMachine` now loads the outer framed binary
+  list count onto a dedicated stack and selects the zero/nonzero continuation
+  without consuming it, with exact linear runtime. Count decrement, repeated
+  framed comparison and membership accumulation, literal/formula evaluation,
+  and exact-width checking still need a composed polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
 

@@ -61,13 +61,21 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   candidate suffix. It empties scratch and the unary counter in exactly
   `3n + 3` steps for `n` payload bits, bounded by twice the consumed frame's
   bit length plus one. Its natural interface loads canonical binary words
-  for the equality kernels; outer list counting and traversal remain pending.
+  for the equality kernels; counted traversal remains pending.
 - `FrameComparisonMachine`: one finite six-stack dispatcher extracts a framed
   candidate and compares it with a preloaded query, preserving the query,
   unread input, and output suffix. Exact runtime is `3c + max(q, c) + q + 5`
   for query/payload bit lengths `q`/`c`, bounded by `2q + 2f + 3` for consumed
   frame length `f`. The candidate and work stacks finish empty. Canonical
-  natural equality is checked; outer list counting and traversal are pending.
+  natural equality is checked; counted traversal remains pending.
+- `CertificateCountMachine`: a finite seven-stack dispatcher loads the outer
+  framed binary list count onto a dedicated stack and tests whether it is
+  empty, preserving the count, query, candidate, output, and unread body.
+  `list_run` reaches the correct zero/nonzero continuation in exactly
+  `3b + 4` steps for binary count length `b`; the header bound is `2h + 2`
+  for framed-header length `h`, also bounded by `2N + 2` for certificate
+  length `N`. The continuation's halt is not included. Canonical headers
+  are assumed; decrement, comparison integration, and traversal are pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing
