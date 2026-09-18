@@ -75,7 +75,15 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `3b + 4` steps for binary count length `b`; the header bound is `2h + 2`
   for framed-header length `h`, also bounded by `2N + 2` for certificate
   length `N`. The continuation's halt is not included. Canonical headers
-  are assumed; decrement, comparison integration, and traversal are pending.
+  are assumed; decrement and the full traversal dispatcher remain pending.
+- `CertificateComparisonMachine`: the framed comparator runs on the same
+  seven-stack layout as count initialization, preserving arbitrary bits on
+  the remaining-count stack. It reaches a continuation in exactly
+  `3c + max(q, c) + q + 5` steps, bounded by `2q + 2f + 3`, retaining the
+  query and unread suffixes and emptying candidate/scratch/count. Its
+  `list_head_run` consumes one certificate-body entry and retains all later
+  frames, including duplicates. The retained count still needs decrement;
+  header dispatch, membership accumulation, and full traversal are pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

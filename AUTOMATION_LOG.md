@@ -2475,3 +2475,61 @@ avoid failed routes, and choose a materially different experiment when blocked.
   transfer back to `remaining` before closing a nonzero-count iteration with
   Boolean membership accumulation. Do not treat the predecessor's separate
   output stack as an in-place decrement.
+
+
+## 2026-09-18 — framed comparison preserving the certificate count
+
+- **Starting commit:** `c0a50eabdbf1dac242bd9461e6407a7bf7a1285f`;
+  clean `main`, fetched upstream unchanged, no unpublished commits.
+- **Goal:** lift the framed comparator into the existing seven-stack count
+  layout for Milestone 3 certificate traversal, preserving `remaining`.
+- **Checked increment:** added `CertificateComparisonMachine.lean`, reusing
+  `CertificateCount.Stack` and its Boolean alphabet. `compare_stepAux` and
+  `compare_run` lift the existing comparator with the same exact step count
+  while preserving arbitrary remaining-count bits. `whole_frame` consumes
+  one complete frame, emits equality, restores the query, retains count and
+  input/output suffixes, empties candidate/scratch/count, and resets control
+  in exactly `3c + max(q, c) + q + 5` steps for query/payload bit lengths
+  `q`/`c`. `evalsToInTime` gives bound `2q + 2f + 3` in consumed frame length
+  `f`; `natural_run` and `natural_evalsToInTime` cover canonical naturals.
+  `list_head_run` compares the first certificate-body entry, preserving all
+  later frames, including duplicates, and the original count.
+- **Files:** new comparison module, root import, eight audits, README,
+  roadmap, theorem status, and this journal.
+- **Successful checks:** standalone Lean check passed on its first attempt;
+  full `lake build` passed 2,204 jobs at 11:14 AEST. All eight new audits and
+  all 265 reported axiom lists use only `propext`, `Classical.choice`, and
+  `Quot.sound`; three further reports are axiom-free. The 49-file project
+  Lean source/config scan found only the existing explanatory `proof_wanted`
+  comment. No new module warnings; existing prime-selector simplifier
+  warnings remain. Explicit imports and `git diff --check` passed.
+- **Failed approaches/API discoveries:** no proof route failed and no
+  unresolved blocker remains in this increment. Reusing the existing stack
+  type and alphabet by abbreviation makes the whole-frame configuration
+  equality definitional. Redirecting the comparator's reached halt through
+  a state reset and `goto` remains inside the same `TM2.stepAux` call, so
+  it adds no step. The resulting `done` label is a live continuation; its
+  own halt is not counted. Prior push/update simplification repairs were
+  reused directly instead of repeating the failed approach.
+- **Comparison/design evidence:** read completed Coq `SourceAdapter.v` and
+  `Hardness.v`, and pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Their equality-based list membership and CNF verifier provide the semantic
+  decomposition, not a Lean proof or a bound for our framed binary TM2 model.
+  Rechecked mathlib `TM2.stepAux` and the public Lean predecessor output API.
+- **Ending state:** comparison on the count layout is checked and audited,
+  ready for commit/push on `main`; final commit and local/tracking/live-remote
+  parity are recorded in run memory. This assumes a complete frame and a
+  preloaded query. It neither validates nor decrements the retained count.
+  Header dispatch, membership accumulation, complete traversal, malformed
+  input handling, the SAT verifier, exact 3-SAT NP membership, and Cook--Levin
+  remain pending.
+- **Best next experiment:** lift `binaryPredComputer` with input `remaining`,
+  work `scratch`, and output `candidate`, preserving input/query/count/output.
+  The public `binaryPred_outputsInTime` gives the canonical output contract
+  and bound `2b + 3` for `b` input bits; internal predecessor configuration
+  helpers are private, so use the public computer fields and output witness.
+  Prove ordered transfer from `candidate` back to the emptied `remaining`
+  through `scratch`, counting both passes. Then compose comparison, decrement,
+  and Boolean membership accumulation into one nonzero-count iteration.

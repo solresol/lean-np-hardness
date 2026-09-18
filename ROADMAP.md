@@ -49,9 +49,13 @@
   one finite dispatcher, with exact summed runtime and preserved query and
   unread suffix. `CertificateCountMachine` now loads the outer framed binary
   list count onto a dedicated stack and selects the zero/nonzero continuation
-  without consuming it, with exact linear runtime. Count decrement, repeated
-  framed comparison and membership accumulation, literal/formula evaluation,
-  and exact-width checking still need a composed polynomial-time TM2 verifier.
+  without consuming it, with exact linear runtime. `CertificateComparisonMachine`
+  now lifts framed comparison into that same seven-stack layout with unchanged
+  exact cost, retaining the count, query, and unread suffixes. Its list-head
+  interface preserves every remaining frame, including repetitions. Header
+  dispatch, count decrement, repeated comparison and membership accumulation,
+  literal/formula evaluation, and exact-width checking remain to be connected
+  in a polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
 
