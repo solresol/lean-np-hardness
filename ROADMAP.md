@@ -52,8 +52,12 @@
   without consuming it, with exact linear runtime. `CertificateComparisonMachine`
   now lifts framed comparison into that same seven-stack layout with unchanged
   exact cost, retaining the count, query, and unread suffixes. Its list-head
-  interface preserves every remaining frame, including repetitions. Header
-  dispatch, count decrement, repeated comparison and membership accumulation,
+  interface preserves every remaining frame, including repetitions.
+  `CertificatePredecessorMachine` now consumes the retained count and writes
+  its saturated predecessor onto `candidate` in at most `2b + 3` steps for
+  `b` count bits, preserving query, unread input, the `count` stack, and output.
+  Ordered transfer back to `remaining` is still required for in-place
+  decrement. Header dispatch, repeated comparison and membership accumulation,
   literal/formula evaluation, and exact-width checking remain to be connected
   in a polynomial-time TM2 verifier.
 

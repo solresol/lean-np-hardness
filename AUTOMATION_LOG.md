@@ -2533,3 +2533,58 @@ avoid failed routes, and choose a materially different experiment when blocked.
   Prove ordered transfer from `candidate` back to the emptied `remaining`
   through `scratch`, counting both passes. Then compose comparison, decrement,
   and Boolean membership accumulation into one nonzero-count iteration.
+
+
+## 2026-09-19 — certificate-count predecessor preserving traversal data
+
+- **Starting commit:** `7f83b998c6afb49acb116b96e4639da3bffc5902`;
+  clean `main`, fetched upstream unchanged, no unpublished commits.
+- **Goal:** embed the existing binary predecessor in the seven-stack
+  certificate layout for Milestone 3, with preserved data and a checked cost.
+- **Checked increment:** added `CertificatePredecessorMachine.lean`.
+  `pred_stepAux` and `pred_run` simulate the predecessor with unchanged exact
+  step count and arbitrary input/query/count/output contents preserved.
+  `whole_word` consumes `remaining`, empties scratch, and writes the result
+  in original bit order onto `candidate`, using the public output witness's
+  step count. `evalsToInTime` retains bound `2b + 3` for count bit length `b`.
+  `natural_evalsToInTime` gives saturated predecessor including zero and one;
+  `list_tail_evalsToInTime` produces the tail length after one element and
+  preserves every unread frame, including repetitions. Control resets at
+  a live continuation; its own halt is not counted.
+- **Files:** new module, root import, seven audits, README, roadmap,
+  theorem status, and this journal.
+- **Successful checks:** full `lake build` passed 2,205 jobs. All seven new
+  audits and all 272 reported axiom lists use only `propext`,
+  `Classical.choice`, and `Quot.sound`; three further reports are axiom-free.
+  The 50-file project Lean source/config scan found only the existing
+  explanatory `proof_wanted` comment. No new module warnings; existing
+  prime-selector simplifier warnings remain. `git diff --check` passed.
+- **Failed approaches/API discoveries:** defining `State` as the projection
+  `binaryPredComputer.σ` prevented typeclass synthesis of `Fintype State`
+  during machine construction and caused cascading elaboration failures.
+  Abbreviating the public `PredState` directly fixes synthesis. The public
+  machine's alphabet and initial-state fields expose everything needed
+  without accessing private predecessor helpers. `congr` alone proves the
+  lifted `initList`/`haltList` configuration identities; subsequent `funext`
+  reported `No goals to be solved` and was removed. The simulation and
+  runtime proofs then passed unchanged. No unresolved proof blocker remains.
+- **Comparison/design evidence:** read completed Coq `SourceAdapter.v` and
+  `Hardness.v`, plus installed comparison-library `SharedSAT.v` (`evalVar`,
+  `evalVar_in_iff`) and `SAT_inNP.v` (`_term_list_in_decb`, `_term_evalVar`,
+  `sat_NP`). Their recursive-list membership and evaluator decomposition
+  provides a comparison baseline; it does not discharge binary count
+  management or Lean TM2 runtime. Rechecked mathlib's `TM2.stepAux`,
+  `initList`, `haltList`, and `TM2OutputsInTime` definitions.
+- **Ending state:** separate-stack count predecessor is checked and audited,
+  ready for commit/push on `main`; final commit and local/tracking/live-remote
+  parity are recorded in run memory. This is not yet an in-place decrement:
+  `remaining` finishes empty and `candidate` holds the result. Header dispatch,
+  membership accumulation, full traversal, malformed-input handling, the SAT
+  verifier, exact 3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** prove the ordered transfer
+  `candidate -> scratch -> remaining` on the shared seven-stack layout,
+  preserving input/query/count/output. Each pop/push/goto can share one
+  TM2 step, so target `2p + 2` steps for `p` predecessor-output bits across
+  two passes, including exhaustion transitions. Then redirect predecessor
+  completion into that transfer, bound `p` by the original count length,
+  and compose comparison, in-place decrement, and membership accumulation.

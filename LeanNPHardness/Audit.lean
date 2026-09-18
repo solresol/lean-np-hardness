@@ -14,6 +14,7 @@ import LeanNPHardness.FrameExtractionMachine
 import LeanNPHardness.FrameComparisonMachine
 import LeanNPHardness.CertificateCountMachine
 import LeanNPHardness.CertificateComparisonMachine
+import LeanNPHardness.CertificatePredecessorMachine
 import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine
@@ -308,6 +309,13 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.CertificateComparison.natural_run
 #print axioms LeanNPHardness.MachinePrimitives.CertificateComparison.natural_evalsToInTime
 #print axioms LeanNPHardness.MachinePrimitives.CertificateComparison.list_head_run
+#print axioms LeanNPHardness.MachinePrimitives.CertificatePredecessor.computer
+#print axioms LeanNPHardness.MachinePrimitives.CertificatePredecessor.pred_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.CertificatePredecessor.pred_run
+#print axioms LeanNPHardness.MachinePrimitives.CertificatePredecessor.whole_word
+#print axioms LeanNPHardness.MachinePrimitives.CertificatePredecessor.evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.CertificatePredecessor.natural_evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.CertificatePredecessor.list_tail_evalsToInTime
 #print axioms LeanNPHardness.MachinePrimitives.countedRowPayloadStructuredComputableInPolyTime
 #print axioms LeanNPHardness.MachinePrimitives.allFalseComputableInPolyTime
 

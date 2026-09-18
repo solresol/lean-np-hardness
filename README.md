@@ -84,6 +84,14 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `list_head_run` consumes one certificate-body entry and retains all later
   frames, including duplicates. The retained count still needs decrement;
   header dispatch, membership accumulation, and full traversal are pending.
+- `CertificatePredecessorMachine`: the binary predecessor runs on the same
+  seven-stack layout, consuming `remaining`, using `scratch`, and writing
+  the result in original bit order onto `candidate`. It preserves arbitrary
+  input/query/count/output contents with unchanged predecessor step count,
+  bounded by `2b + 3` for count bit length `b`. Canonical counts, including
+  zero and one, yield saturated predecessor; the certificate-tail interface
+  preserves every unread frame. Ordered transfer back to `remaining` and
+  the complete traversal remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

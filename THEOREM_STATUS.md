@@ -81,6 +81,7 @@
 | Query-preserving comparison of one framed candidate | Complete | `MachinePrimitives.FrameComparison.computer` combines extraction and equality on six Boolean stacks. `extract_stepAux`, `compare_stepAux`, `extract_run`, and `compare_run` preserve exact component costs. `whole_frame` consumes one complete frame and emits equality while preserving the query, unread input, and output suffix, emptying candidate/scratch/count, and resetting control in exactly `3c + max(q, c) + q + 5` steps. `evalsToInTime` bounds this by `2q + 2f + 3`, for query/payload/frame bit lengths `q`/`c`/`f`; `natural_run` and `natural_evalsToInTime` specialize to canonical naturals. Count decrement, traversal, and verifier integration remain pending. |
 | Retained certificate-list count and zero test | Complete | `MachinePrimitives.CertificateCount.computer` lifts extraction to seven Boolean stacks, directing the header to a dedicated `remaining` stack. `extract_stepAux` and `extract_run` preserve the private candidate/output stacks and exact costs. `whole_frame` loads the header; `check_step` peeks without consuming it; `checked_frame` and `natural_run` reach the correct zero/nonzero continuation in exactly `3b + 4` steps for binary count length `b`. `list_run` preserves all framed elements and trailing input. `natural_evalsToInTime` gives bound `2h + 2` in framed-header bits; `list_evalsToInTime` gives `2N + 2` in full certificate bits. Work stacks empty and control resets. The continuation halt is not counted; canonical complete headers are assumed. Decrement, the header-to-traversal dispatcher, and malformed-input rejection remain pending. |
 | Framed comparison with retained certificate count | Complete | `MachinePrimitives.CertificateComparison.computer` reuses the seven-stack `CertificateCount.Stack` layout. `compare_stepAux` and `compare_run` preserve arbitrary `remaining` contents with unchanged exact cost. `whole_frame` consumes one frame, restores the query, preserves the count and input/output suffixes, and empties candidate/scratch/count in exactly `3c + max(q, c) + q + 5` steps. `evalsToInTime` gives bound `2q + 2f + 3` in query/payload/frame bit lengths; `natural_run` and `natural_evalsToInTime` specialize to canonical naturals. `list_head_run` preserves every later certificate frame and the original count. Execution ends at a live continuation before its halt. Header dispatch, count decrement, membership accumulation, and full traversal remain pending. |
+| Certificate-count predecessor into a separate stack | Complete | `MachinePrimitives.CertificatePredecessor.computer` reuses the seven-stack certificate layout. `pred_stepAux` and `pred_run` preserve arbitrary input/query/count/output contents with unchanged component step count. `whole_word` consumes `remaining`, empties scratch, and writes `binaryPredBits` onto `candidate`; `evalsToInTime` bounds the run by `2b + 3` for count bit length `b`. `natural_evalsToInTime` gives saturated predecessor including zero and one; `list_tail_evalsToInTime` produces the tail length after one element, preserving all unread frames. The final continuation halt is excluded. Ordered transfer back to `remaining`, in-place decrement, and full traversal remain pending. |
 | Boolean aggregation | Complete | `MachinePrimitives.allFalseComputableInPolyTime`, linear in the complete Boolean stream length. |
 | Generic pair exchange and right-component computation | Complete | `PairExchange.outputsInTime`, `PairExchange.computableInPolyTime`, and `MachineAdapters.pairRightComputableInPolyTime`; finite alphabets can differ or be empty, with exchange bound `4s+6`. |
 
@@ -339,6 +340,16 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   runtime and a checked nonempty certificate-body interface. Execution ends
   at a continuation before its halt; decrement, membership accumulation,
   the traversal dispatcher, and the full SAT verifier remain pending.
+
+- The seven `CertificatePredecessorMachine` audits pass with only `propext`,
+  `Classical.choice`, and `Quot.sound`. Full `lake build` passed 2,205 jobs
+  on 2026-09-19; all 272 reported axiom lists use only these standard axioms,
+  with three additional axiom-free reports. The 50-file source/config scan
+  found only the existing explanatory `proof_wanted` comment. The predecessor
+  preserves four unrelated stacks with unchanged component step count and
+  bound `2b + 3`; the canonical-natural and certificate-tail interfaces are
+  checked. The result is on `candidate`, so ordered transfer to `remaining`
+  and a complete in-place decrement remain separate obligations.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
 `unsafe` declaration.
