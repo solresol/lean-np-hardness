@@ -56,10 +56,13 @@
   `CertificatePredecessorMachine` now consumes the retained count and writes
   its saturated predecessor onto `candidate` in at most `2b + 3` steps for
   `b` count bits, preserving query, unread input, the `count` stack, and output.
-  Ordered transfer back to `remaining` is still required for in-place
-  decrement. Header dispatch, repeated comparison and membership accumulation,
-  literal/formula evaluation, and exact-width checking remain to be connected
-  in a polynomial-time TM2 verifier.
+  `CertificateCountTransferMachine` now transfers that result through scratch
+  back to `remaining` in original order in exactly `2p + 2` steps for `p`
+  result bits, bounded by `2b + 2`. Connecting predecessor execution to this
+  transfer is still required for in-place decrement. Header dispatch,
+  repeated comparison and membership accumulation, literal/formula evaluation,
+  and exact-width checking remain to be connected in a polynomial-time TM2
+  verifier.
 
 ## Milestone 4: Cook--Levin
 

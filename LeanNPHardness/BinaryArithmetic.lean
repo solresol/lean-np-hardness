@@ -450,7 +450,8 @@ theorem binaryPredBits_encodeNat (n : ℕ) :
   apply congrArg encodeNum
   exact Num.to_nat_inj.mp (by simp [Num.pred_to_nat])
 
-private theorem binaryPredBits_length_le (bits : List Bool) :
+/-- Saturated predecessor never increases the supplied word's bit length. -/
+theorem binaryPredBits_length_le (bits : List Bool) :
     (binaryPredBits bits).length ≤ bits.length := by
   induction bits with
   | nil => simp [binaryPredBits]

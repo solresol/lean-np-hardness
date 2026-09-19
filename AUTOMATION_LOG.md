@@ -2588,3 +2588,59 @@ avoid failed routes, and choose a materially different experiment when blocked.
   two passes, including exhaustion transitions. Then redirect predecessor
   completion into that transfer, bound `p` by the original count length,
   and compose comparison, in-place decrement, and membership accumulation.
+
+
+## 2026-09-20 — ordered certificate-count result transfer
+
+- **Starting commit:** `d7a1bc182914ab7b367647d5683722bcae83a890`;
+  clean `main`, fetched upstream unchanged, no unpublished commits.
+- **Goal:** close the ordered-transfer obligation identified by the prior
+  run, moving the predecessor result from candidate back to remaining.
+- **Checked increment:** added `CertificateCountTransferMachine.lean` on
+  the shared seven-stack layout. `reverse_run` and `restore_run` prove
+  exact phase invariants; `whole_word` transfers candidate through scratch
+  onto remaining in original order in exactly `2p + 2` TM2 steps for `p`
+  candidate bits, including both exhaustion transitions. It preserves
+  arbitrary input/query/count/output contents and the remaining-stack
+  suffix, empties candidate and scratch, and resets control at a live
+  continuation. `evalsToInTime` packages the exact cost. Made the existing
+  `binaryPredBits_length_le` public; `predecessor_evalsToInTime` and
+  `natural_predecessor_evalsToInTime` use it to bound transfer of an already
+  computed predecessor by `2b + 2` in the original count's bit length `b`.
+  Empty words and canonical predecessor at zero and one are covered.
+- **Files:** new transfer module, the public lemma in `BinaryArithmetic`,
+  root import, eight audits, README, roadmap, theorem status, and this log.
+- **Successful checks:** targeted module build passed 1,142 jobs; full
+  `lake build` passed 2,206 jobs. All eight new audits and all 280 reported
+  axiom lists use only `propext`, `Classical.choice`, and `Quot.sound`;
+  three further reports are axiom-free. The 51-file project Lean
+  source/config scan found only the existing explanatory `proof_wanted`
+  comment. No new warnings; existing prime-selector simplifier warnings
+  remain. `git diff --check` passed.
+- **Failed approaches/API discoveries:** the first check left two stack
+  function equalities in the nonempty one-step proofs after `simp`.
+  `funext index; cases index <;> rfl` closes those dependent-update goals;
+  the exhaustion and iteration proofs needed no repair. Reused the
+  existing predecessor-length proof rather than reproving a natural-size
+  monotonicity bound. No unresolved proof blocker remains in this kernel.
+  Rechecked mathlib `TM2.stepAux`: each pop/branch/push/goto statement is
+  one counted step, so both passes cost one step per bit plus exhaustion.
+- **Comparison/design evidence:** read completed Coq `SourceAdapter.v`
+  and `Hardness.v`, and installed comparison-library `SharedSAT.v`
+  (`evalVar`, `evalVar_in_iff`) and `SAT_inNP.v` (`_term_list_in_decb`,
+  `_term_evalVar`, `sat_NP`). Their list-membership/evaluator decomposition
+  is a design comparison; their lambda encoding and runtime provide no
+  Lean evidence for this framed binary count transfer.
+- **Ending state:** ordered transfer is checked and audited, ready for
+  commit/push on `main`; final commit and local/tracking/live-remote parity
+  are recorded in run memory. This kernel starts with a result already on
+  candidate. The predecessor and transfer do not yet execute under one
+  dispatcher, so complete in-place decrement, membership accumulation,
+  header dispatch, full traversal, the SAT verifier, exact 3-SAT NP
+  membership, and Cook--Levin remain pending.
+- **Best next experiment:** use a finite phase-tagged label/state space to
+  redirect predecessor completion into `CertificateCountTransfer.reverse`
+  with no additional TM2 step. Lift both checked runs and sum bounds to
+  target `4b + 5` for in-place saturated decrement, preserving arbitrary
+  input/query/count/output and emptying candidate/scratch. Then connect
+  framed comparison, decrement, and Boolean membership accumulation.

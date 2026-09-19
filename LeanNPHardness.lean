@@ -38,6 +38,7 @@ import LeanNPHardness.FrameComparisonMachine
 import LeanNPHardness.CertificateCountMachine
 import LeanNPHardness.CertificateComparisonMachine
 import LeanNPHardness.CertificatePredecessorMachine
+import LeanNPHardness.CertificateCountTransferMachine
 import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine

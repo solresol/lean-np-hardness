@@ -90,8 +90,16 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   input/query/count/output contents with unchanged predecessor step count,
   bounded by `2b + 3` for count bit length `b`. Canonical counts, including
   zero and one, yield saturated predecessor; the certificate-tail interface
-  preserves every unread frame. Ordered transfer back to `remaining` and
+  preserves every unread frame. The connection to ordered transfer and
   the complete traversal remain pending.
+- `CertificateCountTransferMachine`: a finite two-pass kernel transfers
+  `candidate` through `scratch` onto `remaining` in original bit order in
+  exactly `2p + 2` steps for `p` result bits. It preserves arbitrary
+  input/query/count/output contents and the remaining-stack suffix, empties
+  candidate and scratch, and reaches a live continuation. For an already
+  computed predecessor, the transfer costs at most `2b + 2` for original
+  count bit length `b`, using the now-public `binaryPredBits_length_le`.
+  The predecessor-to-transfer dispatcher and full traversal remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing
