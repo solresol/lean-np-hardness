@@ -16,6 +16,7 @@ import LeanNPHardness.CertificateCountMachine
 import LeanNPHardness.CertificateComparisonMachine
 import LeanNPHardness.CertificatePredecessorMachine
 import LeanNPHardness.CertificateCountTransferMachine
+import LeanNPHardness.CertificateDecrementMachine
 import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine
@@ -342,3 +343,13 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.unaryCandidatePrimeComputableInPolyTime
 #print axioms LeanNPHardness.MachinePrimitives.primeSelectorComputableInPolyTime
 #print axioms LeanNPHardness.MachinePrimitives.selectedPrimeComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.computer
+#print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.pred_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.pred_run
+#print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.transfer_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.transfer_run
+#print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.predecessor_run
+#print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.whole_word
+#print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.natural_evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.list_tail_evalsToInTime

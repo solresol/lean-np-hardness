@@ -2644,3 +2644,56 @@ avoid failed routes, and choose a materially different experiment when blocked.
   target `4b + 5` for in-place saturated decrement, preserving arbitrary
   input/query/count/output and emptying candidate/scratch. Then connect
   framed comparison, decrement, and Boolean membership accumulation.
+
+
+## 2026-09-21 — in-place retained certificate-count decrement
+
+- **Starting commit:** `181e96911efa0df69f35506a876aca08910c0e09`;
+  clean `main`, fetched upstream unchanged, no unpublished commits.
+- **Goal:** connect the checked predecessor and ordered transfer to complete
+  in-place saturated decrement on the shared certificate stack layout.
+- **Checked increment:** added `CertificateDecrementMachine.lean` with finite
+  phase-tagged labels and a product control state. `pred_stepAux` / `pred_run`
+  and `transfer_stepAux` / `transfer_run` preserve component step counts;
+  `predecessor_run` redirects predecessor halt into transfer in the same
+  counted TM2 step. `whole_word` restores `binaryPredBits` to `remaining`
+  in exactly the predecessor witness's steps plus `2p + 2` for result bit
+  length `p`. `evalsToInTime` bounds the sum by `4b + 5` for original count
+  bit length `b`. Input/query/count/output are preserved; candidate/scratch
+  finish empty and state resets at a live continuation before its halt.
+  `natural_evalsToInTime` handles saturated predecessor, including zero and
+  one; `list_tail_evalsToInTime` restores the tail length while preserving
+  every unread frame, including repetitions, and all prior comparison output.
+- **Files:** new decrement module, root import, ten axiom audits, README,
+  roadmap, theorem status, and this log. Reused the existing predecessor
+  stack embedding and public execution witness; no sibling repository edits.
+- **Successful checks:** standalone Lean check and targeted build passed
+  (1,144 jobs); full `lake build` passed 2,207 jobs. All ten new audits and
+  all 290 reported axiom lists use only `propext`, `Classical.choice`, and
+  `Quot.sound`; three further reports are axiom-free. The 52-file project
+  Lean source/config scan found only the existing explanatory `proof_wanted`
+  comment. No new warnings; existing prime-selector simplifier warnings
+  remain. `git diff --check` passed.
+- **Failed approaches/API discoveries:** the first composition proof applied
+  `Function.iterate_add_apply` to predecessor-cost plus transfer-cost, putting
+  transfer first. Commuting those two summands before rewriting runs the
+  predecessor first and closes the proof. Other statement, finite-run,
+  natural-count, and runtime proofs checked unchanged. No unresolved proof
+  blocker. Rechecked mathlib `TM2.stepAux`: load/goto inside the predecessor
+  halt statement adds no counted transition.
+- **Comparison/design evidence:** read completed Coq `SourceAdapter.v` and
+  `Hardness.v`, plus installed `SharedSAT.v` (`evalVar`, `evalVar_in_iff`)
+  and `SAT_inNP.v` (`_term_list_in_decb`, `_term_evalVar`). Their equality,
+  list-membership, and evaluator decomposition remains a design comparison;
+  no Coq term or lambda-runtime bound is used as Lean evidence.
+- **Ending state:** in-place decrement is checked and audited, ready for
+  commit/push on `main`; the final commit and local/tracking/live-remote
+  parity are recorded in run memory. Comparison/decrement integration,
+  membership accumulation, header dispatch, malformed-input handling, full
+  traversal, the SAT verifier, exact 3-SAT NP membership, and Cook--Levin
+  remain pending.
+- **Best next experiment:** connect framed comparison to this decrement
+  under one finite dispatcher, retaining the emitted equality bit and all
+  later frames. Target summed bound `2q + 2f + 4b + 8` in query/frame/count
+  bit lengths, without an extra halt-to-decrement step. Then add Boolean
+  membership accumulation and the count-controlled traversal loop.

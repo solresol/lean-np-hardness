@@ -75,23 +75,23 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `3b + 4` steps for binary count length `b`; the header bound is `2h + 2`
   for framed-header length `h`, also bounded by `2N + 2` for certificate
   length `N`. The continuation's halt is not included. Canonical headers
-  are assumed; decrement and the full traversal dispatcher remain pending.
+  are assumed; connection to the full traversal dispatcher remains pending.
 - `CertificateComparisonMachine`: the framed comparator runs on the same
   seven-stack layout as count initialization, preserving arbitrary bits on
   the remaining-count stack. It reaches a continuation in exactly
   `3c + max(q, c) + q + 5` steps, bounded by `2q + 2f + 3`, retaining the
   query and unread suffixes and emptying candidate/scratch/count. Its
   `list_head_run` consumes one certificate-body entry and retains all later
-  frames, including duplicates. The retained count still needs decrement;
-  header dispatch, membership accumulation, and full traversal are pending.
+  frames, including duplicates. Connecting comparison to count decrement,
+  header dispatch, membership accumulation, and full traversal is pending.
 - `CertificatePredecessorMachine`: the binary predecessor runs on the same
   seven-stack layout, consuming `remaining`, using `scratch`, and writing
   the result in original bit order onto `candidate`. It preserves arbitrary
   input/query/count/output contents with unchanged predecessor step count,
   bounded by `2b + 3` for count bit length `b`. Canonical counts, including
   zero and one, yield saturated predecessor; the certificate-tail interface
-  preserves every unread frame. The connection to ordered transfer and
-  the complete traversal remain pending.
+  preserves every unread frame. `CertificateDecrementMachine` connects this
+  predecessor execution to ordered transfer.
 - `CertificateCountTransferMachine`: a finite two-pass kernel transfers
   `candidate` through `scratch` onto `remaining` in original bit order in
   exactly `2p + 2` steps for `p` result bits. It preserves arbitrary
@@ -99,7 +99,17 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   candidate and scratch, and reaches a live continuation. For an already
   computed predecessor, the transfer costs at most `2b + 2` for original
   count bit length `b`, using the now-public `binaryPredBits_length_le`.
-  The predecessor-to-transfer dispatcher and full traversal remain pending.
+  `CertificateDecrementMachine` supplies the predecessor-to-transfer dispatcher.
+- `CertificateDecrementMachine`: one finite dispatcher decrements the retained
+  count in place, preserving arbitrary input/query/count/output contents and
+  emptying candidate/scratch. `whole_word` proves exact execution in the
+  predecessor witness's step count plus `2p + 2` for result length `p`;
+  `evalsToInTime` bounds the total by `4b + 5` for original count length `b`.
+  Canonical counts saturate at zero; `list_tail_evalsToInTime` restores the
+  tail length to `remaining` while preserving all unread frames and prior
+  comparison output. Execution ends at a live continuation before its halt.
+  Connecting comparison, decrement, membership accumulation, and header
+  dispatch into complete certificate traversal remains pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

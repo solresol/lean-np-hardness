@@ -58,9 +58,11 @@
   `b` count bits, preserving query, unread input, the `count` stack, and output.
   `CertificateCountTransferMachine` now transfers that result through scratch
   back to `remaining` in original order in exactly `2p + 2` steps for `p`
-  result bits, bounded by `2b + 2`. Connecting predecessor execution to this
-  transfer is still required for in-place decrement. Header dispatch,
-  repeated comparison and membership accumulation, literal/formula evaluation,
+  result bits, bounded by `2b + 2`. `CertificateDecrementMachine` now combines
+  predecessor execution and ordered transfer under one finite dispatcher,
+  proving in-place saturated decrement in at most `4b + 5` steps while
+  retaining all traversal data. Header dispatch, repeated comparison and
+  membership accumulation, literal/formula evaluation,
   and exact-width checking remain to be connected in a polynomial-time TM2
   verifier.
 
