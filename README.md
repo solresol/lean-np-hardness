@@ -82,8 +82,9 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `3c + max(q, c) + q + 5` steps, bounded by `2q + 2f + 3`, retaining the
   query and unread suffixes and emptying candidate/scratch/count. Its
   `list_head_run` consumes one certificate-body entry and retains all later
-  frames, including duplicates. Connecting comparison to count decrement,
-  header dispatch, membership accumulation, and full traversal is pending.
+  frames, including duplicates. `CertificateStepMachine` connects this
+  comparison to count decrement. Header dispatch, membership accumulation,
+  and full traversal remain pending.
 - `CertificatePredecessorMachine`: the binary predecessor runs on the same
   seven-stack layout, consuming `remaining`, using `scratch`, and writing
   the result in original bit order onto `candidate`. It preserves arbitrary
@@ -108,8 +109,17 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   Canonical counts saturate at zero; `list_tail_evalsToInTime` restores the
   tail length to `remaining` while preserving all unread frames and prior
   comparison output. Execution ends at a live continuation before its halt.
-  Connecting comparison, decrement, membership accumulation, and header
-  dispatch into complete certificate traversal remains pending.
+  `CertificateStepMachine` connects framed comparison to this decrement.
+- `CertificateStepMachine`: one finite dispatcher compares a framed candidate
+  with the query and decrements the retained count in place. The comparison
+  halt enters decrement in the same counted step; `whole_frame` proves exact
+  summed cost and `evalsToInTime` bounds it by `2q + 2f + 4b + 8` for query,
+  consumed-frame, and original count bit lengths. Equality is pushed onto
+  output; the query and unread suffixes survive and all three work stacks
+  finish empty. `list_head_evalsToInTime` consumes one certificate entry,
+  restores the exact tail count, and preserves every later frame, including
+  repetitions. Execution ends at a live continuation before its halt.
+  Membership accumulation, header dispatch, and full traversal remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

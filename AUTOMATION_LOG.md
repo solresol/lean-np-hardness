@@ -2697,3 +2697,58 @@ avoid failed routes, and choose a materially different experiment when blocked.
   later frames. Target summed bound `2q + 2f + 4b + 8` in query/frame/count
   bit lengths, without an extra halt-to-decrement step. Then add Boolean
   membership accumulation and the count-controlled traversal loop.
+
+
+## 2026-09-22 — one certificate comparison and in-place decrement
+
+- **Starting commit:** `5cbd76f5174eaa3d19d8fa419563e6cd8eaf6e5a`;
+  clean `main`, fetched upstream unchanged, no unpublished commits.
+- **Goal:** connect framed comparison and in-place count decrement, retaining
+  the equality result, query, and every unread certificate frame.
+- **Checked increment:** added `CertificateStepMachine.lean` with finite
+  phase-tagged labels and a product control state on the shared seven stacks.
+  `compare_stepAux` / `compare_run` and `decrement_stepAux` / `decrement_run`
+  lift the checked component executions with unchanged costs.
+  `comparison_run` redirects the comparison halt directly into decrement;
+  `whole_frame` proves exact comparison cost plus predecessor witness steps
+  plus `2p + 2` ordered-transfer steps. `evalsToInTime` bounds the total by
+  `2q + 2f + 4b + 8` for query/frame/original-count bit lengths. Equality
+  is pushed above the unchanged output suffix; query and unread input survive,
+  all three work stacks finish empty, and control resets at a live continuation
+  before its halt. `natural_evalsToInTime` proves canonical natural equality
+  and saturated decrement. `list_head_evalsToInTime` consumes one certificate
+  entry, restores the exact tail count, and preserves later frames, including
+  repeated entries, and arbitrary trailing input/output.
+- **Files:** new step module, root import, ten axiom audits, README, roadmap,
+  theorem status, and this log. No sibling repository edits.
+- **Successful checks:** standalone Lean check passed on the first attempt;
+  targeted module/audit build passed 2,206 jobs; full `lake build` passed
+  2,208 jobs. All ten new audits and all 300 reported axiom lists contain
+  only `propext`, `Classical.choice`, and `Quot.sound`; three further reports
+  are axiom-free. The 53-file project Lean source/config scan found only
+  the existing explanatory `proof_wanted` comment. No new warnings; prior
+  prime-selector simplifier warnings remain. `git diff --check` passed.
+- **Failed approaches/API discoveries:** no proof route failed and no
+  unresolved blocker remains for this increment. Reused the prior discovery
+  that `Function.iterate_add_apply` executes the right summand first, commuting
+  costs before rewriting. Reused `CertificateComparison.compareStack` and
+  `compareContents`, lifting the original `FrameComparison` halt directly
+  into decrement rather than executing the wrapper's extra continuation.
+  Rechecked mathlib `TM2.stepAux`: state reset and goto inside that halt
+  replacement share the existing counted step. The decrement lift leaves
+  the full shared stack contents untouched by its embedding.
+- **Comparison/design evidence:** read completed Coq `SourceAdapter.v` and
+  `Hardness.v`, plus installed `SharedSAT.v` (`evalVar`, `evalVar_in_iff`)
+  and `SAT_inNP.v` (`_term_list_in_decb`, `_term_evalVar`). Their equality,
+  membership, and evaluator decomposition guides the next step; their
+  proof terms and lambda-runtime bounds are not Lean evidence.
+- **Ending state:** combined comparison/decrement is built and audited,
+  ready for commit/push on `main`; final commit and local/tracking/live-remote
+  parity are recorded in run memory. Membership accumulation, header dispatch,
+  malformed-input handling, full traversal, the SAT verifier, exact 3-SAT
+  NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** add a constant-cost Boolean accumulation statement
+  consuming the emitted equality bit and a prior accumulator from output,
+  replacing them with their OR while preserving the output suffix and every
+  other stack. Connect it at this step's final continuation, then add the
+  retained-count zero test and count-controlled repetition.

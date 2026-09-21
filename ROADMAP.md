@@ -61,8 +61,12 @@
   result bits, bounded by `2b + 2`. `CertificateDecrementMachine` now combines
   predecessor execution and ordered transfer under one finite dispatcher,
   proving in-place saturated decrement in at most `4b + 5` steps while
-  retaining all traversal data. Header dispatch, repeated comparison and
-  membership accumulation, literal/formula evaluation,
+  retaining all traversal data. `CertificateStepMachine` now connects framed
+  comparison to in-place decrement under one finite dispatcher with exact
+  summed cost bounded by `2q + 2f + 4b + 8` for query/frame/count bit lengths.
+  It retains equality on output, preserves the query and unread frames,
+  and restores the exact tail count after one certificate entry. Header
+  dispatch, repeated steps and membership accumulation, literal/formula evaluation,
   and exact-width checking remain to be connected in a polynomial-time TM2
   verifier.
 

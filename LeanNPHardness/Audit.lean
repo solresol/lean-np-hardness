@@ -17,6 +17,7 @@ import LeanNPHardness.CertificateComparisonMachine
 import LeanNPHardness.CertificatePredecessorMachine
 import LeanNPHardness.CertificateCountTransferMachine
 import LeanNPHardness.CertificateDecrementMachine
+import LeanNPHardness.CertificateStepMachine
 import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine
@@ -353,3 +354,14 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.evalsToInTime
 #print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.natural_evalsToInTime
 #print axioms LeanNPHardness.MachinePrimitives.CertificateDecrement.list_tail_evalsToInTime
+
+#print axioms LeanNPHardness.MachinePrimitives.CertificateStep.computer
+#print axioms LeanNPHardness.MachinePrimitives.CertificateStep.compare_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.CertificateStep.compare_run
+#print axioms LeanNPHardness.MachinePrimitives.CertificateStep.decrement_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.CertificateStep.decrement_run
+#print axioms LeanNPHardness.MachinePrimitives.CertificateStep.comparison_run
+#print axioms LeanNPHardness.MachinePrimitives.CertificateStep.whole_frame
+#print axioms LeanNPHardness.MachinePrimitives.CertificateStep.evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.CertificateStep.natural_evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.CertificateStep.list_head_evalsToInTime
