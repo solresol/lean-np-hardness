@@ -83,8 +83,8 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   query and unread suffixes and emptying candidate/scratch/count. Its
   `list_head_run` consumes one certificate-body entry and retains all later
   frames, including duplicates. `CertificateStepMachine` connects this
-  comparison to count decrement. Header dispatch, membership accumulation,
-  and full traversal remain pending.
+  comparison to count decrement; `CertificateMembershipStepMachine` adds
+  Boolean accumulation. Header dispatch and full traversal remain pending.
 - `CertificatePredecessorMachine`: the binary predecessor runs on the same
   seven-stack layout, consuming `remaining`, using `scratch`, and writing
   the result in original bit order onto `candidate`. It preserves arbitrary
@@ -119,7 +119,18 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   finish empty. `list_head_evalsToInTime` consumes one certificate entry,
   restores the exact tail count, and preserves every later frame, including
   repetitions. Execution ends at a live continuation before its halt.
-  Membership accumulation, header dispatch, and full traversal remain pending.
+  `CertificateMembershipStepMachine` connects Boolean accumulation at that
+  continuation.
+- `CertificateMembershipStepMachine`: compares one framed certificate entry,
+  decrements its retained count, and ORs equality with the supplied prior
+  accumulator. `accumulate_step` proves the two-pop/one-push update takes one
+  TM2 step and preserves all other stacks. `whole_frame` adds exactly one to
+  the comparison/decrement cost; `evalsToInTime` bounds it by
+  `2q + 2f + 4b + 9` in query/frame/count bit lengths.
+  `list_head_evalsToInTime` retains the query, exact tail count, every later
+  frame (including repetitions), and output suffix; all work stacks empty and
+  control resets at a live continuation. Header dispatch, count-controlled
+  repetition, malformed-input rejection, and the full verifier remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

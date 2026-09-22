@@ -65,10 +65,13 @@
   comparison to in-place decrement under one finite dispatcher with exact
   summed cost bounded by `2q + 2f + 4b + 8` for query/frame/count bit lengths.
   It retains equality on output, preserves the query and unread frames,
-  and restores the exact tail count after one certificate entry. Header
-  dispatch, repeated steps and membership accumulation, literal/formula evaluation,
-  and exact-width checking remain to be connected in a polynomial-time TM2
-  verifier.
+  and restores the exact tail count after one certificate entry.
+  `CertificateMembershipStepMachine` now ORs each equality bit with the
+  supplied prior accumulator at that continuation in one further step,
+  bounding the combined run by `2q + 2f + 4b + 9` while preserving the query,
+  exact tail count, unread frames, and output suffix. Header dispatch,
+  count-controlled repetition, literal/formula evaluation, and exact-width
+  checking remain to be connected in a polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
 

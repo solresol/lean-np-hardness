@@ -18,6 +18,7 @@ import LeanNPHardness.CertificatePredecessorMachine
 import LeanNPHardness.CertificateCountTransferMachine
 import LeanNPHardness.CertificateDecrementMachine
 import LeanNPHardness.CertificateStepMachine
+import LeanNPHardness.CertificateMembershipStepMachine
 import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine
@@ -365,3 +366,15 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.CertificateStep.evalsToInTime
 #print axioms LeanNPHardness.MachinePrimitives.CertificateStep.natural_evalsToInTime
 #print axioms LeanNPHardness.MachinePrimitives.CertificateStep.list_head_evalsToInTime
+
+#print axioms LeanNPHardness.MachinePrimitives.CertificateMembershipStep.computer
+#print axioms LeanNPHardness.MachinePrimitives.CertificateMembershipStep.accumulate_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.CertificateMembershipStep.lift_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.CertificateMembershipStep.lift_run
+#print axioms LeanNPHardness.MachinePrimitives.CertificateMembershipStep.accumulate_step
+#print axioms LeanNPHardness.MachinePrimitives.CertificateMembershipStep.comparison_decrement_run
+#print axioms LeanNPHardness.MachinePrimitives.CertificateMembershipStep.whole_frame
+#print axioms LeanNPHardness.MachinePrimitives.CertificateMembershipStep.evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.CertificateMembershipStep.natural_evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.CertificateMembershipStep.list_head_evalsToInTime
+#print axioms LeanNPHardness.MachinePrimitives.CertificateMembershipStep.accumulated_eq_true_iff

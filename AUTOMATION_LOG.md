@@ -2752,3 +2752,65 @@ avoid failed routes, and choose a materially different experiment when blocked.
   replacing them with their OR while preserving the output suffix and every
   other stack. Connect it at this step's final continuation, then add the
   retained-count zero test and count-controlled repetition.
+
+
+## 2026-09-23 — one certificate membership accumulation step
+
+- **Starting commit:** `0e6e8a4be164a531fee0e147df222b786214ad1a`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0.
+- **Goal:** combine the emitted equality bit and a prior membership
+  accumulator at the comparison/decrement continuation for Milestone 3.
+- **Checked increment:** added `CertificateMembershipStepMachine.lean` on
+  the shared seven-stack layout with finite labels and one extra Boolean
+  control register. `accumulate_stepAux` and `accumulate_step` consume two
+  output bits and push their OR in one TM2 step, preserving the output
+  suffix and every other stack. `lift_stepAux` / `lift_run` simulate the
+  previous machine with the same cost, replacing its reached halt by
+  accumulation. `comparison_decrement_run` preserves the supplied accumulator
+  until that continuation; `whole_frame` proves exact connected cost plus
+  one. `evalsToInTime` bounds the total by `2q + 2f + 4b + 9` in query,
+  consumed-frame, and original-count bit lengths. `natural_evalsToInTime`
+  covers canonical natural equality and saturated decrement;
+  `list_head_evalsToInTime` preserves all later frames, including repetitions,
+  and restores the exact tail count. `accumulated_eq_true_iff` gives the
+  separate Boolean semantics. Query and suffixes survive, all work stacks
+  empty, and control resets at a live `done` continuation before its halt.
+- **Files:** new membership-step module, root import, eleven axiom audits,
+  README, roadmap, theorem status, and this journal. No sibling edits.
+- **Successful checks:** standalone module check passed after the small
+  repair below; full `lake build` passed 2,209 jobs. The semantic audit uses
+  only `propext`; the other ten new audits use only `propext`,
+  `Classical.choice`, and `Quot.sound`. All 311 reported axiom lists contain
+  only those standard axioms; three further reports are axiom-free. The
+  54-file Lean source/config scan found only the existing explanatory
+  `proof_wanted` comment. No new warnings; existing prime-selector simplifier
+  warnings remain. `git diff --check` passed.
+- **Failed approaches/API discoveries:** the first `accumulate_stepAux`
+  proof left a reflexive dependent-function-update equality after `simp`;
+  adding `rfl` closed it. Removed one unused `cfg` simp argument. All other
+  proofs passed unchanged. `TM2.stepAux` executes two pops, OR, push, reset,
+  and goto inside one counted statement. Mapping the old halted configuration
+  to the accumulated output allows a generic exact simulation without
+  special-casing the old final label during run induction.
+  `Function.iterate_succ_apply'` runs the old whole-frame proof before the
+  final accumulation step. No unresolved proof blocker for this increment.
+- **Comparison/design evidence:** read the completed sibling Coq
+  `SourceAdapter.v` and `Hardness.v`. Local global-opam/library searches did
+  not locate the comparison SAT files, so read the pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  (`evalVar`, `evalVar_in_iff`) and
+  [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Their list-membership/evaluator decomposition is design guidance only;
+  no Coq proof or lambda-runtime bound is Lean evidence. Rechecked the
+  pinned local mathlib `TM2.Stmt` and `TM2.stepAux` definitions.
+- **Ending state:** membership accumulation is built and audited, prepared
+  for commit/push on `main`; final hash and local/tracking/live-remote parity
+  are recorded in run memory. Header dispatch, count-controlled repetition,
+  malformed-input rejection, literal/formula evaluation, the full verifier,
+  exact 3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** add a retained-count peek before each membership
+  step, selecting final output for zero or the next framed entry otherwise.
+  Prove exact repeated execution by induction on the certificate list with
+  the accumulator invariant; bound each count's binary length by the initial
+  count length. Then connect the existing header loader and initial false
+  accumulator, retaining explicit dispatcher costs.
