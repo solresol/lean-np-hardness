@@ -129,8 +129,18 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `2q + 2f + 4b + 9` in query/frame/count bit lengths.
   `list_head_evalsToInTime` retains the query, exact tail count, every later
   frame (including repetitions), and output suffix; all work stacks empty and
-  control resets at a live continuation. Header dispatch, count-controlled
-  repetition, malformed-input rejection, and the full verifier remain pending.
+  control resets at a live continuation. `CertificateMembershipLoopMachine`
+  connects this step to count-controlled repetition.
+- `CertificateMembershipLoopMachine`: traverses a complete framed certificate
+  body with its canonical count, query, and prior accumulator preloaded.
+  `whole_list` proves exact repeated execution, returning membership OR the
+  prior accumulator while preserving query and input/output suffixes, consuming
+  every entry including duplicates, and emptying count and work stacks.
+  `runSteps_le` bounds runtime by `n * (2q + 4b + 11) + 2F + 1`, for entry
+  count `n`, query bits `q`, initial count bits `b`, and framed body bits `F`.
+  `runSteps_le_bit_bound` gives the polynomial `F * (2q + 4F + 11) + 2F + 1`.
+  The final continuation halt is excluded. Header dispatch, accumulator
+  initialization, malformed-input rejection, and the full verifier remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

@@ -69,9 +69,14 @@
   `CertificateMembershipStepMachine` now ORs each equality bit with the
   supplied prior accumulator at that continuation in one further step,
   bounding the combined run by `2q + 2f + 4b + 9` while preserving the query,
-  exact tail count, unread frames, and output suffix. Header dispatch,
-  count-controlled repetition, literal/formula evaluation, and exact-width
-  checking remain to be connected in a polynomial-time TM2 verifier.
+  exact tail count, unread frames, and output suffix. `CertificateMembershipLoopMachine`
+  now repeats that step under finite count-controlled dispatch, proving exact
+  execution over the complete canonical body and membership-accumulator semantics.
+  It preserves the query and suffixes, consumes repetitions, and has bit-runtime
+  bound `F * (2q + 4F + 11) + 2F + 1` for query/body bit lengths `q`/`F`.
+  The count, query, and accumulator are preloaded. Header dispatch, accumulator
+  initialization, literal/formula evaluation, and exact-width checking remain
+  to be connected in a polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
 

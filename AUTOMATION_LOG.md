@@ -2814,3 +2814,72 @@ avoid failed routes, and choose a materially different experiment when blocked.
   the accumulator invariant; bound each count's binary length by the initial
   count length. Then connect the existing header loader and initial false
   accumulator, retaining explicit dispatcher costs.
+
+
+## 2026-09-24 — count-controlled certificate membership traversal
+
+- **Starting commit:** `036003593a608da963e974ac7ca3a626ae654cab`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0.
+- **Goal:** connect the checked membership step to retained-count testing
+  and complete canonical certificate-body traversal for Milestone 3.
+- **Checked increment:** added `CertificateMembershipLoopMachine.lean` with
+  finite check/entry/done control over the existing seven stacks.
+  `lift_stepAux` / `lift_run` preserve component execution costs;
+  `check_step` peeks without consuming count and tests presence rather than
+  the low bit. `return_step` costs one step. `entry_run` restores the exact
+  tail count and preserves the query and suffixes. `whole_list` proves exact
+  repeated execution for every canonical list, including empty lists and
+  repetitions, returning membership OR the supplied accumulator. All entries
+  are consumed even after a match; count/work stacks finish empty and control
+  resets at a live continuation before its halt. `membership_cons` and
+  `result_eq_true_iff` state the Boolean semantics separately.
+- **Runtime:** `runSteps` records exact costs, including each peek and return
+  jump. `count_bits_mono` bounds tail counts by the initial count's bit length.
+  `runSteps_le` / `evalsToInTime` give `n * (2q + 4b + 11) + 2F + 1`, where
+  n is entry count, q query bits, b initial count bits, and F framed body bits.
+  `length_le_body_length` and the existing binary-length bound then yield
+  `runSteps_le_bit_bound`: `F * (2q + 4F + 11) + 2F + 1`.
+- **Files:** new loop module, root import, fifteen axiom audits, README,
+  roadmap, theorem status, and this journal. No sibling edits.
+- **Successful checks:** full `lake build` passed 2,210 jobs. All fifteen new
+  audits use only `propext`, `Classical.choice`, and `Quot.sound` (the two
+  Boolean lemmas omit choice). All 326 reported axiom lists use only those
+  standard axioms; three further reports are axiom-free. The 55-file project
+  Lean source/config scan found only the existing explanatory `proof_wanted`
+  comment. No new warnings; existing prime-selector simplifier warnings
+  remain. `git diff --check` passed. Full build output:
+  `/tmp/lean-np-hardness-2026-09-24-build.log`.
+- **Failed approaches/API discoveries:** extracting an exact cost from
+  `CertificateMembershipStep.list_head_evalsToInTime` did not give a
+  definitionally suffix-independent step projection, because natural/list
+  wrappers transport the runtime witness through equalities. Use the raw
+  `whole_frame` theorem with an explicit exact cost, then simplify natural
+  equality, predecessor, and list framing. Unfold `entrySteps` during that
+  simplification. Broad simp unfolded `FinTM2.step` before `check_step` could
+  apply, and rewriting all list lengths prevented a later run rewrite from
+  matching. Rewrite the checked step first and isolate the nonempty-count
+  fact using `encodeNat_eq_nil_iff.mp`. `decide_or` was unavailable; two
+  proposition case splits prove the Boolean membership recurrence directly.
+  `Nat.size_le_size` plus `encodeNat_length_eq_size` gives count monotonicity.
+  No unresolved blocker remains for this increment.
+- **Comparison/design evidence:** read completed sibling Coq `SourceAdapter.v`
+  and `Hardness.v`, and pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  (`evalVar`, `evalVar_in_iff`) and
+  [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Their membership/evaluator decomposition guides this loop; Coq proof terms
+  and lambda-runtime bounds supply no Lean evidence. Rechecked local mathlib
+  `TM2.Stmt` / `TM2.stepAux` and the exact-iteration API.
+- **Ending state:** complete preloaded-count body traversal is built and
+  audited, ready for commit/push on `main`; final hash and local/tracking/live
+  remote parity are recorded in run memory. The canonical count, query, and
+  accumulator are assumed preloaded. Header dispatch, accumulator
+  initialization, malformed-input rejection, literal/formula evaluation,
+  exact-width checking, the full verifier, exact 3-SAT NP membership, and
+  Cook--Levin remain pending.
+- **Best next experiment:** embed the existing header extractor and this loop
+  in one finite dispatcher. Direct its completed extraction into the loop's
+  count test while pushing the initial false accumulator, preserving query
+  and input/output suffixes. Prove exact header-plus-loop execution and a
+  polynomial bound in query and full certificate bit lengths, with explicit
+  initialization and continuation costs.
