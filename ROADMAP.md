@@ -74,9 +74,13 @@
   execution over the complete canonical body and membership-accumulator semantics.
   It preserves the query and suffixes, consumes repetitions, and has bit-runtime
   bound `F * (2q + 4F + 11) + 2F + 1` for query/body bit lengths `q`/`F`.
-  The count, query, and accumulator are preloaded. Header dispatch, accumulator
-  initialization, literal/formula evaluation, and exact-width checking remain
-  to be connected in a polynomial-time TM2 verifier.
+  `CertificateMembershipMachine` now connects header extraction and false
+  accumulator initialization to that loop under one finite dispatcher. It
+  consumes the complete encoded certificate with exact summed cost, bounded
+  by `N * (2q + 4N + 16) + 4` in query/full-certificate bit lengths `q`/`N`.
+  The query is still preloaded; serialized query loading, literal/formula
+  evaluation, and exact-width checking remain to be connected in a
+  polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
 

@@ -67,7 +67,8 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   unread input, and output suffix. Exact runtime is `3c + max(q, c) + q + 5`
   for query/payload bit lengths `q`/`c`, bounded by `2q + 2f + 3` for consumed
   frame length `f`. The candidate and work stacks finish empty. Canonical
-  natural equality is checked; counted traversal remains pending.
+  natural equality is checked; `CertificateMembershipMachine` connects complete
+  encoded-certificate traversal.
 - `CertificateCountMachine`: a finite seven-stack dispatcher loads the outer
   framed binary list count onto a dedicated stack and tests whether it is
   empty, preserving the count, query, candidate, output, and unread body.
@@ -75,7 +76,7 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `3b + 4` steps for binary count length `b`; the header bound is `2h + 2`
   for framed-header length `h`, also bounded by `2N + 2` for certificate
   length `N`. The continuation's halt is not included. Canonical headers
-  are assumed; connection to the full traversal dispatcher remains pending.
+  are assumed; `CertificateMembershipMachine` connects extraction to traversal.
 - `CertificateComparisonMachine`: the framed comparator runs on the same
   seven-stack layout as count initialization, preserving arbitrary bits on
   the remaining-count stack. It reaches a continuation in exactly
@@ -84,7 +85,8 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `list_head_run` consumes one certificate-body entry and retains all later
   frames, including duplicates. `CertificateStepMachine` connects this
   comparison to count decrement; `CertificateMembershipStepMachine` adds
-  Boolean accumulation. Header dispatch and full traversal remain pending.
+  Boolean accumulation. `CertificateMembershipMachine` connects header loading
+  and complete traversal.
 - `CertificatePredecessorMachine`: the binary predecessor runs on the same
   seven-stack layout, consuming `remaining`, using `scratch`, and writing
   the result in original bit order onto `candidate`. It preserves arbitrary
@@ -139,8 +141,18 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `runSteps_le` bounds runtime by `n * (2q + 4b + 11) + 2F + 1`, for entry
   count `n`, query bits `q`, initial count bits `b`, and framed body bits `F`.
   `runSteps_le_bit_bound` gives the polynomial `F * (2q + 4F + 11) + 2F + 1`.
-  The final continuation halt is excluded. Header dispatch, accumulator
-  initialization, malformed-input rejection, and the full verifier remain pending.
+  The final continuation halt is excluded. `CertificateMembershipMachine`
+  connects header extraction and accumulator initialization.
+- `CertificateMembershipMachine`: runs membership from a complete framed
+  certificate encoding with the query preloaded. The header extractor pushes
+  the initial false accumulator and enters the loop in its final counted step.
+  `whole_list` proves exact cost `3b + 3 + CertificateMembershipLoop.runSteps`
+  for count bit length `b`, preserving the query and input/output suffixes, consuming all entries
+  including duplicates, and emptying count/work stacks. `runSteps_le_bit_bound`
+  and `evalsToInTime` give `N * (2q + 4N + 16) + 4` in query bits `q` and
+  full certificate bits `N`. The final continuation halt is excluded; canonical
+  complete encodings are assumed. Serialized query loading, malformed-input
+  rejection, literal/formula evaluation, and the full verifier remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing
