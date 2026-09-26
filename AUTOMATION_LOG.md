@@ -2947,3 +2947,64 @@ avoid failed routes, and choose a materially different experiment when blocked.
   packaging will also need a proved encoding interface and query cleanup;
   repeated formula evaluation will need certificate preservation or copying
   because this kernel consumes it.
+
+## 2026-09-27 — membership from a serialized query and certificate
+
+- **Starting commit:** `b089c13c3d2fb59d2dace391df61c8a62fb511bc`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0. Read AGENTS,
+  roadmap, theorem status, prior journal, and automation memory.
+- **Goal:** load a leading framed query and connect it to complete certificate
+  membership under finite TM2 control for Milestone 3.
+- **Checked increment:** added `SerializedMembershipMachine.lean`, reusing
+  the seven-stack certificate layout. `queryStack` maps the extractor's
+  candidate to query and its untouched query slot to remaining;
+  `query_stepAux` / `query_run` retain extraction costs while redirecting
+  its halt to membership entry in the same counted step.
+  `membership_stepAux` / `membership_run` retain membership costs.
+  `query_whole_frame` loads the query in original order in exactly `3q + 3`
+  steps, preserving unread input and private stacks. `encodeInput` is a
+  framed natural followed by a complete framed natural list. `whole_input`
+  consumes this input, including all duplicate entries, retains the query
+  and arbitrary input/output suffixes, emits membership, empties count/work
+  stacks, and resets control. Zero queries and empty certificates are covered.
+  Exact `runSteps` is extraction plus membership; separate
+  `runSteps_le_bit_bound` / `evalsToInTime` bound it by `M * (4M + 19) + 7`
+  in complete serialized input bits `M`. `result_eq_true_iff` supplies
+  separate Boolean semantics. The final continuation halt is excluded.
+- **Files:** new module, root import, ten axiom audits, README, roadmap,
+  theorem status, and this journal. No sibling repository edits.
+- **Successful checks:** standalone Lean check passed on its first attempt;
+  full `lake build` passed 2,212 jobs. Nine new audits use only `propext`,
+  `Classical.choice`, and `Quot.sound`; the Boolean semantic lemma uses only
+  `propext` and `Quot.sound`. All 346 reported axiom lists contain only these
+  standard axioms, with three further axiom-free reports. The 57-file Lean
+  source/config scan found only the existing explanatory `proof_wanted`
+  comment. No new warnings; existing prime-selector simplifier warnings
+  remain. `git diff --check` passed. Build output:
+  `/tmp/lean-np-hardness-2026-09-27-build.log`.
+- **Failed approaches/API discoveries:** no Lean proof route failed and no
+  unresolved blocker for this increment. Reused the established exact-run
+  lifting pattern, commuting summed costs before `Function.iterate_add_apply`.
+  The extractor's untouched query slot can preserve remaining without any
+  extra stack or transfer pass. `Nat.mul_le_mul`, `Nat.mul_add`, and `omega`
+  suffice to derive the bound in total serialized bits; no tactic import
+  was added. Rechecked mathlib `TM2.stepAux` for the reset/goto transition.
+- **Comparison/design evidence:** consulted completed sibling Coq
+  `SourceAdapter.v` and `Hardness.v`, plus pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Their membership-to-variable-evaluation decomposition remains design
+  guidance only; no Coq term or lambda-runtime bound supplies Lean evidence.
+- **Ending state:** serialized membership built and audited, prepared for
+  commit/push on `main`; final commit and local/tracking/live-remote parity
+  are recorded in automation memory. Canonical complete inputs are assumed;
+  query cleanup, function-level encoding/witness packaging, malformed-input
+  rejection, literal/formula evaluation, exact-width checking, the full SAT
+  verifier, exact 3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** add a query-draining continuation and prove its
+  exact linear cleanup cost, then connect the existing terminal membership
+  label to canonical `haltList` output. Prove the `Nat × List Nat` encoding
+  round trip using `decodeNatPrefix` and `decodeNatListPrefix` before packaging
+  the checked machine as a function-level polynomial-time witness. Repeated
+  formula evaluation still needs certificate preservation or copying because
+  this membership kernel consumes the certificate.

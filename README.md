@@ -151,7 +151,17 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   including duplicates, and emptying count/work stacks. `runSteps_le_bit_bound`
   and `evalsToInTime` give `N * (2q + 4N + 16) + 4` in query bits `q` and
   full certificate bits `N`. The final continuation halt is excluded; canonical
-  complete encodings are assumed. Serialized query loading, malformed-input
+  complete encodings are assumed. `SerializedMembershipMachine` now supplies
+  leading-query loading and traversal under one dispatcher.
+- `SerializedMembershipMachine`: consumes a framed query followed by a complete
+  encoded certificate on the input stack. `query_whole_frame` loads the query
+  in order in exactly `3q + 3` steps; `whole_input` connects it to membership
+  with exact summed cost, preserving query and input/output suffixes and
+  emptying count/work stacks. `runSteps_le_bit_bound` and `evalsToInTime` give
+  `M * (4M + 19) + 7` in the full serialized input's bit length `M`.
+  Repeated entries, zero queries, and empty certificates are covered. The final
+  continuation halt is excluded and canonical complete encodings are assumed.
+  Query cleanup, function-level encoding/witness packaging, malformed-input
   rejection, literal/formula evaluation, and the full verifier remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;

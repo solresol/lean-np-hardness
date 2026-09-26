@@ -78,7 +78,11 @@
   accumulator initialization to that loop under one finite dispatcher. It
   consumes the complete encoded certificate with exact summed cost, bounded
   by `N * (2q + 4N + 16) + 4` in query/full-certificate bit lengths `q`/`N`.
-  The query is still preloaded; serialized query loading, literal/formula
+  `SerializedMembershipMachine` now loads a leading framed query and enters
+  membership under one finite dispatcher, proving exact summed execution and
+  bound `M * (4M + 19) + 7` in complete serialized input bits `M`. The query
+  and input/output suffixes survive; count/work stacks finish empty.
+  Query cleanup, function-level encoding/witness packaging, literal/formula
   evaluation, and exact-width checking remain to be connected in a
   polynomial-time TM2 verifier.
 
