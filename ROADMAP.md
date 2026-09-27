@@ -82,7 +82,10 @@
   membership under one finite dispatcher, proving exact summed execution and
   bound `M * (4M + 19) + 7` in complete serialized input bits `M`. The query
   and input/output suffixes survive; count/work stacks finish empty.
-  Query cleanup, function-level encoding/witness packaging, literal/formula
+  `CanonicalMembershipMachine` now drains the retained query and halts with
+  initial control and every non-output stack empty. `outputsInTime` supplies
+  canonical list output with bound `M * (4M + 20) + 9`, including cleanup and
+  the final halt. Function-level encoding/witness packaging, literal/formula
   evaluation, and exact-width checking remain to be connected in a
   polynomial-time TM2 verifier.
 

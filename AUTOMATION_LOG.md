@@ -3008,3 +3008,60 @@ avoid failed routes, and choose a materially different experiment when blocked.
   the checked machine as a function-level polynomial-time witness. Repeated
   formula evaluation still needs certificate preservation or copying because
   this membership kernel consumes the certificate.
+
+## 2026-09-28 — canonical halting membership output
+
+- **Starting commit:** `8fd9e1cfdb6b1eb0bd8a10966bcfd833d184c831`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0. Read AGENTS,
+  roadmap, theorem status, prior journal, and automation memory.
+- **Goal:** clear the retained query and meet mathlib's canonical list-output
+  contract, including cleanup and final halting costs, for Milestone 3.
+- **Checked increment:** added `CanonicalMembershipMachine.lean` on the same
+  seven stacks. `lift_stepAux` / `lift_run` preserve serialized-membership
+  costs, redirecting its halt into cleanup. `cleanup_entry_step` counts that
+  transition. `cleanup_run` drains any query in exactly `q + 1` steps for
+  `q` query bits, preserving all six other stacks, resetting control, and
+  halting. `whole_input` combines the membership run, one entry step, and
+  cleanup, retaining arbitrary input/output suffixes. `runSteps_le_bit_bound`
+  gives `M * (4M + 20) + 9` in full serialized input bits `M`.
+  `initList_eq_cfg` / `haltList_eq_cfg` identify canonical configurations;
+  `outputsInTime` proves `TM2OutputsInTime` for the membership bit, with every
+  non-output stack empty and initial control restored. The final halt is
+  included. Zero queries, empty certificates, and repetitions are covered.
+- **Files:** new module, root import, ten axiom audits, a cross-reference in
+  the serialized-membership module, README, roadmap, theorem status, and this
+  journal. No sibling repository edits.
+- **Successful checks:** standalone Lean check passed after the local fixes
+  below. Full `lake build` passed 2,213 jobs. All ten new audits and all 356
+  reported axiom lists contain only `propext`, `Classical.choice`, and
+  `Quot.sound`; three further reports are axiom-free. The 58-file Lean
+  source/config scan found only the existing explanatory `proof_wanted`
+  comment. No new warnings; existing prime-selector simp warnings remain.
+  `git diff --check` passed. Final build output:
+  `/tmp/lean-np-hardness-2026-09-28-build.log`.
+- **Failed approaches/API discoveries:** after simplification, `rfl` could
+  not prove the nonempty-query stack update extensionally; `funext index`
+  followed by cases on the seven stack indices and `simp` closed it. The
+  empty-query step already closed with `simp`, so removed its redundant
+  `rfl` and unused simp arguments. All lifting, combined execution, bound,
+  and canonical-output proofs passed unchanged. No unresolved blocker.
+  A popped bit's presence fits the existing first control register; the
+  empty-pop statement resets control and halts in one TM2 step. Rechecked
+  mathlib `TM2.stepAux`, `initList`, `haltList`, and `TM2OutputsInTime`.
+- **Comparison/design evidence:** read completed sibling Coq `SourceAdapter.v`
+  and `Hardness.v`, and pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Their variable-membership and Boolean verifier interfaces guide the
+  decomposition only; no Coq proof or lambda-runtime supplies Lean evidence.
+- **Ending state:** canonical halting membership built and audited, prepared
+  for commit/push on `main`; final commit and local/tracking/live-remote parity
+  are recorded in automation memory. Function-level encoding/witness packaging,
+  malformed-input rejection, literal/formula evaluation, exact-width checking,
+  the full SAT verifier, exact 3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** define a `Nat × List Nat` finite Boolean encoding
+  with the current `encodeInput`; prove its round trip using
+  `decodeNatPrefix_encodeNat_append` and `decodeNatListPrefix_encode_append`.
+  Package `outputsInTime` as a `TM2ComputableInPolyTime` witness with polynomial
+  `X * (4 * X + 20) + 9`. Formula evaluation still needs certificate
+  preservation/copying because membership consumes the certificate.

@@ -161,8 +161,18 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `M * (4M + 19) + 7` in the full serialized input's bit length `M`.
   Repeated entries, zero queries, and empty certificates are covered. The final
   continuation halt is excluded and canonical complete encodings are assumed.
-  Query cleanup, function-level encoding/witness packaging, malformed-input
+  `CanonicalMembershipMachine` supplies query cleanup and canonical halting output.
+  Function-level encoding/witness packaging, malformed-input
   rejection, literal/formula evaluation, and the full verifier remain pending.
+- `CanonicalMembershipMachine`: connects serialized membership to a query drain
+  on the same seven stacks. `cleanup_run` takes exactly `q + 1` steps for `q`
+  query bits, preserves the other six stacks, resets control, and halts.
+  `whole_input` includes membership, the one-step cleanup entry, and the drain.
+  `outputsInTime` proves canonical `TM2OutputsInTime` membership output with all
+  non-output stacks empty, bounded by `M * (4M + 20) + 9` in complete serialized
+  input bits `M`, including the final halt. Zero queries, empty certificates,
+  and repeated entries are covered. Function-level encoding/witness packaging,
+  malformed-input rejection, and the full SAT verifier remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing
