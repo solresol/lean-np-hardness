@@ -3065,3 +3065,63 @@ avoid failed routes, and choose a materially different experiment when blocked.
   Package `outputsInTime` as a `TM2ComputableInPolyTime` witness with polynomial
   `X * (4 * X + 20) + 9`. Formula evaluation still needs certificate
   preservation/copying because membership consumes the certificate.
+
+## 2026-09-29 — polynomial-time membership function witness
+
+- **Starting commit:** `453022ecefd1b184d998725ae22155e832d9f642`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0. Read AGENTS,
+  roadmap, theorem status, prior journal, and automation memory.
+- **Goal:** finish the framed input encoding and function-level polynomial-time
+  packaging of canonical membership for Milestone 3.
+- **Checked increment:** added `MembershipComputable.lean`.
+  `FramedNatListQuery.encode` serializes `Nat × List Nat` as a framed query
+  followed by the complete framed list. `decodePrefix_encode_append` proves
+  exact parsing with an arbitrary retained suffix; `decode_encode` supplies
+  the round trip for `finEncoding`. `decode_encode_append_nonempty` rejects
+  trailing data at the decoder level. `encode_eq_serialized` identifies the
+  machine's input, and `encode_length` proves the exact additive bit measure.
+  Separate `CanonicalMembership.membership_eq_true_iff` and
+  `membership_eq_false_iff` give Boolean semantics. `timePolynomial_eval`
+  evaluates `X * (4 * X + 20) + 9`; `computableInPolyTime` packages the existing
+  canonical seven-stack TM2 machine with that polynomial and mathlib's
+  Boolean output encoding. Cleanup and final halting remain included.
+  Zero queries, empty certificates, and repetitions are covered.
+- **Files:** new module, root import, ten axiom audits, module cross-references,
+  README, roadmap, theorem status, and this journal. No sibling repository edits.
+- **Successful checks:** standalone Lean check passed on the first attempt;
+  removed one unused `Polynomial.eval_natCast` simp argument. Full `lake build`
+  passed 2,214 jobs, including all ten new audits. Eight encoding/semantic
+  audits use only `propext` and `Quot.sound`; the polynomial evaluation and
+  machine witness additionally use `Classical.choice`. All 366 reported
+  axiom lists contain only these standard axioms; three further reports
+  are axiom-free. The 59-file Lean source/config scan found only the existing
+  explanatory `proof_wanted` comment. No new warnings; existing prime-selector
+  simp warnings remain. `git diff --check` passed. Build output:
+  `/tmp/lean-np-hardness-2026-09-29-build.log`.
+- **Failed approaches/API discoveries:** no proof route failed and no
+  unresolved blocker for this increment. The two existing prefix-decoder
+  round trips compose with `List.append_assoc`; the empty suffix gives the
+  finite encoding. `Equiv.refl Bool` on both alphabets and the polynomial
+  evaluation lemma let `simpa` reuse `outputsInTime` without changing the
+  machine, bound, or canonical output contract. Decoder suffix rejection
+  does not establish machine rejection on malformed streams.
+- **Comparison/design evidence:** read completed sibling Coq `SourceAdapter.v`
+  and `Hardness.v`, plus pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Their variable-membership/Boolean-verifier decomposition is design guidance
+  only. Rechecked local mathlib `TM2ComputableInPolyTime` and its encoding and
+  output contracts; no Coq proof term or lambda-runtime supplies Lean evidence.
+- **Ending state:** function-level membership is built and audited, prepared
+  for commit/push on `main`; the final hash and local/tracking/live-remote
+  parity are recorded in automation memory. The witness applies to the exact
+  framed Boolean encoding, not automatically to `PairEncoding.finEncoding`.
+  Malformed-stream machine rejection, certificate preservation/copying,
+  literal/formula evaluation, exact-width checking, the full SAT verifier,
+  exact 3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** add a reusable finite TM2 copying pass for a
+  Boolean certificate stream, retaining an ordered backup while providing
+  an ordered working copy. Prove exact execution, suffix preservation, and
+  a linear bit bound before connecting it to repeated membership queries.
+  The current membership machine consumes its certificate, so it cannot yet
+  be reused unchanged for every literal of a formula.

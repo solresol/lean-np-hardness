@@ -46,6 +46,7 @@ import LeanNPHardness.CertificateMembershipLoopMachine
 import LeanNPHardness.CertificateMembershipMachine
 import LeanNPHardness.SerializedMembershipMachine
 import LeanNPHardness.CanonicalMembershipMachine
+import LeanNPHardness.MembershipComputable
 import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine

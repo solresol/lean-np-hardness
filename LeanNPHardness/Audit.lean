@@ -23,6 +23,7 @@ import LeanNPHardness.CertificateMembershipLoopMachine
 import LeanNPHardness.CertificateMembershipMachine
 import LeanNPHardness.SerializedMembershipMachine
 import LeanNPHardness.CanonicalMembershipMachine
+import LeanNPHardness.MembershipComputable
 import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine
@@ -431,3 +432,14 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.CanonicalMembership.initList_eq_cfg
 #print axioms LeanNPHardness.MachinePrimitives.CanonicalMembership.haltList_eq_cfg
 #print axioms LeanNPHardness.MachinePrimitives.CanonicalMembership.outputsInTime
+
+#print axioms LeanNPHardness.FramedNatListQuery.decodePrefix_encode_append
+#print axioms LeanNPHardness.FramedNatListQuery.decode_encode
+#print axioms LeanNPHardness.FramedNatListQuery.decode_encode_append_nonempty
+#print axioms LeanNPHardness.FramedNatListQuery.finEncoding
+#print axioms LeanNPHardness.FramedNatListQuery.encode_eq_serialized
+#print axioms LeanNPHardness.FramedNatListQuery.encode_length
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalMembership.membership_eq_true_iff
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalMembership.membership_eq_false_iff
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalMembership.timePolynomial_eval
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalMembership.computableInPolyTime

@@ -85,9 +85,12 @@
   `CanonicalMembershipMachine` now drains the retained query and halts with
   initial control and every non-output stack empty. `outputsInTime` supplies
   canonical list output with bound `M * (4M + 20) + 9`, including cleanup and
-  the final halt. Function-level encoding/witness packaging, literal/formula
-  evaluation, and exact-width checking remain to be connected in a
-  polynomial-time TM2 verifier.
+  the final halt. `MembershipComputable` now proves the framed `Nat × List Nat`
+  encoding round trip and packages this same machine as
+  `CanonicalMembership.computableInPolyTime`, with polynomial
+  `X * (4 * X + 20) + 9`. Reusable certificate preservation/copying,
+  literal/formula evaluation, and exact-width checking remain to be connected
+  in a polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
 

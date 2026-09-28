@@ -162,8 +162,9 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   Repeated entries, zero queries, and empty certificates are covered. The final
   continuation halt is excluded and canonical complete encodings are assumed.
   `CanonicalMembershipMachine` supplies query cleanup and canonical halting output.
-  Function-level encoding/witness packaging, malformed-input
-  rejection, literal/formula evaluation, and the full verifier remain pending.
+  `MembershipComputable` supplies function-level encoding/witness packaging.
+  Malformed-input rejection, literal/formula evaluation, and the full verifier
+  remain pending.
 - `CanonicalMembershipMachine`: connects serialized membership to a query drain
   on the same seven stacks. `cleanup_run` takes exactly `q + 1` steps for `q`
   query bits, preserves the other six stacks, resets control, and halts.
@@ -171,8 +172,17 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `outputsInTime` proves canonical `TM2OutputsInTime` membership output with all
   non-output stacks empty, bounded by `M * (4M + 20) + 9` in complete serialized
   input bits `M`, including the final halt. Zero queries, empty certificates,
-  and repeated entries are covered. Function-level encoding/witness packaging,
-  malformed-input rejection, and the full SAT verifier remain pending.
+  and repeated entries are covered. `MembershipComputable` packages this machine
+  as a polynomial-time function witness. Malformed-input rejection and the full
+  SAT verifier remain pending.
+- `MembershipComputable`: `FramedNatListQuery.finEncoding` encodes `Nat × List Nat`
+  as a framed query followed by a complete framed list, with checked decoding
+  and exact additive bit length. `CanonicalMembership.computableInPolyTime`
+  computes Boolean membership with polynomial `X * (4 * X + 20) + 9` under
+  that encoding and mathlib's Boolean output encoding. Acceptance and rejection
+  semantics are separate lemmas. Its canonical-input contract does not assert
+  machine rejection of malformed streams. Certificate preservation/copying,
+  literal/formula evaluation, and the full SAT verifier remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

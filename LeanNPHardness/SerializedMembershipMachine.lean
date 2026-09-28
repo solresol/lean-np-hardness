@@ -13,8 +13,8 @@ are consumed unchanged. The loaded query remains available after traversal.
 The runtime bound uses the complete serialized input's bit length. Execution
 ends at a live continuation before its halt. Canonical complete encodings are
 assumed. `CanonicalMembershipMachine` supplies query cleanup and canonical
-halting output; function-level encoding/witness packaging, malformed-input
-rejection, and the full SAT verifier remain separate obligations.
+halting output; `MembershipComputable` supplies function-level packaging.
+Malformed-input rejection and the full SAT verifier remain separate obligations.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.SerializedMembership

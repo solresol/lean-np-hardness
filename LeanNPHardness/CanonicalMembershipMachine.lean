@@ -10,8 +10,8 @@ so the result satisfies mathlib's `TM2OutputsInTime` contract. The bound is
 quadratic in the complete serialized input's bit length, including cleanup
 and the final halt. Repeated certificate entries are preserved by traversal.
 
-Function-level encoding and polynomial-time witness packaging, malformed-input
-rejection, and the full SAT verifier remain separate obligations.
+`MembershipComputable` packages the encoding and polynomial-time function witness.
+Malformed-input rejection and the full SAT verifier remain separate obligations.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.CanonicalMembership
