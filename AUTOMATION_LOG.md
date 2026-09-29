@@ -3125,3 +3125,58 @@ avoid failed routes, and choose a materially different experiment when blocked.
   a linear bit bound before connecting it to repeated membership queries.
   The current membership machine consumes its certificate, so it cannot yet
   be reused unchanged for every literal of a formula.
+
+## 2026-09-30 — ordered certificate copying with source restoration
+
+- **Starting commit:** `1856a95714ac3cb828737c55907cce78a57ee233`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0. Read AGENTS,
+  roadmap, theorem status, prior journal, and automation memory.
+- **Goal:** supply a reusable finite TM2 copying kernel for the certificate
+  that repeated literal membership queries will need in Milestone 3.
+- **Checked increment:** added `BooleanCopyMachine.lean` with three Boolean
+  stacks and finite reverse/restore control. `reverse_run` saves the reversed
+  source; `restore_run` pushes each scratch bit onto both source and target.
+  `whole_word` restores the source and prepends an ordered working copy to
+  an arbitrary target suffix in exactly `2n + 2` steps for source bit length
+  `n`, emptying scratch and resetting control. `evalsToInTime` packages that
+  linear bound. `certificate_run` and `certificate_evalsToInTime` specialize
+  to the entire `BinaryNatLists.encodeNatList` stream, retaining the header,
+  order, and repeated entries. Empty words and empty certificates are covered.
+  Both exhaustion transitions are counted; the final continuation's halt
+  is excluded. Source preservation means this is not canonical `haltList`
+  output, and the certificate must already occupy a dedicated source stack.
+- **Files:** new module, root import, seven axiom audits, README, roadmap,
+  theorem status, and this journal. No sibling repository edits.
+- **Successful checks:** standalone Lean check passed on the first attempt.
+  Full `lake build` passed 2,215 jobs. All seven new audits and all 373
+  reported axiom lists contain only `propext`, `Classical.choice`, and
+  `Quot.sound`; three further reports are axiom-free. The 60-file Lean
+  source/config scan found only the existing explanatory `proof_wanted`
+  comment. No new warnings; existing prime-selector simp warnings remain.
+  `git diff --check` passed. Build output:
+  `/tmp/lean-np-hardness-2026-09-30-build.log`.
+- **Failed approaches/API discoveries:** no proof route failed and no
+  unresolved blocker for this kernel. Reused the ordered-transfer induction
+  pattern, generalizing both destination suffixes for restoration. Mathlib
+  `TM2.stepAux` evaluates both pushes before the loop jump in one counted
+  step, so copying adds no extra pass beyond reverse/restore. Extensional
+  stack equality after `simp` closes by cases on the three stack indices.
+- **Comparison/design evidence:** read completed sibling Coq `SourceAdapter.v`
+  and `Hardness.v`, plus pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Their assignment-list membership and variable/literal evaluation decomposition
+  guide the repeated-use interface only. The browser fetch failed; direct
+  downloads of the same pinned sources succeeded. No Coq proof term or
+  lambda-runtime bound supplies Lean evidence.
+- **Ending state:** copying is built and audited, prepared for commit/push
+  on `main`; final commit and local/tracking/live-remote parity are recorded
+  in automation memory. Dedicated-stack loading, copying/membership integration,
+  malformed-stream rejection, literal/formula evaluation, exact-width checking,
+  the full SAT verifier, exact 3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** extend the seven-stack certificate layout with
+  one backup stack. Lift this copier with source = backup, scratch = scratch,
+  and target = input, proving exact execution while preserving query/count/
+  output. Then lift `CertificateMembership` while preserving backup and
+  connect the two runs, so a query consumes only the working copy and the
+  complete certificate remains available for the next literal.

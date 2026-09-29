@@ -91,6 +91,7 @@
 | Membership from a serialized query and certificate | Complete | `MachinePrimitives.SerializedMembership.computer` loads a leading framed query and enters the certificate-membership machine on the same seven stacks. `query_stepAux` / `query_run` and `membership_stepAux` / `membership_run` retain exact component costs. `query_whole_frame` loads the query in original order in exactly `3q + 3` steps, preserving the following input and private stacks. `whole_input` consumes `encodeInput query xs`, including all repeated entries, emits membership, retains query and arbitrary input/output suffixes, empties count/work stacks, and resets control. Exact `runSteps` is query extraction plus certificate membership; `runSteps_le_bit_bound` / `evalsToInTime` give `M * (4M + 19) + 7` in complete serialized input bits `M`. `result_eq_true_iff` states separate Boolean semantics. Canonical complete encodings are assumed and the final continuation halt is excluded. Query cleanup and canonical halting output are checked in `CanonicalMembership`; function-level packaging is checked in `MembershipComputable`; malformed-input rejection and the full verifier remain pending. |
 | Canonical halting membership output | Complete | `MachinePrimitives.CanonicalMembership.computer` connects serialized membership to query cleanup on the same seven stacks. `lift_stepAux` / `lift_run` retain component costs; `cleanup_entry_step` counts the one-step transition. `cleanup_run` drains any query in exactly `q + 1` steps, preserving all six other stacks, resetting control, and halting. `whole_input` gives exact combined execution with input/output suffix preservation. `initList_eq_cfg` / `haltList_eq_cfg` identify canonical configurations; `outputsInTime` proves `TM2OutputsInTime` membership with all non-output stacks empty and bound `M * (4M + 20) + 9` in complete serialized input bits, including cleanup and final halt. Zero queries, empty certificates, and repetitions are covered. Function-level packaging is checked in `MembershipComputable`; malformed-input rejection and the full verifier remain pending. |
 | Polynomial-time membership function | Complete | `FramedNatListQuery.finEncoding` supplies the framed Boolean encoding of `Nat × List Nat`; `decodePrefix_encode_append`, `decode_encode`, and `encode_length` check parsing and the full additive bit measure. `decode_encode_append_nonempty` rejects trailing data at the decoder level. `CanonicalMembership.membership_eq_true_iff` and `membership_eq_false_iff` state the two Boolean outcomes separately. `timePolynomial_eval` evaluates `X * (4 * X + 20) + 9`; `computableInPolyTime` packages the existing canonical seven-stack machine under this input encoding and mathlib Boolean output. Repetitions, zero queries, and empty certificates are covered. This is a canonical-encoding machine contract, not malformed-stream rejection or a complete SAT verifier. |
+| Ordered Boolean copying with source restoration | Complete | `MachinePrimitives.BooleanCopy.computer` has three Boolean stacks and finite reverse/restore control. `reverse_run`, `restore_run`, and `whole_word` restore an arbitrary source word and prepend an ordered copy to the supplied target suffix in exactly `2n + 2` steps for source bit length `n`. Scratch finishes empty and control resets at a live continuation before its halt. `evalsToInTime` gives the same linear bound; `certificate_run` and `certificate_evalsToInTime` copy the complete framed natural-list certificate, retaining its header and repetitions. The source must already occupy its own stack; loading and repeated-membership integration remain pending. |
 | Boolean aggregation | Complete | `MachinePrimitives.allFalseComputableInPolyTime`, linear in the complete Boolean stream length. |
 | Generic pair exchange and right-component computation | Complete | `PairExchange.outputsInTime`, `PairExchange.computableInPolyTime`, and `MachineAdapters.pairRightComputableInPolyTime`; finite alphabets can differ or be empty, with exchange bound `4s+6`. |
 
@@ -481,6 +482,20 @@ The initial declarations build with the pinned Lean and mathlib revisions.
   rejection, certificate preservation/copying, literal/formula evaluation,
   exact-width checking, the full SAT verifier, exact 3-SAT NP membership,
   and Cook--Levin remain pending.
+
+- The seven `BooleanCopyMachine` audits pass with only `propext`,
+  `Classical.choice`, and `Quot.sound`. Full `lake build` passed 2,215 jobs
+  on 2026-09-30; all 373 reported axiom lists contain only these standard
+  axioms, with three further axiom-free reports. The 60-file Lean
+  source/config scan found only the existing explanatory `proof_wanted`
+  comment. `whole_word` restores the source and provides an ordered working
+  copy above an arbitrary target suffix in exactly `2n + 2` steps, including
+  both exhaustion transitions. Scratch empties and control resets at a live
+  continuation before its halt. The certificate interface retains the entire
+  framed encoding, including count and repetitions. Dedicated-stack loading,
+  repeated-membership integration, literal/formula evaluation, exact-width
+  checking, the full SAT verifier, exact 3-SAT NP membership, and Cook--Levin
+  remain pending.
 
 The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
 `unsafe` declaration.

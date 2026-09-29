@@ -88,9 +88,13 @@
   the final halt. `MembershipComputable` now proves the framed `Nat × List Nat`
   encoding round trip and packages this same machine as
   `CanonicalMembership.computableInPolyTime`, with polynomial
-  `X * (4 * X + 20) + 9`. Reusable certificate preservation/copying,
-  literal/formula evaluation, and exact-width checking remain to be connected
-  in a polynomial-time TM2 verifier.
+  `X * (4 * X + 20) + 9`. `BooleanCopyMachine` now restores a separately
+  supplied certificate and provides an ordered working copy in exactly
+  `2N + 2` steps for full certificate bit length `N`, preserving a target
+  suffix and emptying scratch. Loading the dedicated certificate stack,
+  connecting copying to repeated membership queries, literal/formula
+  evaluation, and exact-width checking remain to be assembled in a
+  polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
 

@@ -181,8 +181,17 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   computes Boolean membership with polynomial `X * (4 * X + 20) + 9` under
   that encoding and mathlib's Boolean output encoding. Acceptance and rejection
   semantics are separate lemmas. Its canonical-input contract does not assert
-  machine rejection of malformed streams. Certificate preservation/copying,
+  machine rejection of malformed streams. `BooleanCopyMachine` supplies a
+  standalone certificate-copying kernel; its integration with membership,
   literal/formula evaluation, and the full SAT verifier remain pending.
+- `BooleanCopyMachine`: a finite three-stack kernel that restores a separately
+  supplied source word and prepends an ordered copy to an arbitrary target
+  suffix. `reverse_run`, `restore_run`, and `whole_word` prove exact execution
+  in `2n + 2` steps for source bit length `n`, emptying scratch and resetting
+  control at a live continuation before its halt. `certificate_run` and
+  `certificate_evalsToInTime` copy the complete framed certificate, including
+  its count header and repeated entries. Loading the dedicated source stack
+  and connecting copying to repeated membership queries remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing
