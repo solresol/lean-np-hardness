@@ -28,6 +28,7 @@ import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine
 import LeanNPHardness.BooleanCopyMachine
+import LeanNPHardness.PreservingMembershipMachine
 import LeanNPHardness.PairExchange
 import LeanNPHardness.MachineEmbedding
 import LeanNPHardness.MachineCompositionRuntime
@@ -452,3 +453,14 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.BooleanCopy.evalsToInTime
 #print axioms LeanNPHardness.MachinePrimitives.BooleanCopy.certificate_run
 #print axioms LeanNPHardness.MachinePrimitives.BooleanCopy.certificate_evalsToInTime
+
+#print axioms LeanNPHardness.MachinePrimitives.PreservingMembership.computer
+#print axioms LeanNPHardness.MachinePrimitives.PreservingMembership.copy_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.PreservingMembership.membership_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.PreservingMembership.copy_run
+#print axioms LeanNPHardness.MachinePrimitives.PreservingMembership.membership_run
+#print axioms LeanNPHardness.MachinePrimitives.PreservingMembership.copy_whole_word
+#print axioms LeanNPHardness.MachinePrimitives.PreservingMembership.membership_entry_step
+#print axioms LeanNPHardness.MachinePrimitives.PreservingMembership.whole_list
+#print axioms LeanNPHardness.MachinePrimitives.PreservingMembership.runSteps_le_bit_bound
+#print axioms LeanNPHardness.MachinePrimitives.PreservingMembership.evalsToInTime

@@ -51,6 +51,7 @@ import LeanNPHardness.CountedNatRows
 import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine
 import LeanNPHardness.BooleanCopyMachine
+import LeanNPHardness.PreservingMembershipMachine
 import LeanNPHardness.PairExchange
 import LeanNPHardness.BoundedPrime
 import LeanNPHardness.IntervalMachines

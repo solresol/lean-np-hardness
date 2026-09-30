@@ -91,10 +91,13 @@
   `X * (4 * X + 20) + 9`. `BooleanCopyMachine` now restores a separately
   supplied certificate and provides an ordered working copy in exactly
   `2N + 2` steps for full certificate bit length `N`, preserving a target
-  suffix and emptying scratch. Loading the dedicated certificate stack,
-  connecting copying to repeated membership queries, literal/formula
-  evaluation, and exact-width checking remain to be assembled in a
-  polynomial-time TM2 verifier.
+  suffix and emptying scratch. `PreservingMembershipMachine` now connects
+  copying and membership under one eight-stack dispatcher, preserving the
+  complete backup, query, and input/output suffixes. Exact cost is copying
+  plus one entry step plus membership, bounded by `N * (2q + 4N + 18) + 7`.
+  Loading the dedicated certificate stack, dispatching repeated queries,
+  literal/formula evaluation, and exact-width checking remain to be assembled
+  in a polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
 

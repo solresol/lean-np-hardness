@@ -182,16 +182,28 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   that encoding and mathlib's Boolean output encoding. Acceptance and rejection
   semantics are separate lemmas. Its canonical-input contract does not assert
   machine rejection of malformed streams. `BooleanCopyMachine` supplies a
-  standalone certificate-copying kernel; its integration with membership,
-  literal/formula evaluation, and the full SAT verifier remain pending.
+  certificate-copying kernel; `PreservingMembershipMachine` connects it to
+  membership while retaining the certificate. Literal/formula evaluation
+  and the full SAT verifier remain pending.
 - `BooleanCopyMachine`: a finite three-stack kernel that restores a separately
   supplied source word and prepends an ordered copy to an arbitrary target
   suffix. `reverse_run`, `restore_run`, and `whole_word` prove exact execution
   in `2n + 2` steps for source bit length `n`, emptying scratch and resetting
   control at a live continuation before its halt. `certificate_run` and
   `certificate_evalsToInTime` copy the complete framed certificate, including
-  its count header and repeated entries. Loading the dedicated source stack
-  and connecting copying to repeated membership queries remain pending.
+  its count header and repeated entries. `PreservingMembershipMachine` now
+  connects this copying pass to one membership query. Loading the dedicated
+  source stack and dispatching repeated queries remain pending.
+- `PreservingMembershipMachine`: an eight-stack finite dispatcher that copies
+  a preloaded certificate, runs membership on the working copy, and retains
+  the complete original certificate, query, and arbitrary input/output
+  suffixes. `copy_whole_word` and `whole_list` prove exact execution;
+  `runSteps_le_bit_bound` and `evalsToInTime` bound it by
+  `N * (2q + 4N + 18) + 7` in full certificate bits `N` and raw query bits `q`.
+  The bound includes the copy-to-membership transition and excludes the final
+  live continuation halt. Work stacks empty and control resets. Certificate
+  loading, repeated-query dispatch, literal/formula evaluation, and canonical
+  full-verifier output remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

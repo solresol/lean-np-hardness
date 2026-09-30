@@ -3180,3 +3180,59 @@ avoid failed routes, and choose a materially different experiment when blocked.
   output. Then lift `CertificateMembership` while preserving backup and
   connect the two runs, so a query consumes only the working copy and the
   complete certificate remains available for the next literal.
+
+## 2026-10-01 — membership with a retained complete certificate
+
+- **Starting commit:** `0e178bb45a24afd4ea48edd6ab9b1bd3c6f8e8d4`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0. Read AGENTS,
+  roadmap, theorem status, prior journal, and automation memory.
+- **Goal:** connect the copier to membership for Milestone 3, retaining the
+  complete certificate for subsequent literal queries.
+- **Checked increment:** added `PreservingMembershipMachine.lean` with one
+  backup stack extending the seven-stack layout and finite phase control.
+  `copy_stepAux` / `copy_run` preserve query/count/output data while lifting
+  the copier; `membership_stepAux` / `membership_run` lift arbitrary exact
+  membership execution while preserving backup. `copy_whole_word` restores
+  backup and copies onto input; `membership_entry_step` counts the transition.
+  `whole_list` composes both kernels, emitting precisely membership while
+  retaining the full framed certificate, query, and input/output suffixes.
+  Count/work stacks finish empty and control resets. Exact `runSteps` is
+  `2N + 3 + CertificateMembership.runSteps`; `runSteps_le_bit_bound` and
+  `evalsToInTime` prove `N * (2q + 4N + 18) + 7` in complete certificate bits
+  `N` and raw query bits `q`. Zero queries, empty certificates, and repetitions
+  are included. Query and backup are preloaded; the final continuation halt
+  is excluded. This is a preserved-data kernel, not canonical list output.
+- **Files:** new module, root import, ten axiom audits, README, roadmap,
+  theorem status, and this journal. No sibling repository edits.
+- **Successful checks:** standalone Lean check passed on the first attempt;
+  full `lake build` passed 2,216 jobs. All ten new audits and all 383 reported
+  axiom lists contain only `propext`, `Classical.choice`, and `Quot.sound`;
+  three further reports are axiom-free. The 61-file Lean source/config scan
+  found only the existing explanatory `proof_wanted` comment. No new warnings;
+  existing prime-selector simp warnings remain. `git diff --check` passed.
+  Build output: `/tmp/lean-np-hardness-2026-10-01-build.log`.
+- **Failed approaches/API discoveries:** no proof route failed and no
+  unresolved blocker for this increment. Explicit stack-update lemmas let
+  statement induction reuse both kernels without reproving their algorithms.
+  The copier's `whole_word` ends at a live `done` label, so entering membership
+  requires one additional counted step. The lifted halt implements that jump
+  and resets control. Rechecked mathlib `TM2.stepAux` and `TM2.step`.
+- **Comparison/design evidence:** read completed sibling Coq `SourceAdapter.v`
+  and `Hardness.v`, plus pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Their assignment-list membership and Boolean verifier decomposition guide
+  the retained-certificate interface only. No Coq proof term or lambda-runtime
+  bound supplies Lean evidence.
+- **Ending state:** retained-certificate membership is built and audited,
+  prepared for commit/push on `main`; final hash and local/tracking/live-remote
+  parity are recorded in automation memory. Dedicated-stack loading,
+  repeated-query dispatch, malformed-input rejection, literal/formula evaluation,
+  exact-width checking, the full SAT verifier, exact 3-SAT NP membership, and
+  Cook--Levin remain pending.
+- **Best next experiment:** lift framed query extraction into this eight-stack
+  layout while preserving backup, then connect it to `PreservingMembership`
+  and drain the retained query at the endpoint. Prove exact execution from a
+  leading framed query with arbitrary unread formula suffix, leaving backup
+  intact and query/work stacks empty for the next literal. Loading the backup
+  from the verifier's paired input remains a separate boundary.
