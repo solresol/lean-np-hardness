@@ -52,6 +52,7 @@ import LeanNPHardness.CountedRowMachine
 import LeanNPHardness.BooleanListMachine
 import LeanNPHardness.BooleanCopyMachine
 import LeanNPHardness.PreservingMembershipMachine
+import LeanNPHardness.ReusableMembershipMachine
 import LeanNPHardness.PairExchange
 import LeanNPHardness.BoundedPrime
 import LeanNPHardness.IntervalMachines

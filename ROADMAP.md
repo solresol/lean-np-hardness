@@ -95,6 +95,11 @@
   copying and membership under one eight-stack dispatcher, preserving the
   complete backup, query, and input/output suffixes. Exact cost is copying
   plus one entry step plus membership, bounded by `N * (2q + 4N + 18) + 7`.
+  `ReusableMembershipMachine` now loads one framed query, performs this lookup,
+  and drains the query under one finite dispatcher. `whole_query` retains the
+  complete backup and unread input/output suffixes, with query/count/work
+  stacks empty at a live continuation. Exact execution is bounded by
+  `N * (2q + 4N + 18) + 4q + 12` in raw query/full-certificate bit lengths.
   Loading the dedicated certificate stack, dispatching repeated queries,
   literal/formula evaluation, and exact-width checking remain to be assembled
   in a polynomial-time TM2 verifier.

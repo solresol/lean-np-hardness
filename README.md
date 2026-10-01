@@ -204,6 +204,15 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   live continuation halt. Work stacks empty and control resets. Certificate
   loading, repeated-query dispatch, literal/formula evaluation, and canonical
   full-verifier output remain pending.
+- `ReusableMembershipMachine`: loads one framed natural query, runs the
+  preserved-certificate lookup, then clears the query. `whole_query` preserves
+  the full certificate and arbitrary input/output suffixes while leaving all
+  query/count/work stacks empty at a live continuation. `query_whole_frame`
+  and `cleanup_run` prove the phase invariants; `runSteps_le_bit_bound` and
+  `evalsToInTime` give `N * (2q + 4N + 18) + 4q + 12`, for raw query bits `q`
+  and full certificate bits `N`. Both entry transitions and cleanup exhaustion
+  are counted; the final continuation halt is excluded. The backup must already
+  be loaded. Repeated-query dispatch and the full verifier remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

@@ -3236,3 +3236,60 @@ avoid failed routes, and choose a materially different experiment when blocked.
   leading framed query with arbitrary unread formula suffix, leaving backup
   intact and query/work stacks empty for the next literal. Loading the backup
   from the verifier's paired input remains a separate boundary.
+
+
+## 2026-10-02 — framed lookup with reusable query workspace
+
+- **Starting commit:** `560f0c3974c80c3d91354f528a0a83f80007ec2c`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0. Read AGENTS,
+  roadmap, theorem status, prior journal, and automation memory.
+- **Goal:** load and clear one framed query around the retained-certificate
+  lookup, leaving the workspace suitable for the next query in Milestone 3.
+- **Checked increment:** added `ReusableMembershipMachine.lean`, sharing the
+  eight-stack layout with finite query/membership/cleanup/done control.
+  `query_stepAux` / `query_run` lift extraction while preserving the backup
+  and private stacks; `membership_stepAux` / `membership_run` lift exact
+  membership execution and redirect its halt to cleanup. `query_whole_frame`
+  loads the query in `3q + 3` steps. `cleanup_entry_step` counts one transition;
+  `cleanup_run` drains the query in `q + 1` steps and preserves all seven other
+  stacks. `whole_query` emits membership, preserves the complete certificate
+  and arbitrary unread input/output suffixes, and clears query/count/work
+  stacks at a live `done` label with initial control. Exact `runSteps` is
+  extraction plus retained membership plus `q + 2`; `runSteps_le_bit_bound`
+  and `evalsToInTime` give `N * (2q + 4N + 18) + 4q + 12`, for raw query bits
+  `q` and complete framed certificate bits `N`. `result_eq_true_iff` supplies
+  separate Boolean semantics. Zero queries, empty certificates, and repeated
+  entries are covered. Backup is preloaded and the final halt is excluded.
+- **Files:** new module, root import, twelve axiom audits, previous kernel's
+  cross-reference, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Successful checks:** standalone Lean check passed on the first attempt;
+  full `lake build` passed 2,217 jobs. All twelve new audits and all 395
+  reported axiom lists contain only `propext`, `Classical.choice`, and
+  `Quot.sound`; three further reports are axiom-free. The 62-file source/config
+  scan found only the existing explanatory `proof_wanted` comment. No new
+  warnings; existing prime-selector simp warnings remain. `git diff --check`
+  passed. Build output: `/tmp/lean-np-hardness-2026-10-02-build.log`.
+- **Failed approaches/API discoveries:** no failed proof route or unresolved
+  blocker in this increment. Adapted the existing serialized-query stack lift
+  to preserve the eighth stack, and the canonical cleanup induction to end at
+  a live continuation. Extraction's terminal transition enters copying in the
+  same counted step; membership's live endpoint needs a separate cleanup-entry
+  step. Rechecked local mathlib `TM2.stepAux` and `TM2.step`.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Assignment-list membership and Boolean formula evaluation guide the reusable
+  lookup interface only. No Coq proof terms or lambda-runtime supply Lean evidence.
+- **Ending state:** framed lookup and query cleanup are built and audited,
+  prepared for commit/push on `main`; final hash and local/tracking/live-remote
+  parity are recorded in automation memory. Backup loading, repeated-query
+  dispatch, malformed-input rejection, literal/formula evaluation, exact-width
+  checking, the full verifier, exact 3-SAT NP membership, and Cook--Levin remain
+  pending. This preserved-data kernel is not canonical full-verifier output.
+- **Best next experiment:** extend this lookup with a separate outer query-count
+  stack and prove a same-cost lift preserving that count. The existing
+  `remaining` stack is occupied by each certificate traversal, so it cannot
+  also hold the number of unread formula queries. Then connect framed outer
+  count loading, lookup, and decrement under a finite repeated-query dispatcher.

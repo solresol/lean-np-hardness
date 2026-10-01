@@ -12,9 +12,10 @@ including its header and repetitions. Count and work stacks finish empty.
 The exact cost is `2N + 3` plus the existing membership cost: two copying
 exhaustion steps and one entry step are included. The final live membership
 continuation's halt is excluded. The polynomial bound uses raw binary query
-length `q` and complete framed certificate length `N`. Loading the backup and
-query, repeated-query dispatch, malformed-input rejection, and the full SAT
-verifier remain separate obligations; this is not canonical list output.
+length `q` and complete framed certificate length `N`. `ReusableMembershipMachine`
+adds framed query loading and cleanup. Backup loading, repeated-query dispatch,
+malformed-input rejection, and the full SAT verifier remain separate obligations;
+this is not canonical list output.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.PreservingMembership
