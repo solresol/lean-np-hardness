@@ -3293,3 +3293,58 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `remaining` stack is occupied by each certificate traversal, so it cannot
   also hold the number of unread formula queries. Then connect framed outer
   count loading, lookup, and decrement under a finite repeated-query dispatcher.
+
+## 2026-10-03 — membership preserving an independent outer query count
+
+- **Starting commit:** `24d007a49f1e0d9e6e525d0df03e26a84d44224c`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0. Read AGENTS,
+  roadmap, theorem status, prior journal, and automation memory.
+- **Goal:** preserve an outer query count during one reusable lookup for
+  Milestone 3, independently of its certificate traversal count.
+- **Checked increment:** added `QueryMembershipMachine.lean`, extending the
+  eight-stack layout by `outerRemaining` while retaining finite control.
+  `lift_stepAux`, `lift_step`, and `lift_run` preserve arbitrary outer words
+  through every statement and exact run, including a reached halt, with no
+  additional steps. `whole_query` retains the complete framed certificate,
+  outer word, and arbitrary input/output suffixes while clearing the lookup
+  query/count/work stacks at a live `done` label. `list_head` specializes to
+  a canonical query-list body, preserving every unread frame and the original
+  list count, including repetitions. Exact `runSteps` and the bound
+  `N * (2q + 4N + 18) + 4q + 12` are unchanged for raw query/full-certificate
+  bit lengths `q`/`N`, independent of outer-word length. Count decrement,
+  loading, and final continuation halt are excluded from this contract.
+- **Files:** new module, root import, eight axiom audits, previous kernel's
+  cross-reference, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Successful checks:** standalone Lean check passed on the first attempt;
+  full `lake build` passed 2,218 jobs. All eight new audits and all 403 reported
+  axiom lists contain only `propext`, `Classical.choice`, and `Quot.sound`;
+  three further reports are axiom-free. The 63-file Lean source/config scan
+  found only the existing explanatory `proof_wanted` comment. No new warnings;
+  existing prime-selector simp warnings remain. `git diff --check` passed.
+  Build output: `/tmp/lean-np-hardness-2026-10-03-build.log`.
+- **Failed approaches/API discoveries:** no failed proof route or unresolved
+  blocker in this increment. A tagged `.lookup` stack constructor embeds all
+  eight existing stacks without changing the label/state types. The dependent
+  update lemma plus statement induction gives same-cost simulation directly;
+  `Option.map` states the one-step theorem uniformly at live and halted control.
+  Rechecked local mathlib `TM2.stepAux` and `TM2.step`.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Assignment-list membership and Boolean verifier composition guide the
+  retained-data interface only. No Coq proof terms or lambda-runtime bounds
+  supply Lean evidence; Lean retains repeated occurrences.
+- **Ending state:** outer-count-preserving lookup is built and audited,
+  prepared for commit/push on `main`; final hash and local/tracking/live-remote
+  parity are recorded in automation memory. Backup/count loading, outer
+  decrement, repeated-query dispatch, malformed-input rejection, literal/formula
+  evaluation, exact-width checking, the full verifier, exact 3-SAT NP membership,
+  and Cook--Levin remain pending.
+- **Best next experiment:** embed `CertificateDecrement` with its `remaining`
+  stack mapped to `outerRemaining` and candidate/scratch mapped to the emptied
+  lookup workspace. Preserve backup, unread query frames, and emitted result.
+  Connect it after the live lookup endpoint and prove that one complete query
+  step restores `encodeNat queries.length` from the original nonempty-list
+  count. Then add framed outer-header loading and count-controlled iteration.

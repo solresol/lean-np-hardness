@@ -11,7 +11,8 @@ can start another lookup without restoring the certificate or clearing scratch.
 
 Exact execution and the polynomial bit bound are separate from Boolean
 membership semantics. The certificate must already occupy `backup`; inputs
-must be canonical complete encodings. Backup loading, repeated-query dispatch,
+must be canonical complete encodings. `QueryMembershipMachine` adds a preserved
+outer query-count stack with unchanged costs. Backup loading, repeated-query dispatch,
 malformed-input rejection, and the full SAT verifier remain separate obligations.
 -/
 

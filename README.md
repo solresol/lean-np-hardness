@@ -213,6 +213,15 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   and full certificate bits `N`. Both entry transitions and cleanup exhaustion
   are counted; the final continuation halt is excluded. The backup must already
   be loaded. Repeated-query dispatch and the full verifier remain pending.
+- `QueryMembershipMachine`: extends the reusable lookup to nine stacks with a
+  separate `outerRemaining` stack. `lift_stepAux`, `lift_step`, and `lift_run`
+  preserve arbitrary outer contents without adding steps. `whole_query` keeps
+  that count and the full certificate while clearing the lookup workspace;
+  `list_head` preserves every unread query frame, including repetitions, and
+  the original query-list count. The existing bit bound
+  `N * (2q + 4N + 18) + 4q + 12` is unchanged and independent of the retained
+  outer word. Loading/decrementing the outer count and dispatching a complete
+  query loop remain pending, as does the full verifier.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

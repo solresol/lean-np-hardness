@@ -30,6 +30,7 @@ import LeanNPHardness.BooleanListMachine
 import LeanNPHardness.BooleanCopyMachine
 import LeanNPHardness.PreservingMembershipMachine
 import LeanNPHardness.ReusableMembershipMachine
+import LeanNPHardness.QueryMembershipMachine
 import LeanNPHardness.PairExchange
 import LeanNPHardness.MachineEmbedding
 import LeanNPHardness.MachineCompositionRuntime
@@ -478,3 +479,12 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.ReusableMembership.runSteps_le_bit_bound
 #print axioms LeanNPHardness.MachinePrimitives.ReusableMembership.evalsToInTime
 #print axioms LeanNPHardness.MachinePrimitives.ReusableMembership.result_eq_true_iff
+
+#print axioms LeanNPHardness.MachinePrimitives.QueryMembership.computer
+#print axioms LeanNPHardness.MachinePrimitives.QueryMembership.lift_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.QueryMembership.lift_step
+#print axioms LeanNPHardness.MachinePrimitives.QueryMembership.lift_run
+#print axioms LeanNPHardness.MachinePrimitives.QueryMembership.whole_query
+#print axioms LeanNPHardness.MachinePrimitives.QueryMembership.list_head
+#print axioms LeanNPHardness.MachinePrimitives.QueryMembership.runSteps_le_bit_bound
+#print axioms LeanNPHardness.MachinePrimitives.QueryMembership.evalsToInTime
