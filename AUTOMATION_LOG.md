@@ -3348,3 +3348,64 @@ avoid failed routes, and choose a materially different experiment when blocked.
   Connect it after the live lookup endpoint and prove that one complete query
   step restores `encodeNat queries.length` from the original nonempty-list
   count. Then add framed outer-header loading and count-controlled iteration.
+
+## 2026-10-04 — reusable lookup with outer query-count decrement
+
+- **Starting commit:** `f90d51271fb4dd3208de4e810673f75f8acde827`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0. Read AGENTS,
+  roadmap, theorem status, prior journal, and automation memory.
+- **Goal:** connect the reusable lookup to outer decrement for Milestone 3,
+  restoring the unread query count while retaining the certificate and result.
+- **Checked increment:** added `QueryMembershipStepMachine.lean`, a finite
+  nine-stack dispatcher. `lookup_stepAux` / `lookup_run` retain lookup costs;
+  `decrement_stepAux` / `decrement_run` embed the existing decrement with its
+  count mapped to `outerRemaining`, preserving arbitrary inner count and
+  backup contents. `lookup_whole_query`, `decrement_entry_step`, and
+  `decrement_whole_word` isolate both phases and the one-step transition.
+  `whole_query` proves exact summed execution with membership on output,
+  retained backup and input/output suffixes, and empty query/count/work stacks.
+  `list_head` restores `encodeNat queries.length`, preserving repeated query
+  and certificate entries. `runSteps_le_bit_bound`, `evalsToInTime`, and
+  `list_head_evalsToInTime` give `N * (2q + 4N + 18) + 4q + 4b + 18` for raw
+  query/full-certificate/outer-count bit lengths. Backup/count are preloaded;
+  positive-count dispatch and the final continuation halt are excluded.
+- **Files:** new module, root import, thirteen axiom audits, previous kernel's
+  cross-reference, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Successful checks:** standalone Lean check passed after the layout lemma
+  below; full `lake build` passed 2,219 jobs. All thirteen new audits and all
+  416 reported axiom lists use only `propext`, `Classical.choice`, and
+  `Quot.sound`; three further reports are axiom-free. The 64-file Lean
+  source/config scan found only the existing explanatory `proof_wanted`
+  comment. No new warnings; existing prime-selector simp warnings remain.
+  `git diff --check` passed.
+  Build output: `/tmp/lean-np-hardness-2026-10-04-build.log`.
+- **Failed approaches/API discoveries:** direct `exact decrement_run ...`
+  failed with a type mismatch in `decrement_whole_word`: the embedded stack
+  function and named nine-stack configuration are pointwise equal but not
+  definitionally equal. Added private `decrementCfg_cfg`, unfolding the outer
+  configurations and proving stack equality by function extensionality and
+  constructor cases; rewriting with it closes the run proof. All other new
+  proofs checked unchanged. Used the raw exact decrement theorem rather than
+  extracting a suffix-dependent transported witness, as warned in the
+  2026-09-24 log. Rechecked mathlib `TM2.stepAux` / `TM2.step`; the live lookup
+  endpoint requires one further counted transition. No unresolved blocker.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Assignment-list membership and Boolean verifier composition guide the
+  retained-data interface only; no Coq term or lambda-runtime supplies Lean
+  evidence. Lean retains repeated occurrences.
+- **Ending state:** combined lookup/decrement is built and audited, prepared
+  for commit/push on `main`; final hash and local/tracking/live-remote
+  parity are recorded in automation memory. Backup/count loading, repeated-query
+  dispatch, malformed-input rejection, literal/formula evaluation, exact-width
+  checking, the full verifier, exact 3-SAT NP membership, and Cook--Levin remain
+  pending.
+- **Best next experiment:** add a finite outer-count peek and a return
+  transition around this step. Prove exact execution over a canonical query-list
+  body with a preloaded count, retaining the full backup and pushing membership
+  bits in reverse query order onto the output suffix. Bound each tail count and
+  query by the original encoded body length. Then lift framed outer-header
+  loading while preserving backup and connect it to the loop.

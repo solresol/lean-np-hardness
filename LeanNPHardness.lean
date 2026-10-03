@@ -54,6 +54,7 @@ import LeanNPHardness.BooleanCopyMachine
 import LeanNPHardness.PreservingMembershipMachine
 import LeanNPHardness.ReusableMembershipMachine
 import LeanNPHardness.QueryMembershipMachine
+import LeanNPHardness.QueryMembershipStepMachine
 import LeanNPHardness.PairExchange
 import LeanNPHardness.BoundedPrime
 import LeanNPHardness.IntervalMachines

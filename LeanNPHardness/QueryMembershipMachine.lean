@@ -9,8 +9,9 @@ Every source statement and exact run lifts at the same cost, retaining arbitrary
 contents on the outer stack. The canonical query-list head interface keeps the
 unread frames, their repetitions, and the original outer count intact.
 
-The certificate and outer count are preloaded. Header loading, outer decrement,
-repeated-query dispatch, and the full SAT verifier remain separate obligations.
+The certificate and outer count are preloaded. `QueryMembershipStepMachine`
+connects this lookup to outer decrement. Header loading, repeated-query dispatch,
+and the full SAT verifier remain separate obligations.
 The lookup ends at a live `done` label; its final halt is excluded from the bound.
 -/
 

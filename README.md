@@ -220,8 +220,19 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `list_head` preserves every unread query frame, including repetitions, and
   the original query-list count. The existing bit bound
   `N * (2q + 4N + 18) + 4q + 12` is unchanged and independent of the retained
-  outer word. Loading/decrementing the outer count and dispatching a complete
-  query loop remain pending, as does the full verifier.
+  outer word. `QueryMembershipStepMachine` adds outer decrement; count loading,
+  complete query-loop dispatch, and the full verifier remain pending.
+- `QueryMembershipStepMachine`: connects reusable lookup to in-place outer
+  decrement on the same nine stacks. `decrement_run` preserves the inner count
+  and complete backup at the original cost; `decrement_entry_step` counts the
+  one-step transition. `whole_query` proves exact combined execution, retaining
+  backup and input/output suffixes while clearing query/count/work stacks.
+  `list_head` restores the exact tail count and retains repeated queries.
+  `runSteps_le_bit_bound` and `evalsToInTime` give
+  `N * (2q + 4N + 18) + 4q + 4b + 18`, for raw query bits `q`, full certificate
+  bits `N`, and outer count bits `b`. The final continuation halt is excluded.
+  Certificate/count loading, positive-count dispatch, repeated execution, and
+  the full SAT verifier remain separate obligations.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

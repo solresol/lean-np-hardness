@@ -103,8 +103,13 @@
   `QueryMembershipMachine` now adds a separate outer query-count stack;
   `lift_run` and `whole_query` preserve it with exactly the same lookup cost.
   `list_head` retains the original outer count and all unread query frames,
-  including repetitions. Loading/decrementing that count and connecting
-  repeated-query control remain pending.
+  including repetitions. `QueryMembershipStepMachine` now connects lookup to
+  outer decrement under one finite dispatcher, preserving backup, both suffixes,
+  and the empty inner count/workspace. `list_head` restores the exact tail count;
+  `whole_query` proves the exact sum including one entry step, bounded by
+  `N * (2q + 4N + 18) + 4q + 4b + 18` for raw query/full-certificate/outer-count
+  bit lengths `q`/`N`/`b`. Loading that count and connecting repeated-query control
+  remain pending.
   Loading the dedicated certificate stack, dispatching repeated queries,
   literal/formula evaluation, and exact-width checking remain to be assembled
   in a polynomial-time TM2 verifier.
