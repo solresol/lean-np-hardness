@@ -13,8 +13,9 @@ Exact execution includes one lookup-to-decrement transition. The bit bound is
 `N * (2q + 4N + 18) + 4q + 4b + 18`, for raw query bits `q`, full framed
 certificate bits `N`, and outer count bits `b`. The list-head interface restores
 the exact tail count, retaining repeated queries and certificate entries.
-The certificate and count are preloaded; positive-count dispatch, header
-loading, repeated execution, and the full SAT verifier remain separate.
+The certificate and count are preloaded. `QueryMembershipLoopMachine` adds
+count-controlled repeated execution. Header loading and the full SAT verifier
+remain separate.
 The final live decrement continuation's halt is excluded.
 -/
 

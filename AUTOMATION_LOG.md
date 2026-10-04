@@ -3409,3 +3409,69 @@ avoid failed routes, and choose a materially different experiment when blocked.
   bits in reverse query order onto the output suffix. Bound each tail count and
   query by the original encoded body length. Then lift framed outer-header
   loading while preserving backup and connect it to the loop.
+
+## 2026-10-05 — count-controlled reusable membership queries
+
+- **Starting commit:** `0cdd680ed79c27d696f31409b5e80126c4ee0f4a`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0. Read AGENTS,
+  roadmap, theorem status, prior journal, automation memory, and prior-run
+  guidance before choosing the next Milestone 3 increment.
+- **Goal:** repeat the checked query lookup/decrement step over a complete
+  canonical query-list body with preloaded outer count and certificate.
+- **Checked increment:** added `QueryMembershipLoopMachine.lean`, a finite
+  nine-stack check/entry/done dispatcher. `lift_stepAux` / `lift_run` preserve
+  component costs. `check_step` peeks for count-stack presence without
+  consuming it; `return_step` counts the return jump. `entry_run` restores the
+  exact tail count. `whole_list` consumes every framed query, including
+  repetitions, preserves the complete certificate and arbitrary input/output
+  suffixes, and empties all count/workspace stacks at a live continuation.
+  `results_cons` and `results_length` separately identify the reverse query
+  order and one-bit-per-occurrence output. Empty query/certificate lists and
+  natural zero are covered by the general statements.
+- **Runtime:** recursive `runSteps` counts one peek and return per query and
+  the final zero test. `runSteps_le` bounds traversal inside any larger body
+  budget; `runSteps_le_bit_bound` / `evalsToInTime` give
+  `Q * (N * (2Q + 4N + 18) + 8Q + 20) + 1` for framed query-body bits `Q` and
+  full framed certificate bits `N`. The final continuation halt is excluded.
+- **Files:** new module, root import, twelve axiom audits, previous step's
+  cross-reference, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Successful checks:** corrected standalone Lean check and full `lake build`
+  passed; the latter completed 2,220 jobs. The two output-list lemmas use only
+  `propext` and `Quot.sound`; the other ten new audits additionally use
+  `Classical.choice`. All 428 reported axiom lists contain only these standard
+  axioms, with three further axiom-free reports. The 65-file source/config
+  scan found only the existing explanatory `proof_wanted` comment. No new
+  warnings; existing prime-selector simp warnings remain. `git diff --check`
+  passed. Build output: `/tmp/lean-np-hardness-2026-10-05-build.log`.
+- **Failed approaches/API discoveries:** the first `check_step` simplifier
+  named nonexistent `QueryMembership.liftContents`; inspection showed the
+  layout unfolds through `liftCfg` and `lookupContents`. The first runtime
+  `omega` proof treated `encodeNat (query :: queries).length` and
+  `encodeNat (queries.length + 1)` as different atoms after simplifying only
+  the goal; normalizing `List.length_cons` in the entry/count bounds fixed it.
+  Removed one unused simp argument. All other proofs checked unchanged.
+  Used the existing explicit `QueryMembershipStep.runSteps` and raw
+  `list_head` theorem, avoiding suffix-dependent transported runtime witnesses.
+  A fixed body budget and `length_le_body_length` bound both head query bits
+  and every remaining count without a maximum-variable-index assumption.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Assignment-list membership and verifier decomposition guide the retained
+  certificate interface; Coq terms and lambda-runtime bounds supply no Lean
+  evidence. Lean retains repeated occurrences. Rechecked local mathlib
+  `TM2.stepAux` / `TM2.step` and the existing certificate-loop decomposition.
+- **Ending state:** complete preloaded-count query traversal is built and
+  audited, prepared for commit/push on `main`; final hash and local/tracking/
+  live-remote parity are recorded in automation memory. Header/backup loading,
+  malformed-input rejection, literal/formula evaluation, exact-width checking,
+  the full verifier, exact 3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** embed `CertificateCount` header extraction with its
+  `remaining` mapped to `outerRemaining` and its workspace mapped to the emptied
+  lookup workspace, preserving backup and the independent inner count. Enter
+  this loop after extraction and prove exact execution from a complete
+  `BinaryNatLists.encodeNatList queries` input plus suffix. Bound header-plus-
+  loop cost by full query-list and certificate bit lengths, counting all entry
+  transitions. Dedicated certificate loading remains a separate later step.

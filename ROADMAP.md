@@ -108,10 +108,15 @@
   and the empty inner count/workspace. `list_head` restores the exact tail count;
   `whole_query` proves the exact sum including one entry step, bounded by
   `N * (2q + 4N + 18) + 4q + 4b + 18` for raw query/full-certificate/outer-count
-  bit lengths `q`/`N`/`b`. Loading that count and connecting repeated-query control
-  remain pending.
-  Loading the dedicated certificate stack, dispatching repeated queries,
-  literal/formula evaluation, and exact-width checking remain to be assembled
+  bit lengths `q`/`N`/`b`. `QueryMembershipLoopMachine` now repeats this step
+  under finite count-controlled dispatch. `whole_list` consumes the complete
+  canonical query body, preserves the certificate and both suffixes, emits
+  membership bits in reverse query order, and empties count/workspace stacks.
+  Exact `runSteps` counts every peek and return; the bit bound is
+  `Q * (N * (2Q + 4N + 18) + 8Q + 20) + 1` in framed query-body/full-certificate
+  bits `Q`/`N`. The outer count and certificate remain preloaded.
+  Loading the outer count and dedicated certificate stack, literal/formula
+  evaluation, and exact-width checking remain to be assembled
   in a polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
