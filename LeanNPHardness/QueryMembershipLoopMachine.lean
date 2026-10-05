@@ -12,9 +12,9 @@ and input suffix survive, and all count and workspace stacks finish empty.
 
 Exact execution counts each peek and return jump. A separate bound is
 `Q * (N * (2Q + 4N + 18) + 8Q + 20) + 1`, where `Q` is the framed query-body
-length and `N` is the full framed certificate length, both in bits. Header and
-backup loading, literal/formula evaluation, and the full verifier remain
-separate. Execution ends at a live continuation before its halt.
+length and `N` is the full framed certificate length, both in bits.
+`EncodedQueryMembershipMachine` supplies outer-header loading. Backup loading,
+literal/formula evaluation, and the full verifier remain separate. Execution ends at a live continuation before its halt.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.QueryMembershipLoop

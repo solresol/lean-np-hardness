@@ -3475,3 +3475,65 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `BinaryNatLists.encodeNatList queries` input plus suffix. Bound header-plus-
   loop cost by full query-list and certificate bit lengths, counting all entry
   transitions. Dedicated certificate loading remains a separate later step.
+
+## 2026-10-06 — membership from a complete encoded query list
+
+- **Starting commit:** `02422be8f0acac7775e4b6f56f0a8c780c6b293b`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0. Read AGENTS,
+  roadmap, theorem status, prior journal, automation memory, and relevant
+  prior-run guidance before selecting this Milestone 3 increment.
+- **Goal:** load the canonical query-list count from its framed header and
+  connect it to the checked repeated-membership loop, retaining the certificate.
+- **Checked increment:** added `EncodedQueryMembershipMachine.lean`, a finite
+  nine-stack header/loop dispatcher. `header_stepAux` / `header_run` map the
+  extractor payload onto `outerRemaining`, preserving arbitrary backup,
+  independent inner count, candidate, output, and query data. `loop_stepAux` /
+  `loop_run` retain exact component costs. `header_whole_frame` loads a header
+  and enters the loop in exactly `3b + 3` steps. `whole_list` consumes the
+  complete canonical query encoding, including repeated entries, retains the
+  complete certificate and arbitrary input/output suffixes, and emits membership
+  bits in reverse query order with all count/workspace stacks empty. Empty
+  query/certificate lists and natural zero are covered by the general contract.
+- **Runtime:** exact `runSteps` sums extraction and loop execution, including
+  loop entry in the extractor's final counted step. `runSteps_le_bit_bound` /
+  `evalsToInTime` give `M * (N * (2M + 4N + 18) + 8M + 23) + 4` for full
+  framed query-list/certificate bits `M`/`N`. The final live continuation halt
+  is excluded; only the certificate remains preloaded.
+- **Files:** new module, root import, nine axiom audits, previous loop's
+  cross-reference, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Successful checks:** corrected standalone Lean check and full `lake build`
+  passed, the latter completing 2,221 jobs. All nine new audits and all 437
+  reported axiom lists use only `propext`, `Classical.choice`, and `Quot.sound`;
+  three further reports are axiom-free. The 66-file source/config scan found
+  only the existing explanatory `proof_wanted` comment. No new warnings;
+  existing prime-selector simp warnings remain. `git diff --check` passed.
+  Build output: `/tmp/lean-np-hardness-2026-10-06-build.log`.
+- **Failed approaches/API discoveries:** direct simplification of the lifted
+  `FrameExtraction.whole_frame` had a type mismatch between the explicit
+  header stack match and the nested shared layout. Added `headerCfg_cfg`,
+  proved by function extensionality and cases on the outer/lookup stack
+  constructors, then rewrote both endpoints. All other proofs passed unchanged.
+  Reused the underlying `FrameExtraction` kernel directly, as in
+  `CertificateMembership`, so its reached halt enters the existing loop test
+  without a duplicate count test. Reused the loop's uniform body-budget bound
+  with the full query encoding as budget, plus header/count length bounds.
+  No unresolved proof blocker in this increment.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, and pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Assignment-list membership and verifier decomposition guide this reusable
+  interface only; Coq terms and lambda-runtime bounds supply no Lean evidence.
+  Rechecked local mathlib `TM2.stepAux` / `TM2.step`. Repetitions remain intact.
+- **Ending state:** full-query-encoding traversal is built and audited, prepared
+  for commit/push on `main`; final hash and local/tracking/live-remote parity
+  are recorded in automation memory. Certificate loading, malformed-input
+  rejection, literal/formula evaluation, exact-width checking, the full verifier,
+  exact 3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** serialize a certificate inside one outer frame,
+  followed by the complete query-list encoding. Map the checked extractor's
+  payload onto `backup`, preserving the query/count workspace, then enter this
+  dispatcher. Prove exact combined execution and a polynomial bound in complete
+  serialized bits. This loads the certificate including its own header and
+  repeated entries; canonical backup cleanup and halting output follow separately.

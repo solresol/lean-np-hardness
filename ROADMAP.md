@@ -114,9 +114,14 @@
   membership bits in reverse query order, and empties count/workspace stacks.
   Exact `runSteps` counts every peek and return; the bit bound is
   `Q * (N * (2Q + 4N + 18) + 8Q + 20) + 1` in framed query-body/full-certificate
-  bits `Q`/`N`. The outer count and certificate remain preloaded.
-  Loading the outer count and dedicated certificate stack, literal/formula
-  evaluation, and exact-width checking remain to be assembled
+  bits `Q`/`N`. `EncodedQueryMembershipMachine` now loads the outer header
+  and enters this loop in the extractor's final step. `whole_list` consumes
+  the full canonical query encoding while retaining the certificate and both
+  suffixes, with exact summed cost bounded by
+  `M * (N * (2M + 4N + 18) + 8M + 23) + 4` in full framed query-list and
+  certificate bits `M`/`N`. Only the certificate remains preloaded.
+  Loading the dedicated certificate stack, literal/formula evaluation,
+  and exact-width checking remain to be assembled
   in a polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
