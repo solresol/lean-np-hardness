@@ -34,6 +34,7 @@ import LeanNPHardness.QueryMembershipMachine
 import LeanNPHardness.QueryMembershipStepMachine
 import LeanNPHardness.QueryMembershipLoopMachine
 import LeanNPHardness.EncodedQueryMembershipMachine
+import LeanNPHardness.SerializedQueryMembershipMachine
 import LeanNPHardness.PairExchange
 import LeanNPHardness.MachineEmbedding
 import LeanNPHardness.MachineCompositionRuntime
@@ -528,3 +529,14 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.EncodedQueryMembership.whole_list
 #print axioms LeanNPHardness.MachinePrimitives.EncodedQueryMembership.runSteps_le_bit_bound
 #print axioms LeanNPHardness.MachinePrimitives.EncodedQueryMembership.evalsToInTime
+
+#print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.computer
+#print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.certificate_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.membership_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.certificate_run
+#print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.membership_run
+#print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.certificate_whole_frame
+#print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.encodeInput_length
+#print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.whole_input
+#print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.runSteps_le_bit_bound
+#print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.evalsToInTime

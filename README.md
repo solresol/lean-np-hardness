@@ -192,8 +192,8 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   control at a live continuation before its halt. `certificate_run` and
   `certificate_evalsToInTime` copy the complete framed certificate, including
   its count header and repeated entries. `PreservingMembershipMachine` now
-  connects this copying pass to one membership query. Loading the dedicated
-  source stack remains pending; `QueryMembershipLoopMachine` supplies repeated
+  connects this copying pass to one membership query. `SerializedQueryMembershipMachine`
+  loads the dedicated source stack; `QueryMembershipLoopMachine` supplies repeated
   queries.
 - `PreservingMembershipMachine`: an eight-stack finite dispatcher that copies
   a preloaded certificate, runs membership on the working copy, and retains
@@ -202,9 +202,9 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `runSteps_le_bit_bound` and `evalsToInTime` bound it by
   `N * (2q + 4N + 18) + 7` in full certificate bits `N` and raw query bits `q`.
   The bound includes the copy-to-membership transition and excludes the final
-  live continuation halt. Work stacks empty and control resets. Certificate
-  loading, literal/formula evaluation, and canonical full-verifier output remain
-  pending; `QueryMembershipLoopMachine` supplies repeated-query dispatch.
+  live continuation halt. Work stacks empty and control resets.
+  `SerializedQueryMembershipMachine` supplies certificate loading; literal/formula
+  evaluation and canonical full-verifier output remain pending; `QueryMembershipLoopMachine` supplies repeated-query dispatch.
 - `ReusableMembershipMachine`: loads one framed natural query, runs the
   preserved-certificate lookup, then clears the query. `whole_query` preserves
   the full certificate and arbitrary input/output suffixes while leaving all
@@ -224,8 +224,9 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `N * (2q + 4N + 18) + 4q + 12` is unchanged and independent of the retained
   outer word. `QueryMembershipStepMachine` adds outer decrement and
   `QueryMembershipLoopMachine` repeats the combined step;
-  `EncodedQueryMembershipMachine` loads its count. Certificate loading and
-  the full verifier remain pending.
+  `EncodedQueryMembershipMachine` loads its count and
+  `SerializedQueryMembershipMachine` loads the certificate. The full verifier
+  remains pending.
 - `QueryMembershipStepMachine`: connects reusable lookup to in-place outer
   decrement on the same nine stacks. `decrement_run` preserves the inner count
   and complete backup at the original cost; `decrement_entry_step` counts the
@@ -236,8 +237,9 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `N * (2q + 4N + 18) + 4q + 4b + 18`, for raw query bits `q`, full certificate
   bits `N`, and outer count bits `b`. The final continuation halt is excluded.
   `QueryMembershipLoopMachine` supplies count-controlled repetition;
-  `EncodedQueryMembershipMachine` supplies count loading. Certificate loading
-  and the full SAT verifier remain separate obligations.
+  `EncodedQueryMembershipMachine` supplies count loading and
+  `SerializedQueryMembershipMachine` supplies certificate loading. The full SAT
+  verifier remains a separate obligation.
 - `QueryMembershipLoopMachine`: a finite nine-stack dispatcher that repeats
   lookup and outer decrement over a canonical query-list body. `check_step`
   tests count-stack presence without consuming it; `entry_run` counts the
@@ -260,7 +262,21 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `runSteps_le_bit_bound` and `evalsToInTime` give
   `M * (N * (2M + 4N + 18) + 8M + 23) + 4` in full query-list/certificate
   bits `M`/`N`. The certificate remains preloaded and the final live continuation
-  halt is excluded. Certificate loading and the full SAT verifier remain pending.
+  halt is excluded. `SerializedQueryMembershipMachine` supplies certificate
+  loading; the full SAT verifier remains pending.
+- `SerializedQueryMembershipMachine`: loads a leading outer frame containing
+  the complete certificate, then processes the full query-list encoding under
+  one finite nine-stack dispatcher. `certificate_whole_frame` preserves arbitrary
+  private data and enters query processing in exactly `3N + 3` steps for
+  certificate bits `N`. `whole_input` starts with empty backup/count/workspace,
+  consumes both serialized components, retains the certificate and arbitrary
+  input/output suffixes, and emits one membership bit per query occurrence in
+  reverse query order. `encodeInput_length` records the exact bit length;
+  `runSteps_le_bit_bound` and `evalsToInTime` give
+  `S * (S * (2S + 18) + 8S + 26) + 7` in total serialized bits `S`.
+  Empty lists and repetitions are covered. The final live continuation halt
+  is excluded; backup cleanup, canonical halting output, and the SAT verifier
+  remain separate obligations.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

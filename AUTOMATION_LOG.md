@@ -3537,3 +3537,73 @@ avoid failed routes, and choose a materially different experiment when blocked.
   dispatcher. Prove exact combined execution and a polynomial bound in complete
   serialized bits. This loads the certificate including its own header and
   repeated entries; canonical backup cleanup and halting output follow separately.
+
+
+## 2026-10-07 — repeated membership from one serialized input
+
+- **Starting commit:** `b450a5afce5eaabfe0297a1612677c1cc8e386b8`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0. Read AGENTS,
+  roadmap, theorem status, prior journal, automation memory, and relevant
+  prior-run guidance before selecting this Milestone 3 increment.
+- **Goal:** load a leading outer frame containing the complete certificate
+  onto backup, then enter complete encoded-query traversal without preloaded
+  certificate or counts.
+- **Checked increment:** added `SerializedQueryMembershipMachine.lean`, a
+  finite nine-stack certificate/membership dispatcher. `certificate_stepAux` /
+  `certificate_run` map extracted payload onto backup while preserving arbitrary
+  query, remaining count, candidate, output, and outer count. `membership_stepAux`
+  / `membership_run` retain exact component costs. `certificate_whole_frame`
+  loads any complete frame in exactly `3N + 3` steps, including entry to the
+  encoded-query dispatcher in the final extraction step. `encodeInput_length`
+  gives exact serialized length `2N + 1 + M` for full certificate/query-list
+  bits `N`/`M`. `whole_input` consumes both canonical serialized components,
+  retains the loaded certificate and arbitrary input/output suffixes, emits one
+  membership bit per query in reverse query order, and empties count/workspace
+  stacks. Empty query/certificate lists, natural zero, and repeated occurrences
+  are covered by the general contract.
+- **Runtime:** exact `runSteps` is certificate extraction plus the existing
+  encoded-query cost. `runSteps_le_bit_bound` / `evalsToInTime` give
+  `S * (S * (2S + 18) + 8S + 26) + 7` in complete serialized input bits `S`.
+  The retained backup and final live continuation halt are outside canonical
+  halting-output cleanup; the halt is excluded from this bound.
+- **Files:** new module, root import, ten axiom audits, previous dispatcher's
+  cross-reference, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Successful checks:** corrected standalone Lean check passed without
+  warnings. Full `lake build` passed 2,222 jobs. `encodeInput_length` uses only
+  `propext` and `Quot.sound`; the other nine new audits additionally use
+  `Classical.choice`. All 447 reported axiom lists use only these standard
+  axioms, with three additional axiom-free reports. The 67-file Lean
+  source/config scan found only the existing explanatory `proof_wanted`
+  comment. No new warnings; existing prime-selector simp warnings remain.
+  `git diff --check` passed.
+  Build output: `/tmp/lean-np-hardness-2026-10-07-build.log`.
+- **Failed approaches/API discoveries:** the first standalone check exposed a
+  duplicated `outer` binder in the adapted `certificateCfg_cfg` helper;
+  `backup` consequently became implicit and endpoint simplification failed
+  with a type mismatch. Corrected the binder to the explicit backup argument;
+  the established function-extensionality/stack-cases proof then matched both
+  endpoints. No new proof route was needed; all other proofs checked unchanged.
+  The exact outer-frame length bounds `2M + 4N` by `2S`, giving a cubic bound
+  without assumptions on the maximum natural value or removal of repetitions.
+  No unresolved proof blocker in this increment.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus pinned upstream
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Assignment-list membership and Boolean verifier decomposition guide the
+  retained-data interface only; no Coq terms or lambda-runtime bounds supply
+  Lean evidence. Rechecked local mathlib `TM2.stepAux` / `TM2.step` and the
+  frame-extractor contract. All input repetitions remain intact.
+- **Ending state:** serialized repeated membership is built and audited,
+  prepared for commit/push on `main`; final hash and local/tracking/live-remote
+  parity are recorded in automation memory. Backup cleanup, canonical halting
+  output, function-level encoding/witness packaging, malformed-input rejection,
+  literal/formula evaluation, exact-width checking, the full verifier, exact
+  3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** lift this dispatcher into finite cleanup control;
+  count the transition from its live membership-done label, drain backup in
+  `N + 1` steps, reset initial control, and prove canonical `haltList` output
+  with all non-output stacks empty. Then package the serialized pair of natural
+  lists and reverse membership results as a polynomial-time function. Keep
+  literal signs, clause aggregation, and exact-width checking separate.

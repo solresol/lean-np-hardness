@@ -57,6 +57,7 @@ import LeanNPHardness.QueryMembershipMachine
 import LeanNPHardness.QueryMembershipStepMachine
 import LeanNPHardness.QueryMembershipLoopMachine
 import LeanNPHardness.EncodedQueryMembershipMachine
+import LeanNPHardness.SerializedQueryMembershipMachine
 import LeanNPHardness.PairExchange
 import LeanNPHardness.BoundedPrime
 import LeanNPHardness.IntervalMachines

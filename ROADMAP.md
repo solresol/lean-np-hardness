@@ -119,10 +119,16 @@
   the full canonical query encoding while retaining the certificate and both
   suffixes, with exact summed cost bounded by
   `M * (N * (2M + 4N + 18) + 8M + 23) + 4` in full framed query-list and
-  certificate bits `M`/`N`. Only the certificate remains preloaded.
-  Loading the dedicated certificate stack, literal/formula evaluation,
-  and exact-width checking remain to be assembled
-  in a polynomial-time TM2 verifier.
+  certificate bits `M`/`N`. `SerializedQueryMembershipMachine` now loads a
+  leading outer frame containing the complete certificate and enters that
+  dispatcher in its final extraction step. `whole_input` consumes the serialized
+  certificate and query list with initially empty backup/count/workspace,
+  preserves the loaded certificate and both suffixes, and emits all membership
+  bits in reverse query order. Exact summed execution is bounded by
+  `S * (S * (2S + 18) + 8S + 26) + 7` in complete serialized bits `S`.
+  Backup cleanup, canonical halting output, literal/formula evaluation,
+  and exact-width checking remain to be assembled in a polynomial-time TM2
+  verifier.
 
 ## Milestone 4: Cook--Levin
 

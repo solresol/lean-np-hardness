@@ -13,9 +13,10 @@ per query occurrence in reverse query order.
 Exact execution includes header extraction and loop entry in its final step.
 The separate runtime bound is `M * (N * (2M + 4N + 18) + 8M + 23) + 4`,
 where `M` and `N` are full framed query-list and certificate lengths in bits.
-Execution ends at a live continuation before its halt. Certificate loading,
-malformed-input rejection, literal/formula evaluation, and the full SAT verifier
-remain separate obligations.
+Execution ends at a live continuation before its halt.
+`SerializedQueryMembershipMachine` supplies certificate loading from a leading
+outer frame. Malformed-input rejection, literal/formula evaluation, and the full
+SAT verifier remain separate obligations.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.EncodedQueryMembership
