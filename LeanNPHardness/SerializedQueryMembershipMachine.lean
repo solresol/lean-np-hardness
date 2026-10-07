@@ -13,8 +13,9 @@ finish empty, and output has one membership bit per query in reverse order.
 Exact execution includes membership entry in the extractor's final counted
 step. The separate bound is `S * (S * (2S + 18) + 8S + 26) + 7` in complete
 serialized input bits `S`. Execution ends at a live continuation before its
-halt. Backup cleanup, canonical halting output, malformed-input rejection,
-literal/formula evaluation, and the full SAT verifier remain separate.
+halt. `CanonicalQueryMembershipMachine` supplies backup cleanup and canonical
+halting output. Malformed-input rejection, literal/formula evaluation, and the
+full SAT verifier remain separate.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.SerializedQueryMembership

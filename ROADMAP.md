@@ -126,9 +126,13 @@
   preserves the loaded certificate and both suffixes, and emits all membership
   bits in reverse query order. Exact summed execution is bounded by
   `S * (S * (2S + 18) + 8S + 26) + 7` in complete serialized bits `S`.
-  Backup cleanup, canonical halting output, literal/formula evaluation,
-  and exact-width checking remain to be assembled in a polynomial-time TM2
-  verifier.
+  `CanonicalQueryMembershipMachine` now drains the retained backup, resets
+  control, and halts with every non-output stack empty. `whole_input` proves
+  exact combined execution; `outputsInTime` gives canonical reverse membership
+  output within `S * (S * (2S + 18) + 8S + 27) + 9` steps, including cleanup
+  entry and the final halt. Function-level encoding/witness packaging,
+  literal/formula evaluation, and exact-width checking remain to be assembled
+  in a polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
 

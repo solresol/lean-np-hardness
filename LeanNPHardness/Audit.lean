@@ -35,6 +35,7 @@ import LeanNPHardness.QueryMembershipStepMachine
 import LeanNPHardness.QueryMembershipLoopMachine
 import LeanNPHardness.EncodedQueryMembershipMachine
 import LeanNPHardness.SerializedQueryMembershipMachine
+import LeanNPHardness.CanonicalQueryMembershipMachine
 import LeanNPHardness.PairExchange
 import LeanNPHardness.MachineEmbedding
 import LeanNPHardness.MachineCompositionRuntime
@@ -540,3 +541,14 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.whole_input
 #print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.runSteps_le_bit_bound
 #print axioms LeanNPHardness.MachinePrimitives.SerializedQueryMembership.evalsToInTime
+
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalQueryMembership.computer
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalQueryMembership.lift_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalQueryMembership.lift_run
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalQueryMembership.cleanup_entry_step
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalQueryMembership.cleanup_run
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalQueryMembership.whole_input
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalQueryMembership.runSteps_le_bit_bound
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalQueryMembership.initList_eq_cfg
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalQueryMembership.haltList_eq_cfg
+#print axioms LeanNPHardness.MachinePrimitives.CanonicalQueryMembership.outputsInTime

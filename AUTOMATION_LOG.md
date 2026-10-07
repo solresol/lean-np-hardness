@@ -3607,3 +3607,72 @@ avoid failed routes, and choose a materially different experiment when blocked.
   with all non-output stacks empty. Then package the serialized pair of natural
   lists and reverse membership results as a polynomial-time function. Keep
   literal signs, clause aggregation, and exact-width checking separate.
+
+
+## 2026-10-08 — canonical halting output for repeated membership
+
+- **Starting commit:** `62c73ce7079465944cca5456762f14963a6558e6`;
+  clean `main`, fetched upstream unchanged, ahead/behind 0/0. Read AGENTS,
+  roadmap, theorem status, prior journal, automation memory, and relevant
+  prior-run guidance before selecting this Milestone 3 increment.
+- **Goal:** drain the retained certificate backup after serialized repeated
+  membership and establish canonical halting output with a bit-runtime bound.
+- **Checked increment:** added `CanonicalQueryMembershipMachine.lean`, a finite
+  nine-stack membership/cleanup dispatcher. `lift_stepAux` / `lift_run` retain
+  exact component costs; `cleanup_entry_step` counts the transition from the
+  live membership continuation. `cleanup_run` consumes backup in exactly
+  `N + 1` steps while preserving arbitrary contents on all eight other stacks,
+  restoring initial control, and halting. `whole_input` proves exact execution
+  with input/output suffix preservation and one membership bit per query
+  occurrence in reverse order. `initList_eq_cfg` / `haltList_eq_cfg` identify
+  canonical configurations; `outputsInTime` supplies `TM2OutputsInTime` with
+  all non-output stacks empty. Empty lists, zero, and repetitions are covered.
+- **Runtime:** exact `runSteps` is serialized traversal plus `N + 2`, for full
+  certificate bits `N`. `runSteps_le_bit_bound` and `outputsInTime` give
+  `S * (S * (2S + 18) + 8S + 27) + 9` in complete serialized input bits `S`,
+  including cleanup entry, backup drain, control reset, and final halt.
+- **Files:** new module, root import, ten axiom audits, previous dispatcher's
+  cross-reference, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Successful checks:** corrected standalone Lean check passed without
+  warnings; full `lake build` passed 2,223 jobs. All ten new audits and all
+  457 reported axiom lists use only `propext`, `Classical.choice`, and
+  `Quot.sound`; three further reports are axiom-free. The 68-file Lean
+  source/config scan found only the existing explanatory `proof_wanted`
+  comment. No new warnings; existing `PrimeSelectionMachine` simp warnings
+  remain. `git diff --check` passed. Build output:
+  `/tmp/lean-np-hardness-2026-10-08-build.log`.
+- **Failed approaches/API discoveries:** the first cleanup-step check failed
+  at `funext` because simplification had left the backup lookup behind the
+  nested `PreservingMembership.membershipContents` definition; the nil case
+  similarly retained an unresolved branch. Unfolded that actual layout helper
+  instead of the unused `PreservingMembership.cfg`. The second check left
+  only the outer-stack equality unresolved; unfolding
+  `QueryMembership.lookupContents` in that constructor case closed it. All
+  other proofs passed unchanged. Reused the checked single-query canonical
+  wrapper pattern, with `backup` as the drained stack and the encoded-query
+  initial state as cleanup control. No unresolved proof blocker.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus installed Complexity `NP/SAT/SharedSAT.v` and `SAT_inNP.v`.
+  Their assignment-list membership and separate verifier decomposition guide
+  the interface only; no Coq term or lambda-runtime supplies Lean evidence.
+  Lean retains every occurrence without the Coq certificate deduplication.
+  Rechecked local mathlib `TM2.stepAux`, `TM2.step`, `initList`, `haltList`,
+  and `TM2OutputsInTime`: canonical halting requires initial control and all
+  non-output stacks empty, and the cleanup exhaustion step can reset and halt
+  in one counted TM2 step.
+- **Ending state:** canonical repeated-membership output is built and audited,
+  prepared for commit/push on `main`; final hash and local/tracking/live-remote
+  parity are recorded in automation memory. Function-level encoding/witness
+  packaging, malformed-input rejection, literal/formula evaluation, exact-width
+  checking, the full SAT verifier, exact 3-SAT NP membership, and Cook--Levin
+  remain pending.
+- **Best next experiment:** define a finite Boolean encoding of
+  `List Nat × List Nat` matching `SerializedQueryMembership.encodeInput`.
+  Parse the outer frame using `readUnary` / `readBits`, decode its complete
+  certificate payload, then decode the query list while retaining the suffix.
+  Prove the round trip from `readUnary_replicate`, `readBits_append`, and
+  `decodeNatListPrefix_encode_append`. Package `outputsInTime` with
+  `RawBoolList.finEncoding` and polynomial `X * (X * (2 * X + 18) + 8 * X + 27) + 9`.
+  Keep reverse-list membership semantics separate from literal signs, clause
+  aggregation, and exact-width checking.

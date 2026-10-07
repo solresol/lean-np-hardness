@@ -275,8 +275,19 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `runSteps_le_bit_bound` and `evalsToInTime` give
   `S * (S * (2S + 18) + 8S + 26) + 7` in total serialized bits `S`.
   Empty lists and repetitions are covered. The final live continuation halt
-  is excluded; backup cleanup, canonical halting output, and the SAT verifier
-  remain separate obligations.
+  is excluded. `CanonicalQueryMembershipMachine` supplies backup cleanup and
+  canonical halting output; the SAT verifier remains separate.
+- `CanonicalQueryMembershipMachine`: runs serialized repeated membership,
+  drains the retained backup, resets initial control, and halts on the same
+  nine Boolean stacks. `cleanup_run` preserves all eight other stacks and
+  takes exactly `N + 1` steps for `N` backup bits. `whole_input` includes
+  the one-step cleanup entry and preserves arbitrary input/output suffixes.
+  `outputsInTime` gives canonical output with every non-output stack empty
+  within `S * (S * (2S + 18) + 8S + 27) + 9` steps in total serialized bits,
+  including the final halt. Output has one bit per query occurrence in reverse
+  order; empty lists, zero, and repetitions are covered. Function-level
+  encoding/witness packaging, malformed-input rejection, and the full SAT
+  verifier remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing
