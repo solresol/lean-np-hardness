@@ -130,9 +130,15 @@
   control, and halts with every non-output stack empty. `whole_input` proves
   exact combined execution; `outputsInTime` gives canonical reverse membership
   output within `S * (S * (2S + 18) + 8S + 27) + 9` steps, including cleanup
-  entry and the final halt. Function-level encoding/witness packaging,
-  literal/formula evaluation, and exact-width checking remain to be assembled
-  in a polynomial-time TM2 verifier.
+  entry and the final halt. `QueryMembershipComputable` now proves the
+  serialized `List Nat × List Nat` encoding round trip and exact bit length,
+  and packages this machine as `CanonicalQueryMembership.computableInPolyTime`
+  with raw Boolean-list output and polynomial
+  `X * (X * (2 * X + 18) + 8 * X + 27) + 9`. Separate semantic lemmas retain
+  one bit per query occurrence and identify reverse query order. This witness
+  uses `FramedNatListQueries.finEncoding`; a conversion from the verifier's
+  tagged pair encoding, literal/formula evaluation, and exact-width checking
+  remain to be assembled in a polynomial-time TM2 verifier.
 
 ## Milestone 4: Cook--Levin
 

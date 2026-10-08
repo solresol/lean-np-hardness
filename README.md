@@ -285,9 +285,20 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `outputsInTime` gives canonical output with every non-output stack empty
   within `S * (S * (2S + 18) + 8S + 27) + 9` steps in total serialized bits,
   including the final halt. Output has one bit per query occurrence in reverse
-  order; empty lists, zero, and repetitions are covered. Function-level
-  encoding/witness packaging, malformed-input rejection, and the full SAT
-  verifier remain pending.
+  order; empty lists, zero, and repetitions are covered.
+  `QueryMembershipComputable` supplies function-level encoding/witness packaging;
+  malformed-input rejection and the full SAT verifier remain pending.
+- `QueryMembershipComputable`: `FramedNatListQueries.finEncoding` encodes
+  `(queries, certificate)` as a framed complete certificate followed by the
+  complete query list. Prefix parsing, the round trip, injectivity, trailing
+  suffix rejection, and exact bit length `2N + 1 + M` are checked. Separate
+  `membershipResults_reverse` and `membershipResults_length` lemmas describe
+  reverse query order and one bit per occurrence. The existing nine-stack
+  machine supplies `CanonicalQueryMembership.computableInPolyTime`, with raw
+  Boolean-list output and polynomial `X * (X * (2 * X + 18) + 8 * X + 27) + 9`
+  in complete serialized bits, including cleanup and final halting. Conversion
+  from the verifier's tagged pair encoding, literal/formula evaluation, and
+  exact-width checking remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

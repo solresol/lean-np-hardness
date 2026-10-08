@@ -10,9 +10,10 @@ finish empty. Output contains one membership bit per query occurrence, in
 reverse query order. Empty lists, zero, and repetitions remain covered.
 
 The separate cubic bound in complete serialized input bits includes the cleanup
-entry, backup drain, control reset, and final halt. Function-level encoding and
-polynomial-time witness packaging, malformed-input rejection, literal/formula
-evaluation, and the full SAT verifier remain separate obligations.
+entry, backup drain, control reset, and final halt. `QueryMembershipComputable`
+supplies the function-level encoding and polynomial-time witness packaging.
+Malformed-input rejection, literal/formula evaluation, and the full SAT verifier
+remain separate obligations.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.CanonicalQueryMembership

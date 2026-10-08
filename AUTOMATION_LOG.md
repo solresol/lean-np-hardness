@@ -3676,3 +3676,64 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `RawBoolList.finEncoding` and polynomial `X * (X * (2 * X + 18) + 8 * X + 27) + 9`.
   Keep reverse-list membership semantics separate from literal signs, clause
   aggregation, and exact-width checking.
+
+
+## 2026-10-09 — polynomial-time repeated-membership function witness
+
+- **Starting commit:** `67a9332095a3bd938fa71ac708a63d6cc911ff30`;
+  clean `main`, fetch confirmed unchanged upstream, ahead/behind 0/0. Read
+  AGENTS, roadmap, theorem status, prior journal, and automation memory.
+- **Goal:** finish the serialized list-pair encoding and function-level
+  polynomial-time packaging of repeated membership for Milestone 3.
+- **Checked increment:** added `QueryMembershipComputable.lean`.
+  `FramedNatListQueries` encodes `(queries, certificate)` by framing the full
+  certificate before the full query-list encoding. `decodePrefix_encode_append`
+  retains any suffix; `decode_encode`, `encode_injective`, and `finEncoding`
+  establish lossless finite encoding. `decode_encode_append_nonempty` rejects
+  trailing bits at the decoder level; the inner certificate decoder also
+  requires complete consumption of its frame. `encode_eq_serialized` matches
+  the machine input; `encode_length` gives `2N + 1 + M` in full certificate
+  and query-list bits. Separate `CanonicalQueryMembership.membershipResults`
+  lemmas identify the loop result, reverse order, and one bit per occurrence.
+  `timePolynomial_eval` and `computableInPolyTime` package the same nine-stack
+  machine with `RawBoolList.finEncoding` output and polynomial
+  `X * (X * (2 * X + 18) + 8 * X + 27) + 9` in complete serialized bits.
+  Cleanup and final halt are included; empty lists, zero, and repetitions remain
+  covered by the universal statements.
+- **Files:** new module, root import, twelve audits, canonical machine module
+  cross-reference, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Checks:** corrected standalone Lean check passed without warnings;
+  full `lake build` passed 2,224 jobs. All twelve new audits passed: seven
+  encoding and three semantic results use only `propext` / `Quot.sound`,
+  and the polynomial evaluation and witness additionally use `Classical.choice`.
+  All 469 reported axiom lists contain only those standard axioms; three more
+  reports are axiom-free. The 69-file source/config scan found only the existing
+  explanatory `proof_wanted` comment. No new warnings; existing
+  `PrimeSelectionMachine` simp warnings remain. `git diff --check` passed.
+  Build log: `/tmp/lean-np-hardness-2026-10-09-build.log`.
+- **Failed approach/API discovery:** unrestricted `simp` in the prefix round
+  trip rewrote the certificate bit length to `listWireSize` before
+  `readBits_append` could match. Disable just `encodeNatList_length` for that
+  proof; the existing parser round trips and `FramedNatList.decode_encode`
+  then close it. All other proofs passed unchanged. No unresolved proof blocker.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus installed Complexity `SharedSAT.v` and `SAT_inNP.v`.
+  Their assignment-list membership, separate Boolean verifier correctness,
+  and runtime packaging guide the interface only. Coq's certificate compression
+  is not imported; Lean retains repetitions. Rechecked local mathlib
+  `TM2ComputableInPolyTime`: runtime is evaluated at the declared encoding's
+  complete length. No Coq proof term or lambda-runtime supplies Lean evidence.
+- **Ending state:** repeated membership is packaged, built, and audited,
+  prepared for commit/push on `main`; final commit and local/tracking/live-remote
+  parity are recorded in automation memory. This witness uses the serialized
+  encoding, not automatically `PairEncoding.finEncoding`. That conversion,
+  malformed-stream machine rejection, literal/formula evaluation, exact-width
+  checking, the full verifier, exact 3-SAT NP membership, and Cook--Levin remain
+  pending.
+- **Best next experiment:** retain a Boolean literal polarity through the
+  reusable membership kernel, then apply conditional negation to its output
+  in one counted step. Prove agreement with `CNF.Literal.eval` under
+  `Certificate.assignment` and preserve the existing certificate/query suffix
+  invariants. Keep serialized literal extraction, clause aggregation, and
+  exact-width checking as separate obligations.
