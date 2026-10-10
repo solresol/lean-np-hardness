@@ -3737,3 +3737,65 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `Certificate.assignment` and preserve the existing certificate/query suffix
   invariants. Keep serialized literal extraction, clause aggregation, and
   exact-width checking as separate obligations.
+
+
+## 2026-10-10 — literal evaluation with a reusable certificate
+
+- **Starting commit:** `5f74efdedbe93db9c6e8ef7af5a0b2251d9c1daf`;
+  clean `main`, fetch confirmed unchanged upstream, ahead/behind 0/0. Read
+  AGENTS, roadmap, theorem status, prior journal, and automation memory.
+- **Goal:** retain literal polarity through reusable membership and connect
+  its result to literal evaluation, as the next Milestone 3 increment.
+- **Checked increment:** added `LiteralEvaluationMachine.lean`, a finite
+  eight-stack TM2 wrapper. `lift_stepAux` / `lift_run` retain the supplied
+  negative-polarity bit through exact lookup execution. `sign_stepAux` /
+  `sign_step` replace the membership bit by conditional negation in one step,
+  changing only output and resetting finite control. `whole_query` preserves
+  the complete certificate and arbitrary input/output suffixes and empties
+  query/count/workspace. `result_eq_eval` / `result_eq_true_iff` separate Boolean
+  semantics; `whole_literal` proves agreement with `CNF.Literal.eval` under
+  `Certificate.assignment`. Exact cost is `ReusableMembership.runSteps + 1`;
+  `runSteps_le_bit_bound` / `literal_evalsToInTime` give
+  `N * (2q + 4N + 18) + 4q + 13` in raw variable/full-certificate bits.
+  Universal statements cover both signs, zero, empty certificates, and repeats.
+- **Files:** new module, root import, eleven audits, reusable-membership
+  cross-reference, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Checks:** corrected standalone Lean check passed without warnings;
+  full `lake build` passed 2,225 jobs. The two new semantic audits use only
+  `propext` / `Quot.sound`; the nine machine/runtime audits additionally use
+  `Classical.choice`. All 480 reported axiom lists contain only those standard
+  axioms; three further reports are axiom-free. The 70-file source/config scan
+  found only the existing explanatory `proof_wanted` comment. No new warnings;
+  existing `PrimeSelectionMachine` simp warnings remain. `git diff --check`
+  passed. Build log: `/tmp/lean-np-hardness-2026-10-10-build.log`.
+- **Failed approaches/API discoveries:** the first `whole_query` check could
+  not rewrite a lifted run through `ReusableMembership.computer.main`; naming
+  its actual `.query .prefix` label in the intermediate goal fixes matching.
+  The next check rejected an unnecessary `rw [Option.bind_some]` under a
+  beta-redex. After rewriting just the run, `exact sign_step ...` closes the
+  definitionally equal endpoint. All other proofs passed unchanged. The sign
+  register can hold the result after the pop, so no extra state register or
+  stack is needed. No unresolved proof blocker remains for this contract.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus pinned Complexity
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Their separate variable/literal evaluation and runtime layers guide the
+  decomposition only. Local opam/sibling searches did not locate those library
+  files, so the pinned upstream sources were read. Rechecked local mathlib
+  `TM2.stepAux`: pop, push, load, and goto form one counted step. No Coq proof
+  or lambda-runtime supplies Lean evidence; repetitions remain intact.
+- **Ending state:** literal evaluation from supplied polarity and a framed
+  variable is built and audited, prepared for commit/push on `main`; final
+  commit and local/tracking/live-remote parity are recorded in automation
+  memory. The complete certificate remains preloaded, and the final live
+  continuation halt is excluded. The input is not yet the packed literal
+  from `CNF.Formula.finEncoding`. Serialized literal parsing, clause aggregation,
+  exact-width checking, the full verifier, exact 3-SAT NP membership, and
+  Cook--Levin remain pending.
+- **Best next experiment:** prove that the head (default false) of
+  `Computability.encodeNat literal.toNat` is the negative-polarity bit and its
+  tail is `encodeNat literal.var`, including positive zero's empty encoding.
+  Then use ordered frame extraction to load the packed code, split its low
+  bit from the raw variable, and connect lookup without unnecessary reframing.

@@ -163,8 +163,8 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   continuation halt is excluded and canonical complete encodings are assumed.
   `CanonicalMembershipMachine` supplies query cleanup and canonical halting output.
   `MembershipComputable` supplies function-level encoding/witness packaging.
-  Malformed-input rejection, literal/formula evaluation, and the full verifier
-  remain pending.
+  Malformed-input rejection, serialized literal/formula evaluation, and the
+  full verifier remain pending.
 - `CanonicalMembershipMachine`: connects serialized membership to a query drain
   on the same seven stacks. `cleanup_run` takes exactly `q + 1` steps for `q`
   query bits, preserves the other six stacks, resets control, and halts.
@@ -183,8 +183,8 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   semantics are separate lemmas. Its canonical-input contract does not assert
   machine rejection of malformed streams. `BooleanCopyMachine` supplies a
   certificate-copying kernel; `PreservingMembershipMachine` connects it to
-  membership while retaining the certificate. Literal/formula evaluation
-  and the full SAT verifier remain pending.
+  membership while retaining the certificate. Serialized literal/formula
+  evaluation and the full SAT verifier remain pending.
 - `BooleanCopyMachine`: a finite three-stack kernel that restores a separately
   supplied source word and prepends an ordered copy to an arbitrary target
   suffix. `reverse_run`, `restore_run`, and `whole_word` prove exact execution
@@ -203,8 +203,9 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `N * (2q + 4N + 18) + 7` in full certificate bits `N` and raw query bits `q`.
   The bound includes the copy-to-membership transition and excludes the final
   live continuation halt. Work stacks empty and control resets.
-  `SerializedQueryMembershipMachine` supplies certificate loading; literal/formula
-  evaluation and canonical full-verifier output remain pending; `QueryMembershipLoopMachine` supplies repeated-query dispatch.
+  `SerializedQueryMembershipMachine` supplies certificate loading and
+  `QueryMembershipLoopMachine` supplies repeated-query dispatch. Serialized
+  literal/formula evaluation and canonical full-verifier output remain pending.
 - `ReusableMembershipMachine`: loads one framed natural query, runs the
   preserved-certificate lookup, then clears the query. `whole_query` preserves
   the full certificate and arbitrary input/output suffixes while leaving all
@@ -215,6 +216,17 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   are counted; the final continuation halt is excluded. The backup must already
   be loaded. `QueryMembershipLoopMachine` supplies repeated-query dispatch; the
   full verifier remains pending.
+- `LiteralEvaluationMachine`: retains a supplied negative-polarity bit through
+  reusable framed membership lookup on the same eight stacks, then applies
+  conditional negation in one counted step. `whole_literal` proves agreement
+  with `CNF.Literal.eval` under `Certificate.assignment`, preserving the complete
+  certificate and arbitrary input/output suffixes with query/count/work stacks
+  empty and control reset. Exact cost is reusable lookup plus one;
+  `runSteps_le_bit_bound` and `literal_evalsToInTime` give
+  `N * (2q + 4N + 18) + 4q + 13` in raw variable/full-certificate bits.
+  Polarity is preloaded in finite control; input contains the framed variable.
+  Parsing the formula encoding's even/odd literal code, clause aggregation,
+  exact-width checking, and the final continuation halt remain separate.
 - `QueryMembershipMachine`: extends the reusable lookup to nine stacks with a
   separate `outerRemaining` stack. `lift_stepAux`, `lift_step`, and `lift_run`
   preserve arbitrary outer contents without adding steps. `whole_query` keeps
@@ -297,8 +309,8 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   machine supplies `CanonicalQueryMembership.computableInPolyTime`, with raw
   Boolean-list output and polynomial `X * (X * (2 * X + 18) + 8 * X + 27) + 9`
   in complete serialized bits, including cleanup and final halting. Conversion
-  from the verifier's tagged pair encoding, literal/formula evaluation, and
-  exact-width checking remain pending.
+  from the verifier's tagged pair encoding, serialized literal/formula evaluation,
+  and exact-width checking remain pending.
 - `PairExchange`: canonical pair exchange over arbitrary finite component
   alphabets in at most `4s+6` steps, including empty alphabets and words;
   `MachineAdapters.pairRightComputableInPolyTime` uses it with the existing

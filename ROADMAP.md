@@ -137,8 +137,15 @@
   `X * (X * (2 * X + 18) + 8 * X + 27) + 9`. Separate semantic lemmas retain
   one bit per query occurrence and identify reverse query order. This witness
   uses `FramedNatListQueries.finEncoding`; a conversion from the verifier's
-  tagged pair encoding, literal/formula evaluation, and exact-width checking
-  remain to be assembled in a polynomial-time TM2 verifier.
+  tagged pair encoding, serialized literal/formula evaluation, and exact-width
+  checking remain to be assembled in a polynomial-time TM2 verifier.
+  `LiteralEvaluationMachine` now retains a supplied negative-polarity bit
+  through reusable framed lookup and applies conditional negation in one
+  counted step. `whole_literal` proves agreement with `CNF.Literal.eval`
+  under `Certificate.assignment`, with preserved backup and suffixes, empty
+  workspace, and bound `N * (2q + 4N + 18) + 4q + 13` in raw variable bits
+  `q` and full certificate bits `N`. Parsing the even/odd literal code, clause aggregation,
+  exact-width checking, and full verifier assembly remain pending.
 
 ## Milestone 4: Cook--Levin
 
