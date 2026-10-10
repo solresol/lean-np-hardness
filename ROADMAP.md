@@ -144,8 +144,15 @@
   counted step. `whole_literal` proves agreement with `CNF.Literal.eval`
   under `Certificate.assignment`, with preserved backup and suffixes, empty
   workspace, and bound `N * (2q + 4N + 18) + 4q + 13` in raw variable bits
-  `q` and full certificate bits `N`. Parsing the even/odd literal code, clause aggregation,
-  exact-width checking, and full verifier assembly remain pending.
+  `q` and full certificate bits `N`. `PackedLiteralMachine` now extracts the
+  even/odd literal code and splits its low bit into finite control on five
+  Boolean stacks. `head_encode_toNat` / `tail_encode_toNat` cover both signs
+  and positive zero's empty payload. `whole_literal` preserves the unread
+  input and arbitrary query contents, exposing the raw variable and emptying
+  both work stacks in exactly `3b + 4` steps for packed payload bits `b`,
+  bounded by `2L + 2` in the full literal frame length `L`. Connecting that
+  loader to reusable lookup without reframing, clause aggregation, exact-width
+  checking, and full verifier assembly remain pending.
 
 ## Milestone 4: Cook--Levin
 

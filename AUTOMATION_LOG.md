@@ -3799,3 +3799,63 @@ avoid failed routes, and choose a materially different experiment when blocked.
   tail is `encodeNat literal.var`, including positive zero's empty encoding.
   Then use ordered frame extraction to load the packed code, split its low
   bit from the raw variable, and connect lookup without unnecessary reframing.
+
+
+## 2026-10-11 — packed literal frame loading
+
+- **Starting commit:** `a2e19f368f20fd24f12578fd9bd7a0c1d360e7d7`;
+  clean `main`, fetch confirmed unchanged upstream, ahead/behind 0/0. Read
+  AGENTS, roadmap, theorem status, prior journal, and automation memory.
+- **Goal:** load the actual framed even/odd literal code used by the formula
+  encoding, isolating the decoding and finite-machine loading obligation.
+- **Checked increment:** added `PackedLiteralMachine.lean`.
+  `head_encode_toNat` and `tail_encode_toNat` identify the low bit (default
+  false) as the negative-polarity flag and the tail as the exact raw variable
+  encoding, including positive zero's empty payload. The finite five-stack
+  `computer` wraps ordered frame extraction; `lift_stepAux` / `lift_run`
+  preserve component costs and redirect its halt to a live split label.
+  `split_step` pops the low bit into control in one counted step.
+  `whole_frame` / `whole_literal` preserve arbitrary unread input and query
+  contents, initially require empty candidate/scratch/count, and leave the
+  raw variable on candidate with scratch/count empty. Exact cost is `3b + 4`
+  for packed payload bits `b`; `literal_evalsToInTime` gives `2L + 2` in full
+  literal frame bits `L`. The final live continuation halt is excluded.
+- **Files:** new module, root import, nine audits, literal-evaluation
+  cross-reference, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Checks:** corrected standalone module check and full `lake build` passed
+  (2,226 jobs). The two new encoding audits use `propext` / `Quot.sound`;
+  the seven machine/runtime audits additionally use `Classical.choice`.
+  All 489 axiom lists contain only those standard axioms, with three further
+  axiom-free reports. The 71-file source/config scan found only the existing
+  explanatory `proof_wanted` comment. No new warnings; existing
+  `PrimeSelectionMachine` simp warnings remain. `git diff --check` passed.
+  Build log: `/tmp/lean-np-hardness-2026-10-11-build.log`.
+- **Failed approaches/API discoveries:** initial `simp [Num.cast_bit0]` /
+  `simp [Num.cast_bit1]` in the numeral-cast identities left
+  `↑2 = 2 ∨ n = 0`. Explicit rewrites with `Num.to_of_nat` and the appropriate
+  cast theorem close them without that simplifier normalization. The positive
+  zero tail case did not close by `rfl`; `simp [encodeNat, encodeNum]` handles
+  the typeclass natural cast. Removed one unused `Function.update` simp
+  argument. All remaining machine proofs checked on the first attempt.
+  `Computability.encodeNat` uses `Num`, so direct `Num.bit0` / `Num.bit1`
+  identities avoid introducing a second representation via `Nat.bits`.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus pinned Complexity
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Coq's explicit sign/variable pair and separate assignment membership guide
+  the decomposition only; the even/odd bit representation and exact TM2
+  runtime are proved in Lean. No Coq proof term, lambda-runtime, or certificate
+  deduplication is imported; repetitions remain intact.
+- **Ending state:** packed-literal loading is built and audited, prepared for
+  commit/push on `main`; the final commit and local/tracking/live-remote parity
+  are recorded in automation memory. This loader does not itself evaluate
+  literals or supply the complete SAT verifier. Combined evaluation, clause
+  aggregation, exact-width checking, canonical full-verifier output, exact
+  3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** inject the loader's candidate into the existing
+  eight-stack `query` slot while preserving backup/output/remaining. Retain
+  its polarity through `PreservingMembership`, apply conditional negation,
+  and drain the raw query. This bypasses framed-query extraction in
+  `ReusableMembership`; do not reframe an already extracted variable.

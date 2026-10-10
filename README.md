@@ -225,8 +225,19 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `runSteps_le_bit_bound` and `literal_evalsToInTime` give
   `N * (2q + 4N + 18) + 4q + 13` in raw variable/full-certificate bits.
   Polarity is preloaded in finite control; input contains the framed variable.
-  Parsing the formula encoding's even/odd literal code, clause aggregation,
+  `PackedLiteralMachine` supplies a separate loader for the formula encoding's
+  even/odd literal code; connecting it to lookup, clause aggregation,
   exact-width checking, and the final continuation halt remain separate.
+- `PackedLiteralMachine`: extracts one framed packed literal on five Boolean
+  stacks and pops its low bit into finite control. `head_encode_toNat` and
+  `tail_encode_toNat` identify the negative-polarity bit and raw variable bits,
+  including positive zero's empty encoding. `whole_literal` preserves arbitrary
+  unread input and query contents and empties both work stacks in exactly
+  `3b + 4` steps for packed payload bits `b`. `literal_evalsToInTime` bounds this
+  by `2L + 2` in the complete literal frame length `L`. The candidate starts
+  empty and ends with the raw variable; execution ends at a live continuation.
+  Injection into the reusable membership layout and combined literal evaluation
+  remain pending.
 - `QueryMembershipMachine`: extends the reusable lookup to nine stacks with a
   separate `outerRemaining` stack. `lift_stepAux`, `lift_step`, and `lift_run`
   preserve arbitrary outer contents without adding steps. `whole_query` keeps

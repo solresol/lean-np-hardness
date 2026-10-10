@@ -38,6 +38,7 @@ import LeanNPHardness.SerializedQueryMembershipMachine
 import LeanNPHardness.CanonicalQueryMembershipMachine
 import LeanNPHardness.QueryMembershipComputable
 import LeanNPHardness.LiteralEvaluationMachine
+import LeanNPHardness.PackedLiteralMachine
 import LeanNPHardness.PairExchange
 import LeanNPHardness.MachineEmbedding
 import LeanNPHardness.MachineCompositionRuntime
@@ -579,3 +580,13 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.LiteralEvaluation.runSteps_le_bit_bound
 #print axioms LeanNPHardness.MachinePrimitives.LiteralEvaluation.whole_literal
 #print axioms LeanNPHardness.MachinePrimitives.LiteralEvaluation.literal_evalsToInTime
+
+#print axioms LeanNPHardness.MachinePrimitives.PackedLiteral.computer
+#print axioms LeanNPHardness.MachinePrimitives.PackedLiteral.head_encode_toNat
+#print axioms LeanNPHardness.MachinePrimitives.PackedLiteral.tail_encode_toNat
+#print axioms LeanNPHardness.MachinePrimitives.PackedLiteral.lift_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.PackedLiteral.lift_run
+#print axioms LeanNPHardness.MachinePrimitives.PackedLiteral.split_step
+#print axioms LeanNPHardness.MachinePrimitives.PackedLiteral.whole_frame
+#print axioms LeanNPHardness.MachinePrimitives.PackedLiteral.whole_literal
+#print axioms LeanNPHardness.MachinePrimitives.PackedLiteral.literal_evalsToInTime

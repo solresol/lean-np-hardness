@@ -13,8 +13,9 @@ agreement with `CNF.Literal.eval` are stated separately.
 
 The input is a framed variable, with polarity in finite control and the complete
 certificate already on `backup`. This does not yet parse the even/odd literal
-code used by `CNF.Formula.finEncoding`. Serialized literal extraction, clause
-aggregation, exact-width checking, and the full verifier remain separate.
+code used by `CNF.Formula.finEncoding`. `PackedLiteralMachine` supplies a
+separate loader for that code. Connecting it to lookup, clause aggregation,
+exact-width checking, and the full verifier remain separate.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.LiteralEvaluation

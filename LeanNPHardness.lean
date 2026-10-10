@@ -61,6 +61,7 @@ import LeanNPHardness.SerializedQueryMembershipMachine
 import LeanNPHardness.CanonicalQueryMembershipMachine
 import LeanNPHardness.QueryMembershipComputable
 import LeanNPHardness.LiteralEvaluationMachine
+import LeanNPHardness.PackedLiteralMachine
 import LeanNPHardness.PairExchange
 import LeanNPHardness.BoundedPrime
 import LeanNPHardness.IntervalMachines
