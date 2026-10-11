@@ -14,8 +14,9 @@ agreement with `CNF.Literal.eval` are stated separately.
 The input is a framed variable, with polarity in finite control and the complete
 certificate already on `backup`. This does not yet parse the even/odd literal
 code used by `CNF.Formula.finEncoding`. `PackedLiteralMachine` supplies a
-separate loader for that code. Connecting it to lookup, clause aggregation,
-exact-width checking, and the full verifier remain separate.
+separate loader for that code. `whole_raw_query` exposes evaluation after
+extraction; `PackedLiteralEvaluationMachine` connects it to the packed loader.
+Clause aggregation, exact-width checking, and the full verifier remain separate.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.LiteralEvaluation
@@ -181,6 +182,28 @@ theorem sign_step (state : ReusableMembership.State) (negative value : Bool)
   funext index
   cases index <;> simp [signedContents, PreservingMembership.membershipContents,
     CertificateCount.stackContents]
+
+/-- Raw entry bypasses framed extraction for callers that already loaded the variable. -/
+def rawRunSteps (query : Nat) (xs : List Nat) : Nat :=
+  ReusableMembership.rawRunSteps query xs + 1
+
+/-- Supplied raw variable and polarity suffice for lookup, cleanup, and sign application. -/
+theorem whole_raw_query (query : Nat) (negative : Bool) (xs : List Nat) (input output : List Bool) :
+    (fun c => c.bind computer.step)^[rawRunSteps query xs]
+      (some (cfg (some (.lookup (.membership (.copy .reverse)))) (lookupState negative)
+        input (encodeNat query) [] [] [] [] output (BinaryNatLists.encodeNatList xs))) =
+      some (cfg (some .done) initialState input [] [] [] [] []
+        (applyPolarity negative (decide (query ∈ xs)) :: output)
+        (BinaryNatLists.encodeNatList xs)) := by
+  have run := lift_run _ _ _ negative (ReusableMembership.whole_raw_query query xs input output)
+  rw [rawRunSteps, Function.iterate_succ_apply']
+  change (fun c => c.bind computer.step)
+    ((fun c => c.bind computer.step)^[ReusableMembership.rawRunSteps query xs]
+      (some (liftCfg negative (ReusableMembership.cfg (some (.membership (.copy .reverse)))
+        ReusableMembership.initialState input (encodeNat query)
+        [] [] [] [] output (BinaryNatLists.encodeNatList xs))))) = _
+  rw [run]
+  exact sign_step _ _ _ _ _ _ _ _ _ _ _
 
 def runSteps (query : Nat) (xs : List Nat) : Nat := ReusableMembership.runSteps query xs + 1
 

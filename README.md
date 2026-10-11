@@ -226,8 +226,9 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `N * (2q + 4N + 18) + 4q + 13` in raw variable/full-certificate bits.
   Polarity is preloaded in finite control; input contains the framed variable.
   `PackedLiteralMachine` supplies a separate loader for the formula encoding's
-  even/odd literal code; connecting it to lookup, clause aggregation,
-  exact-width checking, and the final continuation halt remain separate.
+  even/odd literal code; `whole_raw_query` exposes the raw-variable entry
+  used by `PackedLiteralEvaluationMachine`. Clause aggregation, exact-width
+  checking, and the final continuation halt remain separate.
 - `PackedLiteralMachine`: extracts one framed packed literal on five Boolean
   stacks and pops its low bit into finite control. `head_encode_toNat` and
   `tail_encode_toNat` identify the negative-polarity bit and raw variable bits,
@@ -236,8 +237,20 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   `3b + 4` steps for packed payload bits `b`. `literal_evalsToInTime` bounds this
   by `2L + 2` in the complete literal frame length `L`. The candidate starts
   empty and ends with the raw variable; execution ends at a live continuation.
-  Injection into the reusable membership layout and combined literal evaluation
-  remain pending.
+  `PackedLiteralEvaluationMachine` connects this loader to reusable lookup.
+- `PackedLiteralEvaluationMachine`: evaluates the actual framed even/odd
+  literal code on eight Boolean stacks. The loader writes directly to the
+  raw-query slot; one counted transition carries its polarity into the existing
+  lookup, cleanup, and sign-application code. `whole_literal` agrees with
+  `CNF.Literal.eval` under `Certificate.assignment`, retains the full certificate
+  and arbitrary input/output suffixes, and empties query/count/workspace.
+  Exact cost is `3b + q + PreservingMembership.runSteps + 8` in packed payload
+  bits `b` and raw variable bits `q`. `runSteps_le_frame_bound` and
+  `literal_evalsToInTime` bound it by `N * (2L + 4N + 18) + 2L + 13` in complete
+  literal-frame/certificate bits `L`/`N`. Both signs, zero, empty certificates,
+  and repetitions are covered. Backup remains preloaded; clause aggregation,
+  exact-width checking, and the full verifier remain pending. Execution ends
+  at a live continuation before its final halt.
 - `QueryMembershipMachine`: extends the reusable lookup to nine stacks with a
   separate `outerRemaining` stack. `lift_stepAux`, `lift_step`, and `lift_run`
   preserve arbitrary outer contents without adding steps. `whole_query` keeps

@@ -3859,3 +3859,70 @@ avoid failed routes, and choose a materially different experiment when blocked.
   its polarity through `PreservingMembership`, apply conditional negation,
   and drain the raw query. This bypasses framed-query extraction in
   `ReusableMembership`; do not reframe an already extracted variable.
+
+
+## 2026-10-12 — packed literal evaluation with a reusable certificate
+
+- **Starting commit:** `c443dcdcbcfba7b21259e864931c4e842bbaa76a`;
+  clean `main`, fetch confirmed unchanged upstream, ahead/behind 0/0. Read
+  AGENTS, roadmap, theorem status, prior journal, automation memory, and
+  relevant prior-run guidance.
+- **Goal:** connect packed literal loading directly to retained-certificate
+  lookup, sign application, and query cleanup for Milestone 3.
+- **Checked increment:** added `PackedLiteralEvaluationMachine.lean`, a finite
+  eight-stack dispatcher. Factored `ReusableMembership.whole_raw_query` from
+  the existing framed proof and added `LiteralEvaluation.whole_raw_query`;
+  both expose the already loaded variable without reframing or changing the
+  existing machines. `loader_stepAux` / `loader_run` inject candidate into
+  query while retaining private data; `loader_whole_literal` preserves arbitrary
+  remaining-count/candidate/output/backup contents. `evaluation_entry_step`
+  counts the polarity transfer from the loader's live endpoint. Evaluation
+  statement/run lifts preserve exact costs. `whole_literal` consumes the actual
+  framed even/odd code, agrees with `CNF.Literal.eval` under the certificate
+  assignment, preserves backup and input/output suffixes, and clears workspace.
+- **Runtime:** exact `runSteps` is `3b + q + PreservingMembership.runSteps + 8`
+  in packed payload/raw variable bits `b`/`q`. `runSteps_le_bit_bound` gives
+  `N * (2q + 4N + 18) + 3b + q + 15`. `runSteps_le_frame_bound` and
+  `literal_evalsToInTime` give `N * (2L + 4N + 18) + 2L + 13` in complete
+  literal-frame/certificate bits `L`/`N`. Loader entry, cleanup, and sign
+  application are counted; the final live continuation halt is excluded.
+  Both signs, zero, empty certificates, and repetitions are covered.
+- **Files:** new module, the two raw-entry APIs, loader/evaluator cross-references,
+  root import, thirteen audits, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Checks:** raw-entry dependency builds passed; corrected standalone new-module
+  check passed without warnings; full `lake build` passed 2,227 jobs. All thirteen
+  new audits and all 502 reported axiom lists use only `propext`,
+  `Classical.choice`, and `Quot.sound`; three further reports are axiom-free.
+  The 72-file Lean source/config scan found only the existing explanatory
+  `proof_wanted` comment. No new warnings; existing `PrimeSelectionMachine`
+  simp warnings remain. `git diff --check` passed.
+  Build log: `/tmp/lean-np-hardness-2026-10-12-build.log`.
+- **Failed approaches/API discoveries:** the first standalone new-module check
+  rejected extra `funext`/stack cases after `congr 1` had already solved the
+  loader configuration equality; removed the redundant tactics. The guessed
+  `List.length_tail_le` name is unavailable; rewriting the checked tail identity
+  with `List.length_tail` lets `omega` bound variable bits by packed payload
+  bits. The actual execution proofs and raw-entry refactor checked on their
+  first attempts. Reusing `ReusableMembership.queryContents` makes the loader
+  injection definitionally match the eight-stack configuration. No unresolved
+  proof blocker remains for this contract.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus pinned Complexity
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Their assignment-list membership and separate verifier/runtime layers guide
+  the decomposition only. Rechecked local mathlib `TM2.stepAux` / `TM2.step`:
+  the polarity load and entry goto share one counted step. No Coq proof term,
+  lambda-runtime, or certificate deduplication supplies Lean evidence.
+- **Ending state:** packed-literal evaluation is built and audited, prepared
+  for commit/push on `main`; final hash and local/tracking/live-remote parity
+  are recorded in automation memory. Backup remains preloaded. Clause/formula
+  traversal, exact-width checking, tagged-pair input conversion, canonical
+  full-verifier output, exact 3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** at the evaluator's live endpoint, OR the leading
+  literal value with a supplied clause accumulator in one counted step using
+  the existing two-pop/one-push accumulation pattern. Prove agreement with
+  literal disjunction, retain backup and both suffixes, and bound the added
+  cost separately. Then add an independent outer literal count for repeated
+  clause traversal without conflating it with the inner certificate count.

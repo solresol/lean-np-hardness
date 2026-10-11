@@ -150,8 +150,14 @@
   and positive zero's empty payload. `whole_literal` preserves the unread
   input and arbitrary query contents, exposing the raw variable and emptying
   both work stacks in exactly `3b + 4` steps for packed payload bits `b`,
-  bounded by `2L + 2` in the full literal frame length `L`. Connecting that
-  loader to reusable lookup without reframing, clause aggregation, exact-width
+  bounded by `2L + 2` in the full literal frame length `L`.
+  `PackedLiteralEvaluationMachine` now connects this loader directly to raw
+  lookup, query cleanup, and sign application. `whole_literal` consumes the
+  actual encoded literal, agrees with `CNF.Literal.eval`, preserves the full
+  certificate and both suffixes, and clears workspace. Exact summed cost
+  includes the one-step loader-to-evaluation transition; the complete-frame
+  bound is `N * (2L + 4N + 18) + 2L + 13`. Backup remains preloaded and the
+  final live continuation halt is excluded. Clause aggregation, exact-width
   checking, and full verifier assembly remain pending.
 
 ## Milestone 4: Cook--Levin

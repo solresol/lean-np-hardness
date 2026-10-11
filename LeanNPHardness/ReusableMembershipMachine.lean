@@ -303,23 +303,19 @@ theorem cleanup_run (state : State)
         Option.bind_some, cleanup_step_cons]
       exact ih _
 
-/-- Exact query extraction, preserved-certificate lookup, entry, and cleanup costs. -/
-def runSteps (query : Nat) (xs : List Nat) : Nat :=
-  (3 * (encodeNat query).length + 3) +
-    (PreservingMembership.runSteps query xs + ((encodeNat query).length + 2))
+/-- Exact preserved lookup and cleanup cost when raw query bits are already loaded. -/
+def rawRunSteps (query : Nat) (xs : List Nat) : Nat :=
+  PreservingMembership.runSteps query xs + ((encodeNat query).length + 2)
 
-/-- One framed lookup clears query/work stacks and retains the certificate and suffixes. -/
-theorem whole_query (query : Nat) (xs : List Nat) (input output : List Bool) :
-    (fun c => c.bind computer.step)^[runSteps query xs]
-      (some (cfg (some (.query .prefix)) initialState
-        (BinaryNatLists.encodeNat query ++ input) [] [] [] [] [] output
-        (BinaryNatLists.encodeNatList xs))) =
+/-- Enter after extraction, retaining the certificate and clearing the raw query. -/
+theorem whole_raw_query (query : Nat) (xs : List Nat) (input output : List Bool) :
+    (fun c => c.bind computer.step)^[rawRunSteps query xs]
+      (some (cfg (some (.membership (.copy .reverse))) initialState
+        input (encodeNat query) [] [] [] [] output (BinaryNatLists.encodeNatList xs))) =
       some (cfg (some .done) initialState
         input [] [] [] [] [] (decide (query ∈ xs) :: output)
         (BinaryNatLists.encodeNatList xs)) := by
-  rw [runSteps, Nat.add_comm, Function.iterate_add_apply]
-  simp only [BinaryNatLists.encodeNat]
-  rw [query_whole_frame, Nat.add_comm, Function.iterate_add_apply]
+  rw [rawRunSteps, Nat.add_comm, Function.iterate_add_apply]
   have run := membership_run _ _ _ (PreservingMembership.whole_list query xs input output)
   rw [show cfg (some (.membership (.copy .reverse))) initialState
       input (encodeNat query) [] [] [] [] output (BinaryNatLists.encodeNatList xs) =
@@ -335,6 +331,25 @@ theorem whole_query (query : Nat) (xs : List Nat) (input output : List Bool) :
   rw [cleanup_entry_step]
   exact cleanup_run _ _ _ _ _ _ _ _ _
 
+/-- Exact query extraction, preserved-certificate lookup, entry, and cleanup costs. -/
+def runSteps (query : Nat) (xs : List Nat) : Nat :=
+  (3 * (encodeNat query).length + 3) +
+    rawRunSteps query xs
+
+/-- One framed lookup clears query/work stacks and retains the certificate and suffixes. -/
+theorem whole_query (query : Nat) (xs : List Nat) (input output : List Bool) :
+    (fun c => c.bind computer.step)^[runSteps query xs]
+      (some (cfg (some (.query .prefix)) initialState
+        (BinaryNatLists.encodeNat query ++ input) [] [] [] [] [] output
+        (BinaryNatLists.encodeNatList xs))) =
+      some (cfg (some .done) initialState
+        input [] [] [] [] [] (decide (query ∈ xs) :: output)
+        (BinaryNatLists.encodeNatList xs)) := by
+  rw [runSteps, Nat.add_comm, Function.iterate_add_apply]
+  simp only [BinaryNatLists.encodeNat]
+  rw [query_whole_frame]
+  exact whole_raw_query query xs input output
+
 /-- Polynomial bound in raw query bits and complete framed certificate bits.
 The final live continuation's halt is excluded. -/
 theorem runSteps_le_bit_bound (query : Nat) (xs : List Nat) :
@@ -342,7 +357,7 @@ theorem runSteps_le_bit_bound (query : Nat) (xs : List Nat) :
       (2 * (encodeNat query).length + 4 * (BinaryNatLists.encodeNatList xs).length + 18) +
       4 * (encodeNat query).length + 12 := by
   have bound := PreservingMembership.runSteps_le_bit_bound query xs
-  unfold runSteps
+  unfold runSteps rawRunSteps
   omega
 
 /-- Bounded execution from a framed query, leaving the lookup workspace reusable. -/

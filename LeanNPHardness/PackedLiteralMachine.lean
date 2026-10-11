@@ -10,8 +10,8 @@ positive zero's empty encoding; the remaining bits encode the variable.
 This five-stack TM2 kernel extracts one complete frame, then pops that low bit
 into finite control. It retains arbitrary input and query contents and leaves
 the raw variable on candidate with both work stacks empty. Execution ends at
-a live continuation. Connecting this loader to reusable lookup and applying
-literal semantics remain separate machine-composition obligations.
+a live continuation. `PackedLiteralEvaluationMachine` injects this loader into
+reusable lookup, applies literal semantics, and drains the raw query.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.PackedLiteral
