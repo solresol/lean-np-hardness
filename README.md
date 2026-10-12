@@ -248,9 +248,23 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   bits `b` and raw variable bits `q`. `runSteps_le_frame_bound` and
   `literal_evalsToInTime` bound it by `N * (2L + 4N + 18) + 2L + 13` in complete
   literal-frame/certificate bits `L`/`N`. Both signs, zero, empty certificates,
-  and repetitions are covered. Backup remains preloaded; clause aggregation,
+  and repetitions are covered. `ClauseEvaluationStepMachine` adds one
+  accumulation step. Backup remains preloaded; repeated clause traversal,
   exact-width checking, and the full verifier remain pending. Execution ends
   at a live continuation before its final halt.
+- `ClauseEvaluationStepMachine`: evaluates one packed literal and ORs its value
+  with a supplied clause accumulator on the same eight Boolean stacks.
+  `accumulate_step` combines two leading output bits in one counted step,
+  preserving all other stacks. `whole_literal` preserves the complete
+  certificate and arbitrary unread input/output suffixes and clears workspace.
+  `accumulated_eq_clause_append` and `whole_literal_append` identify the result
+  as the value of the processed clause with this literal appended, retaining
+  every occurrence. Exact cost is `PackedLiteralEvaluation.runSteps + 1`;
+  `runSteps_le_frame_bound` / `literal_evalsToInTime` give
+  `N * (2L + 4N + 18) + 2L + 14` in full literal-frame/certificate bits.
+  Backup and accumulator are preloaded. The final live continuation halt,
+  independent clause count/traversal, exact-width checking, and full verifier
+  remain separate obligations.
 - `QueryMembershipMachine`: extends the reusable lookup to nine stacks with a
   separate `outerRemaining` stack. `lift_stepAux`, `lift_step`, and `lift_run`
   preserve arbitrary outer contents without adding steps. `whole_query` keeps

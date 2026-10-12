@@ -157,8 +157,14 @@
   certificate and both suffixes, and clears workspace. Exact summed cost
   includes the one-step loader-to-evaluation transition; the complete-frame
   bound is `N * (2L + 4N + 18) + 2L + 13`. Backup remains preloaded and the
-  final live continuation halt is excluded. Clause aggregation, exact-width
-  checking, and full verifier assembly remain pending.
+  final live continuation halt is excluded. `ClauseEvaluationStepMachine`
+  now combines the leading literal value and supplied clause accumulator in
+  one further step, preserving the certificate and both suffixes and clearing
+  workspace. `whole_literal_append` identifies the result as the value of the
+  processed clause with this literal appended. The complete-frame bound is
+  `N * (2L + 4N + 18) + 2L + 14`. An independent outer literal count, repeated
+  clause traversal, exact-width checking, and full verifier assembly remain
+  pending.
 
 ## Milestone 4: Cook--Levin
 

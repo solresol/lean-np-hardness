@@ -3926,3 +3926,67 @@ avoid failed routes, and choose a materially different experiment when blocked.
   literal disjunction, retain backup and both suffixes, and bound the added
   cost separately. Then add an independent outer literal count for repeated
   clause traversal without conflating it with the inner certificate count.
+
+
+## 2026-10-13 — one packed-literal clause accumulation step
+
+- **Starting commit:** `1acf1d301fa8afc493d5bd5c2c97f8e428990d1a`;
+  clean `main`, fetch confirmed unchanged upstream, ahead/behind 0/0. Read
+  AGENTS, roadmap, theorem status, prior journal, automation memory, and
+  relevant prior-run guidance.
+- **Goal:** combine packed-literal evaluation with one clause-accumulator
+  update, as the next Milestone 3 increment.
+- **Checked increment:** added `ClauseEvaluationStepMachine.lean`, a finite
+  eight-stack wrapper. `accumulate_stepAux` / `accumulate_step` combine the
+  two leading output bits using Boolean OR in one step, reset control, and
+  preserve every other stack. `lift_stepAux` / `lift_run` retain exact packed
+  evaluation costs; `evaluation_run` preserves the supplied accumulator.
+  `whole_literal` consumes the canonical literal frame, preserves the complete
+  certificate and arbitrary input/output suffixes, and clears workspace.
+  Separate `accumulated_eq_true_iff` gives satisfaction semantics;
+  `accumulated_eq_clause_append` / `whole_literal_append` identify the updated
+  result as the value of the processed clause with this literal appended.
+- **Runtime:** exact `runSteps` is `PackedLiteralEvaluation.runSteps + 1`.
+  `runSteps_le_frame_bound` / `literal_evalsToInTime` give
+  `N * (2L + 4N + 18) + 2L + 14` in full literal-frame/certificate bits `L`/`N`.
+  Both signs, zero, empty certificates, arbitrary prior accumulators, and
+  repeated entries are covered. The final live continuation halt is excluded.
+- **Files:** new module, root import, twelve audits, packed-evaluator
+  cross-reference, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Checks:** standalone module check passed on the first attempt without
+  warnings; full `lake build` passed 2,228 jobs. The two semantic audits use
+  only `propext`; the ten machine/runtime audits additionally use
+  `Classical.choice` and `Quot.sound`. All 514 reported axiom lists contain
+  only those standard axioms, with three further axiom-free reports. The
+  73-file Lean source/config scan found only the existing explanatory
+  `proof_wanted` comment. Existing `PrimeSelectionMachine` simp warnings
+  remain; no new warnings. `git diff --check` passed.
+  Build log: `/tmp/lean-np-hardness-2026-10-13-build.log`.
+- **Approach/API discoveries:** no failed proof approaches or unresolved
+  blocker for this contract. Reused `CertificateMembershipStep`'s two-pop,
+  one-push statement pattern over the eight-stack layout. `liftCfg` folds
+  accumulation into a reached old halt, so the evaluator's live endpoint
+  followed by one counted step gives the exact cost. `CNF.Clause.eval_append`
+  and `Bool.or_comm` align stack-pop order with a forward processed prefix.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus pinned Complexity
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  Assignment membership, list occurrence semantics, and the separate Boolean
+  verifier/runtime interface guide the decomposition only. Rechecked local
+  mathlib `TM2.stepAux` / `TM2.step`: both pops, push, reset, and goto form
+  one step. No Coq proof term, lambda-runtime, or certificate deduplication
+  supplies Lean evidence.
+- **Ending state:** one literal's disjunctive accumulation is built and
+  audited, prepared for commit/push on `main`; final hash and local/tracking/
+  live-remote parity are recorded in automation memory. Backup and accumulator
+  remain preloaded. Repeated clause/formula traversal, exact-width checking,
+  tagged-pair input conversion, canonical full-verifier output, exact 3-SAT
+  NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** follow `QueryMembershipMachine`'s nine-stack
+  injection to lift `ClauseEvaluationStep` with a separate `outerRemaining`
+  word preserved through exact execution. Specialize to the encoded clause
+  head while retaining all unread literal frames and the original clause
+  count. Then connect the existing decrement kernel to that outer count;
+  do not reuse the inner certificate count for clause traversal.

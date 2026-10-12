@@ -10,7 +10,8 @@ unread input/output suffixes survive; query/count/workspace finish empty.
 
 Exact execution counts the transition from the loader's live continuation.
 The certificate is preloaded and the final live continuation halt is excluded.
-Clause aggregation, exact-width checking, and the full verifier remain separate.
+`ClauseEvaluationStepMachine` adds one disjunctive accumulation step. Repeated
+clause traversal, exact-width checking, and the full verifier remain separate.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.PackedLiteralEvaluation
