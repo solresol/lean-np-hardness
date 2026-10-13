@@ -162,9 +162,12 @@
   one further step, preserving the certificate and both suffixes and clearing
   workspace. `whole_literal_append` identifies the result as the value of the
   processed clause with this literal appended. The complete-frame bound is
-  `N * (2L + 4N + 18) + 2L + 14`. An independent outer literal count, repeated
-  clause traversal, exact-width checking, and full verifier assembly remain
-  pending.
+  `N * (2L + 4N + 18) + 2L + 14`. `ClauseLiteralMachine` now embeds this
+  accumulation on nine Boolean stacks, preserving an independent outer literal
+  count with unchanged exact cost. `clause_head` retains all unread frames and
+  the original count; `clause_head_append` gives processed-prefix semantics.
+  Outer decrement, repeated clause traversal, exact-width checking, and full
+  verifier assembly remain pending.
 
 ## Milestone 4: Cook--Levin
 

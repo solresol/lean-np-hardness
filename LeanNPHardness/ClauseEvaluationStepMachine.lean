@@ -11,7 +11,8 @@ query/count/workspace finish empty.
 
 Exact cost is `PackedLiteralEvaluation.runSteps + 1`, bounded by
 `N * (2L + 4N + 18) + 2L + 14` in full literal-frame/certificate bits `L`/`N`.
-The certificate and accumulator are preloaded; the final live continuation halt,
+The certificate and accumulator are preloaded. `ClauseLiteralMachine` preserves
+an independent outer literal count. The final live continuation halt,
 count-controlled clause traversal, and full verifier assembly remain separate.
 -/
 

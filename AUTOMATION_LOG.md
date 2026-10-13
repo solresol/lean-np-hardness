@@ -3990,3 +3990,67 @@ avoid failed routes, and choose a materially different experiment when blocked.
   head while retaining all unread literal frames and the original clause
   count. Then connect the existing decrement kernel to that outer count;
   do not reuse the inner certificate count for clause traversal.
+
+
+## 2026-10-14 — packed-literal accumulation with an independent outer count
+
+- **Starting commit:** `6f67a37303cb5e03083c908ce4ee616f43c38c96`;
+  clean `main`, fetch confirmed unchanged upstream, ahead/behind 0/0. Read
+  AGENTS, roadmap, theorem status, prior journal, and automation memory.
+- **Goal:** preserve an independent outer literal count through one packed
+  literal's evaluation and clause accumulation, following the previous next
+  experiment for Milestone 3.
+- **Checked increment:** added `ClauseLiteralMachine.lean`, a finite nine-stack
+  embedding of `ClauseEvaluationStep`. `lift_stepAux`, `lift_step`, and
+  `lift_run` retain arbitrary `outerRemaining` contents with no extra steps,
+  including reached halts. `whole_literal` preserves the full certificate,
+  outer word, and arbitrary input/output suffixes while emptying inner
+  count/query/workspace. `clause_head` consumes the head packed frame, retains
+  all unread literal frames and the original literal count, and preserves
+  repeated occurrences. `clause_head_append` gives the updated processed-prefix
+  semantics using the independently checked clause-append identity.
+- **Runtime:** exact `runSteps` remains `ClauseEvaluationStep.runSteps`;
+  `runSteps_le_frame_bound` / `literal_evalsToInTime` give the unchanged
+  `N * (2L + 4N + 18) + 2L + 14` in full literal-frame/certificate bits `L`/`N`,
+  independent of the retained outer word. The final live continuation halt
+  is excluded. Certificate, accumulator, and outer count remain preloaded.
+- **Files:** new module, root and audit imports, nine audits, prior-machine
+  cross-reference, README, roadmap, theorem status, and this journal.
+  No sibling repository edits.
+- **Checks:** standalone module check passed on its first attempt without
+  warnings. Corrected full `lake build` passed 2,229 jobs. All nine new audits
+  and all 523 reported axiom lists use only `propext`, `Classical.choice`, and
+  `Quot.sound`; three further reports are axiom-free. The 74-file Lean
+  source/config scan found only the existing explanatory `proof_wanted`
+  comment. Existing `PrimeSelectionMachine` simp warnings remain; no new
+  warnings. `git diff --check` passed.
+  Build log: `/tmp/lean-np-hardness-2026-10-14-build.log`.
+- **Failed approaches/API discoveries:** no failed proof approaches. The first
+  full build reported `Unknown constant` for the nine new audit targets because
+  `Audit.lean` imports modules explicitly, independently of the root library;
+  adding its missing `ClauseLiteralMachine` import fixed the build. The generic
+  nine-stack simulation follows `QueryMembershipMachine`; lifting the entire
+  accumulator machine also preserves its state reset and live continuation.
+  `List.map_cons`, `List.flatMap_cons`, and `List.append_assoc` align the actual
+  formula row encoding with the one-literal contract. No unresolved blocker
+  remains for this contract.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus pinned Complexity
+  [SharedSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SharedSAT.v)
+  and [SAT_inNP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/SAT_inNP.v).
+  List-occurrence semantics and the separate Boolean verifier/runtime layers
+  guide the decomposition only. Rechecked local mathlib `TM2.stepAux` / `step`;
+  the stack injection leaves control and counted transitions unchanged.
+  No Coq proof term, lambda-runtime, or deduplication supplies Lean evidence.
+- **Ending state:** independent literal-count preservation and clause-head
+  accumulation are built and audited, prepared for commit/push on `main`;
+  final hash and local/tracking/live-remote parity are recorded in automation
+  memory. Outer decrement, repeated clause/formula traversal, header loading,
+  exact-width checking, tagged-pair conversion, canonical full-verifier output,
+  exact 3-SAT NP membership, and Cook--Levin remain pending.
+- **Best next experiment:** adapt `QueryMembershipStep`'s decrement injection
+  to `ClauseLiteral.Stack`: map the decrement's `remaining` to `outerRemaining`,
+  preserving `.evaluation .remaining` and `.evaluation .backup`. Connect the
+  live accumulation endpoint to decrement with one counted entry step and
+  prove that the clause-head contract ends with the exact tail length. Reuse
+  empty candidate/scratch workspace; keep repeated traversal separate.

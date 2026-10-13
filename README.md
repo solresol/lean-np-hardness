@@ -262,9 +262,21 @@ thesis formalisation. It imports no thesis or p-adic definitions:
   every occurrence. Exact cost is `PackedLiteralEvaluation.runSteps + 1`;
   `runSteps_le_frame_bound` / `literal_evalsToInTime` give
   `N * (2L + 4N + 18) + 2L + 14` in full literal-frame/certificate bits.
+  `ClauseLiteralMachine` adds preservation of an independent outer literal count.
   Backup and accumulator are preloaded. The final live continuation halt,
-  independent clause count/traversal, exact-width checking, and full verifier
-  remain separate obligations.
+  repeated clause traversal, exact-width checking, and full verifier remain
+  separate obligations.
+- `ClauseLiteralMachine`: embeds packed-literal accumulation on nine Boolean
+  stacks, retaining an independent `outerRemaining` word through every exact
+  run with no extra steps. `whole_literal` preserves the full certificate,
+  outer count, and both suffixes while clearing the inner count/workspace.
+  `clause_head` retains all unread literal frames and the original count;
+  `clause_head_append` identifies the updated processed-prefix value, including
+  repeated literals. The complete-frame/certificate bound remains
+  `N * (2L + 4N + 18) + 2L + 14`, independent of outer contents.
+  Certificate, accumulator, and count are preloaded; outer decrement,
+  repeated clause traversal, exact-width checking, and full verifier remain
+  pending. The final live continuation halt is excluded.
 - `QueryMembershipMachine`: extends the reusable lookup to nine stacks with a
   separate `outerRemaining` stack. `lift_stepAux`, `lift_step`, and `lift_run`
   preserve arbitrary outer contents without adding steps. `whole_query` keeps

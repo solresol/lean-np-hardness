@@ -64,6 +64,7 @@ import LeanNPHardness.LiteralEvaluationMachine
 import LeanNPHardness.PackedLiteralMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
+import LeanNPHardness.ClauseLiteralMachine
 import LeanNPHardness.PairExchange
 import LeanNPHardness.BoundedPrime
 import LeanNPHardness.IntervalMachines

@@ -41,6 +41,7 @@ import LeanNPHardness.LiteralEvaluationMachine
 import LeanNPHardness.PackedLiteralMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
+import LeanNPHardness.ClauseLiteralMachine
 import LeanNPHardness.PairExchange
 import LeanNPHardness.MachineEmbedding
 import LeanNPHardness.MachineCompositionRuntime
@@ -619,3 +620,13 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.ClauseEvaluationStep.whole_literal_append
 #print axioms LeanNPHardness.MachinePrimitives.ClauseEvaluationStep.runSteps_le_frame_bound
 #print axioms LeanNPHardness.MachinePrimitives.ClauseEvaluationStep.literal_evalsToInTime
+
+#print axioms LeanNPHardness.MachinePrimitives.ClauseLiteral.computer
+#print axioms LeanNPHardness.MachinePrimitives.ClauseLiteral.lift_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.ClauseLiteral.lift_step
+#print axioms LeanNPHardness.MachinePrimitives.ClauseLiteral.lift_run
+#print axioms LeanNPHardness.MachinePrimitives.ClauseLiteral.whole_literal
+#print axioms LeanNPHardness.MachinePrimitives.ClauseLiteral.clause_head
+#print axioms LeanNPHardness.MachinePrimitives.ClauseLiteral.clause_head_append
+#print axioms LeanNPHardness.MachinePrimitives.ClauseLiteral.runSteps_le_frame_bound
+#print axioms LeanNPHardness.MachinePrimitives.ClauseLiteral.literal_evalsToInTime
