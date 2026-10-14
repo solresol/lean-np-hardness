@@ -192,34 +192,33 @@ certificate: non-certificate registers agree with the prefix-only start. -/
 theorem value_initCfg_of_not_cert (bits : List Bool) (hbits : bits.length ≤ I.certBound)
     (g : ℕ) (hg : g < I.count) (hng : g ∉ I.certGroups) :
     I.value (I.initCfg bits) g = I.value (I.initCfg []) g := by
-  match g with
-  | 0 => rfl
-  | 1 => rfl
-  | r + 2 =>
-      obtain ⟨k, j, hj, hg'⟩ := I.exists_cellGroup (r + 2) (by omega) hg
-      rw [hg', I.value_cellGroup _ k j hj, I.value_cellGroup _ k j hj]
-      by_cases hDj : I.D ≤ j
-      · rw [Params.cellValue_of_le _ _ _ _ hDj, Params.cellValue_of_le _ _ _ _ hDj]
-        by_cases hk : k = I.tm.k₀
-        · subst hk
-          rw [initCfg_stk_self, initCfg_stk_self, List.map_nil, List.append_nil]
-          by_cases hin : j - I.D < I.input.length
-          · rw [List.getElem?_append_left hin]
-          · have hin' := Nat.not_lt.mp hin
-            rw [List.getElem?_append_right hin']
-            by_cases hlt : j - I.D - I.input.length < I.certBound
-            · exfalso
-              apply hng
-              rw [mem_certGroups]
-              refine ⟨j - I.D - I.input.length, hlt, ?_⟩
-              rw [hg', certGroup, I.input_length]
-              congr 1
-              rw [I.input_length] at hin'
-              omega
-            · have hlt' := Nat.not_lt.mp hlt
-              rw [List.getElem?_eq_none (by simp; omega), List.getElem?_eq_none hin']
-        · rw [initCfg_stk_of_ne _ _ k hk, initCfg_stk_of_ne _ _ k hk]
-      · rw [Params.cellValue_of_lt _ _ _ _ (Nat.not_le.mp hDj), Params.cellValue_of_lt _ _ _ _ (Nat.not_le.mp hDj)]
+  rcases I.classify g hg with rfl | rfl | ⟨hg2, hgd⟩ | ⟨k, j, hj, hg'⟩
+  · rfl
+  · rfl
+  · rw [Params.value_dummy _ _ g hg2 hgd, Params.value_dummy _ _ g hg2 hgd]
+  · rw [hg', I.value_cellGroup _ k j hj, I.value_cellGroup _ k j hj]
+    by_cases hDj : I.D ≤ j
+    · rw [Params.cellValue_of_le _ _ _ _ hDj, Params.cellValue_of_le _ _ _ _ hDj]
+      by_cases hk : k = I.tm.k₀
+      · subst hk
+        rw [initCfg_stk_self, initCfg_stk_self, List.map_nil, List.append_nil]
+        by_cases hin : j - I.D < I.input.length
+        · rw [List.getElem?_append_left hin]
+        · have hin' := Nat.not_lt.mp hin
+          rw [List.getElem?_append_right hin']
+          by_cases hlt : j - I.D - I.input.length < I.certBound
+          · exfalso
+            apply hng
+            rw [mem_certGroups]
+            refine ⟨j - I.D - I.input.length, hlt, ?_⟩
+            rw [hg', certGroup, I.input_length]
+            congr 1
+            rw [I.input_length] at hin'
+            omega
+          · have hlt' := Nat.not_lt.mp hlt
+            rw [List.getElem?_eq_none (by simp; omega), List.getElem?_eq_none hin']
+      · rw [initCfg_stk_of_ne _ _ k hk, initCfg_stk_of_ne _ _ k hk]
+    · rw [Params.cellValue_of_lt _ _ _ _ (Nat.not_le.mp hDj), Params.cellValue_of_lt _ _ _ _ (Nat.not_le.mp hDj)]
 
 /-- Register values of the certificate cells. -/
 theorem value_initCfg_certGroup (bits : List Bool) (i : ℕ) (hi : i ≤ I.certBound) :
@@ -242,12 +241,52 @@ theorem value_initCfg_certGroup_eq (bits : List Bool) (i : ℕ) (hi : i ≤ I.ce
 
 /-! ### The initial constraint -/
 
-/-- Fix every non-certificate register of the first row to the prefix-only
-start configuration, and chain the certificate cells. -/
-noncomputable def initCNF : Formula ℕ :=
-  (((List.range I.count).filter fun g => decide (g ∉ I.certGroups)).flatMap fun g =>
-      fixRegister I.width (I.reg 0 g) (I.value (I.initCfg []) g)) ++
-    (List.range I.certBound).flatMap I.certChain
+theorem certGroup_eq (i : ℕ) : I.certGroup i = I.certGroup 0 + i := by
+  simp only [certGroup, Params.cellGroup]; omega
+
+/-- The certificate index of a register, if it is a certificate cell. -/
+noncomputable def certIndex? (g : ℕ) : Option ℕ :=
+  if I.certGroup 0 ≤ g ∧ g < I.certGroup 0 + I.certBound then some (g - I.certGroup 0) else none
+
+theorem certIndex?_certGroup (i : ℕ) (hi : i < I.certBound) :
+    I.certIndex? (I.certGroup i) = some i := by
+  have hci := I.certGroup_eq i
+  rw [certIndex?, if_pos ⟨by omega, by omega⟩]
+  congr 1
+  omega
+
+theorem certIndex?_eq_some (g i : ℕ) (h : I.certIndex? g = some i) :
+    i < I.certBound ∧ g = I.certGroup i := by
+  simp only [certIndex?] at h
+  split_ifs at h with hc
+  simp only [Option.some.injEq] at h
+  obtain ⟨h1, h2⟩ := hc
+  subst h
+  have hci := I.certGroup_eq (g - I.certGroup 0)
+  exact ⟨by omega, by omega⟩
+
+theorem certIndex?_eq_none_iff (g : ℕ) : I.certIndex? g = none ↔ g ∉ I.certGroups := by
+  rw [mem_certGroups]
+  simp only [certIndex?]
+  split_ifs with hc
+  · simp only [Option.some_ne_none, false_iff, not_not]
+    have hci := I.certGroup_eq (g - I.certGroup 0)
+    exact ⟨g - I.certGroup 0, by omega, by omega⟩
+  · simp only [true_iff, not_exists, not_and]
+    intro i hi hg
+    apply hc
+    have hci := I.certGroup_eq i
+    omega
+
+/-- The constraint of one first-row register: a certificate chain for a
+certificate cell, otherwise fixed to the prefix-only start configuration. -/
+noncomputable def initBlock (g : ℕ) : Formula ℕ :=
+  match I.certIndex? g with
+  | some i => I.certChain i
+  | none => fixRegister I.width (I.reg 0 g) (I.value (I.initCfg []) g)
+
+/-- The first-row constraints, register by register. -/
+noncomputable def initCNF : Formula ℕ := (List.range I.count).flatMap I.initBlock
 
 /-- The certificate cell values read from the first row. -/
 noncomputable def certValue (a : Assignment ℕ) (i : ℕ) : ℕ :=
@@ -258,9 +297,25 @@ theorem eval_initCNF_eq_true_iff_parts (a : Assignment ℕ) :
       (∀ g < I.count, g ∉ I.certGroups →
         readRegister I.width a (I.reg 0 g) = I.value (I.initCfg []) g) ∧
       ∀ i < I.certBound, I.certRel [I.certValue a i, I.certValue a (i + 1)] = true := by
-  simp only [initCNF, eval_append_eq_true_iff, eval_flatMap_eq_true_iff, List.mem_filter,
-    List.mem_range, decide_eq_true_eq, eval_fixRegister_eq_true_iff, certChain,
-    eval_registerCNF_eq_true_iff, List.map_cons, List.map_nil, certValue, and_imp]
+  simp only [initCNF, eval_flatMap_eq_true_iff, List.mem_range]
+  constructor
+  · intro h
+    refine ⟨fun g hg hng => ?_, fun i hi => ?_⟩
+    · have := h g hg
+      simp only [initBlock, (I.certIndex?_eq_none_iff g).2 hng] at this
+      exact (eval_fixRegister_eq_true_iff _ _ _ _).1 this
+    · have := h (I.certGroup i) (I.certGroup_lt_count i hi.le)
+      simp only [initBlock, I.certIndex?_certGroup i hi] at this
+      simpa [certChain, certValue] using this
+  · rintro ⟨hfix, hchain⟩ g hg
+    cases hc : I.certIndex? g with
+    | none =>
+        simp only [initBlock, hc]
+        exact (eval_fixRegister_eq_true_iff _ _ _ _).2 (hfix g hg ((I.certIndex?_eq_none_iff g).1 hc))
+    | some i =>
+        obtain ⟨hi, rfl⟩ := I.certIndex?_eq_some g i hc
+        simp only [initBlock, hc]
+        simpa [certChain, certValue] using hchain i hi
 
 /-- The certificate recovered from the first row. -/
 noncomputable def certBits (a : Assignment ℕ) : List Bool :=

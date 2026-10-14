@@ -49,8 +49,9 @@ noncomputable def P : ℕ := p.B + 2 * p.D
 
 noncomputable def stackCount : ℕ := (stackList p.tm).length
 
-/-- Registers per configuration. -/
-noncomputable def count : ℕ := 2 + p.stackCount * p.P
+/-- Registers per configuration: label, state, `D` unused dummy registers
+(so that a window-bottom register is never negative), then the cells. -/
+noncomputable def count : ℕ := 2 + p.D + p.stackCount * p.P
 
 noncomputable def maxCode : ℕ :=
   max (labels p.tm).length (max (states p.tm).length
@@ -62,7 +63,10 @@ noncomputable def width : ℕ := Nat.size p.maxCode
 noncomputable def kIndex (k : p.tm.K) : ℕ := codeIn (stackList p.tm) k
 
 /-- The register of padded cell `j` of stack `k`. -/
-noncomputable def cellGroup (k : p.tm.K) (j : ℕ) : ℕ := p.kIndex k * p.P + j + 2
+noncomputable def cellGroup (k : p.tm.K) (j : ℕ) : ℕ := p.kIndex k * p.P + j + (p.D + 2)
+
+theorem cellGroup_ge (k : p.tm.K) (j : ℕ) : p.D + 2 ≤ p.cellGroup k j := by
+  simp only [cellGroup]; omega
 
 theorem B_ge_two : 2 ≤ p.B := by simp [B]
 
@@ -97,10 +101,10 @@ theorem cellGroup_lt_count (k : p.tm.K) (j : ℕ) (hj : j < p.P) :
   have : (p.kIndex k + 1) * p.P ≤ p.stackCount * p.P := Nat.mul_le_mul_right _ hk
   omega
 
-/-- Every register index at least two is a padded cell of some stack. -/
-theorem exists_cellGroup (g : ℕ) (hg2 : 2 ≤ g) (hg : g < p.count) :
+/-- Every register index at least `D + 2` is a padded cell of some stack. -/
+theorem exists_cellGroup (g : ℕ) (hg2 : p.D + 2 ≤ g) (hg : g < p.count) :
     ∃ k j, j < p.P ∧ g = p.cellGroup k j := by
-  obtain ⟨r, rfl⟩ : ∃ r, g = r + 2 := ⟨g - 2, by omega⟩
+  obtain ⟨r, rfl⟩ : ∃ r, g = r + (p.D + 2) := ⟨g - (p.D + 2), by omega⟩
   have hr : r < p.stackCount * p.P := by simp only [count] at hg; omega
   have hdiv : r / p.P < p.stackCount := by
     rw [Nat.div_lt_iff_lt_mul p.P_pos]; exact hr
@@ -108,7 +112,36 @@ theorem exists_cellGroup (g : ℕ) (hg2 : 2 ≤ g) (hg : g < p.count) :
   simp only [cellGroup, kIndex_getElem]
   rw [Nat.div_add_mod']
 
-theorem count_ge_two : 2 ≤ p.count := by simp [count]
+/-- Register classification: label, state, dummy, or a padded cell. -/
+theorem classify (g : ℕ) (hg : g < p.count) :
+    g = 0 ∨ g = 1 ∨ (2 ≤ g ∧ g < p.D + 2) ∨ ∃ k j, j < p.P ∧ g = p.cellGroup k j := by
+  by_cases h0 : g = 0
+  · exact Or.inl h0
+  by_cases h1 : g = 1
+  · exact Or.inr (Or.inl h1)
+  by_cases hd : g < p.D + 2
+  · exact Or.inr (Or.inr (Or.inl ⟨by omega, hd⟩))
+  · exact Or.inr (Or.inr (Or.inr (p.exists_cellGroup g (by omega) hg)))
+
+theorem count_ge_two : 2 ≤ p.count := by simp only [count]; omega
+
+/-- The cell a register refers to, if any. -/
+noncomputable def cellOf (g : ℕ) : Option (p.tm.K × ℕ) :=
+  if g < p.D + 2 then none
+  else match (stackList p.tm)[(g - (p.D + 2)) / p.P]? with
+    | some k => some (k, (g - (p.D + 2)) % p.P)
+    | none => none
+
+theorem cellOf_cellGroup (k : p.tm.K) (j : ℕ) (hj : j < p.P) :
+    p.cellOf (p.cellGroup k j) = some (k, j) := by
+  have hge := p.cellGroup_ge k j
+  simp only [cellOf, if_neg (Nat.not_lt.mpr hge)]
+  have hsub : p.cellGroup k j - (p.D + 2) = p.kIndex k * p.P + j := by
+    simp only [cellGroup]; omega
+  rw [hsub, p.cellGroup_div k j hj, p.cellGroup_mod k j hj, p.stackList_getElem?_kIndex k]
+
+theorem cellOf_of_lt (g : ℕ) (hg : g < p.D + 2) : p.cellOf g = none := by
+  simp [cellOf, hg]
 
 theorem labels_length_pos : 0 < (labels p.tm).length :=
   List.length_pos_of_mem (mem_labels p.tm p.tm.main)
@@ -141,24 +174,29 @@ noncomputable def cellValue (c : p.tm.Cfg) (k : p.tm.K) (j : ℕ) : ℕ :=
   if p.D ≤ j then optionCode (symbols p.tm p.extra k) ((c.stk k)[j - p.D]?) else 0
 
 /-- Register values of a configuration. -/
-noncomputable def value (c : p.tm.Cfg) : ℕ → ℕ
-  | 0 => optionCode (labels p.tm) c.l
-  | 1 => codeIn (states p.tm) c.var
-  | r + 2 =>
-      match (stackList p.tm)[r / p.P]? with
-      | some k => p.cellValue c k (r % p.P)
-      | none => 0
+noncomputable def value (c : p.tm.Cfg) (g : ℕ) : ℕ :=
+  if g = 0 then optionCode (labels p.tm) c.l
+  else if g = 1 then codeIn (states p.tm) c.var
+  else match p.cellOf g with
+    | some (k, j) => p.cellValue c k j
+    | none => 0
 
 @[simp]
-theorem value_zero (c : p.tm.Cfg) : p.value c 0 = optionCode (labels p.tm) c.l := rfl
+theorem value_zero (c : p.tm.Cfg) : p.value c 0 = optionCode (labels p.tm) c.l := by
+  simp [value]
 
 @[simp]
-theorem value_one (c : p.tm.Cfg) : p.value c 1 = codeIn (states p.tm) c.var := rfl
+theorem value_one (c : p.tm.Cfg) : p.value c 1 = codeIn (states p.tm) c.var := by
+  simp [value]
+
+theorem value_dummy (c : p.tm.Cfg) (g : ℕ) (hg2 : 2 ≤ g) (hgd : g < p.D + 2) : p.value c g = 0 := by
+  simp [value, p.cellOf_of_lt g hgd, show g ≠ 0 by omega, show g ≠ 1 by omega]
 
 theorem value_cellGroup (c : p.tm.Cfg) (k : p.tm.K) (j : ℕ) (hj : j < p.P) :
     p.value c (p.cellGroup k j) = p.cellValue c k j := by
-  simp only [cellGroup, value, p.cellGroup_div k j hj, p.cellGroup_mod k j hj,
-    p.stackList_getElem?_kIndex k]
+  have hge := p.cellGroup_ge k j
+  simp [value, p.cellOf_cellGroup k j hj, show p.cellGroup k j ≠ 0 by omega,
+    show p.cellGroup k j ≠ 1 by omega]
 
 theorem cellValue_of_lt (c : p.tm.Cfg) (k : p.tm.K) (j : ℕ) (hj : j < p.D) :
     p.cellValue c k j = 0 := by
@@ -309,25 +347,28 @@ def IsReal (j : ℕ) : Prop := p.D ≤ j ∧ j + p.D < p.P
 noncomputable instance (j : ℕ) : Decidable (p.IsReal j) := by unfold IsReal; infer_instance
 
 /-- Dependency registers. -/
-noncomputable def deps : ℕ → List ℕ
-  | 0 => p.headGroups
-  | 1 => p.headGroups
-  | r + 2 =>
-      match (stackList p.tm)[r / p.P]? with
-      | some k => if p.IsReal (r % p.P) then p.headGroups ++ p.windowGroups k (r % p.P) else []
-      | none => []
+noncomputable def deps (g : ℕ) : List ℕ :=
+  if g = 0 then p.headGroups
+  else if g = 1 then p.headGroups
+  else match p.cellOf g with
+    | some (k, j) => if p.IsReal j then p.headGroups ++ p.windowGroups k j else []
+    | none => []
 
 @[simp]
-theorem deps_zero : p.deps 0 = p.headGroups := rfl
+theorem deps_zero : p.deps 0 = p.headGroups := by simp [deps]
 
 @[simp]
-theorem deps_one : p.deps 1 = p.headGroups := rfl
+theorem deps_one : p.deps 1 = p.headGroups := by simp [deps]
+
+theorem deps_dummy (g : ℕ) (hg2 : 2 ≤ g) (hgd : g < p.D + 2) : p.deps g = [] := by
+  simp [deps, p.cellOf_of_lt g hgd, show g ≠ 0 by omega, show g ≠ 1 by omega]
 
 theorem deps_cellGroup (k : p.tm.K) (j : ℕ) (hj : j < p.P) :
     p.deps (p.cellGroup k j) =
       if p.IsReal j then p.headGroups ++ p.windowGroups k j else [] := by
-  simp only [cellGroup, deps, p.cellGroup_div k j hj, p.cellGroup_mod k j hj,
-    p.stackList_getElem?_kIndex k]
+  have hge := p.cellGroup_ge k j
+  simp [deps, p.cellOf_cellGroup k j hj, show p.cellGroup k j ≠ 0 by omega,
+    show p.cellGroup k j ≠ 1 by omega]
 
 /-- The new value of real cell `i` of stack `k`: a symbol of the new top
 region, or the old cell shifted by the net change in stack height. -/
@@ -335,30 +376,35 @@ noncomputable def cellUpdate (k : p.tm.K) (newTop : List (p.tm.Γ k)) (window : 
   if i < newTop.length then optionCode (symbols p.tm p.extra k) newTop[i]?
   else window.getD (2 * p.D - newTop.length) 0
 
+/-- The update of a real cell from the dependency values. -/
+noncomputable def realUpdate (k : p.tm.K) (j : ℕ) (vs : List ℕ) : ℕ :=
+  match (p.decodeHead vs).label with
+  | none => (vs.drop p.headGroups.length).getD p.D 0
+  | some _ =>
+      p.cellUpdate k ((p.headStep (p.decodeHead vs)).stk k)
+        (vs.drop p.headGroups.length) (j - p.D)
+
 /-- The update function. -/
 noncomputable def update (g : ℕ) (vs : List ℕ) : ℕ :=
-  match g with
-  | 0 => optionCode (labels p.tm) (p.headStep (p.decodeHead vs)).l
-  | 1 => codeIn (states p.tm) (p.headStep (p.decodeHead vs)).var
-  | r + 2 =>
-      match (stackList p.tm)[r / p.P]? with
-      | some k =>
-          if p.IsReal (r % p.P) then
-            match (p.decodeHead vs).label with
-            | none => (vs.drop p.headGroups.length).getD p.D 0
-            | some _ =>
-                p.cellUpdate k ((p.headStep (p.decodeHead vs)).stk k)
-                  (vs.drop p.headGroups.length) (r % p.P - p.D)
-          else 0
-      | none => 0
+  if g = 0 then optionCode (labels p.tm) (p.headStep (p.decodeHead vs)).l
+  else if g = 1 then codeIn (states p.tm) (p.headStep (p.decodeHead vs)).var
+  else match p.cellOf g with
+    | some (k, j) => if p.IsReal j then p.realUpdate k j vs else 0
+    | none => 0
 
 @[simp]
 theorem update_zero (vs : List ℕ) :
-    p.update 0 vs = optionCode (labels p.tm) (p.headStep (p.decodeHead vs)).l := rfl
+    p.update 0 vs = optionCode (labels p.tm) (p.headStep (p.decodeHead vs)).l := by
+  simp [update]
 
 @[simp]
 theorem update_one (vs : List ℕ) :
-    p.update 1 vs = codeIn (states p.tm) (p.headStep (p.decodeHead vs)).var := rfl
+    p.update 1 vs = codeIn (states p.tm) (p.headStep (p.decodeHead vs)).var := by
+  simp [update]
+
+theorem update_dummy (g : ℕ) (hg2 : 2 ≤ g) (hgd : g < p.D + 2) (vs : List ℕ) :
+    p.update g vs = 0 := by
+  simp [update, p.cellOf_of_lt g hgd, show g ≠ 0 by omega, show g ≠ 1 by omega]
 
 theorem update_cellGroup (k : p.tm.K) (j : ℕ) (hj : j < p.P) (vs : List ℕ) :
     p.update (p.cellGroup k j) vs =
@@ -369,8 +415,9 @@ theorem update_cellGroup (k : p.tm.K) (j : ℕ) (hj : j < p.P) (vs : List ℕ) :
             p.cellUpdate k ((p.headStep (p.decodeHead vs)).stk k)
               (vs.drop p.headGroups.length) (j - p.D)
       else 0 := by
-  simp only [cellGroup, update, p.cellGroup_div k j hj, p.cellGroup_mod k j hj,
-    p.stackList_getElem?_kIndex k]
+  have hge := p.cellGroup_ge k j
+  simp only [update, p.cellOf_cellGroup k j hj, show p.cellGroup k j ≠ 0 by omega,
+    show p.cellGroup k j ≠ 1 by omega, if_false, realUpdate]
 
 /-! ### Invariants -/
 
@@ -411,18 +458,15 @@ theorem inv_bounded (t : ℕ) (c : p.tm.Cfg) (ht : t ≤ p.horizon) (hc : p.Inv 
 theorem value_lt (c : p.tm.Cfg) (g : ℕ) (hc : p.Bounded c) (hg : g < p.count) :
     p.value c g < 2 ^ p.width := by
   apply p.lt_two_pow_width
-  match g with
-  | 0 =>
-      simp only [value_zero, maxCode]
-      exact (optionCode_le _ _ (fun x _ => mem_labels p.tm x)).trans (le_max_left _ _)
-  | 1 =>
-      simp only [value_one, maxCode]
-      exact (codeIn_lt _ _ (mem_states p.tm c.var)).le.trans
-        ((le_max_left _ _).trans (le_max_right _ _))
-  | r + 2 =>
-      obtain ⟨k, j, hj, hg'⟩ := p.exists_cellGroup (r + 2) (by omega) hg
-      rw [hg', p.value_cellGroup c k j hj]
-      exact (p.cellValue_le c hc.2 k j).trans (p.symbols_length_le_maxCode k)
+  rcases p.classify g hg with rfl | rfl | ⟨hg2, hgd⟩ | ⟨k, j, hj, rfl⟩
+  · simp only [value_zero, maxCode]
+    exact (optionCode_le _ _ (fun x _ => mem_labels p.tm x)).trans (le_max_left _ _)
+  · simp only [value_one, maxCode]
+    exact (codeIn_lt _ _ (mem_states p.tm c.var)).le.trans
+      ((le_max_left _ _).trans (le_max_right _ _))
+  · rw [p.value_dummy c g hg2 hgd]; exact Nat.zero_le _
+  · rw [p.value_cellGroup c k j hj]
+    exact (p.cellValue_le c hc.2 k j).trans (p.symbols_length_le_maxCode k)
 
 theorem headGroups_lt (g : ℕ) (hg : g ∈ p.headGroups) : g < p.count := by
   simp only [headGroups, List.mem_append, List.mem_cons, List.mem_flatMap, List.mem_map,
@@ -434,20 +478,19 @@ theorem headGroups_lt (g : ℕ) (hg : g ∈ p.headGroups) : g < p.count := by
   · exact p.cellGroup_lt_count k (p.D + i) (by simp only [P]; omega)
 
 theorem deps_lt (g : ℕ) (hg : g < p.count) : ∀ d ∈ p.deps g, d < p.count := by
-  match g with
-  | 0 => exact fun d hd => p.headGroups_lt d hd
-  | 1 => exact fun d hd => p.headGroups_lt d hd
-  | r + 2 =>
-      obtain ⟨k, j, hj, hg'⟩ := p.exists_cellGroup (r + 2) (by omega) hg
-      rw [hg', p.deps_cellGroup k j hj]
-      intro d hd
-      split_ifs at hd with hreal
-      · simp only [List.mem_append, windowGroups, List.mem_map, List.mem_range] at hd
-        rcases hd with hd | ⟨m, hm, rfl⟩
-        · exact p.headGroups_lt d hd
-        · obtain ⟨hDj, hjP⟩ := hreal
-          exact p.cellGroup_lt_count k _ (by omega)
-      · simp at hd
+  rcases p.classify g hg with rfl | rfl | ⟨hg2, hgd⟩ | ⟨k, j, hj, rfl⟩
+  · exact fun d hd => p.headGroups_lt d hd
+  · exact fun d hd => p.headGroups_lt d hd
+  · rw [p.deps_dummy g hg2 hgd]; simp
+  · rw [p.deps_cellGroup k j hj]
+    intro d hd
+    split_ifs at hd with hreal
+    · simp only [List.mem_append, windowGroups, List.mem_map, List.mem_range] at hd
+      rcases hd with hd | ⟨m, hm, rfl⟩
+      · exact p.headGroups_lt d hd
+      · obtain ⟨hDj, hjP⟩ := hreal
+        exact p.cellGroup_lt_count k _ (by omega)
+    · simp at hd
 
 /-- A configuration is determined by its registers once bounded. -/
 theorem value_injective (c c' : p.tm.Cfg) (hc : p.Bounded c) (hc' : p.Bounded c')
@@ -524,59 +567,56 @@ theorem local_step (t : ℕ) (c : p.tm.Cfg) (ht : t < p.horizon) (hc : p.Inv t c
   have hnextB := p.inv_bounded (t + 1) _ ht hnext
   have hhead : p.decodeHead (p.headGroups.map (p.value c)) = p.cfgHead c :=
     p.decodeHead_value c hc.2
-  match g with
-  | 0 =>
-      simp only [value_zero, update_zero, deps_zero, hhead, cfgHead]
+  rcases p.classify g hg with rfl | rfl | ⟨hg2, hgd⟩ | ⟨k, j, hj, rfl⟩
+  · simp only [value_zero, update_zero, deps_zero, hhead, cfgHead]
+    cases hl : c.l with
+    | none =>
+        rw [padStep_of_halt p.tm c hl, hl, p.headStep_none _ rfl]
+    | some l =>
+        rw [p.padStep_eq_of_some c l hl, p.stepAux_split c l, p.headStep_some _ l rfl]
+  · simp only [value_one, update_one, deps_one, hhead, cfgHead]
+    cases hl : c.l with
+    | none =>
+        rw [padStep_of_halt p.tm c hl, p.headStep_none _ rfl]
+    | some l =>
+        rw [p.padStep_eq_of_some c l hl, p.stepAux_split c l, p.headStep_some _ l rfl]
+  · rw [p.value_dummy _ g hg2 hgd, p.update_dummy g hg2 hgd]
+  · rw [p.value_cellGroup _ k j hj, p.deps_cellGroup k j hj, p.update_cellGroup k j hj]
+    by_cases hreal : p.IsReal j
+    · obtain ⟨hDj, hjP⟩ := hreal
+      rw [if_pos ⟨hDj, hjP⟩, if_pos ⟨hDj, hjP⟩, List.map_append,
+        p.decodeHead_append _ _ (by simp), hhead,
+        List.drop_left' (by simp)]
+      simp only [cfgHead]
       cases hl : c.l with
       | none =>
-          rw [padStep_of_halt p.tm c hl, hl, p.headStep_none _ rfl]
+          rw [padStep_of_halt p.tm c hl, p.windowGroups_map_getD c k j p.D (by omega),
+            Nat.sub_add_cancel hDj, p.value_cellGroup c k j hj]
       | some l =>
           rw [p.padStep_eq_of_some c l hl, p.stepAux_split c l, p.headStep_some _ l rfl]
-  | 1 =>
-      simp only [value_one, update_one, deps_one, hhead, cfgHead]
-      cases hl : c.l with
-      | none =>
-          rw [padStep_of_halt p.tm c hl, p.headStep_none _ rfl]
-      | some l =>
-          rw [p.padStep_eq_of_some c l hl, p.stepAux_split c l, p.headStep_some _ l rfl]
-  | r + 2 =>
-      obtain ⟨k, j, hj, hg'⟩ := p.exists_cellGroup (r + 2) (by omega) hg
-      rw [hg', p.value_cellGroup _ k j hj, p.deps_cellGroup k j hj, p.update_cellGroup k j hj]
-      by_cases hreal : p.IsReal j
-      · obtain ⟨hDj, hjP⟩ := hreal
-        rw [if_pos ⟨hDj, hjP⟩, if_pos ⟨hDj, hjP⟩, List.map_append,
-          p.decodeHead_append _ _ (by simp), hhead,
-          List.drop_left' (by simp)]
-        simp only [cfgHead]
-        cases hl : c.l with
-        | none =>
-            rw [padStep_of_halt p.tm c hl, p.windowGroups_map_getD c k j p.D (by omega),
-              Nat.sub_add_cancel hDj, p.value_cellGroup c k j hj]
-        | some l =>
-            rw [p.padStep_eq_of_some c l hl, p.stepAux_split c l, p.headStep_some _ l rfl]
-            simp only [cellUpdate]
-            rw [cellValue_of_le _ _ _ _ hDj]
-            have hS'len := p.newTop_length_le c l k
-            by_cases hi : j - p.D <
-                ((TM2.stepAux (p.tm.m l) c.var fun k => (c.stk k).take p.D).stk k).length
-            · rw [if_pos hi, List.getElem?_append_left hi]
-            · rw [if_neg hi]
-              have hi' := Nat.not_lt.mp hi
-              rw [List.getElem?_append_right hi', List.getElem?_drop,
-                p.windowGroups_map_getD c k j _ (by omega),
-                p.value_cellGroup c k _ (by omega),
-                cellValue_of_le _ _ _ _ (by omega)]
-              congr 2
-              omega
-      · rw [if_neg hreal]
-        simp only [IsReal, not_and, Nat.not_lt] at hreal
-        by_cases hDj : p.D ≤ j
-        · have hjP := hreal hDj
-          rw [cellValue_of_le _ _ _ _ hDj, List.getElem?_eq_none, optionCode_none]
-          have := hnextB.1 k
-          simp only [P] at hjP
-          omega
-        · exact p.cellValue_of_lt _ k j (Nat.not_le.mp hDj)
+          simp only [cellUpdate]
+          rw [cellValue_of_le _ _ _ _ hDj]
+          have hS'len := p.newTop_length_le c l k
+          by_cases hi : j - p.D <
+              ((TM2.stepAux (p.tm.m l) c.var fun k => (c.stk k).take p.D).stk k).length
+          · rw [if_pos hi, List.getElem?_append_left hi]
+          · rw [if_neg hi]
+            have hi' := Nat.not_lt.mp hi
+            rw [List.getElem?_append_right hi', List.getElem?_drop,
+              p.windowGroups_map_getD c k j _ (by omega),
+              p.value_cellGroup c k _ (by omega),
+              cellValue_of_le _ _ _ _ (by omega)]
+            congr 2
+            omega
+    · rw [if_neg hreal]
+      simp only [IsReal, not_and, Nat.not_lt] at hreal
+      by_cases hDj : p.D ≤ j
+      · have hjP := hreal hDj
+        rw [cellValue_of_le _ _ _ _ hDj, List.getElem?_eq_none, optionCode_none]
+        have := hnextB.1 k
+        simp only [P] at hjP
+        omega
+      · exact p.cellValue_of_lt _ k j (Nat.not_le.mp hDj)
 
 /-- The register-local system of a bundled machine. -/
 noncomputable def localSystem : LocalSystem p.tm.Cfg where
