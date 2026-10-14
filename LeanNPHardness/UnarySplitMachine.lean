@@ -1,5 +1,5 @@
 import LeanNPHardness.MachineRoutineBound
-import LeanNPHardness.TableauInterpreter
+import LeanNPHardness.MachineRoutineUnary
 import LeanNPHardness.UnarySplitJob
 
 /-!
@@ -7,9 +7,10 @@ import LeanNPHardness.UnarySplitJob
 
 The splitter reads the unary encoding of a formula clause by clause. For
 one clause it copies the clause's symbols (doubling every mark) onto the
-reversed-clause stack while counting its literals, then compiles the
-clause's splitting job onto the job stack. This file sets up the stack
-family and proves the extraction loop and the single-literal move.
+reversed-clause stack while counting its literals. This file proves that
+extraction and the single-literal move with linear TM2 step bounds in the
+unary symbol lengths. Compiling the clause's splitting job onto the job
+stack and assembling the full reduction remain separate obligations.
 -/
 
 namespace LeanNPHardness.TableauStacks
@@ -46,13 +47,6 @@ def sp (inp crev cfwd cnt go tmp tmp2 : List Sym) (jr : List Instr) (b w : ℕ) 
   | .work (.reg .w) => marks w
   | _ => []
 
-/-- Pointwise comparison of splitter stack families. -/
-macro "sp_ext" : tactic =>
-  `(tactic| (funext k; rcases k with _ | _ | _ | _ | _ | (_ | _ | _ | r | c) <;>
-    (try rcases r with _ | _ | _ | _) <;>
-    (try rcases c with _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _) <;>
-    (try simp [sp, marks, dbl, sv, signCount, Function.update_of_ne])))
-
 /-- Doubling the marks of a symbol. -/
 def dbl : Sym → List Sym
   | .mark => [.mark, .mark]
@@ -75,7 +69,54 @@ theorem signCount_nil : signCount [] = 0 := rfl
 theorem signCount_singleton (s : Sym) : signCount [s] = sv s := by simp [signCount]
 
 theorem marks_add (a b : ℕ) : marks (a + b) = marks a ++ marks b := by
-  simp [marks, List.replicate_add]
+  simp only [marks, List.replicate_add]
+
+theorem flatMap_dbl_marks (v : ℕ) : (marks v).flatMap dbl = marks (2 * v) := by
+  induction v with
+  | zero => rfl
+  | succ v ih =>
+      simp only [marks, List.replicate_succ, List.flatMap_cons, dbl] at ih ⊢
+      rw [ih, Nat.mul_succ]
+      simp only [List.replicate_succ, List.cons_append, List.nil_append]
+
+/-- Symbol doubling implements the semantic renaming of an original literal. -/
+theorem flatMap_dbl_encodeLiteral (l : CNF.Literal ℕ) :
+    (encodeLiteral l).flatMap dbl = encodeLiteral l.double := by
+  cases l with
+  | positive v =>
+      change Sym.pos :: (marks v).flatMap dbl = Sym.pos :: marks (2 * v)
+      rw [flatMap_dbl_marks]
+  | negative v =>
+      change Sym.neg :: (marks v).flatMap dbl = Sym.neg :: marks (2 * v)
+      rw [flatMap_dbl_marks]
+
+theorem signCount_encodeLiteral (l : CNF.Literal ℕ) : signCount (encodeLiteral l) = 1 := by
+  cases l <;> simp [signCount, encodeLiteral, sv]
+
+theorem endClause_not_mem_encodeLiteral (l : CNF.Literal ℕ) :
+    Sym.endClause ∉ encodeLiteral l := by
+  cases l <;> simp [encodeLiteral]
+
+theorem flatMap_dbl_clause (c : CNF.Clause ℕ) :
+    (c.flatMap encodeLiteral).flatMap dbl = c.double.flatMap encodeLiteral := by
+  simp [CNF.Clause.double, List.flatMap_assoc, List.flatMap_map, flatMap_dbl_encodeLiteral]
+
+/-- Count occurrences, including repeated literals. -/
+theorem signCount_clause (c : CNF.Clause ℕ) :
+    signCount (c.flatMap encodeLiteral) = c.length := by
+  induction c with
+  | nil => rfl
+  | cons l c ih =>
+      simp only [List.flatMap_cons, signCount_append, signCount_encodeLiteral, ih, List.length_cons]
+      omega
+
+/-- Pointwise comparison of splitter stack families. -/
+macro "sp_ext" : tactic =>
+  `(tactic| (funext k; rcases k with _ | _ | _ | _ | _ | (_ | _ | _ | r | c) <;>
+    (try rcases r with _ | _ | _ | _) <;>
+    (try rcases c with _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _) <;>
+    simp [sp, marks, dbl, sv, signCount, crevS, cfwdS, cntS, goS, tmpS, tmp2S,
+      Function.update_of_ne]))
 
 /-! ### Extraction of one clause -/
 
@@ -164,10 +205,10 @@ theorem extract_exits (L : List Sym) (hL : Sym.endClause ∉ L) (rest crev cfwd 
             ((dbl L[i]).reverse ++ (((L.take i).flatMap dbl).reverse ++ crev)) cfwd
             (marks (sv L[i]) ++ (marks (signCount (L.take i)) ++ cnt)) [.mark] tmp tmp2 jr b w := by
         simp only [extStacks, if_pos (by omega : i + 1 ≤ L.length)]
-        rw [List.take_succ, List.getElem?_eq_getElem hiL]
+        rw [List.take_add_one, List.getElem?_eq_getElem hiL]
         simp only [Option.toList_some, List.flatMap_append, List.flatMap_singleton,
           List.reverse_append, signCount_append, signCount_singleton, List.append_assoc]
-        rw [Nat.add_comm, marks_add, List.append_assoc]
+        rw [Nat.add_comm (signCount (L.take i)) (sv L[i]), marks_add, List.append_assoc]
       rw [e1, e2]
       exact h
     · have hi' : i = L.length := by omega
@@ -187,6 +228,24 @@ theorem extract_exits (L : List Sym) (hL : Sym.endClause ∉ L) (rest crev cfwd 
     simp only [extStacks, if_pos (by omega : i ≤ L.length), sp]
     simp
   · simp only [extStacks, show ¬ (L.length + 1 ≤ L.length) by omega, if_false, sp]
+
+/-- Extract an encoded clause, rename its variables to even indices, and
+count every occurrence. The delimiter is consumed and the unread suffix and
+all other supplied stack contents are retained. The bound measures input
+symbols, including the clause delimiter. -/
+theorem extract_clause_exits (c : CNF.Clause ℕ) (rest crev cfwd cnt tmp tmp2 : List Sym)
+    (jr : List Instr) (b w : ℕ) :
+    extract.ExitsLE (sp (encodeClause c ++ rest) crev cfwd cnt [.mark] tmp tmp2 jr b w)
+      (4 * (encodeClause c).length + 1)
+      (sp rest ((c.double.flatMap encodeLiteral).reverse ++ crev) cfwd
+        (marks c.length ++ cnt) [] tmp tmp2 jr b w) := by
+  have hL : Sym.endClause ∉ c.flatMap encodeLiteral := by
+    intro h
+    obtain ⟨l, _, hl⟩ := List.mem_flatMap.mp h
+    exact endClause_not_mem_encodeLiteral l hl
+  simpa only [encodeClause, List.append_assoc, List.singleton_append, List.length_append,
+    List.length_singleton, flatMap_dbl_clause, signCount_clause, Nat.mul_comm] using
+    extract_exits (c.flatMap encodeLiteral) hL rest crev cfwd cnt tmp tmp2 jr b w
 
 /-! ### Moving one reversed literal forward -/
 
@@ -254,7 +313,12 @@ theorem moveLit_exits (v : ℕ) (s : Sym) (hs : s = .pos ∨ s = .neg)
       rcases hs with rfl | rfl
       · have h1 := pushList_exits (Γ := GAlphabet Sym) tmpS [.pos]
           (Function.update (litStacks i .pos inp crevRest cfwd cnt tmp tmp2 jr b w i) crevS crevRest)
-        have h2 := popOne_exits (Γ := GAlphabet Sym) goS _
+        have h2 := popOne_exits (Γ := GAlphabet Sym) goS
+          (Function.update
+            (Function.update (litStacks i .pos inp crevRest cfwd cnt tmp tmp2 jr b w i)
+              crevS crevRest) tmpS
+            ([.pos] ++ Function.update
+              (litStacks i .pos inp crevRest cfwd cnt tmp tmp2 jr b w i) crevS crevRest tmpS))
         have := seq_exits _ _ h1 h2
         refine ⟨1 + 1, by norm_num, ?_⟩
         convert this using 1
@@ -262,7 +326,12 @@ theorem moveLit_exits (v : ℕ) (s : Sym) (hs : s = .pos ∨ s = .neg)
         sp_ext
       · have h1 := pushList_exits (Γ := GAlphabet Sym) tmpS [.neg]
           (Function.update (litStacks i .neg inp crevRest cfwd cnt tmp tmp2 jr b w i) crevS crevRest)
-        have h2 := popOne_exits (Γ := GAlphabet Sym) goS _
+        have h2 := popOne_exits (Γ := GAlphabet Sym) goS
+          (Function.update
+            (Function.update (litStacks i .neg inp crevRest cfwd cnt tmp tmp2 jr b w i)
+              crevS crevRest) tmpS
+            ([.neg] ++ Function.update
+              (litStacks i .neg inp crevRest cfwd cnt tmp tmp2 jr b w i) crevS crevRest tmpS))
         have := seq_exits _ _ h1 h2
         refine ⟨1 + 1, by norm_num, ?_⟩
         convert this using 1

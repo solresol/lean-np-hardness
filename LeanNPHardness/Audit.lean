@@ -7,6 +7,7 @@ import LeanNPHardness.TableauParameters
 import LeanNPHardness.CookLevinHardness
 import LeanNPHardness.MachineRoutineBound
 import LeanNPHardness.UnarySplitJob
+import LeanNPHardness.UnarySplitMachine
 import LeanNPHardness.TableauRegisterBounds
 import LeanNPHardness.TableauSkeletonBounds
 import LeanNPHardness.BoolPairProjectionMachine
@@ -698,3 +699,13 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.CookLevin.encodedUnarySAT_NPHard
 #print axioms LeanNPHardness.Routines.loop_exitsLE
 #print axioms LeanNPHardness.SplitJob.render_splitJob_toExactThree
+#print axioms LeanNPHardness.TableauStacks.flatMap_dbl_marks
+#print axioms LeanNPHardness.TableauStacks.flatMap_dbl_encodeLiteral
+#print axioms LeanNPHardness.TableauStacks.signCount_encodeLiteral
+#print axioms LeanNPHardness.TableauStacks.endClause_not_mem_encodeLiteral
+#print axioms LeanNPHardness.TableauStacks.flatMap_dbl_clause
+#print axioms LeanNPHardness.TableauStacks.signCount_clause
+#print axioms LeanNPHardness.TableauStacks.extractHandlers_exits
+#print axioms LeanNPHardness.TableauStacks.extract_exits
+#print axioms LeanNPHardness.TableauStacks.extract_clause_exits
+#print axioms LeanNPHardness.TableauStacks.moveLit_exits

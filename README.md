@@ -552,7 +552,7 @@ finite formula/certificate encodings, a linear certificate-size bound, and
 short-clause padding semantics and output size are checked.
 Cook--Levin is checked for CNF-SAT under the unary-index encoding (next
 section). Polynomial-time verifier machines, exact 3-SAT membership in NP,
-the exact-3-SAT splitting machine, and the unary-to-binary conversion for
+the complete exact-3-SAT splitting machine, and the unary-to-binary conversion for
 `Formula.finEncoding` remain pending. See
 [THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).
 
@@ -588,6 +588,17 @@ symbol). The development is split into separately named results:
 
 Axiom audit (`LeanNPHardness/Audit.lean`): `propext`, `Classical.choice`,
 `Quot.sound` only.
+
+The next reduction has a checked clause-extraction phase in
+`UnarySplitMachine.lean`. `TableauStacks.extract_clause_exits` reads one
+unary-encoded clause, doubles the original variable indices, retains its
+literals in reverse order, and counts all occurrences in at most
+`4 * encodedClauseLength + 1` TM2 steps. `moveLit_exits` restores one reversed
+literal in at most `4 * (v + 1) + 2` steps for unary variable index `v`.
+Both routines preserve the stated suffixes and other supplied stack contents.
+The instruction job's meaning is checked by
+`SplitJob.render_splitJob_toExactThree`; emitting that job and assembling
+and bounding the full splitting machine remain pending.
 
 ## Toolchain
 

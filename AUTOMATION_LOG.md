@@ -4054,3 +4054,73 @@ avoid failed routes, and choose a materially different experiment when blocked.
   live accumulation endpoint to decrement with one counted entry step and
   prove that the clause-head contract ends with the exact tail length. Reuse
   empty candidate/scratch workspace; keep repeated traversal separate.
+
+
+## 2026-10-15 — check unary splitting extraction and literal movement
+
+- **Starting commit:** `5ab240ea97195f0470db9644e0e00e991ff4bf11`;
+  clean `main`, fetch confirmed unchanged upstream, ahead/behind 0/0. Read
+  AGENTS, roadmap, theorem status, prior journal, and automation memory.
+  Intervening commits completed unary Cook--Levin hardness and added the
+  splitting job and an unregistered, nonbuilding `UnarySplitMachine` draft.
+  Chose to finish that draft's bounded clause-processing routines rather
+  than repeat the older certificate-verifier plan.
+- **Checked increment:** repaired and registered `UnarySplitMachine.lean`.
+  `extractHandlers_exits`, `extract_exits`, and `moveLit_exits` now build.
+  Added `flatMap_dbl_marks`, `flatMap_dbl_encodeLiteral`,
+  `signCount_encodeLiteral`, `endClause_not_mem_encodeLiteral`,
+  `flatMap_dbl_clause`, and `signCount_clause` to connect the symbol operations
+  to even-index renaming and literal occurrence counts. New headline
+  `extract_clause_exits` consumes one actual unary-encoded clause, writes
+  its doubled literals in reverse order, and adds one count mark per literal,
+  preserving arbitrary supplied stack suffixes and base/width registers.
+  Empty clauses, zero variables, both signs, and repeated occurrences are
+  covered by the universal statements.
+- **Runtime/model:** finite mathlib TM2 routines with `Routine.ExitsLE`.
+  Clause extraction takes at most `4 * encodedClauseLength + 1` steps,
+  including the delimiter; its go flag starts as one mark and ends empty.
+  Moving one reversed literal takes at most `4 * (v + 1) + 2` steps for unary
+  variable index `v`, with initially/finally empty go flag. These are upper
+  bounds, not exact counts or a complete polynomial-time splitting witness.
+- **Files:** repaired module, root and audit imports, ten audits, README,
+  roadmap, theorem status, and this journal. No sibling repository edits.
+- **Checks:** corrected standalone module check passed without warnings;
+  full `lake build` passed 2,265 jobs. All ten new audits and all 589 reported
+  axiom lists use only `propext`, `Classical.choice`, and `Quot.sound`; three
+  further reports are axiom-free. The 110-file source/config scan found only
+  the existing explanatory `proof_wanted` comment. Existing linter warnings
+  in other modules remain; none in the repaired module. `git diff --check`
+  passed. Build log: `/tmp/lean-np-hardness-2026-10-15-build.log`.
+- **Failed approaches/API discoveries:** baseline `marks_add` hit maximum
+  simplifier recursion because `replicate_add` and `replicate_append_replicate`
+  rewrite in opposite directions; `simp only` closes it. Move `sp_ext` below
+  the definitions it references, unfold the stack aliases, and expose simp
+  failures instead of hiding them under `try`. Unqualified `rw [Nat.add_comm]`
+  rewrote the loop index instead of the counter sum; supplying both summands
+  fixes the intended invariant. The two final literal branches need explicit
+  intermediate stacks for `popOne_exits`; a bare placeholder cannot be inferred
+  in the standalone `have`. Replaced deprecated `List.take_succ` with
+  `List.take_add_one`. The smaller `TableauStacks` import lacks `GRoutine`;
+  its defining module `MachineRoutineUnary` suffices. In the new encoding
+  lemma, `simp [← marks]` cannot refold a definition; explicit `change` plus
+  `rw [flatMap_dbl_marks]` works. Removed a redundant tactic and unused simp
+  arguments. No unresolved proof blocker remains for these contracts.
+- **Comparison/design evidence:** read sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, and pinned Complexity
+  [kSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/kSAT.v).
+  Its `kCNF_clause_length` counts list entries and keeps semantic width
+  separate from extracted runtime bounds; repeated occurrences must survive.
+  This is design guidance only. All symbol, machine, and runtime results
+  here are reproduced and kernel-checked in Lean using local mathlib APIs.
+- **Ending state:** built and audited increment ready for commit/push on
+  `main`; the final commit and local/tracking/live-remote parity are recorded
+  in automation memory. Unary Cook--Levin hardness remains checked. Full
+  splitting-job emission, formula traversal, interpretation/cleanup, its
+  polynomial-time reduction, binary conversion, and SAT/3-SAT NP membership
+  remain pending.
+- **Best next experiment:** map one doubled literal from `tmpS` into
+  `.lit`/`.mark` instructions on `jobRevS` using `moveAll`, preserving an
+  arbitrary job suffix. Prove the output is `litJobD l` in the required
+  orientation and count the symbol-moving steps. Then use the retained
+  literal count to handle short-clause padding and the fresh-variable chain;
+  keep emitted-job semantics separate from the interpreter runtime.
