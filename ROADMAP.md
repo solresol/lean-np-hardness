@@ -181,9 +181,9 @@
   `generator_exits`, `CookLevin.machine_outputsInTime` (unary-index CNF).
 - Prove its output size and runtime polynomial. Done:
   `Instance.generatorCost_le`, `CookLevin.computableInPolyTime`.
-- Derive SAT NP-hardness and NP-completeness. Hardness done for the unary
-  encoding: `CookLevin.encodedUnarySAT_NPHard`. Pending: the unary-to-binary
-  conversion machine for `Formula.finEncoding` and the SAT verifier for
+- Derive SAT NP-hardness and NP-completeness. Hardness done for both
+  encodings: `CookLevin.encodedUnarySAT_NPHard`,
+  `BinaryConvert.encodedSAT_NPHard`. Pending: the SAT verifier for
   membership.
 - Derive exact 3-SAT NP-completeness through a checked polynomial reduction.
   Partial: `SplitJob.render_splitJob_toExactThree` checks the instruction

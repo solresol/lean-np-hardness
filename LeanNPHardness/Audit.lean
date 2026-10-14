@@ -7,7 +7,7 @@ import LeanNPHardness.TableauParameters
 import LeanNPHardness.CookLevinHardness
 import LeanNPHardness.MachineRoutineBound
 import LeanNPHardness.ChainMachine
-import LeanNPHardness.BinaryConvertNat
+import LeanNPHardness.BinaryConvertMachine
 import LeanNPHardness.TableauRegisterBounds
 import LeanNPHardness.TableauSkeletonBounds
 import LeanNPHardness.BoolPairProjectionMachine
@@ -708,3 +708,10 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.Routines.loop_exits_cons
 #print axioms LeanNPHardness.BinaryConvert.bitsOf_eq
 #print axioms LeanNPHardness.BinaryConvert.emitNat_exits
+#print axioms LeanNPHardness.BinaryConvert.litLoop_exits
+#print axioms LeanNPHardness.BinaryConvert.clauseLoop_exits
+#print axioms LeanNPHardness.BinaryConvert.conv_exits
+#print axioms LeanNPHardness.BinaryConvert.convBound_le
+#print axioms LeanNPHardness.BinaryConvert.computableInPolyTime
+#print axioms LeanNPHardness.BinaryConvert.encodedSAT_NPHard
+#print axioms LeanNPHardness.BinaryConvert.encodedExactThreeSAT_NPHard

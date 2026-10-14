@@ -592,6 +592,12 @@ transformation `CNF.Chain.chainThree` (exact width three, satisfiability
 preserved) is computed by a TM2 machine in at most `10000 * (n + 1) ^ 2`
 steps (`ChainMachine.cost_le`).
 
+Both results transfer to the library's binary CNF encoding
+`Formula.finEncoding`: `BinaryConvert.computableInPolyTime` re-encodes a
+unary formula in binary within `10000 * (n + 1) ^ 3` steps, giving
+`BinaryConvert.encodedSAT_NPHard` and
+`BinaryConvert.encodedExactThreeSAT_NPHard`.
+
 Axiom audit (`LeanNPHardness/Audit.lean`): `propext`, `Classical.choice`,
 `Quot.sound` only.
 

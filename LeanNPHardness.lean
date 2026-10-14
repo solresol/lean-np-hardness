@@ -41,6 +41,8 @@ import LeanNPHardness.CNFChain
 import LeanNPHardness.ChainJob
 import LeanNPHardness.ChainMachine
 import LeanNPHardness.BinaryConvertNat
+import LeanNPHardness.BinaryConvertWalk
+import LeanNPHardness.BinaryConvertMachine
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram
