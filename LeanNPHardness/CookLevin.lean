@@ -1,5 +1,6 @@
 import LeanNPHardness.MachineTableauBoundary
 import LeanNPHardness.CNFEncoding
+import LeanNPHardness.CNFSplitting
 
 /-!
 # Cook--Levin: the semantic reduction from NP to SAT
@@ -140,5 +141,16 @@ noncomputable def reduction (V : PolytimeVerifier problem) :
 theorem inNP_reducesTo_sat (h : problem.InNP) :
     Nonempty (ManyOneReduction problem.accepts SAT) :=
   h.map fun V => reduction V
+
+/-- The semantic reduction from an NP language to exact 3-SAT: the
+Cook--Levin tableau followed by clause splitting and padding. -/
+noncomputable def reductionToExactThree (V : PolytimeVerifier problem) :
+    ManyOneReduction problem.accepts ExactThreeSAT :=
+  (reduction V).comp satToExactThree
+
+/-- Every language in NP semantically reduces to exact 3-SAT. -/
+theorem inNP_reducesTo_exactThreeSAT (h : problem.InNP) :
+    Nonempty (ManyOneReduction problem.accepts ExactThreeSAT) :=
+  h.map fun V => reductionToExactThree V
 
 end LeanNPHardness.CookLevin

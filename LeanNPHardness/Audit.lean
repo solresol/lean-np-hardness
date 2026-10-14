@@ -644,3 +644,11 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.CookLevin.accepts_iff_sat
 #print axioms LeanNPHardness.CookLevin.reduction
 #print axioms LeanNPHardness.CookLevin.inNP_reducesTo_sat
+#print axioms LeanNPHardness.CNF.splitClause_sound
+#print axioms LeanNPHardness.CNF.splitClause_complete
+#print axioms LeanNPHardness.CNF.Formula.satisfiable_split
+#print axioms LeanNPHardness.CNF.Formula.exactWidth_toExactThree
+#print axioms LeanNPHardness.CNF.sat_iff_exactThreeSAT_toExactThree
+#print axioms LeanNPHardness.CNF.satToExactThree
+#print axioms LeanNPHardness.CookLevin.reductionToExactThree
+#print axioms LeanNPHardness.CookLevin.inNP_reducesTo_exactThreeSAT

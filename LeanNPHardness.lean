@@ -4,6 +4,7 @@ import LeanNPHardness.CNFEncoding
 import LeanNPHardness.CNFCertificate
 import LeanNPHardness.CNFNormalization
 import LeanNPHardness.CNFConstraint
+import LeanNPHardness.CNFSplitting
 import LeanNPHardness.CNFRegisterConstraint
 import LeanNPHardness.LocalTableau
 import LeanNPHardness.MachineLocality
