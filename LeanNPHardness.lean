@@ -27,6 +27,8 @@ import LeanNPHardness.TableauDescriptors
 import LeanNPHardness.TableauSkeletonRender
 import LeanNPHardness.TableauSkeleton
 import LeanNPHardness.TableauTemplates
+import LeanNPHardness.TableauEmitterBasics
+import LeanNPHardness.TableauEmitter
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram
