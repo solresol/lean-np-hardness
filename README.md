@@ -550,9 +550,44 @@ The initial checked layer contains:
 Backward transport of both P and NP is checked. SAT syntax, semantic evaluation,
 finite formula/certificate encodings, a linear certificate-size bound, and
 short-clause padding semantics and output size are checked.
-Polynomial-time verifier machines, exact 3-SAT membership in NP, and
-Cook--Levin remain pending. See
+Cook--Levin is checked for CNF-SAT under the unary-index encoding (next
+section). Polynomial-time verifier machines, exact 3-SAT membership in NP,
+the exact-3-SAT splitting machine, and the unary-to-binary conversion for
+`Formula.finEncoding` remain pending. See
 [THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).
+
+## Cook--Levin: unary CNF-SAT is NP-hard
+
+`CookLevin.encodedUnarySAT_NPHard` proves `encodedUnarySAT.NPHard`: every
+encoded language with a polynomial-time verifier machine over Boolean-string
+certificates has a checked polynomial-time many-one reduction
+(`CookLevin.polytimeReduction`) to CNF-SAT under the unary-index encoding
+`CNF.Unary.finEncoding` (a clause is a run of literals, each a sign symbol
+followed by the variable index in unary marks, closed by an end-of-clause
+symbol). The development is split into separately named results:
+
+- semantic correctness: `CookLevin.accepts_iff_sat`, through the generic
+  fixed-horizon tableau theorem `Tableau.LocalSystem.satisfiable_iff` and its
+  instantiation `MachineTableau.Params.localSystem` for any bundled TM2
+  machine (`MachineLocality`, `MachinePaddedRun`);
+- the generator machine: a routine over the generator stacks
+  (`TableauStacks.generator`) written with exact-step combinators
+  (`Routines.seq_exits`, `loop_exits`, `dispatch_exits`). It evaluates the
+  verifier's polynomials in unary by Horner's scheme (`parameterStage_exits`),
+  pushes the skeleton job from finitely many constant cell templates
+  (`Instance.emitter_exits`), and interprets it (`interpret_exits`);
+  `generator_exits` is the exact run from the input alone to the encoded
+  tableau alone, and `Instance.emitter_template` shows the routine depends
+  only on the verifier machine;
+- runtime: `Instance.generatorCost_le` bounds the step count by a template
+  constant times the fourth power of `sizeParam`, the value of the polynomial
+  `sizePoly` in the input length; `CookLevin.computableInPolyTime` packages
+  the machine as `TM2ComputableInPolyTime` with time polynomial `timePoly`;
+- hardness transfer: `CookLevin.polytimeReduction` and
+  `CookLevin.encodedUnarySAT_NPHard`.
+
+Axiom audit (`LeanNPHardness/Audit.lean`): `propext`, `Classical.choice`,
+`Quot.sound` only.
 
 ## Toolchain
 

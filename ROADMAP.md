@@ -171,13 +171,22 @@
 
 ## Milestone 4: Cook--Levin
 
-- Select and document the verifier-machine normal form.
-- Encode bounded accepting computations as Boolean constraints.
+- Select and document the verifier-machine normal form. Done: mathlib
+  `FinTM2` with `TM2ComputableInPolyTime` over Boolean-string certificates.
+- Encode bounded accepting computations as Boolean constraints. Done:
+  `MachineTableau.Params.localSystem` and `Instance.tableau`.
 - Prove local consistency is equivalent to a valid accepting computation.
-- Implement the formula generator.
-- Prove its output size and runtime polynomial.
-- Derive SAT NP-hardness and NP-completeness.
+  Done: `Tableau.LocalSystem.satisfiable_iff`, `CookLevin.accepts_iff_sat`.
+- Implement the formula generator. Done: `TableauStacks.generator`,
+  `generator_exits`, `CookLevin.machine_outputsInTime` (unary-index CNF).
+- Prove its output size and runtime polynomial. Done:
+  `Instance.generatorCost_le`, `CookLevin.computableInPolyTime`.
+- Derive SAT NP-hardness and NP-completeness. Hardness done for the unary
+  encoding: `CookLevin.encodedUnarySAT_NPHard`. Pending: the unary-to-binary
+  conversion machine for `Formula.finEncoding` and the SAT verifier for
+  membership.
 - Derive exact 3-SAT NP-completeness through a checked polynomial reduction.
+  Pending: the machine for `Formula.toExactThree`.
 
 ## Milestone 5: downstream adapters
 
