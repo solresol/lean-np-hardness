@@ -40,6 +40,7 @@ import LeanNPHardness.MachineRoutineBound
 import LeanNPHardness.CNFChain
 import LeanNPHardness.ChainJob
 import LeanNPHardness.ChainMachine
+import LeanNPHardness.BinaryConvertNat
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram

@@ -79,4 +79,72 @@ noncomputable def toMachine_outputsInTime_le [Fintype K] (r : Routine Γ) (k₀ 
   have hk := Classical.choose_spec h
   { (toMachine_outputsInTime r k₀ k₁ input output k hk.2) with steps_le_m := hk.1 }
 
+/-! ### Unfolding loops one iteration at a time -/
+
+theorem loop_exits_nil (k : K) (body : Routine Γ) (S : Stacks Γ) (hk : S k = []) :
+    (loop k body).Exits S 1 S := by
+  have := loop_exits k body 0 (fun _ => S) (fun _ => 0) (by simp) (by simp) hk
+  simpa [loopSteps] using this
+
+theorem loop_step_indep (k : K) (body : Routine Γ) (v : Bool ⊕ body.σ) (S : Stacks Γ) :
+    TM2.step (loop k body).program ⟨some none, v, S⟩ =
+      TM2.step (loop k body).program ⟨some none, Sum.inl false, S⟩ := by
+  simp [TM2.step, loop, TM2.stepAux]
+
+theorem loop_exits_cons (k : K) (body : Routine Γ) {S S' S'' : Stacks Γ} {c n : ℕ}
+    (hk : S k ≠ []) (hb : body.Exits S c S') (hl : (loop k body).Exits S' n S'') :
+    (loop k body).Exits S (c + 1 + n) S'' := by
+  obtain ⟨v₁, hrun⟩ := hb
+  obtain ⟨v₂, hl⟩ := hl
+  have lifted := lift_run some Sum.inr (projRight body.init) (fun _ => rfl)
+    (.goto fun _ => none) body.program (loop k body).program (fun _ => rfl) c _ _ _ _ _ hrun
+  have test : TM2.step (loop k body).program ⟨some none, Sum.inl false, S⟩ =
+      some ⟨some (some body.entry), Sum.inr body.init, S⟩ := by
+    have : (S k).head?.isSome = true := by
+      cases h : S k with
+      | nil => exact (hk h).elim
+      | cons _ _ => simp
+    simp [TM2.step, loop, TM2.stepAux, this, loopTest]
+  cases n with
+  | zero => simp at hl
+  | succ n =>
+      refine ⟨v₂, ?_⟩
+      rw [show c + 1 + (n + 1) = (n + 1) + (c + 1) by omega, Function.iterate_add_apply,
+        Function.iterate_succ_apply]
+      change (flip Option.bind (TM2.step (loop k body).program))^[n + 1]
+        ((flip Option.bind (TM2.step (loop k body).program))^[c]
+          (TM2.step (loop k body).program ⟨some none, Sum.inl false, S⟩)) = _
+      rw [test, lifted]
+      simp only [TM2.stepAux]
+      rw [Function.iterate_succ_apply] at hl ⊢
+      change (flip Option.bind (TM2.step (loop k body).program))^[n]
+        (TM2.step (loop k body).program ⟨some none, Sum.inr v₁, S'⟩) = _
+      rw [loop_step_indep]
+      exact hl
+
+theorem loop_exitsLE_nil (k : K) (body : Routine Γ) (S : Stacks Γ) (hk : S k = []) (n : ℕ) :
+    (loop k body).ExitsLE S (n + 1) S :=
+  (loop_exits_nil k body S hk).le.mono (by omega)
+
+theorem loop_exitsLE_cons (k : K) (body : Routine Γ) {S S' S'' : Stacks Γ} {c n : ℕ}
+    (hk : S k ≠ []) (hb : body.ExitsLE S c S') (hl : (loop k body).ExitsLE S' n S'') :
+    (loop k body).ExitsLE S (c + 1 + n) S'' := by
+  obtain ⟨c', hc', hb⟩ := hb
+  obtain ⟨n', hn', hl⟩ := hl
+  exact ⟨c' + 1 + n', by omega, loop_exits_cons k body hk hb hl⟩
+
+theorem pushList_exitsLE (k : K) (as : List (Γ k)) (S : Stacks Γ) (n : ℕ) :
+    (pushList k as).ExitsLE S (n + 1) (Function.update S k (as ++ S k)) :=
+  (pushList_exits k as S).le.mono (by omega)
+
+theorem popOne_exitsLE (k : K) (S : Stacks Γ) (n : ℕ) :
+    (popOne k).ExitsLE S (n + 1) (Function.update S k (S k).tail) :=
+  (popOne_exits k S).le.mono (by omega)
+
+theorem skip_exitsLE (S : Stacks Γ) (n : ℕ) : (skip : Routine Γ).ExitsLE S (n + 1) S :=
+  (skip_exits S).le.mono (by omega)
+
+theorem Routine.ExitsLE.congr {r : Routine Γ} {S S' T : Stacks Γ} {n : ℕ}
+    (h : r.ExitsLE S n S') (e : S' = T) : r.ExitsLE S n T := e ▸ h
+
 end LeanNPHardness.Routines
