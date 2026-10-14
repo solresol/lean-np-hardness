@@ -21,6 +21,9 @@ import LeanNPHardness.TableauJobs
 import LeanNPHardness.TableauStacks
 import LeanNPHardness.MachineRoutineUnary
 import LeanNPHardness.TableauInterpreter
+import LeanNPHardness.TableauDescriptors
+import LeanNPHardness.TableauSkeletonRender
+import LeanNPHardness.TableauSkeleton
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram

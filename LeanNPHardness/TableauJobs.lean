@@ -18,7 +18,7 @@ open CNF CNF.Unary
 /-- Named unary registers. -/
 inductive RegName
   | base
-  | cur
+  | win
   | w
   | pw
   deriving DecidableEq, Fintype, Repr
