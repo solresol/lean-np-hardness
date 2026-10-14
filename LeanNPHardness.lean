@@ -7,6 +7,12 @@ import LeanNPHardness.CNFConstraint
 import LeanNPHardness.CNFRegisterConstraint
 import LeanNPHardness.LocalTableau
 import LeanNPHardness.MachineLocality
+import LeanNPHardness.MachinePaddedRun
+import LeanNPHardness.MachineTableauCodes
+import LeanNPHardness.MachineTableauSystem
+import LeanNPHardness.MachineTableauBoundary
+import LeanNPHardness.CookLevin
+import LeanNPHardness.BoolPairProjectionMachine
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram

@@ -1,3 +1,5 @@
+import LeanNPHardness.CookLevin
+import LeanNPHardness.BoolPairProjectionMachine
 import LeanNPHardness.BoundedPrime
 import LeanNPHardness.IntervalMachines
 import LeanNPHardness.UnaryDivisibilityMachine
@@ -236,7 +238,8 @@ open Computability
 #print axioms LeanNPHardness.MachineAdapters.pairReductionTimePolynomial_eval
 #print axioms LeanNPHardness.MachineAdapters.pairReductionComputableInPolyTime
 #print axioms LeanNPHardness.UnitEncoding.finEncoding
-#print axioms LeanNPHardness.MachineAdapters.ignoreUnitCertificate
+#print axioms LeanNPHardness.MachinePrimitives.BoolPairFirst.outputsInTime
+#print axioms LeanNPHardness.MachinePrimitives.BoolPairFirst.computableInPolyTime
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeReducesTo
 #print axioms LeanNPHardness.EncodedLanguage.InP
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.ofAcceptsIff
@@ -248,12 +251,11 @@ open Computability
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.pullback_complete
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.pullback
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.pullback_verify
-#print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.pullback_certificateEncoding
 #print axioms LeanNPHardness.EncodedLanguage.InNP.of_reduction
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.accepts_iff_exists_certificate
 #print axioms LeanNPHardness.EncodedLanguage.InNP
 #print axioms LeanNPHardness.EncodedLanguage.PolytimeVerifier.toInNP
-#print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.toUnitVerifier
+#print axioms LeanNPHardness.EncodedLanguage.PolytimeDecider.toVerifier
 #print axioms LeanNPHardness.EncodedLanguage.inP_toInNP
 #print axioms LeanNPHardness.EncodedLanguage.NPHard
 #print axioms LeanNPHardness.EncodedLanguage.NPComplete
@@ -630,3 +632,15 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.ClauseLiteral.clause_head_append
 #print axioms LeanNPHardness.MachinePrimitives.ClauseLiteral.runSteps_le_frame_bound
 #print axioms LeanNPHardness.MachinePrimitives.ClauseLiteral.literal_evalsToInTime
+#print axioms LeanNPHardness.CNF.Constraint.eval_relationCNF
+#print axioms LeanNPHardness.CNF.Constraint.eval_registerCNF
+#print axioms LeanNPHardness.Tableau.LocalSystem.satisfiable_iff
+#print axioms LeanNPHardness.MachineLocality.stepAux_append
+#print axioms LeanNPHardness.MachinePaddedRun.run_halt_unique
+#print axioms LeanNPHardness.MachineTableau.Params.local_step
+#print axioms LeanNPHardness.MachineTableau.Params.value_injective
+#print axioms LeanNPHardness.MachineTableau.Instance.tableau_satisfiable_iff
+#print axioms LeanNPHardness.CookLevin.tableau_satisfiable_iff
+#print axioms LeanNPHardness.CookLevin.accepts_iff_sat
+#print axioms LeanNPHardness.CookLevin.reduction
+#print axioms LeanNPHardness.CookLevin.inNP_reducesTo_sat

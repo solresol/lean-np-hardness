@@ -1,36 +1,11 @@
 import LeanNPHardness.PairEncoding
 import LeanNPHardness.PolytimeComposition
+import LeanNPHardness.PairReductionComputable
+import LeanNPHardness.BoolPairProjectionMachine
 
 namespace LeanNPHardness
 
 open Computability
-
-namespace MachineAdapters
-
-/-- Reuse a polynomial-time machine on the left component of a pair whose
-right component has the empty `Unit` encoding. The machine and time polynomial
-are unchanged; only the external input-alphabet equivalence is adjusted. -/
-noncomputable def ignoreUnitCertificate {α β : Type}
-    (sourceEncoding : FinEncoding α) (targetEncoding : FinEncoding β)
-    {f : α → β}
-    (computer :
-      Turing.TM2ComputableInPolyTime sourceEncoding targetEncoding f) :
-    Turing.TM2ComputableInPolyTime
-      (PairEncoding.finEncoding sourceEncoding UnitEncoding.finEncoding)
-      targetEncoding (fun pair => f pair.1) where
-  tm := computer.tm
-  inputAlphabet :=
-    computer.inputAlphabet.trans
-      (Equiv.sumEmpty sourceEncoding.Γ Empty).symm
-  outputAlphabet := computer.outputAlphabet
-  time := computer.time
-  outputsFun pair := by
-    rcases pair with ⟨input, witness⟩
-    rcases witness with ⟨⟩
-    simpa [PairEncoding.finEncoding, UnitEncoding.finEncoding] using
-      computer.outputsFun input
-
-end MachineAdapters
 
 /-- A decision language together with the finite encoding that fixes its input
 size measure. -/
@@ -131,18 +106,22 @@ theorem of_reduction {α β : Type}
 
 end InP
 
-/-- A polynomial-time verifier with an explicit polynomial bound on encoded
-certificate length. Soundness applies to every accepting certificate, while
-completeness supplies a certificate satisfying the size bound. -/
-structure PolytimeVerifier {α certificate : Type}
-    (problem : EncodedLanguage α) where
-  certificateEncoding : FinEncoding certificate
-  verify : α × certificate → Bool
+/-- The certificate alphabet: certificates are arbitrary Boolean strings,
+encoded literally. Every string is a legitimate input to the verifier
+machine, which is what the Cook--Levin tableau requires. -/
+abbrev certificateEncoding : FinEncoding (List Bool) :=
+  MachinePrimitives.RawBoolList.finEncoding
+
+/-- A polynomial-time verifier over Boolean-string certificates with an
+explicit polynomial bound on certificate length. Soundness applies to every
+accepting certificate, completeness supplies a certificate within the bound,
+and the verifier machine is total on all paired inputs. -/
+structure PolytimeVerifier {α : Type} (problem : EncodedLanguage α) where
+  verify : α × List Bool → Bool
   certificateBound : Polynomial ℕ
   sound : ∀ input witness, verify (input, witness) = true → problem.accepts input
-  complete : ∀ input, problem.accepts input → ∃ witness,
-    (certificateEncoding.encode witness).length ≤
-        certificateBound.eval (problem.encoding.encode input).length ∧
+  complete : ∀ input, problem.accepts input → ∃ witness : List Bool,
+    witness.length ≤ certificateBound.eval (problem.encoding.encode input).length ∧
       verify (input, witness) = true
   polytime :
     Nonempty
@@ -150,11 +129,10 @@ structure PolytimeVerifier {α certificate : Type}
         (PairEncoding.finEncoding problem.encoding certificateEncoding)
         finEncodingBoolBool verify)
 
-/-- Verifier-based nondeterministic polynomial time for an encoded language.
-The existential certificate type carries its own finite encoding. -/
+/-- Verifier-based nondeterministic polynomial time for an encoded language,
+with Boolean-string certificates. -/
 def InNP {α : Type} (problem : EncodedLanguage α) : Prop :=
-  ∃ certificate : Type,
-    Nonempty (PolytimeVerifier (certificate := certificate) problem)
+  Nonempty (PolytimeVerifier problem)
 
 /-- An encoded language is NP-hard when every encoded language in NP has a
 checked polynomial-time many-one reduction to it. `Nonempty` keeps hardness a
@@ -209,9 +187,9 @@ namespace PolytimeVerifier
 /-- The certificate bound obtained by pulling a verifier back along a checked
 reduction. The target verifier's bound is evaluated at the reduction
 computer's checked polynomial upper bound on encoded output length. -/
-noncomputable def pullbackCertificateBound {α β certificate : Type}
+noncomputable def pullbackCertificateBound {α β : Type}
     {source : EncodedLanguage α} {target : EncodedLanguage β}
-    (targetVerifier : PolytimeVerifier (certificate := certificate) target)
+    (targetVerifier : PolytimeVerifier target)
     (reduction : source.PolytimeReducesTo target)
     (reductionComputer :
       Turing.TM2ComputableInPolyTime source.encoding target.encoding
@@ -222,9 +200,9 @@ noncomputable def pullbackCertificateBound {α β certificate : Type}
       reduction.map reductionComputer)
 
 @[simp]
-theorem pullbackCertificateBound_eval {α β certificate : Type}
+theorem pullbackCertificateBound_eval {α β : Type}
     {source : EncodedLanguage α} {target : EncodedLanguage β}
-    (targetVerifier : PolytimeVerifier (certificate := certificate) target)
+    (targetVerifier : PolytimeVerifier target)
     (reduction : source.PolytimeReducesTo target)
     (reductionComputer :
       Turing.TM2ComputableInPolyTime source.encoding target.encoding
@@ -241,16 +219,16 @@ bound after pulling the verifier relation back along a checked reduction. This
 is the certificate-size half of backward NP transport; `VerifierTransport`
 combines it with the separately checked polynomial-time machine for the paired
 map `(input, certificate) ↦ (reduction.map input, certificate)`. -/
-theorem pullback_complete {α β certificate : Type}
+theorem pullback_complete {α β : Type}
     {source : EncodedLanguage α} {target : EncodedLanguage β}
-    (targetVerifier : PolytimeVerifier (certificate := certificate) target)
+    (targetVerifier : PolytimeVerifier target)
     (reduction : source.PolytimeReducesTo target)
     (reductionComputer :
       Turing.TM2ComputableInPolyTime source.encoding target.encoding
         reduction.map)
     (input : α) (haccepts : source.accepts input) :
-    ∃ witness,
-      (targetVerifier.certificateEncoding.encode witness).length ≤
+    ∃ witness : List Bool,
+      witness.length ≤
           (pullbackCertificateBound targetVerifier reduction
             reductionComputer).eval
             (source.encoding.encode input).length ∧
@@ -268,12 +246,12 @@ theorem pullback_complete {α β certificate : Type}
 
 /-- Membership is equivalent to the existence of an accepting certificate
 whose encoded length satisfies the verifier's explicit polynomial bound. -/
-theorem accepts_iff_exists_certificate {α certificate : Type}
+theorem accepts_iff_exists_certificate {α : Type}
     {problem : EncodedLanguage α}
-    (verifier : PolytimeVerifier (certificate := certificate) problem)
+    (verifier : PolytimeVerifier problem)
     (input : α) :
-    problem.accepts input ↔ ∃ witness,
-      (verifier.certificateEncoding.encode witness).length ≤
+    problem.accepts input ↔ ∃ witness : List Bool,
+      witness.length ≤
           verifier.certificateBound.eval (problem.encoding.encode input).length ∧
         verifier.verify (input, witness) = true := by
   constructor
@@ -282,30 +260,35 @@ theorem accepts_iff_exists_certificate {α certificate : Type}
     exact verifier.sound input witness haccepts
 
 /-- A checked verifier places its encoded language in `NP`. -/
-theorem toInNP {α certificate : Type} {problem : EncodedLanguage α}
-    (verifier : PolytimeVerifier (certificate := certificate) problem) :
+theorem toInNP {α : Type} {problem : EncodedLanguage α}
+    (verifier : PolytimeVerifier problem) :
     problem.InNP :=
-  ⟨certificate, ⟨verifier⟩⟩
+  ⟨verifier⟩
 
 end PolytimeVerifier
 
 namespace PolytimeDecider
 
-/-- Regard a deterministic polynomial-time decider as a verifier using the
-unique empty certificate. -/
-noncomputable def toUnitVerifier {α : Type}
+/-- Regard a deterministic polynomial-time decider as a verifier that ignores
+its certificate; the empty certificate witnesses completeness. The machine
+runs the decider on the input component through the checked pair-left
+adapter, then projects the Boolean result past the certificate. -/
+noncomputable def toVerifier {α : Type}
     {problem : EncodedLanguage α} (decider : PolytimeDecider problem) :
-    PolytimeVerifier (certificate := Unit) problem where
-  certificateEncoding := UnitEncoding.finEncoding
+    PolytimeVerifier problem where
   verify pair := decider.decide pair.1
   certificateBound := 0
   sound input _ haccepts := (decider.accepts_iff input).1 haccepts
-  complete input haccepts := by
-    refine ⟨(), ?_, (decider.accepts_iff input).2 haccepts⟩
-    simp [UnitEncoding.finEncoding]
+  complete input haccepts :=
+    ⟨[], by simp, (decider.accepts_iff input).2 haccepts⟩
   polytime := decider.polytime.map fun computer =>
-    MachineAdapters.ignoreUnitCertificate problem.encoding
-      finEncodingBoolBool computer
+    MachineComposition.compositionComputableInPolyTime
+      (PairEncoding.finEncoding problem.encoding certificateEncoding)
+      (PairEncoding.finEncoding finEncodingBoolBool certificateEncoding)
+      finEncodingBoolBool (fun pair => (decider.decide pair.1, pair.2)) (fun pair => pair.1)
+      (MachineAdapters.pairReductionComputableInPolyTime problem.encoding
+        finEncodingBoolBool certificateEncoding decider.decide computer)
+      MachinePrimitives.BoolPairFirst.computableInPolyTime
 
 end PolytimeDecider
 
@@ -314,7 +297,7 @@ based nondeterministic polynomial time. -/
 theorem inP_toInNP {α : Type} {problem : EncodedLanguage α} :
     problem.InP → problem.InNP := by
   rintro ⟨decider⟩
-  exact decider.toUnitVerifier.toInNP
+  exact decider.toVerifier.toInNP
 
 end EncodedLanguage
 
