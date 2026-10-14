@@ -29,6 +29,11 @@ than hiding it inside a downstream NP-hardness proof.
 
 ## Reusable encodings and machine operations
 
+The component verifier machines listed in this section predate the complete
+verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
+which are built directly on the routine framework. Remarks below that a full
+verifier remains pending refer to composing these particular components.
+
 The checked library extends reusable modules extracted from the downstream
 thesis formalisation. It imports no thesis or p-adic definitions:
 
@@ -545,18 +550,17 @@ The initial checked layer contains:
   `exactWidth_normalizeThree` characterizes exact output width, and
   `normalizeThree_encode_length_le` bounds output bits by `26N + 1`.
   `atMostThreeToExactThree` packages the semantic reduction; its TM2 runtime
-  and the reduction of arbitrary-width SAT remain pending.
+  is not checked. The checked reduction from arbitrary-width SAT to exact
+  3-SAT is the chain transformation `CNF.Chain.chainThree` (next section).
 
 Backward transport of both P and NP is checked. SAT syntax, semantic evaluation,
 finite formula/certificate encodings, a linear certificate-size bound, and
-short-clause padding semantics and output size are checked.
-Cook--Levin is checked for CNF-SAT under the unary-index encoding (next
-section). Polynomial-time verifier machines, exact 3-SAT membership in NP,
-the complete exact-3-SAT splitting machine, and the unary-to-binary conversion for
-`Formula.finEncoding` remain pending. See
-[THEOREM_STATUS.md](THEOREM_STATUS.md) and [ROADMAP.md](ROADMAP.md).
+short-clause padding semantics and output size are checked. Cook--Levin and
+NP-completeness of CNF-SAT and exact 3-SAT under the binary encoding are
+checked (next section). See [THEOREM_STATUS.md](THEOREM_STATUS.md) and
+[ROADMAP.md](ROADMAP.md).
 
-## Cook--Levin: unary CNF-SAT is NP-hard
+## Cook--Levin and NP-completeness
 
 `CookLevin.encodedUnarySAT_NPHard` proves `encodedUnarySAT.NPHard`: every
 encoded language with a polynomial-time verifier machine over Boolean-string
@@ -609,17 +613,6 @@ Cook--Levin theorem in the library's binary encoding.
 
 Axiom audit (`LeanNPHardness/Audit.lean`): `propext`, `Classical.choice`,
 `Quot.sound` only.
-
-The next reduction has a checked clause-extraction phase in
-`UnarySplitMachine.lean`. `TableauStacks.extract_clause_exits` reads one
-unary-encoded clause, doubles the original variable indices, retains its
-literals in reverse order, and counts all occurrences in at most
-`4 * encodedClauseLength + 1` TM2 steps. `moveLit_exits` restores one reversed
-literal in at most `4 * (v + 1) + 2` steps for unary variable index `v`.
-Both routines preserve the stated suffixes and other supplied stack contents.
-The instruction job's meaning is checked by
-`SplitJob.render_splitJob_toExactThree`; emitting that job and assembling
-and bounding the full splitting machine remain pending.
 
 ## Toolchain
 

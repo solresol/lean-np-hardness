@@ -186,13 +186,9 @@
   `BinaryConvert.encodedSAT_NPHard`; NP-completeness:
   `SatVerify.encodedSAT_NPComplete`.
 - Derive exact 3-SAT NP-completeness through a checked polynomial reduction.
-  Partial: `SplitJob.render_splitJob_toExactThree` checks the instruction
-  job's meaning. `TableauStacks.extract_clause_exits` now extracts one
-  unary-encoded clause, doubles variable indices, and counts every literal
-  occurrence within `4 * encodedClauseLength + 1` TM2 steps; `moveLit_exits`
-  restores one reversed literal within `4 * (variableIndex + 1) + 2` steps.
-  Clause-job emission, formula traversal, interpretation, cleanup, and the
-  complete polynomial-time machine for `Formula.toExactThree` remain pending.
+  Done: the chain reduction `ChainMachine.reduction`, the re-encoding
+  `BinaryConvert.exactThreeReduction`, and
+  `ExactThreeVerify.encodedExactThreeSAT_NPComplete`.
 
 ## Milestone 5: downstream adapters
 
