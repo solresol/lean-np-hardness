@@ -14,6 +14,13 @@ import LeanNPHardness.MachineTableauSystem
 import LeanNPHardness.MachineTableauBoundary
 import LeanNPHardness.CookLevin
 import LeanNPHardness.BoolPairProjectionMachine
+import LeanNPHardness.MachineRoutine
+import LeanNPHardness.MachineRoutinePrimitives
+import LeanNPHardness.UnaryCNF
+import LeanNPHardness.TableauJobs
+import LeanNPHardness.TableauStacks
+import LeanNPHardness.MachineRoutineUnary
+import LeanNPHardness.TableauInterpreter
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram

@@ -1,4 +1,5 @@
 import LeanNPHardness.CookLevin
+import LeanNPHardness.TableauInterpreter
 import LeanNPHardness.BoolPairProjectionMachine
 import LeanNPHardness.BoundedPrime
 import LeanNPHardness.IntervalMachines
@@ -652,3 +653,13 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.CNF.satToExactThree
 #print axioms LeanNPHardness.CookLevin.reductionToExactThree
 #print axioms LeanNPHardness.CookLevin.inNP_reducesTo_exactThreeSAT
+#print axioms LeanNPHardness.Routines.lift_run
+#print axioms LeanNPHardness.Routines.seq_exits
+#print axioms LeanNPHardness.Routines.loop_exits
+#print axioms LeanNPHardness.Routines.dispatch_exits
+#print axioms LeanNPHardness.Routines.toMachine_outputsInTime
+#print axioms LeanNPHardness.Routines.copyAll_exits
+#print axioms LeanNPHardness.CNF.Unary.decode_encode
+#print axioms LeanNPHardness.TableauJobs.render_formulaJob
+#print axioms LeanNPHardness.TableauStacks.mulInto_exits
+#print axioms LeanNPHardness.TableauStacks.interpret_exits
