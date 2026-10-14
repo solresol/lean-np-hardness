@@ -586,6 +586,12 @@ symbol). The development is split into separately named results:
 - hardness transfer: `CookLevin.polytimeReduction` and
   `CookLevin.encodedUnarySAT_NPHard`.
 
+Exact 3-SAT under the same encoding is NP-hard as well
+(`ChainMachine.encodedUnaryExactThreeSAT_NPHard`): the streaming chain
+transformation `CNF.Chain.chainThree` (exact width three, satisfiability
+preserved) is computed by a TM2 machine in at most `10000 * (n + 1) ^ 2`
+steps (`ChainMachine.cost_le`).
+
 Axiom audit (`LeanNPHardness/Audit.lean`): `propext`, `Classical.choice`,
 `Quot.sound` only.
 

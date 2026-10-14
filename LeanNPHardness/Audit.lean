@@ -6,8 +6,7 @@ import LeanNPHardness.MachineRoutinePoly
 import LeanNPHardness.TableauParameters
 import LeanNPHardness.CookLevinHardness
 import LeanNPHardness.MachineRoutineBound
-import LeanNPHardness.UnarySplitJob
-import LeanNPHardness.UnarySplitMachine
+import LeanNPHardness.ChainMachine
 import LeanNPHardness.TableauRegisterBounds
 import LeanNPHardness.TableauSkeletonBounds
 import LeanNPHardness.BoolPairProjectionMachine
@@ -698,14 +697,10 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.CookLevin.polytimeReduction
 #print axioms LeanNPHardness.CookLevin.encodedUnarySAT_NPHard
 #print axioms LeanNPHardness.Routines.loop_exitsLE
-#print axioms LeanNPHardness.SplitJob.render_splitJob_toExactThree
-#print axioms LeanNPHardness.TableauStacks.flatMap_dbl_marks
-#print axioms LeanNPHardness.TableauStacks.flatMap_dbl_encodeLiteral
-#print axioms LeanNPHardness.TableauStacks.signCount_encodeLiteral
-#print axioms LeanNPHardness.TableauStacks.endClause_not_mem_encodeLiteral
-#print axioms LeanNPHardness.TableauStacks.flatMap_dbl_clause
-#print axioms LeanNPHardness.TableauStacks.signCount_clause
-#print axioms LeanNPHardness.TableauStacks.extractHandlers_exits
-#print axioms LeanNPHardness.TableauStacks.extract_exits
-#print axioms LeanNPHardness.TableauStacks.extract_clause_exits
-#print axioms LeanNPHardness.TableauStacks.moveLit_exits
+#print axioms LeanNPHardness.CNF.Chain.exactWidth_chainThree
+#print axioms LeanNPHardness.CNF.Chain.satisfiable_chainThree
+#print axioms LeanNPHardness.ChainJob.render_job
+#print axioms LeanNPHardness.ChainMachine.splitter_exits
+#print axioms LeanNPHardness.ChainMachine.cost_le
+#print axioms LeanNPHardness.ChainMachine.computableInPolyTime
+#print axioms LeanNPHardness.ChainMachine.encodedUnaryExactThreeSAT_NPHard

@@ -37,8 +37,9 @@ import LeanNPHardness.CookLevinMachine
 import LeanNPHardness.TableauGeneratorBound
 import LeanNPHardness.CookLevinHardness
 import LeanNPHardness.MachineRoutineBound
-import LeanNPHardness.UnarySplitJob
-import LeanNPHardness.UnarySplitMachine
+import LeanNPHardness.CNFChain
+import LeanNPHardness.ChainJob
+import LeanNPHardness.ChainMachine
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram
