@@ -21,6 +21,7 @@ import LeanNPHardness.TableauJobs
 import LeanNPHardness.TableauStacks
 import LeanNPHardness.MachineRoutineUnary
 import LeanNPHardness.MachineRoutinePoly
+import LeanNPHardness.TableauParameters
 import LeanNPHardness.TableauInterpreter
 import LeanNPHardness.TableauDescriptors
 import LeanNPHardness.TableauSkeletonRender

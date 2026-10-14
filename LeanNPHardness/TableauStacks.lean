@@ -18,10 +18,12 @@ open CNF.Unary TableauJobs
 inductive Counter
   | n
   | q
+  | m
   | t
+  | tpb
   | g
-  | p
-  | acc
+  | tmp
+  | bc
   | copy1
   | copy2
   | copy3
@@ -76,6 +78,9 @@ def marks (n : ℕ) : List Sym := List.replicate n .mark
 
 @[simp]
 theorem marks_length (n : ℕ) : (marks n).length = n := by simp [marks]
+
+@[simp]
+theorem marks_zero : marks 0 = [] := rfl
 
 theorem marks_append (m n : ℕ) : marks (m + n) = marks m ++ marks n := by
   unfold marks
