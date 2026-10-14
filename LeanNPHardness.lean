@@ -3,6 +3,10 @@ import LeanNPHardness.CNF
 import LeanNPHardness.CNFEncoding
 import LeanNPHardness.CNFCertificate
 import LeanNPHardness.CNFNormalization
+import LeanNPHardness.CNFConstraint
+import LeanNPHardness.CNFRegisterConstraint
+import LeanNPHardness.LocalTableau
+import LeanNPHardness.MachineLocality
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram
