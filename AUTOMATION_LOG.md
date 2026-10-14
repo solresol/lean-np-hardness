@@ -4124,3 +4124,43 @@ avoid failed routes, and choose a materially different experiment when blocked.
   orientation and count the symbol-moving steps. Then use the retained
   literal count to handle short-clause padding and the fresh-variable chain;
   keep emitted-job semantics separate from the interpreter runtime.
+
+## 2026-10-15 — Cook--Levin, NP-completeness, and Max-Cut (interactive session)
+
+- **Starting commit:** `c5b6e76` (after the unary splitting extraction run).
+- **Goal:** finish the NP-hardness chain needed by `../phd-thesis-lean` and the
+  remaining Milestone 4 results.
+- **Checked increments (all on `main`, audited):**
+  - `ChainMachine.encodedUnaryExactThreeSAT_NPHard`: a *streaming* SAT to
+    exact-3-SAT reduction `CNF.Chain.chainThree` (per literal
+    `lᵢ ∨ ¬yᵢ₊₁ ∨ yᵢ` over fresh odd variables), emitted one fixed instruction
+    chunk per input symbol and run through the generator's input loop and
+    interpreter. **This supersedes the case-split splitting machine:**
+    `UnarySplitJob.lean` and `UnarySplitMachine.lean` (including
+    `extract_clause_exits` and `moveLit_exits`) were removed. Do not resume the
+    `Formula.toExactThree` machine route; the semantic `toExactThree` results
+    remain but no machine is needed for them.
+  - `BinaryConvert.encodedSAT_NPHard`, `BinaryConvert.encodedExactThreeSAT_NPHard`:
+    a unary-to-binary CNF re-encoding machine (unary halving to framed binary).
+  - `ExactThreeVerify.encodedExactThreeSAT_NPComplete` and
+    `SatVerify.encodedSAT_NPComplete`: verifier machines built on the routine
+    framework (`MachineRoutineBound`: `Routine.ExitsLE`, `loop_exitsLE_cons`),
+    not on the older component verifier machines.
+  - `MaxCutMachine.encodedMaxCut_NPHard` (and the unary version): a Max-Cut
+    gadget streamed with the four interpreter registers, composed with the chain
+    reduction via `MachineComposition.compositionComputableInPolyTime`.
+- **Successful checks:** full `lake build` (2,279 jobs); axiom audit reports only
+  `propext`, `Classical.choice`, `Quot.sound`; unfinished-proof scan clean.
+- **Lessons:** prove routine runs with `ExitsLE` and induction on the data via
+  `loop_exitsLE_cons`; state component lemmas on an arbitrary stack family with
+  hypotheses and close state equalities with `funext k; cases k <;> simp`; give
+  intermediate states explicitly to induction hypotheses; keep `seq` nesting of a
+  routine identical to the order used in its proof.
+- **Ending state:** Milestone 4 complete. Milestone 5 library-side hardness for
+  exact 3-SAT and Max-Cut is available in both unary and binary encodings; the
+  unary versions keep variable/vertex indices polynomial in the input size,
+  which suits thesis-side unit-cell models.
+- **Best next experiment:** further reductions useful downstream (for example
+  NAE-3-SAT or Independent Set) reusing the streaming-job pattern of
+  `ChainJob`/`MaxCutJob`; or a dense variable-renaming utility for binary
+  instances. Keep thesis-specific mathematics out of this library.
