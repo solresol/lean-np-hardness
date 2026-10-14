@@ -2,6 +2,7 @@ import LeanNPHardness.CookLevin
 import LeanNPHardness.TableauInterpreter
 import LeanNPHardness.TableauSkeleton
 import LeanNPHardness.TableauTemplates
+import LeanNPHardness.MachineRoutinePoly
 import LeanNPHardness.BoolPairProjectionMachine
 import LeanNPHardness.BoundedPrime
 import LeanNPHardness.IntervalMachines
@@ -671,3 +672,5 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineTableau.Instance.range_P_map_cellTrans
 #print axioms LeanNPHardness.MachineTableau.Instance.range_P_map_initCellDesc
 #print axioms LeanNPHardness.MachineTableau.Instance.range_P_map_finalCellDesc
+#print axioms LeanNPHardness.TableauStacks.hornerFold_coeffList
+#print axioms LeanNPHardness.TableauStacks.evalPoly_exits

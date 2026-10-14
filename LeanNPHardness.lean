@@ -20,6 +20,7 @@ import LeanNPHardness.UnaryCNF
 import LeanNPHardness.TableauJobs
 import LeanNPHardness.TableauStacks
 import LeanNPHardness.MachineRoutineUnary
+import LeanNPHardness.MachineRoutinePoly
 import LeanNPHardness.TableauInterpreter
 import LeanNPHardness.TableauDescriptors
 import LeanNPHardness.TableauSkeletonRender
