@@ -5,6 +5,8 @@ import LeanNPHardness.TableauTemplates
 import LeanNPHardness.MachineRoutinePoly
 import LeanNPHardness.TableauParameters
 import LeanNPHardness.CookLevinHardness
+import LeanNPHardness.MachineRoutineBound
+import LeanNPHardness.UnarySplitJob
 import LeanNPHardness.TableauRegisterBounds
 import LeanNPHardness.TableauSkeletonBounds
 import LeanNPHardness.BoolPairProjectionMachine
@@ -694,3 +696,5 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.CookLevin.computableInPolyTime
 #print axioms LeanNPHardness.CookLevin.polytimeReduction
 #print axioms LeanNPHardness.CookLevin.encodedUnarySAT_NPHard
+#print axioms LeanNPHardness.Routines.loop_exitsLE
+#print axioms LeanNPHardness.SplitJob.render_splitJob_toExactThree
