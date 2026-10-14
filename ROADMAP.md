@@ -198,7 +198,9 @@
   model.
 - Compose it with exact 3-SAT hardness.
 - Add further NP-hardness reductions without coupling them to thesis-specific
-  mathematics.
+  mathematics. Done for Max-Cut: `MaxCutMachine.encodedMaxCut_NPHard`, which the
+  thesis's Max-Cut based results (`thm:fixed-prime-hardness`, `thm:main`,
+  `thm:nested-easy-hard-easy`) can use for their NP-hardness transfer.
 
 ## Milestone 6: Palomar registration
 

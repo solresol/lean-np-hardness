@@ -611,6 +611,13 @@ verifier that selects one literal per clause in unary
 (`SatVerify.encodedSAT_inNP`), so `SatVerify.encodedSAT_NPComplete` is the
 Cook--Levin theorem in the library's binary encoding.
 
+Max-Cut (edge lists with a threshold, encoded as two-literal clauses plus a
+threshold clause) is NP-hard under both encodings
+(`MaxCutMachine.encodedUnaryMaxCut_NPHard`, `MaxCutMachine.encodedMaxCut_NPHard`):
+a per-clause gadget of occurrence vertices and two linked triangles
+(`MaxCut.sat_iff_maxCut_gadget`) is streamed by the interpreter after the
+chain reduction.
+
 Axiom audit (`LeanNPHardness/Audit.lean`): `propext`, `Classical.choice`,
 `Quot.sound` only.
 
