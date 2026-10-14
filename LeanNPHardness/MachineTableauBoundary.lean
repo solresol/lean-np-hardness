@@ -269,7 +269,7 @@ theorem certIndex?_eq_none_iff (g : ℕ) : I.certIndex? g = none ↔ g ∉ I.cer
   rw [mem_certGroups]
   simp only [certIndex?]
   split_ifs with hc
-  · simp only [Option.some_ne_none, false_iff, not_not]
+  · simp only [false_iff, not_not]
     have hci := I.certGroup_eq (g - I.certGroup 0)
     exact ⟨g - I.certGroup 0, by omega, by omega⟩
   · simp only [true_iff, not_exists, not_and]

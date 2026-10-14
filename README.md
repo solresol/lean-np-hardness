@@ -598,6 +598,12 @@ unary formula in binary within `10000 * (n + 1) ^ 3` steps, giving
 `BinaryConvert.encodedSAT_NPHard` and
 `BinaryConvert.encodedExactThreeSAT_NPHard`.
 
+Exact 3-SAT is in NP (`ExactThreeVerify.encodedExactThreeSAT_inNP`): a TM2
+verifier reads two certificate bits per clause selecting a literal, checks
+every clause has width three, and compares the selected literals pairwise in
+binary, within `2000 * (n + 1) ^ 3` steps. Hence
+`ExactThreeVerify.encodedExactThreeSAT_NPComplete`.
+
 Axiom audit (`LeanNPHardness/Audit.lean`): `propext`, `Classical.choice`,
 `Quot.sound` only.
 

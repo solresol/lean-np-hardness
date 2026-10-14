@@ -61,7 +61,7 @@ theorem flatMap_eq_range {α β : Type} (L : List α) (g : α → List β) :
   | cons a L ih =>
       rw [List.flatMap_cons, List.length_cons, List.range_succ_eq_map, List.flatMap_cons,
         List.flatMap_map, ih]
-      simp [Function.comp_def]
+      simp []
 
 theorem flatMap_range_succ_const {β : Type} (n : ℕ) (J : List β) :
     (List.range (n + 1)).flatMap (fun _ => J) = J ++ (List.range n).flatMap fun _ => J := by

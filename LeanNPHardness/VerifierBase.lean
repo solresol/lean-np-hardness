@@ -355,7 +355,7 @@ theorem emitEntry_exits (bits : List Bool) (S : VS) (h2 : S .T2 = bsyms bits) (h
               (seq (popOne VStack.Z) (pushList VStack.L [term false])) _ (by simp) 0)
             (moveAll_exits (Γ := VAlpha) VStack.T3 VStack.L (by decide) id Sym.mark _).le))
       refine (this.mono (by simp [bsyms]; omega)).congr ?_
-      funext k; cases k <;> simp [h2, h3, hZ, entryOf, bsyms]
+      funext k; cases k <;> simp [h3, hZ, entryOf, bsyms]
 
 /-- Read a framed code from `F` and push its entry onto `L`. -/
 def readKeep : VR := seq readBits emitEntry

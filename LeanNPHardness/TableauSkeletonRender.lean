@@ -95,7 +95,7 @@ theorem cellsFormula_map_range (R : Regs) (f : ℕ → FormulaDesc) (n : ℕ) :
   | zero => simp [cellsFormula]
   | succ n ih =>
       rw [List.range_succ_eq_map, List.map_cons, List.map_map, cellsFormula, ih, List.flatMap_cons]
-      simp [advance_zero, advance_advance, List.flatMap_map, Function.comp_def, Nat.add_comm]
+      simp [advance_zero, advance_advance, List.flatMap_map, Nat.add_comm]
 
 /-- The job rendering the descriptors with a cell step after each. -/
 def cellsJob (ds : List FormulaDesc) : List Instr :=

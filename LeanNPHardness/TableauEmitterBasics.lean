@@ -152,7 +152,7 @@ theorem loopInput_exits (f : Γx → List Instr) (x xk : List Γx) (n q m t tpb 
       x[i] (x.drop (i + 1)) hsplit em
     convert body using 2
     dsimp only
-    simp only [List.take_add_one, List.getElem?_map, List.getElem?_eq_getElem hi, Option.map_some,
+    simp only [List.take_add_one, List.getElem?_eq_getElem hi,
       Option.toList_some, List.map_append, List.map_cons, List.map_nil, List.flatten_append,
       List.flatten_cons, List.flatten_nil, List.append_nil, List.reverse_append, List.append_assoc]
   · intro i hi

@@ -141,7 +141,7 @@ theorem chosen_witness (a : Assignment ℕ) (F : Formula ℕ) (hw : F.ExactWidth
             · simp [h0, idx]
             · by_cases h1 : l1.eval a = true
               · simp [h0, h1, idx]
-              · simp only [h0, h1, if_false]
+              · simp only [h0, h1]
                 simp only [List.mem_cons, List.not_mem_nil, or_false] at hm
                 rcases hm with rfl | rfl | rfl
                 · exact absurd hl' h0
