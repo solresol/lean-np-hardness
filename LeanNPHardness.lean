@@ -43,6 +43,9 @@ import LeanNPHardness.ChainMachine
 import LeanNPHardness.BinaryConvertNat
 import LeanNPHardness.BinaryConvertWalk
 import LeanNPHardness.BinaryConvertMachine
+import LeanNPHardness.ExactThreeVerifySpec
+import LeanNPHardness.VerifierBase
+import LeanNPHardness.VerifierClause
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram
