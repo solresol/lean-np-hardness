@@ -4,7 +4,7 @@ import LeanNPHardness.TableauSkeleton
 import LeanNPHardness.TableauTemplates
 import LeanNPHardness.MachineRoutinePoly
 import LeanNPHardness.TableauParameters
-import LeanNPHardness.TableauEmitter
+import LeanNPHardness.CookLevinMachine
 import LeanNPHardness.BoolPairProjectionMachine
 import LeanNPHardness.BoundedPrime
 import LeanNPHardness.IntervalMachines
@@ -680,3 +680,7 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.TableauStacks.parameterStage_exits
 #print axioms LeanNPHardness.TableauStacks.loopRounds_exits
 #print axioms LeanNPHardness.MachineTableau.Instance.emitter_exits
+#print axioms LeanNPHardness.MachineTableau.Instance.emitter_template
+#print axioms LeanNPHardness.TableauStacks.skeleton_ok
+#print axioms LeanNPHardness.TableauStacks.generator_exits
+#print axioms LeanNPHardness.CookLevin.machine_outputsInTime
