@@ -48,6 +48,8 @@ import LeanNPHardness.VerifierBase
 import LeanNPHardness.VerifierClause
 import LeanNPHardness.VerifierCheck
 import LeanNPHardness.VerifierMachine
+import LeanNPHardness.SatVerifySpec
+import LeanNPHardness.SatVerifyMachine
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram

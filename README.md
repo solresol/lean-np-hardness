@@ -602,7 +602,10 @@ Exact 3-SAT is in NP (`ExactThreeVerify.encodedExactThreeSAT_inNP`): a TM2
 verifier reads two certificate bits per clause selecting a literal, checks
 every clause has width three, and compares the selected literals pairwise in
 binary, within `2000 * (n + 1) ^ 3` steps. Hence
-`ExactThreeVerify.encodedExactThreeSAT_NPComplete`.
+`ExactThreeVerify.encodedExactThreeSAT_NPComplete`. CNF-SAT is in NP by a
+verifier that selects one literal per clause in unary
+(`SatVerify.encodedSAT_inNP`), so `SatVerify.encodedSAT_NPComplete` is the
+Cook--Levin theorem in the library's binary encoding.
 
 Axiom audit (`LeanNPHardness/Audit.lean`): `propext`, `Classical.choice`,
 `Quot.sound` only.

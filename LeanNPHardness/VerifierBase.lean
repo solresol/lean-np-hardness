@@ -22,7 +22,7 @@ open LeanNPHardness.BinaryConvert (b2s s2b s2b_b2s marks marks_succ marks_zero m
 /-- The verifier's stacks. -/
 inductive VStack
   | input | out | F | C | T1 | T2 | T3 | K | G | G2 | Z | L | LK | SC | X | X2 | XC | Y | Y2
-  | BAD | CONF | scr
+  | BAD | CONF | scr | LC | CH | U2
   deriving DecidableEq, Fintype
 
 /-- Alphabets: tagged bits on the input, a bit on the output, symbols elsewhere. -/
@@ -35,13 +35,13 @@ instance : ∀ k, Fintype (VAlpha k)
   | .input => inferInstanceAs (Fintype (Bool ⊕ Bool))
   | .out => inferInstanceAs (Fintype Bool)
   | .F | .C | .T1 | .T2 | .T3 | .K | .G | .G2 | .Z | .L | .LK | .SC | .X | .X2 | .XC | .Y | .Y2
-  | .BAD | .CONF | .scr => inferInstanceAs (Fintype Sym)
+  | .BAD | .CONF | .scr | .LC | .CH | .U2 => inferInstanceAs (Fintype Sym)
 
 instance : ∀ k, DecidableEq (VAlpha k)
   | .input => inferInstanceAs (DecidableEq (Bool ⊕ Bool))
   | .out => inferInstanceAs (DecidableEq Bool)
   | .F | .C | .T1 | .T2 | .T3 | .K | .G | .G2 | .Z | .L | .LK | .SC | .X | .X2 | .XC | .Y | .Y2
-  | .BAD | .CONF | .scr => inferInstanceAs (DecidableEq Sym)
+  | .BAD | .CONF | .scr | .LC | .CH | .U2 => inferInstanceAs (DecidableEq Sym)
 
 /-- Verifier routines. -/
 abbrev VR := Routine VAlpha

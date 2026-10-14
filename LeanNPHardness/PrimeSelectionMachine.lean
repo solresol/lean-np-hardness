@@ -1689,7 +1689,7 @@ theorem firstUnaryCandidatePrime?_mem {candidates : List ℕ} {candidate : ℕ}
       by_cases hprime : unaryCandidatePrime head
       · simp [firstUnaryCandidatePrime?, hprime] at hselected
         simpa [hselected]
-      · simp only [firstUnaryCandidatePrime?, hprime, ↓reduceIte] at hselected
+      · simp only [firstUnaryCandidatePrime?, hprime] at hselected
         exact List.mem_cons_of_mem head (ih hselected)
 
 theorem head?_getD_eq_head {candidates : List ℕ}
@@ -2169,10 +2169,10 @@ private theorem primeSelector_step_scan_true
     primeSelectorCfg, primeSelectorProgram, primeSelectorStackContents,
     primeSelectorObserve, primeSelectorObservedPresent,
     primeSelectorObservedBit, primeSelectorResetObserved,
-    initList, haltList, Function.update]
+    initList]
   funext index
   rcases index with outer | index
-  · cases outer <;> simp [primeSelectorStackContents, Function.update]
+  · cases outer <;> simp [primeSelectorStackContents]
   · by_cases h : index = unaryCandidatePrimeComputer.k₀
     · subst index
       simp [primeSelectorStackContents, Function.update]
@@ -2187,7 +2187,7 @@ private theorem primeSelector_step_scan_false
     primeSelectorLookaheadCfg, primeSelectorCfg, primeSelectorProgram,
     primeSelectorStackContents, primeSelectorObserve,
     primeSelectorObservedPresent, primeSelectorObservedBit,
-    primeSelectorResetObserved, initList, haltList, Function.update]
+    primeSelectorResetObserved, initList]
 
 private theorem primeSelector_step_lookahead_present
     (bit : Bool) (input candidate output : List Bool) (found : Bool) :
@@ -2199,7 +2199,7 @@ private theorem primeSelector_step_lookahead_present
     primeSelectorLiftCfg, primeSelectorCfg, primeSelectorProgram,
     primeSelectorStackContents, primeSelectorObserve,
     primeSelectorObservedPresent, primeSelectorObservedBit,
-    primeSelectorResetObserved, initList, Function.update]
+    primeSelectorResetObserved, initList]
 
 private theorem primeSelector_step_lookahead_nil
     (candidate output : List Bool) (found : Bool) :
@@ -2210,7 +2210,7 @@ private theorem primeSelector_step_lookahead_nil
     primeSelectorDiscardCfg, primeSelectorCfg, primeSelectorProgram,
     primeSelectorStackContents, primeSelectorObserve,
     primeSelectorObservedPresent, primeSelectorResetObserved,
-    initList, haltList, Function.update]
+    initList]
 
 private def encodePrimeSelection : Option ℕ → List Bool
   | none => []
@@ -2248,7 +2248,7 @@ private theorem candidatePrime_haltList_pop_result (result : Bool) :
   funext index
   by_cases h : index = unaryCandidatePrimeComputer.k₁
   · subst index
-    simp [haltList, Function.update]
+    simp [Function.update]
   · simp [haltList, Function.update, h]
 
 private theorem primeSelector_haltList_eq_cfg (output : List Bool) :
@@ -2275,7 +2275,7 @@ private theorem primeSelector_step_result_true
     Function.update]
   funext index
   rcases index with outer | index
-  · cases outer <;> simp [primeSelectorStackContents, Function.update]
+  · cases outer <;> simp [primeSelectorStackContents]
   · by_cases h : index = unaryCandidatePrimeComputer.k₁
     · subst index
       simp [primeSelectorStackContents, Function.update]
@@ -2294,7 +2294,7 @@ private theorem primeSelector_step_result_false
     Function.update]
   funext index
   rcases index with outer | index
-  · cases outer <;> simp [primeSelectorStackContents, Function.update]
+  · cases outer <;> simp [primeSelectorStackContents]
   · by_cases h : index = unaryCandidatePrimeComputer.k₁
     · subst index
       simp [primeSelectorStackContents, Function.update]
@@ -2309,7 +2309,7 @@ private theorem primeSelector_step_clearCandidate_cons
   simp [primeSelectorComputer, FinTM2.step, primeSelectorIdleCfg,
     primeSelectorCfg, primeSelectorProgram, primeSelectorStackContents,
     primeSelectorObserve, primeSelectorObservedPresent,
-    primeSelectorResetObserved, haltList, Function.update]
+    primeSelectorResetObserved]
 
 private theorem primeSelector_step_clearCandidate_nil
     (input output : List Bool) (found : Bool) :
@@ -2332,7 +2332,7 @@ private theorem primeSelector_step_clearSelected_cons
   simp [primeSelectorComputer, FinTM2.step, primeSelectorIdleCfg,
     primeSelectorCfg, primeSelectorProgram, primeSelectorStackContents,
     primeSelectorObserve, primeSelectorObservedPresent,
-    primeSelectorResetObserved, haltList, Function.update]
+    primeSelectorResetObserved]
 
 private theorem primeSelector_step_clearSelected_nil
     (input candidate : List Bool) :
@@ -2342,7 +2342,7 @@ private theorem primeSelector_step_clearSelected_nil
   simp [primeSelectorComputer, FinTM2.step, primeSelectorIdleCfg,
     primeSelectorCfg, primeSelectorProgram, primeSelectorStackContents,
     primeSelectorObserve, primeSelectorObservedPresent,
-    primeSelectorResetObserved, haltList, Function.update]
+    primeSelectorResetObserved]
 
 private theorem primeSelector_step_moveCandidate_cons
     (bit : Bool) (input candidate output : List Bool) :
@@ -2354,7 +2354,7 @@ private theorem primeSelector_step_moveCandidate_cons
   simp [primeSelectorComputer, FinTM2.step, primeSelectorIdleCfg,
     primeSelectorCfg, primeSelectorProgram, primeSelectorStackContents,
     primeSelectorObserve, primeSelectorObservedPresent,
-    primeSelectorObservedBit, primeSelectorResetObserved, haltList,
+    primeSelectorObservedBit, primeSelectorResetObserved,
     Function.update]
 
 private theorem primeSelector_step_moveCandidate_nil
@@ -2377,7 +2377,7 @@ private theorem primeSelector_step_discardCount_cons
   simp [primeSelectorComputer, FinTM2.step, primeSelectorDiscardCfg,
     primeSelectorCfg, primeSelectorProgram, primeSelectorStackContents,
     primeSelectorObserve, primeSelectorObservedPresent,
-    primeSelectorResetObserved, Function.update]
+    primeSelectorResetObserved]
   rw [show ((initList unaryCandidatePrimeComputer
       (bit :: candidate)).stk unaryCandidatePrimeComputer.k₀).tail =
         candidate by simp [initList]]
@@ -2402,7 +2402,7 @@ private theorem primeSelector_step_finalize_found (output : List Bool) :
   rw [primeSelector_haltList_eq_cfg]
   simp [primeSelectorComputer, FinTM2.step, primeSelectorIdleCfg,
     primeSelectorCfg, primeSelectorProgram, primeSelectorStackContents,
-    primeSelectorInitialState, Function.update]
+    primeSelectorInitialState]
 
 private theorem primeSelector_step_finalize_none :
     primeSelectorComputer.step
@@ -2411,7 +2411,7 @@ private theorem primeSelector_step_finalize_none :
   rw [primeSelector_haltList_eq_cfg]
   simp [primeSelectorComputer, FinTM2.step, primeSelectorIdleCfg,
     primeSelectorCfg, primeSelectorProgram, primeSelectorStackContents,
-    primeSelectorInitialState, unaryEncodeNat, Function.update]
+    primeSelectorInitialState, unaryEncodeNat]
 
 private def primeSelector_scan_unary_evals
     (n : ℕ) (input candidate output : List Bool) (found : Bool) :

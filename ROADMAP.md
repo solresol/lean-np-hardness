@@ -183,8 +183,8 @@
   `Instance.generatorCost_le`, `CookLevin.computableInPolyTime`.
 - Derive SAT NP-hardness and NP-completeness. Hardness done for both
   encodings: `CookLevin.encodedUnarySAT_NPHard`,
-  `BinaryConvert.encodedSAT_NPHard`. Pending: the SAT verifier for
-  membership.
+  `BinaryConvert.encodedSAT_NPHard`; NP-completeness:
+  `SatVerify.encodedSAT_NPComplete`.
 - Derive exact 3-SAT NP-completeness through a checked polynomial reduction.
   Partial: `SplitJob.render_splitJob_toExactThree` checks the instruction
   job's meaning. `TableauStacks.extract_clause_exits` now extracts one

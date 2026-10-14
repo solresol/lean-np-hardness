@@ -8,7 +8,7 @@ import LeanNPHardness.CookLevinHardness
 import LeanNPHardness.MachineRoutineBound
 import LeanNPHardness.ChainMachine
 import LeanNPHardness.BinaryConvertMachine
-import LeanNPHardness.VerifierMachine
+import LeanNPHardness.SatVerifyMachine
 import LeanNPHardness.TableauRegisterBounds
 import LeanNPHardness.TableauSkeletonBounds
 import LeanNPHardness.BoolPairProjectionMachine
@@ -727,3 +727,10 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.ExactThreeVerify.polytimeVerifier
 #print axioms LeanNPHardness.ExactThreeVerify.encodedExactThreeSAT_inNP
 #print axioms LeanNPHardness.ExactThreeVerify.encodedExactThreeSAT_NPComplete
+#print axioms LeanNPHardness.SatVerify.verifySat_sound
+#print axioms LeanNPHardness.SatVerify.verifySat_complete
+#print axioms LeanNPHardness.SatVerify.readLen_exits
+#print axioms LeanNPHardness.SatVerify.clauseLoopSat_exits
+#print axioms LeanNPHardness.SatVerify.vmainSat_exits
+#print axioms LeanNPHardness.SatVerify.encodedSAT_inNP
+#print axioms LeanNPHardness.SatVerify.encodedSAT_NPComplete
