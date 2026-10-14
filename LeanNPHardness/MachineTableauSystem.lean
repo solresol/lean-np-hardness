@@ -41,11 +41,21 @@ noncomputable def D : ℕ := machineDepth p.tm
 noncomputable def pb : ℕ := MachineRuntime.machinePushBound p.tm
 
 /-- Real cells per stack: enough for the longest reachable stack plus one
-empty cell, and at least two. -/
-noncomputable def B : ℕ := p.inputLength + p.certBound + p.horizon * p.pb + 2
+empty cell, at least two, and at least `2 * D` so that the finitely many
+special cell templates always fit. -/
+noncomputable def B : ℕ := p.inputLength + p.certBound + p.horizon * p.pb + 2 + 2 * p.D
+
+/-- The generic real cells: all but the first `2 * D`. -/
+noncomputable def G : ℕ := p.inputLength + p.certBound + p.horizon * p.pb + 2
+
+theorem B_eq : p.B = p.G + 2 * p.D := rfl
+
+theorem G_ge_two : 2 ≤ p.G := by simp only [G]; omega
 
 /-- Padded cells per stack. -/
 noncomputable def P : ℕ := p.B + 2 * p.D
+
+theorem P_eq : p.P = p.G + 4 * p.D := by simp only [P, B, G]; omega
 
 noncomputable def stackCount : ℕ := (stackList p.tm).length
 
@@ -68,7 +78,7 @@ noncomputable def cellGroup (k : p.tm.K) (j : ℕ) : ℕ := p.kIndex k * p.P + j
 theorem cellGroup_ge (k : p.tm.K) (j : ℕ) : p.D + 2 ≤ p.cellGroup k j := by
   simp only [cellGroup]; omega
 
-theorem B_ge_two : 2 ≤ p.B := by simp [B]
+theorem B_ge_two : 2 ≤ p.B := by simp only [B]; omega
 
 theorem P_pos : 0 < p.P := by have := p.B_ge_two; simp only [P]; omega
 
@@ -405,6 +415,12 @@ theorem update_one (vs : List ℕ) :
 theorem update_dummy (g : ℕ) (hg2 : 2 ≤ g) (hgd : g < p.D + 2) (vs : List ℕ) :
     p.update g vs = 0 := by
   simp [update, p.cellOf_of_lt g hgd, show g ≠ 0 by omega, show g ≠ 1 by omega]
+
+theorem update_cellGroup' (k : p.tm.K) (j : ℕ) (hj : j < p.P) (vs : List ℕ) :
+    p.update (p.cellGroup k j) vs = if p.IsReal j then p.realUpdate k j vs else 0 := by
+  have hge := p.cellGroup_ge k j
+  simp only [update, p.cellOf_cellGroup k j hj, show p.cellGroup k j ≠ 0 by omega,
+    show p.cellGroup k j ≠ 1 by omega, if_false]
 
 theorem update_cellGroup (k : p.tm.K) (j : ℕ) (hj : j < p.P) (vs : List ℕ) :
     p.update (p.cellGroup k j) vs =
