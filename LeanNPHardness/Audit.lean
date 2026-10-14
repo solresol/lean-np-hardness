@@ -4,7 +4,7 @@ import LeanNPHardness.TableauSkeleton
 import LeanNPHardness.TableauTemplates
 import LeanNPHardness.MachineRoutinePoly
 import LeanNPHardness.TableauParameters
-import LeanNPHardness.CookLevinMachine
+import LeanNPHardness.CookLevinHardness
 import LeanNPHardness.TableauRegisterBounds
 import LeanNPHardness.TableauSkeletonBounds
 import LeanNPHardness.BoolPairProjectionMachine
@@ -689,3 +689,8 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineTableau.Instance.interpSteps_skeleton_le
 #print axioms LeanNPHardness.MachineTableau.Instance.encode_tableau_length_le
 #print axioms LeanNPHardness.MachineTableau.Instance.skeleton_length_le
+#print axioms LeanNPHardness.MachineTableau.Instance.generatorCost_le
+#print axioms LeanNPHardness.CookLevin.cost_le
+#print axioms LeanNPHardness.CookLevin.computableInPolyTime
+#print axioms LeanNPHardness.CookLevin.polytimeReduction
+#print axioms LeanNPHardness.CookLevin.encodedUnarySAT_NPHard
