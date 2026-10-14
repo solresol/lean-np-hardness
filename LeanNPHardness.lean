@@ -31,6 +31,8 @@ import LeanNPHardness.TableauEmitterBasics
 import LeanNPHardness.TableauEmitter
 import LeanNPHardness.TableauTemplateInstance
 import LeanNPHardness.TableauGenerator
+import LeanNPHardness.TableauRegisterBounds
+import LeanNPHardness.TableauSkeletonBounds
 import LeanNPHardness.CookLevinMachine
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
