@@ -81,6 +81,7 @@ import LeanNPHardness.VerifierTransport
 import LeanNPHardness.CNF
 import LeanNPHardness.CNFEncoding
 import LeanNPHardness.CNFCertificate
+import LeanNPHardness.CNFRenaming
 import LeanNPHardness.CNFNormalization
 
 namespace LeanNPHardness.Audit
@@ -752,3 +753,16 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.UnaryNPComplete.encodedUnarySAT_NPComplete
 #print axioms LeanNPHardness.UnaryNPComplete.encodedUnaryExactThreeSAT_NPComplete
 #print axioms LeanNPHardness.UnaryNPComplete.encodedUnaryMaxCut_NPComplete
+
+#print axioms LeanNPHardness.CNF.Formula.rename_clause_lengths
+#print axioms LeanNPHardness.CNF.Formula.eval_rename
+#print axioms LeanNPHardness.CNF.Formula.denseIndex_inj
+#print axioms LeanNPHardness.CNF.Formula.denseAssignment_denseIndex
+#print axioms LeanNPHardness.CNF.Formula.eval_denseRename_denseAssignment
+#print axioms LeanNPHardness.CNF.Formula.satisfiable_denseRename
+#print axioms LeanNPHardness.CNF.Formula.exactWidth_denseRename
+#print axioms LeanNPHardness.CNF.Formula.mem_vars_denseRename
+#print axioms LeanNPHardness.CNF.Formula.denseRename_var_lt_encodedSize
+#print axioms LeanNPHardness.CNF.Unary.encode_length_le_of_vars_lt
+#print axioms LeanNPHardness.CNF.Formula.denseRename_unary_length_le
+#print axioms LeanNPHardness.CNF.exactKSAT_denseRename

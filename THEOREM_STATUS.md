@@ -1,5 +1,9 @@
 # Theorem status
 
+The result tables describe the current declarations. The dated audit notes
+below preserve historical evidence; their then-pending SAT/verifier and
+Cook--Levin obligations are superseded by the complete results in the tables.
+
 | Result | Status | Lean declaration or completion criterion |
 |---|---|---|
 | Semantic many-one reduction | Complete | `LeanNPHardness.ManyOneReduction` |
@@ -77,8 +81,13 @@
 
 ## Reusable encoding and machine library
 
+Pending full-verifier integration in the component-machine entries below
+refers to that earlier implementation route. The complete SAT verifiers use
+the separate routine framework, as recorded in the main result table.
+
 | Result | Status | Checked declaration or encoding boundary |
 |---|---|---|
+| Dense CNF variable renaming: semantics and output size | Complete | `CNF.Formula.denseRename` maps each variable to its index in the deduplicated auxiliary dictionary, retaining every literal and clause occurrence. `satisfiable_denseRename`, `exactWidth_denseRename`, and `CNF.exactKSAT_denseRename` preserve the languages; `mem_vars_denseRename` identifies the support exactly as the dictionary index range, and `denseRename_var_lt_encodedSize` bounds every index by the original binary input length. `denseRename_unary_length_le` bounds the unary output by `n * (n + 1)` symbols for original binary bit length `n`. No TM2 runtime or polynomial-time reduction is asserted. |
 | Binary natural/list/nested-list encoding | Complete | `BinaryNatLists.finEncoding`, `decode_encode`, and `encode_length`; raw encodings in `RawNatEncoding`. |
 | Framing and raw-field conversion | Complete | `MachinePrimitives.framedNatComputableInPolyTime`, `framedNatListComputableInPolyTime`, `unframedNatListsComputableInPolyTime`, and `sourceOrderRawFieldsComputableInPolyTime`. |
 | Binary arithmetic | Complete | `MachinePrimitives.binarySuccComputableInPolyTime`, `binaryPredComputableInPolyTime`, `binaryLEComputableInPolyTime`, and `binaryAddComputableInPolyTime`; the latter two use `BinaryNatPair.finEncoding`. |
@@ -730,3 +739,16 @@ The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
   runs of clause-processing routines, with explicit initial stack and flag
   conditions; full exact-3-SAT compilation and its polynomial bound remain
   pending. The existing unary Cook--Levin hardness audits also pass.
+
+
+- On 2026-10-16 the twelve `CNFRenaming` audits pass. Generic
+  `rename_clause_lengths`, `eval_rename`, and `exactWidth_denseRename` use
+  `propext` and `Quot.sound`; the other nine also use `Classical.choice`.
+  Full `lake build` passes 2,469 jobs on Lean/mathlib v4.35.0. All 642 axiom
+  lists use only those three standard axioms; three further declarations are
+  axiom-free. The 129-file Lean source/config scan finds only the existing
+  explanatory `proof_wanted` comment. The new module has no warnings.
+  Assignment transport, exact dense support, SAT/exact-k-SAT equivalence,
+  preserved occurrence shape, and the `n * (n + 1)` unary-output bound in
+  original binary bits are checked. A polynomial-time TM2 renaming machine
+  remains a separate obligation.

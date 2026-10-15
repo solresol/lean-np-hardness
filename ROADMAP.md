@@ -32,13 +32,19 @@
 
 ## Milestone 3: satisfiability languages
 
+SAT and exact 3-SAT NP membership are now complete through the routine-based
+verifiers in Milestone 4. The component-machine sequence below records the
+earlier alternative implementation; its remaining assembly is not a blocker
+for those membership results.
+
 - Define Boolean variables, literals, clauses, CNF formulas, and assignments.
 - Preserve repeated literals and clauses in the base syntax.
 - Define SAT and exact `k`-SAT as encoded languages.
 - Implement and verify normalization between useful formula conventions.
   At-most-three to exact-three padding now has checked semantics and a linear
-  encoded-output bound in `CNFNormalization`; its TM2 runtime and the
-  arbitrary-width SAT transformation remain pending.
+  encoded-output bound in `CNFNormalization`; its standalone TM2 runtime
+  remains pending. The arbitrary-width SAT transformation is complete through
+  `ChainMachine` in Milestone 4.
 - Prove exact 3-SAT belongs to NP.
   Finite certificates and their bit bound are checked. `BinaryEqualityMachine`
   now supplies a linear-time equality kernel on separate Boolean stacks;
@@ -192,6 +198,13 @@
 
 ## Milestone 5: downstream adapters
 
+- Supply dense variable renaming for binary instances whose downstream
+  constructions depend on variable indices. Semantic and output-size layers
+  are checked in `CNFRenaming`: `Formula.denseRename` preserves satisfiability,
+  exact widths, and all occurrences; variables occupy exactly the dictionary
+  index range, below the original binary input length `n`. Its unary output
+  has at most `n * (n + 1)` symbols. A TM2 implementation and runtime bound
+  remain pending; this is not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

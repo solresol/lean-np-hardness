@@ -4188,3 +4188,71 @@ avoid failed routes, and choose a materially different experiment when blocked.
   iterate simp sets. A build-log-driven script applied the first two fixes.
 - **Ending state:** library builds on `v4.35.0`. `phd-thesis-lean` must move
   with it (its own `leanOptions` and the encoding renames).
+
+
+## 2026-10-16 — dense CNF renaming and quadratic unary output size
+
+- **Starting commit:** `21e6eb462b14c0b612895b4ff03add15eea54e70` on clean
+  `main`. Fetch confirmed local/tracking parity, ahead/behind 0/0. Read the
+  instructions, roadmap, status, prior journal, and automation memory. The
+  intervening interactive work completes Cook--Levin, SAT/3-SAT and Max-Cut
+  NP-completeness and upgrades Lean/mathlib to v4.35.0; the old splitting
+  machine and component-verifier assembly plans are superseded.
+- **Goal:** the latest journal's suggested dense-variable utility for binary
+  instances, supporting Milestone 5 constructions whose size depends on
+  variable indices.
+- **Checked increment:** `CNFRenaming.lean` defines generic polarity-preserving
+  `Literal.rename` / `Formula.rename`, an auxiliary `variableDictionary`,
+  `denseIndex`, `denseRename`, and executable assignment transport.
+  `eval_denseRename_denseAssignment` and `satisfiable_denseRename` prove both
+  directions of satisfaction preservation. `rename_clause_lengths`,
+  `exactWidth_denseRename`, and `exactKSAT_denseRename` retain all widths and
+  the positive-k guard. `mem_vars_denseRename` proves that the output support
+  is exactly `[0, dictionary.length)`; `denseIndex_inj` forbids identifying
+  distinct occurring variables. Only the auxiliary dictionary is deduplicated
+  (mathlib keeps rightmost occurrences); the formula's repetitions, order,
+  polarities, and empty clauses survive.
+- **Size/model boundary:** `denseRename_var_lt_encodedSize` bounds every output
+  variable by original binary bit length `n`. The independent generic lemma
+  `Unary.encode_length_le_of_vars_lt` bounds output by occurrences times the
+  variable bound plus clause count. `denseRename_unary_length_le` derives
+  at most `n * (n + 1)` unary symbols. These are executable semantic and size
+  results, not a finite TM2 implementation or a polynomial-time reduction.
+- **Files:** new module, root/audit imports, twelve audits, README, roadmap,
+  theorem status, and this log. Added current-status context so historical
+  pending-verifier notes do not override the newer completed results.
+- **Checks:** targeted module build passes 1,298 jobs; full `lake build` passes
+  2,469 jobs. All twelve new audits pass: three use `propext`/`Quot.sound`,
+  nine additionally use `Classical.choice`. All 642 audit lists contain only
+  those standard axioms; three further reports are axiom-free. The 129-file
+  Lean source/config scan finds only the existing explanatory `proof_wanted`
+  comment. No warnings in the new module; existing migration/deprecation
+  warnings elsewhere remain. `git diff --check` passes. Build log:
+  `/tmp/lean-np-hardness-2026-10-16-build.log`.
+- **Failed approaches/API discoveries:** the generic evaluation simplification
+  leaves a definitionally equal `Clause.eval` application, closed with `rfl`.
+  `omega` does not distribute products of variables; normalize with
+  `Nat.add_mul`/`Nat.mul_add` before arithmetic. Supply explicit `List.mem_map`
+  witnesses instead of expecting `simp` to construct them. Induction exposes
+  `List (Clause Nat)`, so use `Formula.vars F` outside its namespace.
+  A direct Dedup import warned about the new module system; trying `module`
+  failed because it cannot import legacy `CNFCertificate`. Removed the
+  redundant import and retained repository conventions: the two existing
+  imports already expose the needed list API. Useful facts are
+  `List.getElem?_idxOf`, `List.idxOf_inj`, `List.Nodup.idxOf_getElem`, and
+  `List.dedup_sublist.length_le`. No remaining proof blocker for this scope.
+- **Comparison evidence:** consulted sibling Coq `SourceAdapter.v` (bounds from
+  the maximum variable and retention of repeated literals), `Hardness.v`
+  (semantic/runtime separation), and pinned Complexity
+  [kSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/kSAT.v)
+  (`kCNF_clause_length` counts list entries). All new definitions and proofs
+  are reproduced and kernel-checked in Lean; no sibling files were edited.
+- **Ending state:** verified increment prepared for commit and push on `main`;
+  commit hash and final local/tracking/live-remote parity are recorded in
+  automation memory.
+- **Best next experiment:** implement a finite-machine lookup over an ordered
+  framed dictionary, returning `idxOf` (or dictionary length when absent)
+  with a unary position counter while preserving dictionary/query data. Reuse
+  the binary comparison kernel and routine framework, then assemble dictionary
+  construction and occurrence-preserving formula traversal. Keep its runtime
+  separate from the already checked output-size theorem.

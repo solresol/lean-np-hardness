@@ -3,6 +3,7 @@ import LeanNPHardness.FinEncoding
 import LeanNPHardness.CNF
 import LeanNPHardness.CNFEncoding
 import LeanNPHardness.CNFCertificate
+import LeanNPHardness.CNFRenaming
 import LeanNPHardness.CNFNormalization
 import LeanNPHardness.CNFConstraint
 import LeanNPHardness.CNFSplitting

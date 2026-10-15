@@ -29,6 +29,14 @@ than hiding it inside a downstream NP-hardness proof.
 
 ## Reusable encodings and machine operations
 
+`CNFRenaming` supplies executable dense variable renaming for binary CNF
+instances. It preserves satisfiability, exact clause widths, polarity, order,
+and repeated occurrences. Only its auxiliary variable dictionary is
+deduplicated. The renamed variables occupy precisely the dictionary index
+range, and the unary output has at most `n * (n + 1)` symbols for original
+binary input length `n`. Its TM2 implementation and runtime proof remain
+pending; the checked bound is on output size.
+
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
 which are built directly on the routine framework. Remarks below that a full
