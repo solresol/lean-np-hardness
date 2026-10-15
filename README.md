@@ -618,7 +618,10 @@ a per-clause gadget of occurrence vertices and two linked triangles
 (`MaxCut.sat_iff_maxCut_gadget`) is streamed by the interpreter after the
 chain reduction. Max-Cut is also in NP under the binary encoding, by a
 verifier that converts the binary threshold to unary with saturation, so
-`MaxCutVerify.encodedMaxCut_NPComplete`.
+`MaxCutVerify.encodedMaxCut_NPComplete`. All three problems are also
+NP-complete under the unary-index encoding (`UnaryNPComplete`), where indices
+are polynomial in the input size; downstream reductions whose output size
+depends on the number of variables or vertices should start from these.
 
 Axiom audit (`LeanNPHardness/Audit.lean`): `propext`, `Classical.choice`,
 `Quot.sound` only.

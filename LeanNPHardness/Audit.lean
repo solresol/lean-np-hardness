@@ -9,7 +9,7 @@ import LeanNPHardness.MachineRoutineBound
 import LeanNPHardness.ChainMachine
 import LeanNPHardness.BinaryConvertMachine
 import LeanNPHardness.SatVerifyMachine
-import LeanNPHardness.MaxCutVerifyMachine
+import LeanNPHardness.UnaryNPComplete
 import LeanNPHardness.TableauRegisterBounds
 import LeanNPHardness.TableauSkeletonBounds
 import LeanNPHardness.BoolPairProjectionMachine
@@ -749,3 +749,6 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MaxCutVerify.vmainMC_exits
 #print axioms LeanNPHardness.MaxCutVerify.encodedMaxCut_inNP
 #print axioms LeanNPHardness.MaxCutVerify.encodedMaxCut_NPComplete
+#print axioms LeanNPHardness.UnaryNPComplete.encodedUnarySAT_NPComplete
+#print axioms LeanNPHardness.UnaryNPComplete.encodedUnaryExactThreeSAT_NPComplete
+#print axioms LeanNPHardness.UnaryNPComplete.encodedUnaryMaxCut_NPComplete
