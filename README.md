@@ -616,7 +616,9 @@ threshold clause) is NP-hard under both encodings
 (`MaxCutMachine.encodedUnaryMaxCut_NPHard`, `MaxCutMachine.encodedMaxCut_NPHard`):
 a per-clause gadget of occurrence vertices and two linked triangles
 (`MaxCut.sat_iff_maxCut_gadget`) is streamed by the interpreter after the
-chain reduction.
+chain reduction. Max-Cut is also in NP under the binary encoding, by a
+verifier that converts the binary threshold to unary with saturation, so
+`MaxCutVerify.encodedMaxCut_NPComplete`.
 
 Axiom audit (`LeanNPHardness/Audit.lean`): `propext`, `Classical.choice`,
 `Quot.sound` only.

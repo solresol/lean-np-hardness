@@ -53,6 +53,8 @@ import LeanNPHardness.SatVerifyMachine
 import LeanNPHardness.MaxCutSpec
 import LeanNPHardness.MaxCutJob
 import LeanNPHardness.MaxCutMachine
+import LeanNPHardness.MaxCutVerifySpec
+import LeanNPHardness.MaxCutVerifyMachine
 import LeanNPHardness.ComplexityClasses
 import LeanNPHardness.MachineCompositionExecution
 import LeanNPHardness.MachineCompositionProgram

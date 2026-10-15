@@ -4164,3 +4164,7 @@ avoid failed routes, and choose a materially different experiment when blocked.
   NAE-3-SAT or Independent Set) reusing the streaming-job pattern of
   `ChainJob`/`MaxCutJob`; or a dense variable-renaming utility for binary
   instances. Keep thesis-specific mathematics out of this library.
+- **Addendum (same session):** `MaxCutVerify.encodedMaxCut_NPComplete` is checked.
+  The verifier converts the binary threshold to unary with saturation against a
+  unary budget stack (`readLenSat_exits`), avoiding exponential unary values.
+  The verifier stack family `VStack` gained `LC`, `CH`, `U2`, `CNT`, `BU`.
