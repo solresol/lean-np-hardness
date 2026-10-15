@@ -2,7 +2,7 @@ import LeanNPHardness.MachineControl
 
 namespace LeanNPHardness.MachineComposition
 
-open Turing
+open Turing StateTransition
 
 /-- Lift a first-machine statement into the combined stack, label, and state
 types while preserving `halt`. State-dependent operations are totalized with

@@ -1,8 +1,8 @@
-import Mathlib.Computability.TMComputable
+import LeanNPHardness.FinEncoding
 
 namespace LeanNPHardness.MachineComposition
 
-open Turing
+open Turing StateTransition
 
 /-- The stack indices used while composing two finite two-stack machines. -/
 def StackIndex (first second : FinTM2) :=

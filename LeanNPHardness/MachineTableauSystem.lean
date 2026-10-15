@@ -19,7 +19,7 @@ These are semantic results; no runtime claim is made.
 
 namespace LeanNPHardness.MachineTableau
 
-open Turing CNF CNF.Constraint MachineLocality MachinePaddedRun Tableau
+open Turing CNF CNF.Constraint MachineLocality MachinePaddedRun Tableau StateTransition
 
 /-- The shape of a machine tableau: the machine, extra output symbols, the
 input length, the certificate bound, and the time horizon. -/

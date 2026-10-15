@@ -20,7 +20,7 @@ the source, so its endpoint is not mathlib's canonical `haltList` contract.
 
 namespace LeanNPHardness.MachinePrimitives.BooleanCopy
 
-open Computability Turing
+open Computability Turing StateTransition
 
 inductive Stack
   | source | scratch | target

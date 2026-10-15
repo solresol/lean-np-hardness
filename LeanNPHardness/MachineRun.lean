@@ -8,7 +8,7 @@ the original explicit finite-alphabet input encodings.
 
 namespace LeanNPHardness.MachinePrimitives
 
-open Computability Turing
+open Computability Turing StateTransition
 open LeanNPHardness.MachineComposition
 
 def evalsToInTimeMono {configuration : Type*}

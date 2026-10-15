@@ -2,7 +2,7 @@ import LeanNPHardness.MachineControl
 
 namespace LeanNPHardness.MachineComposition
 
-open Turing
+open Turing StateTransition
 
 /-- Extend the two component stack families with one scratch stack. The
 scratch stack uses the shared middle encoding alphabet. -/
@@ -458,7 +458,7 @@ theorem reverseOutput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
         ((output.map first.outputAlphabet).reverse ++ scratch)) := by
   induction output generalizing state scratch with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         reverseOutput_iteration_empty first second state contents scratch
   | cons head tail ih =>
       have firstIteration :=
@@ -477,7 +477,7 @@ theorem reverseOutput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
             (transferState first second (some (first.outputAlphabet head)))
             (Function.update contents (Sum.inl first.tm.k₁) tail)
             (first.outputAlphabet head :: scratch)) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.map, List.reverse_cons, List.append_assoc] using
         ih (transferState first second (some (first.outputAlphabet head)))
           (first.outputAlphabet head :: scratch)
@@ -605,7 +605,7 @@ theorem fillInput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
           ((scratch.map second.inputAlphabet.symm).reverse ++ input)) []) := by
   induction scratch generalizing state input with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         fillInput_iteration_empty first second state
           (Function.update contents (Sum.inr second.tm.k₀) input)
   | cons head tail ih =>
@@ -624,7 +624,7 @@ theorem fillInput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
             (transferState first second (some head))
             (Function.update contents (Sum.inr second.tm.k₀)
               (second.inputAlphabet.symm head :: input)) tail) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.map, List.reverse_cons, List.append_assoc] using
         ih (transferState first second (some head))
           (second.inputAlphabet.symm head :: input)

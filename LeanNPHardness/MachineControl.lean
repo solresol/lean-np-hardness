@@ -2,7 +2,7 @@ import LeanNPHardness.MachineEmbedding
 
 namespace LeanNPHardness.MachineComposition
 
-open Turing
+open Turing StateTransition
 
 /-- The two stages of an order-preserving intermediate-output transfer. The
 first stage reverses the first machine's output onto scratch storage; the

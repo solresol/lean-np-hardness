@@ -22,7 +22,9 @@ def primeCandidates (q : ℕ) : Finset ℕ :=
 @[simp]
 theorem mem_primeCandidates_iff (q p : ℕ) :
     p ∈ primeCandidates q ↔ p.Prime ∧ q < p ∧ p ≤ 2 * q := by
-  simp [primeCandidates, Nat.lt_iff_add_one_le, and_comm]
+  simp only [primeCandidates, Finset.mem_filter, Finset.mem_Icc,
+    Nat.add_one_le_iff]
+  tauto
 
 theorem primeCandidates_nonempty {q : ℕ} (hq : q ≠ 0) :
     (primeCandidates q).Nonempty := by

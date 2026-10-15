@@ -18,7 +18,7 @@ count-controlled repetition, and malformed-input rejection remain separate.
 
 namespace LeanNPHardness.MachinePrimitives.CertificateMembershipStep
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := CertificateCount.Stack
 abbrev Alphabet := CertificateCount.Alphabet

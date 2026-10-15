@@ -14,7 +14,7 @@ traversal are separate obligations.
 
 namespace LeanNPHardness.MachinePrimitives.PreservingBinaryEquality
 
-open Computability Turing
+open Computability Turing StateTransition
 
 inductive Stack
   | query

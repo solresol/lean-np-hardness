@@ -94,9 +94,10 @@ theorem transStack_emits (k : I.tm.K) :
         (List.range (2 * I.D)).map fun i => cellChunk (I.cellRealDesc k i)))
     (emitsOnly_seq (emitsOnly_emitG (Γx := Γx) (cellChunk (I.cellRealDesc k (2 * I.D))))
       (emitsOnly_emitList (Γx := Γx) (List.replicate I.D (cellChunk I.phantomDesc))))
-  convert this using 1
-  funext g
-  simp [transStackCost]
+  unfold transStack
+  convert this using 1 <;> funext g
+  · simp [transChunks]
+  · simp [transStackCost]
 
 theorem transChunks_G (k : I.tm.K) :
     I.transChunks k I.G = ((List.range I.P).map (I.cellTrans k)).flatMap cellChunk := by
@@ -120,6 +121,7 @@ theorem transRound_emits :
     (emitsOnly_seq (emitsOnly_foldStacks (Γx := Γx) (stackList I.tm) I.transStack I.transChunks
       (fun _ g => I.transStackCost g) fun k _ => I.transStack_emits k)
       (emitsOnly_emit (Γx := Γx) (roundEnd I.D)))
+  unfold transRound
   convert this using 1
   · funext g
     simp only [headChunks_flatten, List.append_assoc]
@@ -275,6 +277,7 @@ theorem initStackInput_exits (x xk : List Γx) (n q m t tpb g w pw c1 : ℕ) (sk
   have s5 := emitList_exits (Γx := Γx) (List.replicate (2 + 3 * I.D) (cellChunk I.zeroDesc)) [] xk n q m t
     tpb g w pw c1 0 sk4
   have := seq_exits _ _ s1 (seq_exits _ _ s2 (seq_exits _ _ s3 (seq_exits _ _ s4 s5)))
+  unfold initStackInput
   convert this using 1
   · simp [initInputCost]
   · simp [sk4, sk3, sk2, sk1, initInputChunks, List.reverse_append, List.append_assoc]
@@ -303,9 +306,9 @@ theorem initStack_emits_of_ne (k : I.tm.K) (hk : k ≠ I.tm.k₀) :
   have := emitsOnly_seq (emitsOnly_emitG (Γx := Γx) (cellChunk I.zeroDesc))
     (emitsOnly_emitList (Γx := Γx) (List.replicate (4 * I.D) (cellChunk I.zeroDesc)))
   simp only [initStack, if_neg hk]
-  convert this using 1
-  funext g
-  simp
+  convert this using 1 <;> funext g
+  · simp [initOtherChunks]
+  · simp
 
 theorem initOtherChunks_G (k : I.tm.K) (hk : k ≠ I.tm.k₀) :
     I.initOtherChunks I.G = ((List.range I.P).map (I.initCellDesc k)).flatMap cellChunk := by
@@ -398,13 +401,12 @@ theorem initRound_exits (x xk : List Γx) (m w pw : ℕ) (sk : List Instr) :
       I.initInputCost x.length I.certBound (I.horizon * I.pb) := by
     rw [initStackCostAt, if_pos rfl]
   have this := seq_exits _ _ hhead (hprefold _)
-  dsimp only at this
   rw [initRound, hfold]
   convert this using 1
   · rw [initRoundCost, hsplit, List.map_append, List.map_cons, hpreCost, hpostCost, hk0Cost,
       List.sum_append, List.sum_cons, headChunks_length]
     omega
-  · congr 1
+  · apply congrArg
     rw [hsplit, headChunks_flatten, List.flatMap_append, List.flatMap_cons, hpreCh, hpostCh, hk0Ch]
     simp only [List.reverse_append, List.append_assoc]
 
@@ -450,7 +452,7 @@ theorem emitter_exits (x : List Γx) (hx : I.input = x.map conv) (m w pw : ℕ) 
   have := seq_exits _ _ s1 (seq_exits _ _ s2 s3)
   simp only [emitter, emitterCost]
   convert this using 1
-  congr 1
+  apply congrArg
   simp only [Instance.skeleton, List.reverse_append, List.append_assoc, List.append_nil]
 
 end LeanNPHardness.MachineTableau.Instance

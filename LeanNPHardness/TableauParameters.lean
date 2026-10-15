@@ -65,7 +65,7 @@ theorem countInput_exits (x : List Γx) :
   · have hsteps : loopSteps (fun _ => 3) x.length = 4 * x.length + 1 := by
       rw [loopSteps_eq_sum]; simp; omega
     rw [hsteps] at key
-    simpa using key
+    simpa using! key
   · intro i hi
     have hsplit : (x.drop i) = x[i] :: x.drop (i + 1) := List.drop_eq_getElem_cons hi
     have h1 := pushList_exits (Γ := GAlphabet Γx) .xkeep [x[i]]
@@ -83,7 +83,6 @@ theorem countInput_exits (x : List Γx) :
     convert body using 1
     have htake : (x.take (i + 1)).reverse = x[i] :: (x.take i).reverse := by
       rw [List.take_add_one, List.getElem?_eq_getElem hi]; simp
-    dsimp only
     rw [htake]
     gstacks_ext
     all_goals simp [marks, List.replicate_succ]
@@ -100,7 +99,7 @@ theorem restoreInput_exits (x xk : List Γx) (n q m t tpb g w pw : ℕ) :
   · have hsteps : loopSteps (fun _ => 2) xk.length = 3 * xk.length + 1 := by
       rw [loopSteps_eq_sum]; simp; omega
     rw [hsteps] at key
-    simpa using key
+    simpa using! key
   · intro i hi
     have hsplit : (xk.drop i) = xk[i] :: xk.drop (i + 1) := List.drop_eq_getElem_cons hi
     have h1 := pushList_exits (Γ := GAlphabet Γx) .input [xk[i]]
@@ -112,7 +111,6 @@ theorem restoreInput_exits (x xk : List Γx) (n q m t tpb g w pw : ℕ) :
     convert body using 1
     have htake : (xk.take (i + 1)).reverse = xk[i] :: (xk.take i).reverse := by
       rw [List.take_add_one, List.getElem?_eq_getElem hi]; simp
-    dsimp only
     rw [htake]
     gstacks_ext
   · intro i hi
@@ -283,6 +281,7 @@ theorem parameterStage_exits (bound time : Polynomial ℕ) (pb D width : ℕ) (x
   have all := seq_exits _ _ s1 (seq_exits _ _ s2 (seq_exits _ _ s3 (seq_exits _ _ s4
     (seq_exits _ _ s5 (seq_exits _ _ s6 (seq_exits _ _ s7 (seq_exits _ _ s8 (seq_exits _ _ s9
     (seq_exits _ _ s10 (seq_exits _ _ s11 (seq_exits _ _ s12 (seq_exits _ _ s13 s14))))))))))))
+  unfold parameterStage
   convert all using 1
   simp only [parameterCost, paramStacks, marks_length, List.length_reverse, ← hn, ← hq, ← ht, ← hg]
   ring

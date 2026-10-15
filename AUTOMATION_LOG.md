@@ -4168,3 +4168,23 @@ avoid failed routes, and choose a materially different experiment when blocked.
   The verifier converts the binary threshold to unary with saturation against a
   unary budget stack (`readLenSat_exits`), avoiding exponential unary values.
   The verifier stack family `VStack` gained `LC`, `CH`, `U2`, `CNT`, `BU`.
+
+## 2026-10-16 — upgrade to Lean and mathlib v4.35.0 (interactive session)
+
+- **Starting commit:** `7b4b9973fb0dd5a1e92806d45b07057bdfc723f8`
+- **Goal:** move from Lean `v4.27.0-rc1` to the current stable toolchain so
+  that `phd-thesis-lean` can follow.
+- **Checked increment:** toolchain and mathlib pinned to `v4.35.0`. Added
+  `LeanNPHardness/FinEncoding.lean`, a bundled-alphabet layer over mathlib's
+  unbundled `Encoding` and definitional abbreviations for
+  `TM2ComputableInPolyTime` and friends. Set
+  `backward.isDefEq.respectTransparency := false` package-wide. Repaired proofs
+  across the library; see `docs/MATHLIB_MIGRATION.md`.
+- **Successful checks:** full `lake build` (2,468 jobs); unfinished-proof scan
+  clean; axiom audit reports only `propext`, `Classical.choice`, `Quot.sound`.
+- **Lessons:** most breakage is transparency. `simpa … using! h` restores the
+  default-transparency close; unfold a routine before `convert`; replace
+  `congr 1` on machine configurations with `apply congrArg`; add `flip` to
+  iterate simp sets. A build-log-driven script applied the first two fixes.
+- **Ending state:** library builds on `v4.35.0`. `phd-thesis-lean` must move
+  with it (its own `leanOptions` and the encoding renames).

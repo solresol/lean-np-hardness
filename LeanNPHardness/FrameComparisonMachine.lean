@@ -16,7 +16,7 @@ count, certificate traversal, and a full SAT verifier remain separate tasks.
 
 namespace LeanNPHardness.MachinePrimitives.FrameComparison
 
-open Computability Turing
+open Computability Turing StateTransition
 
 inductive Stack
   | input | query | candidate | scratch | count | output
@@ -347,8 +347,9 @@ theorem natural_run (query candidate : Nat) (input output : List Bool) :
         (BinaryNatLists.encodeNat candidate ++ input) (encodeNat query) [] [] [] output)) =
       some (cfg none initialState input (encodeNat query) [] [] []
         (decide (query = candidate) :: output)) := by
-  simpa only [BinaryEquality.encodeNat_eq_iff] using
-    whole_frame (encodeNat query) (encodeNat candidate) input output
+  have run := whole_frame (encodeNat query) (encodeNat candidate) input output
+  simp only [BinaryEquality.encodeNat_eq_iff] at run
+  exact run
 
 /-- Runtime uses encoded bit lengths, independent of the unread suffix. -/
 def natural_evalsToInTime (query candidate : Nat) (input output : List Bool) :

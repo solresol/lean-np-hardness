@@ -2,7 +2,7 @@ import LeanNPHardness.PairMachine
 
 namespace LeanNPHardness.MachineAdapters
 
-open Turing
+open Turing StateTransition
 
 /-- The shared five-stack layout for the preprocessing part of a pair-left
 machine adapter. The tagged source is classified onto two reverse stacks,
@@ -313,7 +313,8 @@ theorem pairAdapter_split_whole_list {Γ Δ : Type}
         rightOrdered) := by
   induction source generalizing state leftReverse rightReverse with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip, PairEncoding.leftSymbols,
+        PairEncoding.rightSymbols] using
         pairAdapter_split_iteration_empty state leftReverse leftOrdered
           rightReverse rightOrdered
   | cons head tail ih =>
@@ -334,7 +335,7 @@ theorem pairAdapter_split_whole_list {Γ Δ : Type}
               some (pairAdapterCfg (.split .scan) (some (.inl symbol)) tail
                 (symbol :: leftReverse) leftOrdered rightReverse
                 rightOrdered) by
-            simpa [Function.iterate_succ_apply'] using firstIteration]
+            simpa [Function.iterate_succ_apply', flip] using firstIteration]
           simpa [PairEncoding.leftSymbols, PairEncoding.rightSymbols,
             List.reverse_cons, List.append_assoc] using
             ih (some (Sum.inl symbol)) (symbol :: leftReverse) rightReverse
@@ -354,7 +355,7 @@ theorem pairAdapter_split_whole_list {Γ Δ : Type}
               some (pairAdapterCfg (.split .scan) (some (.inr symbol)) tail
                 leftReverse leftOrdered (symbol :: rightReverse)
                 rightOrdered) by
-            simpa [Function.iterate_succ_apply'] using firstIteration]
+            simpa [Function.iterate_succ_apply', flip] using firstIteration]
           simpa [PairEncoding.leftSymbols, PairEncoding.rightSymbols,
             List.reverse_cons, List.append_assoc] using
             ih (some (Sum.inr symbol)) leftReverse (symbol :: rightReverse)
@@ -517,7 +518,7 @@ theorem pairAdapter_restore_left_whole_list {Γ Δ : Type}
         (leftReverse.reverse ++ leftOrdered) rightReverse rightOrdered) := by
   induction leftReverse generalizing state leftOrdered with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         pairAdapter_restore_left_iteration_empty state source leftOrdered
           rightReverse rightOrdered
   | cons head tail ih =>
@@ -534,7 +535,7 @@ theorem pairAdapter_restore_left_whole_list {Γ Δ : Type}
               (head :: tail) leftOrdered rightReverse rightOrdered)) =
           some (pairAdapterCfg (.restore .leftScan) (some (.inl head))
             source tail (head :: leftOrdered) rightReverse rightOrdered) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.reverse_cons, List.append_assoc] using
         ih (some (.inl head)) (head :: leftOrdered)
 
@@ -549,7 +550,7 @@ theorem pairAdapter_restore_right_whole_list {Γ Δ : Type}
         (rightReverse.reverse ++ rightOrdered)) := by
   induction rightReverse generalizing state rightOrdered with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         pairAdapter_restore_right_iteration_empty state source leftOrdered
           rightOrdered
   | cons head tail ih =>
@@ -566,7 +567,7 @@ theorem pairAdapter_restore_right_whole_list {Γ Δ : Type}
               leftOrdered (head :: tail) rightOrdered)) =
           some (pairAdapterCfg (.restore .rightScan) (some (.inr head))
             source [] leftOrdered tail (head :: rightOrdered)) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.reverse_cons, List.append_assoc] using
         ih (some (.inr head)) (head :: rightOrdered)
 
@@ -635,7 +636,7 @@ theorem pairAdapter_whole_list {Γ Δ : Type}
         some (pairAdapterCfg (.restore .leftScan) none []
           (PairEncoding.leftSymbols source).reverse []
           (PairEncoding.rightSymbols source).reverse []) := by
-    simpa [Function.iterate_succ_apply'] using
+    simpa [Function.iterate_succ_apply', flip] using
       pairAdapter_split_done_step (Γ := Γ) (Δ := Δ) none
         (PairEncoding.leftSymbols source).reverse []
         (PairEncoding.rightSymbols source).reverse []
@@ -687,8 +688,8 @@ def pairAdapter_evalsTo {Γ Δ : Type}
 /-- On a canonical tagged pair encoding, the integrated preprocessing machine
 recovers exactly the input and certificate encodings on their ordered stacks. -/
 theorem pairAdapter_finEncoding_whole_list {α β : Type}
-    (left : Computability.FinEncoding α)
-    (right : Computability.FinEncoding β) (pair : α × β) :
+    (left : FinEncoding α)
+    (right : FinEncoding β) (pair : α × β) :
     (flip Option.bind (TM2.step pairAdapterProgram))^[
         4 * ((PairEncoding.finEncoding left right).encode pair).length + 7]
       (some (pairAdapterCfg (.split .scan) none

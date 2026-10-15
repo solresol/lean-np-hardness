@@ -29,7 +29,7 @@ structure PolytimeDecider {α : Type} (problem : EncodedLanguage α) where
   rejects_iff : ∀ input, decide input = false ↔ ¬ problem.accepts input
   polytime :
     Nonempty
-      (Turing.TM2ComputableInPolyTime problem.encoding finEncodingBoolBool
+      (TM2ComputableInPolyTime problem.encoding finEncodingBoolBool
         decide)
 
 namespace PolytimeDecider
@@ -41,7 +41,7 @@ def ofAcceptsIff {α : Type} {problem : EncodedLanguage α}
     (accepts_iff : ∀ input, decide input = true ↔ problem.accepts input)
     (polytime :
       Nonempty
-        (Turing.TM2ComputableInPolyTime problem.encoding finEncodingBoolBool
+        (TM2ComputableInPolyTime problem.encoding finEncodingBoolBool
           decide)) :
     PolytimeDecider problem where
   decide := decide
@@ -125,7 +125,7 @@ structure PolytimeVerifier {α : Type} (problem : EncodedLanguage α) where
       verify (input, witness) = true
   polytime :
     Nonempty
-      (Turing.TM2ComputableInPolyTime
+      (TM2ComputableInPolyTime
         (PairEncoding.finEncoding problem.encoding certificateEncoding)
         finEncodingBoolBool verify)
 
@@ -192,7 +192,7 @@ noncomputable def pullbackCertificateBound {α β : Type}
     (targetVerifier : PolytimeVerifier target)
     (reduction : source.PolytimeReducesTo target)
     (reductionComputer :
-      Turing.TM2ComputableInPolyTime source.encoding target.encoding
+      TM2ComputableInPolyTime source.encoding target.encoding
         reduction.map) :
     Polynomial ℕ :=
   targetVerifier.certificateBound.comp
@@ -205,7 +205,7 @@ theorem pullbackCertificateBound_eval {α β : Type}
     (targetVerifier : PolytimeVerifier target)
     (reduction : source.PolytimeReducesTo target)
     (reductionComputer :
-      Turing.TM2ComputableInPolyTime source.encoding target.encoding
+      TM2ComputableInPolyTime source.encoding target.encoding
         reduction.map)
     (n : ℕ) :
     (pullbackCertificateBound targetVerifier reduction reductionComputer).eval n =
@@ -224,7 +224,7 @@ theorem pullback_complete {α β : Type}
     (targetVerifier : PolytimeVerifier target)
     (reduction : source.PolytimeReducesTo target)
     (reductionComputer :
-      Turing.TM2ComputableInPolyTime source.encoding target.encoding
+      TM2ComputableInPolyTime source.encoding target.encoding
         reduction.map)
     (input : α) (haccepts : source.accepts input) :
     ∃ witness : List Bool,

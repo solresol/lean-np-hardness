@@ -2,7 +2,7 @@ import LeanNPHardness.MachineRun
 
 namespace LeanNPHardness.MachinePrimitives
 
-open Computability Turing
+open Computability Turing StateTransition
 
 namespace RawBoolList
 
@@ -117,7 +117,7 @@ private def allFalseEvalsToInTimeOne
     EvalsToInTime allFalseComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private theorem allFalse_step_cons

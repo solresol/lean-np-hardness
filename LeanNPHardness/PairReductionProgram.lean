@@ -2,7 +2,7 @@ import LeanNPHardness.PairReduction
 
 namespace LeanNPHardness.MachineAdapters
 
-open Turing
+open Turing StateTransition
 
 /-- Lift a preprocessing statement to the extended pair/reduction stack
 family. The statement can address only the five preprocessing stacks, so all
@@ -923,7 +923,7 @@ theorem pairReductionProgram_preprocess_transfer_whole_list
           (pairInputTransferCfg computer .reverseScan none [] []
             (PairEncoding.leftSymbols source) []
             (PairEncoding.rightSymbols source) machineContents)) := by
-    simpa [Function.iterate_succ_apply', liftPairAdapterCfg,
+    simpa [Function.iterate_succ_apply', flip, liftPairAdapterCfg,
       pairAdapterCfg, pairInputTransferCfg] using
       pairReductionProgram_adapter_done_step computer
         (pairReductionStacks computer
@@ -966,7 +966,7 @@ theorem pairReductionProgram_preprocess_transfer_whole_list
                 ((PairEncoding.leftSymbols source).map
                     computer.inputAlphabet.symm ++
                   machineContents computer.tm.k₀))))) := by
-    simpa [Function.iterate_succ_apply', pairInputTransferCfg] using
+    simpa [Function.iterate_succ_apply', flip, pairInputTransferCfg] using
       pairReductionProgram_transfer_done_step computer
         (pairReductionStacks computer
           (pairAdapterStacks [] [] [] []

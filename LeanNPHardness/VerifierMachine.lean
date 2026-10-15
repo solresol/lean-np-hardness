@@ -16,7 +16,7 @@ this gives `encodedExactThreeSAT_NPComplete`.
 
 namespace LeanNPHardness.ExactThreeVerify
 
-open Turing Computability Routines CNF CNF.Unary Polynomial MachinePrimitives
+open Turing Computability Routines CNF CNF.Unary Polynomial MachinePrimitives StateTransition
 open LeanNPHardness.BinaryConvert (b2s s2b s2b_b2s marks marks_succ marks_zero marks_length
   marks_eq_nil marks_reverse marks_add)
 
@@ -111,7 +111,6 @@ theorem walk_entries_le (F : Formula ℕ) : ∀ v,
         have := ih (v.drop 2)
         simp only [walk, hc, if_true, List.flatMap_cons,
           List.length_append] at this ⊢
-        simp only [] at *
         omega
       · simp [walk, hc]
 
@@ -359,7 +358,7 @@ noncomputable def computableInPolyTime :
           timePoly.eval ((Formula.encode F).length + w.length) by
         simp [timePoly, vCost])
     simpa [Equiv.refl, PairEncoding.finEncoding_encode, finEncodingBoolBool, encodeBool,
-      RawBoolList.finEncoding, encodedExactThreeSAT, encodedExactKSAT, Formula.finEncoding] using run'
+      RawBoolList.finEncoding, encodedExactThreeSAT, encodedExactKSAT, Formula.finEncoding] using! run'
 
 /-- The checked polynomial-time verifier for binary exact 3-SAT. -/
 noncomputable def polytimeVerifier : EncodedLanguage.PolytimeVerifier encodedExactThreeSAT where

@@ -3,7 +3,7 @@ import LeanNPHardness.MachineTransfer
 
 namespace LeanNPHardness.MachineComposition
 
-open Turing
+open Turing StateTransition
 
 /-- The total program for sequential machine composition on the final
 scratch-extended stack layout. First-machine labels run with reached halts
@@ -206,7 +206,7 @@ theorem compositionProgram_reverseOutput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
         ((output.map first.outputAlphabet).reverse ++ scratch)) := by
   induction output generalizing state scratch with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         compositionProgram_reverseOutput_iteration_empty first second state
           contents scratch
   | cons head tail ih =>
@@ -226,7 +226,7 @@ theorem compositionProgram_reverseOutput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
             (transferState first second (some (first.outputAlphabet head)))
             (Function.update contents (Sum.inl first.tm.k₁) tail)
             (first.outputAlphabet head :: scratch)) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.map, List.reverse_cons, List.append_assoc] using
         ih (transferState first second (some (first.outputAlphabet head)))
           (first.outputAlphabet head :: scratch)
@@ -284,7 +284,7 @@ theorem compositionProgram_fillInput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
           ((scratch.map second.inputAlphabet.symm).reverse ++ input)) []) := by
   induction scratch generalizing state input with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         compositionProgram_fillInput_iteration_empty first second state
           (Function.update contents (Sum.inr second.tm.k₀) input)
   | cons head tail ih =>
@@ -304,7 +304,7 @@ theorem compositionProgram_fillInput_whole_list {Γ₀ Γ₁ Γ₂ : Type}
             (transferState first second (some head))
             (Function.update contents (Sum.inr second.tm.k₀)
               (second.inputAlphabet.symm head :: input)) tail) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.map, List.reverse_cons, List.append_assoc] using
         ih (transferState first second (some head))
           (second.inputAlphabet.symm head :: input)

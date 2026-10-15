@@ -3,7 +3,8 @@ import LeanNPHardness.MachineCompositionRuntime
 
 namespace LeanNPHardness.MachineAdapters
 
-open Computability Turing
+open Computability Turing StateTransition
+
 
 /-- The checked pair-left machine computes `(a, c) ↦ (f a, c)` under the
 canonical tagged pair encodings. Runtime bounds are supplied separately. -/
@@ -14,7 +15,9 @@ def pairReductionComputable {α β certificate : Type}
     TM2Computable (PairEncoding.finEncoding sourceEncoding certificateEncoding)
       (PairEncoding.finEncoding targetEncoding certificateEncoding)
       (fun pair => (f pair.1, pair.2)) where
-  toTM2ComputableAux := pairReductionAux computer.toTM2ComputableAux
+  tm := pairReductionMachine computer.toTM2ComputableAux
+  inputAlphabet := Equiv.refl (Sum sourceEncoding.Γ certificateEncoding.Γ)
+  outputAlphabet := Equiv.refl (Sum targetEncoding.Γ certificateEncoding.Γ)
   outputsFun pair := by
     let source := (PairEncoding.finEncoding sourceEncoding certificateEncoding).encode pair
     let privateOutput := (targetEncoding.encode (f pair.1)).map computer.outputAlphabet.invFun
@@ -22,13 +25,16 @@ def pairReductionComputable {α β certificate : Type}
         ((PairEncoding.leftSymbols source).map computer.inputAlphabet.symm)
         (some privateOutput) := by
       refine ⟨(computer.outputsFun pair.1).steps, ?_⟩
-      simpa [source, PairEncoding.finEncoding] using
+      simpa [source, privateOutput, PairEncoding.finEncoding] using
         (computer.outputsFun pair.1).evals_in_steps
     let run := pairReductionMachine_outputs computer.toTM2ComputableAux
       source privateOutput reductionRun
     refine ⟨run.steps, ?_⟩
-    simpa [run, source, privateOutput, pairReductionAux,
-      PairEncoding.finEncoding, List.map_map] using run.evals_in_steps
+    have evals := run.evals_in_steps
+    simp only [run, source, privateOutput, PairEncoding.finEncoding,
+      List.map_map] at evals ⊢
+    simp [Function.comp_def, flip] at evals ⊢
+    exact evals
 
 /-- Function-level specialization preserves the exact step count, measured in
 the full tagged input and the encoded reduced output. -/
@@ -82,7 +88,9 @@ noncomputable def pairReductionComputableInPolyTime {α β certificate : Type}
       (PairEncoding.finEncoding sourceEncoding certificateEncoding)
       (PairEncoding.finEncoding targetEncoding certificateEncoding)
       (fun pair => (f pair.1, pair.2)) where
-  toTM2ComputableAux := pairReductionAux computer.toTM2ComputableAux
+  tm := pairReductionMachine computer.toTM2ComputableAux
+  inputAlphabet := Equiv.refl (Sum sourceEncoding.Γ certificateEncoding.Γ)
+  outputAlphabet := Equiv.refl (Sum targetEncoding.Γ certificateEncoding.Γ)
   time := pairReductionTimePolynomial sourceEncoding targetEncoding f computer
   outputsFun pair := by
     let paired := pairReductionComputable sourceEncoding targetEncoding

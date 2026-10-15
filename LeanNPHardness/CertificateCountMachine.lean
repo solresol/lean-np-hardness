@@ -16,7 +16,7 @@ consistency check, decrement, or certificate-membership loop is asserted.
 
 namespace LeanNPHardness.MachinePrimitives.CertificateCount
 
-open Computability Turing
+open Computability Turing StateTransition
 
 inductive Stack
   | input | query | remaining | candidate | scratch | count | output
@@ -198,7 +198,8 @@ theorem whole_frame (bits input query candidate output : List Bool) :
       some (cfg (some .check) none input query bits candidate [] [] output) := by
   have run := extract_run _ _ _ candidate output
     (FrameExtraction.whole_frame bits input query [])
-  simpa only [List.append_nil] using run
+  simp only [List.append_nil] at run
+  exact run
 
 /-- A non-destructive count test, independent of the bit at the stack head. -/
 theorem check_step (state : State)
@@ -239,8 +240,9 @@ theorem natural_run (n : Nat) (input query candidate output : List Bool) :
         (BinaryNatLists.encodeNat n ++ input) query [] candidate [] [] output)) =
       some (cfg (some (if n = 0 then .empty else .nonempty)) none
         input query (encodeNat n) candidate [] [] output) := by
-  simpa only [encodeNat_eq_nil_iff] using
-    checked_frame (encodeNat n) input query candidate output
+  have run := checked_frame (encodeNat n) input query candidate output
+  simp only [encodeNat_eq_nil_iff] at run
+  exact run
 
 /-- Runtime is linear in the consumed header bits, regardless of the body. -/
 def natural_evalsToInTime (n : Nat) (input query candidate output : List Bool) :

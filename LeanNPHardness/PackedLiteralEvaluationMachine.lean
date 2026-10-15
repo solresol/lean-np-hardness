@@ -16,7 +16,7 @@ clause traversal, exact-width checking, and the full verifier remain separate.
 
 namespace LeanNPHardness.MachinePrimitives.PackedLiteralEvaluation
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := LiteralEvaluation.Stack
 abbrev Alphabet := LiteralEvaluation.Alphabet
@@ -248,7 +248,7 @@ theorem loader_whole_literal (literal : CNF.Literal Nat)
         input (encodeNat literal.var) remaining candidate [] [] output backup) := by
   have run := loader_run _ _ _ candidate output backup
     (PackedLiteral.whole_literal literal input remaining)
-  simpa only [loaderCfg_cfg, Option.elim_some] using run
+  simpa only [loaderCfg_cfg, Option.elim_some] using! run
 
 /-- One counted step moves polarity from the loader register to evaluation control. -/
 theorem evaluation_entry_step (negative : Bool)
@@ -278,7 +278,7 @@ theorem whole_literal (literal : CNF.Literal Nat) (xs : List Nat) (input output 
     Nat.add_comm 1, Function.iterate_succ_apply, Option.bind_some, evaluation_entry_step]
   have run := evaluation_run _ _ _
     (LiteralEvaluation.whole_raw_query literal.var (LiteralEvaluation.polarity literal) xs input output)
-  simpa only [LiteralEvaluation.result_eq_eval] using run
+  simpa only [LiteralEvaluation.result_eq_eval] using! run
 
 /-- Bound in raw variable bits, packed payload bits, and full certificate bits. -/
 theorem runSteps_le_bit_bound (literal : CNF.Literal Nat) (xs : List Nat) :

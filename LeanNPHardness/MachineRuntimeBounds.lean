@@ -1,9 +1,9 @@
-import Mathlib.Computability.TMComputable
+import LeanNPHardness.FinEncoding
 import Mathlib.Data.Fintype.Lattice
 
 namespace LeanNPHardness.MachineRuntime
 
-open Computability Turing
+open Computability Turing StateTransition
 
 private theorem transported_list_length {K : Type} (Γ : K → Type)
     {i j : K} (h : i = j) (values : List (Γ j)) :

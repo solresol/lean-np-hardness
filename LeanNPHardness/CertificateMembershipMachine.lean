@@ -17,7 +17,7 @@ encodings are assumed; malformed-input rejection and a full verifier are separat
 
 namespace LeanNPHardness.MachinePrimitives.CertificateMembership
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := CertificateCount.Stack
 abbrev Alphabet := CertificateCount.Alphabet
@@ -233,7 +233,7 @@ theorem header_whole_frame (bits input query output : List Bool) :
         (BinaryNatLists.frame bits ++ input) query [] [] [] [] output)) =
       some (cfg (some (.loop .check)) initialState input query bits [] [] [] (false :: output)) := by
   have run := header_run _ _ _ [] output (FrameExtraction.whole_frame bits input query [])
-  simpa only [List.append_nil] using run
+  simpa only [List.append_nil] using! run
 
 /-- Exact runtime includes header extraction, initialization, and every loop step. -/
 def runSteps (query : Nat) (xs : List Nat) : Nat :=
@@ -249,7 +249,7 @@ theorem whole_list (query : Nat) (xs : List Nat) (input output : List Bool) :
   rw [runSteps, Nat.add_comm, Function.iterate_add_apply]
   simp only [BinaryNatLists.encodeNatList, BinaryNatLists.encodeNat, List.append_assoc]
   rw [header_whole_frame]
-  simpa only [Bool.or_false] using
+  simpa only [Bool.or_false] using!
     loop_run _ _ _ (CertificateMembershipLoop.whole_list query xs input output false)
 
 /-- Polynomial runtime in raw query bits and the complete framed certificate bits. -/

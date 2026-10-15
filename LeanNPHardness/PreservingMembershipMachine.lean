@@ -20,7 +20,7 @@ this is not canonical list output.
 
 namespace LeanNPHardness.MachinePrimitives.PreservingMembership
 
-open Computability Turing
+open Computability Turing StateTransition
 
 inductive Stack
   | input | query | remaining | candidate | scratch | count | output | backup

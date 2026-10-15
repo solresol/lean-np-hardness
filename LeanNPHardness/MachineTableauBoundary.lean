@@ -16,7 +16,7 @@ semantic results; no runtime claim is made.
 
 namespace LeanNPHardness.MachineTableau
 
-open Turing CNF CNF.Constraint MachineLocality MachinePaddedRun Tableau
+open Turing CNF CNF.Constraint MachineLocality MachinePaddedRun Tableau StateTransition
 
 /-- A machine tableau instance: the shape, the fixed input prefix, the
 certificate symbol map, and the required short halting output. -/

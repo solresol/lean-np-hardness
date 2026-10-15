@@ -75,7 +75,7 @@ theorem decodeGraph_graphFormula (G : List Edge) (K : ℕ) :
                      rw [decodeGraph, ih]; rfl
 
 /-- Max-Cut instances under the unary-index CNF encoding. -/
-def unaryEncoding : Computability.FinEncoding (List Edge × ℕ) where
+def unaryEncoding : FinEncoding (List Edge × ℕ) where
   Γ := CNF.Unary.Sym
   encode p := CNF.Unary.encode (graphFormula p.1 p.2)
   decode syms := (CNF.Unary.decode syms).bind decodeGraph
@@ -83,7 +83,7 @@ def unaryEncoding : Computability.FinEncoding (List Edge × ℕ) where
   ΓFin := inferInstance
 
 /-- Max-Cut instances under the binary CNF encoding. -/
-def binaryEncoding : Computability.FinEncoding (List Edge × ℕ) where
+def binaryEncoding : FinEncoding (List Edge × ℕ) where
   Γ := Bool
   encode p := Formula.encode (graphFormula p.1 p.2)
   decode bits := (Formula.decode bits).bind decodeGraph

@@ -17,7 +17,7 @@ The lookup ends at a live `done` label; its final halt is excluded from the boun
 
 namespace LeanNPHardness.MachinePrimitives.QueryMembership
 
-open Computability Turing
+open Computability Turing StateTransition
 
 inductive Stack
   | lookup (stack : ReusableMembership.Stack)

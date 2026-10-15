@@ -16,7 +16,7 @@ binary with the CNF converter gives `encodedMaxCut_NPHard`.
 
 namespace LeanNPHardness.MaxCutMachine
 
-open Turing Computability CNF CNF.Unary CNF.Chain TableauJobs TableauStacks Routines MaxCut
+open Turing Computability CNF CNF.Unary CNF.Chain TableauJobs TableauStacks Routines MaxCut StateTransition
   MaxCutJob Polynomial MachinePrimitives
 
 /-! ### Instruction validity and register bounds -/
@@ -241,7 +241,7 @@ noncomputable def computableInPolyTime :
       (show cost F ≤ timePoly.eval (encode F).length by
         simp only [timePoly, eval_mul, eval_C, eval_pow, eval_add, eval_X, eval_one]
         exact cost_le F)
-    simpa [Equiv.refl] using run
+    simpa [Equiv.refl] using! run
 
 /-- The checked reduction from unary SAT to unary Max-Cut: the chain
 reduction followed by the gadget. -/
@@ -279,7 +279,7 @@ noncomputable def binaryComputable :
           BinaryConvert.timePoly.eval (encode (graphFormula p.1 p.2)).length by
         simp only [BinaryConvert.timePoly, eval_mul, eval_C, eval_pow, eval_add, eval_X, eval_one]
         exact BinaryConvert.convBound_le _)
-    simpa [Equiv.refl, unaryEncoding, binaryEncoding] using run'
+    simpa [Equiv.refl, unaryEncoding, binaryEncoding] using! run'
 
 /-- Unary Max-Cut reduces to binary Max-Cut by re-encoding. -/
 noncomputable def binaryReduction : encodedUnaryMaxCut.PolytimeReducesTo encodedMaxCut where

@@ -19,7 +19,7 @@ header dispatch, membership accumulation, and full traversal remain separate.
 
 namespace LeanNPHardness.MachinePrimitives.CertificateStep
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := CertificateCount.Stack
 abbrev Alphabet := CertificateCount.Alphabet

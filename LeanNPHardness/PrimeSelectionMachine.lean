@@ -10,7 +10,7 @@ asserted for these algorithms.
 
 namespace LeanNPHardness.MachinePrimitives
 
-open Computability Turing
+open Computability Turing StateTransition
 open LeanNPHardness.MachineComposition LeanNPHardness.BoundedPrime
 
 /-! ## Repeated padded divisibility
@@ -284,7 +284,7 @@ private def pairDvdEvalsToInTimeOne
     EvalsToInTime pairDvdComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private theorem pairDvd_step_scan_some
@@ -932,7 +932,7 @@ private def pairAllFalseEvalsToInTimeOne
     EvalsToInTime pairAllFalseComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private theorem pairAllFalse_step_scan_some
@@ -1360,7 +1360,7 @@ private noncomputable def unaryCandidatePrime_generator_evals (n : ℕ) :
         (initList trialDivisionPairsAux.tm (unaryEncodeNat n))
         (some (haltList trialDivisionPairsAux.tm output))
         (8 * (n + 1) ^ 2) := by
-    simpa [trialDivisionPairsAux, output] using
+    simpa [trialDivisionPairsAux, output] using!
       trialDivisionPairs_outputsInTime n
   have hpositive : 0 < hgenerator.steps := by
     apply Nat.pos_of_ne_zero
@@ -1559,7 +1559,7 @@ private noncomputable def unaryCandidatePrime_second_evals (n : ℕ) :
       (initList pairAllFalseAux.tm input)
       (some (haltList pairAllFalseAux.tm (encodeBool result)))
       (18 * input.length + 1) := by
-    simpa [pairAllFalseAux, input, result, unaryCandidatePrime] using
+    simpa [pairAllFalseAux, input, result, unaryCandidatePrime] using!
       pairAllFalse_outputsInTime (trialDivisionPairs n)
   have hrightRun := compositionProgram_right_run trialDivisionPairsAux
     pairAllFalseAux hsecond.steps
@@ -2157,7 +2157,7 @@ private def primeSelectorEvalsToInTimeOne
     (hstep : primeSelectorComputer.step start = some finish) :
     EvalsToInTime primeSelectorComputer.step start (some finish) 1 where
   steps := 1
-  evals_in_steps := by simpa [Function.iterate_one] using hstep
+  evals_in_steps := by simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private theorem primeSelector_step_scan_true
@@ -3041,7 +3041,7 @@ noncomputable def primeSelectorComputableInPolyTime :
       (primeSelectorTime_le_cubic candidates)
     simpa [RawUnaryNatList.finEncoding, unaryFinEncodingNat, Equiv.refl,
       Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_add,
-      Polynomial.eval_natCast, Polynomial.eval_one, Polynomial.eval_X] using
+      Polynomial.eval_natCast, Polynomial.eval_one, Polynomial.eval_X] using!
         hmono
 
 /-- On the checked Bertrand stream, the driver emits exactly the selected
@@ -3186,7 +3186,7 @@ private noncomputable def selectedPrime_generator_evals (q : ℕ) :
       (initList unaryBertrandCandidateAux.tm (unaryEncodeNat q))
       (some (haltList unaryBertrandCandidateAux.tm output))
       (6 * (q + 1) ^ 2) := by
-    simpa [unaryBertrandCandidateAux, output] using
+    simpa [unaryBertrandCandidateAux, output] using!
       unaryBertrandCandidate_outputsInTime q
   have hpositive : 0 < hgenerator.steps := by
     apply Nat.pos_of_ne_zero
@@ -3348,7 +3348,7 @@ private noncomputable def selectedPrime_second_evals (q : ℕ) :
       (initList primeSelectorAux.tm input)
       (some (haltList primeSelectorAux.tm (unaryEncodeNat selected)))
       (primeSelectorCandidatesTime (bertrandCandidates q) + 2 * q + 4) := by
-    simpa [primeSelectorAux, input, selected, bertrandCandidates_length] using
+    simpa [primeSelectorAux, input, selected, bertrandCandidates_length] using!
       primeSelector_outputsInTime (bertrandCandidates q)
   have hsecond : EvalsToInTime primeSelectorAux.tm.step
       (initList primeSelectorAux.tm input)
@@ -3373,7 +3373,7 @@ private noncomputable def selectedPrime_second_evals (q : ℕ) :
     some (haltList selectedPrimeComputer (unaryEncodeNat (selectPrimeAbove q)))
   rw [selectedPrime_haltList_eq]
   simpa [input, selected, primeSelector_selects_firstBertrandPrime,
-    firstBertrandPrime_eq_selectPrimeAbove] using hrightRun
+    firstBertrandPrime_eq_selectPrimeAbove] using! hrightRun
 
 private theorem selectedPrimeTime_le_degreeSix (q : ℕ) :
     (80 * ((RawUnaryNatList.encode (bertrandCandidates q)).length + 1) ^ 3) +

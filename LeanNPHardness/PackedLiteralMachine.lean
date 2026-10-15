@@ -16,7 +16,7 @@ reusable lookup, applies literal semantics, and drains the raw query.
 
 namespace LeanNPHardness.MachinePrimitives.PackedLiteral
 
-open Computability Turing
+open Computability Turing StateTransition
 
 private theorem encodeNat_double (n : Nat) :
     encodeNat (2 * n) = if n = 0 then [] else false :: encodeNat n := by
@@ -191,7 +191,7 @@ theorem whole_frame (bits input query : List Bool) :
       (some (liftCfg (FrameExtraction.cfg (some .prefix) none
         (BinaryNatLists.frame bits ++ input) query [] [] [])))) = _
   rw [run]
-  simpa only [List.append_nil] using split_step none input query bits [] []
+  simpa only [List.append_nil] using! split_step none input query bits [] []
 
 /-- The exact framed literal code yields its polarity and raw variable bits. -/
 theorem whole_literal (literal : CNF.Literal Nat) (input query : List Bool) :
@@ -200,7 +200,7 @@ theorem whole_literal (literal : CNF.Literal Nat) (input query : List Bool) :
         (BinaryNatLists.encodeNat literal.toNat ++ input) query [] [] [])) =
       some (cfg (some .done) (some (LiteralEvaluation.polarity literal))
         input query (encodeNat literal.var) [] []) := by
-  simpa only [head_encode_toNat, tail_encode_toNat] using
+  simpa only [head_encode_toNat, tail_encode_toNat] using!
     whole_frame (encodeNat literal.toNat) input query
 
 /-- Linear bound in the consumed literal frame's full bit length; final halt excluded. -/

@@ -2,7 +2,7 @@ import LeanNPHardness.PairReductionComputable
 
 namespace LeanNPHardness.PairExchange
 
-open Computability Turing
+open Computability Turing StateTransition
 
 inductive Stack
   | input | left | right | output
@@ -61,11 +61,13 @@ private abbrev Run (a b : (computer Γ Δ).Cfg) (time : ℕ) :=
   EvalsToInTime (computer Γ Δ).step a (some b) time
 
 private def one {a b : (computer Γ Δ).Cfg} (h : (computer Γ Δ).step a = some b) : Run a b 1 :=
-  { steps := 1, evals_in_steps := by simpa [Function.iterate_one] using h, steps_le_m := le_rfl }
+  { steps := 1, evals_in_steps := by simpa [Function.iterate_one, flip] using h, steps_le_m := le_rfl }
 
 private def seq {a b c : (computer Γ Δ).Cfg} {m n : ℕ}
     (h : Run a b m) (h' : Run b c n) : Run a c (m + n) := by
-  simpa [Nat.add_comm] using EvalsToInTime.trans (computer Γ Δ).step m n a b (some c) h h'
+  have run := EvalsToInTime.trans (computer Γ Δ).step m n a b (some c) h h'
+  rw [Nat.add_comm] at run
+  exact run
 
 local macro "exchange_step" : tactic => `(tactic|
   (simp [computer, FinTM2.step, cfg, program, stackContents, Function.update]
@@ -190,7 +192,7 @@ end LeanNPHardness.PairExchange
 
 namespace LeanNPHardness.MachineAdapters
 
-open Computability Turing MachineComposition
+open Computability Turing MachineComposition StateTransition
 
 /-- Polynomial-time computation on the right component of any encoded pair,
 using the checked pair exchange and the existing left-component adapter. -/

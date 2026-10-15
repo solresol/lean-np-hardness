@@ -16,7 +16,7 @@ the unary encoding of the tableau, with an exact step count
 
 namespace LeanNPHardness.TableauStacks
 
-open Routines CNF.Unary TableauJobs MachineLocality MachineTableau Turing
+open Routines CNF.Unary TableauJobs MachineLocality MachineTableau Turing StateTransition
 
 variable {Γx : Type} [Fintype Γx] [DecidableEq Γx]
 
@@ -121,7 +121,7 @@ theorem drainAll_exits (L : List GStack) (S : Stacks (GAlphabet Γx)) :
       have h1 := drain_exits k S
       have h2 := ih (Function.update S k [])
       have := seq_exits _ _ h1 h2
-      convert this using 1
+      convert (config := {preTransparency := .default}) this using 1
       funext k'
       by_cases hk : k' = k
       · subst hk

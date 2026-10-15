@@ -17,7 +17,7 @@ consistency.
 
 namespace LeanNPHardness.MaxCutVerify
 
-open Turing Computability Routines CNF CNF.Unary Polynomial MachinePrimitives ExactThreeVerify
+open Turing Computability Routines CNF CNF.Unary Polynomial MachinePrimitives ExactThreeVerify StateTransition
   MaxCut SatVerify
 open LeanNPHardness.BinaryConvert (b2s s2b s2b_b2s marks marks_succ marks_zero marks_length
   marks_eq_nil marks_reverse marks_add bitsOf bitsOf_eq bitsOf_pos encodeNat_odd encodeNat_even)
@@ -401,7 +401,7 @@ theorem thresholdClause_exits (K cap : ℕ) (S : VS) (rest : List Sym)
       (frameS (Computability.encodeNat (2 * K)) ++ rest))) .F
       (Sym.pos :: (frameS (Computability.encodeNat (2 * K)) ++ rest))) .pos
     (frameS (Computability.encodeNat (2 * K)) ++ rest) (by simp)
-    (hr.congr (T := _) rfl |>.mono le_rfl |> fun h => by simpa only [update_F_idem] using h)
+    (hr.congr (T := _) rfl |>.mono le_rfl |> fun h => by simpa only [update_F_idem] using! h)
   have h2 := dispatch_exitsLE (Γ := VAlpha) .F d2
     (Function.update S .F (Sym.neg :: Sym.pos :: (frameS (Computability.encodeNat (2 * K)) ++ rest)))
     .neg (Sym.pos :: (frameS (Computability.encodeNat (2 * K)) ++ rest)) (by simp) h3
@@ -742,7 +742,7 @@ noncomputable def computableInPolyTime :
           timePolyMC.eval ((Formula.encode (graphFormula G K)).length + w.length) by
         simp [timePolyMC, vCostMC])
     simpa [Equiv.refl, PairEncoding.finEncoding_encode, finEncodingBoolBool, encodeBool,
-      RawBoolList.finEncoding, encodedMaxCut, binaryEncoding] using run'
+      RawBoolList.finEncoding, encodedMaxCut, binaryEncoding] using! run'
 
 /-- The checked polynomial-time verifier for binary Max-Cut. -/
 noncomputable def polytimeVerifier : EncodedLanguage.PolytimeVerifier encodedMaxCut where

@@ -14,7 +14,7 @@ claim is made here.
 
 namespace LeanNPHardness.MachineLocality
 
-open Turing
+open Turing StateTransition
 
 variable {K : Type} {Γ : K → Type} {Λ σ : Type}
 

@@ -18,7 +18,7 @@ count-controlled clause traversal, and full verifier assembly remain separate.
 
 namespace LeanNPHardness.MachinePrimitives.ClauseEvaluationStep
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := PackedLiteralEvaluation.Stack
 abbrev Alphabet := PackedLiteralEvaluation.Alphabet

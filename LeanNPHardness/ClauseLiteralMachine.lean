@@ -16,7 +16,7 @@ separate obligations. The final live continuation halt is excluded.
 
 namespace LeanNPHardness.MachinePrimitives.ClauseLiteral
 
-open Computability Turing
+open Computability Turing StateTransition
 
 inductive Stack
   | evaluation (stack : ClauseEvaluationStep.Stack)

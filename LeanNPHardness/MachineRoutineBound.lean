@@ -12,7 +12,7 @@ machine output in time.
 
 namespace LeanNPHardness.Routines
 
-open Turing
+open Turing StateTransition
 
 variable {K : Type} [DecidableEq K] {Γ : K → Type}
 

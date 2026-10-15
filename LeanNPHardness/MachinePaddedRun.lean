@@ -13,7 +13,7 @@ Cook--Levin tableau. No runtime claim is made.
 
 namespace LeanNPHardness.MachinePaddedRun
 
-open Turing
+open Turing StateTransition
 
 variable (tm : FinTM2)
 

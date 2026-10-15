@@ -15,7 +15,7 @@ rejection of arbitrary malformed bit streams or a complete SAT verifier.
 
 namespace LeanNPHardness
 
-open Computability Turing
+open Computability Turing StateTransition
 
 namespace FramedNatListQuery
 

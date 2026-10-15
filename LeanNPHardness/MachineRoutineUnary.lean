@@ -30,7 +30,7 @@ theorem copyWork_exits (src dst scr : WorkName) (hsd : src ≠ dst) (hss : src �
       (Function.update S (.work dst) (S (.work src) ++ S (.work dst))) := by
   have := copyAll_exits (Γ := GAlphabet Γx) (.work src) (.work dst) (.work scr) id id id
     .mark .mark .mark (work_ne hsd) (work_ne hss) (work_ne hds) (fun _ => rfl) S hscr
-  simpa using this
+  simpa [copyWork] using this
 
 /-- Add `|a| × |b|` marks to `acc`, consuming a copy of `b` made on `bc`;
 `a`, `b` are preserved and `scr`, `bc` end empty. -/
@@ -116,6 +116,7 @@ theorem mulInto_exits (a b acc scr bc : WorkName)
     split_ifs <;> subst_vars <;> simp_all
   rw [hstart] at hloop
   have combined := seq_exits _ _ first hloop
+  unfold mulInto
   convert combined using 1
   funext k
   simp only [mulStacks, update_apply', hS₁acc]

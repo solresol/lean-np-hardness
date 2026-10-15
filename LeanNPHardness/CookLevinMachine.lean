@@ -13,7 +13,7 @@ established separately.
 
 namespace LeanNPHardness.CookLevin
 
-open Turing Computability CNF CNF.Unary MachineTableau TableauStacks Routines EncodedLanguage
+open Turing Computability CNF CNF.Unary MachineTableau TableauStacks Routines EncodedLanguage StateTransition
 
 variable {α : Type} {problem : EncodedLanguage α}
 

@@ -70,7 +70,7 @@ theorem decode_encode (formula : Formula Nat) :
   simp [decode, encode]
 
 /-- The Boolean alphabet fixes the bit-level input-size convention for CNF. -/
-def finEncoding : Computability.FinEncoding (Formula Nat) where
+def finEncoding : FinEncoding (Formula Nat) where
   Γ := Bool
   encode := encode
   decode := decode

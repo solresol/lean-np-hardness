@@ -1,4 +1,4 @@
-import Mathlib.Computability.Encoding
+import LeanNPHardness.FinEncoding
 
 /-!
 Reusable encoding and machine components extracted from `phd-thesis-lean`

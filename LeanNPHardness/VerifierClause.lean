@@ -155,7 +155,8 @@ theorem clauseV_pass (S : VS) (R : List Sym) (hF : S .F = [.pos, .pos, .neg, .po
     (by simp) ?_
   refine dispatch_exitsLE (Γ := VAlpha) (n := n + 1) .F w4 _ .pos (Sym.pos :: R) (by simp) ?_
   refine dispatch_exitsLE (Γ := VAlpha) (n := n) .F w5 _ .pos R (by simp) ?_
-  simpa only [update_F_idem] using h
+  simp only [update_F_idem]
+  exact h
 
 theorem clauseOk_exits (c : Clause ℕ) (hc : c.length = 3) (S : VS) (rest : List Sym)
     (b0 b1 : Bool) (v : List Bool) (hF : S .F = clauseS c ++ rest)

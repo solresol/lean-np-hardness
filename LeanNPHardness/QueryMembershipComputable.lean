@@ -20,7 +20,7 @@ literal/formula evaluation, and the complete SAT verifier remain separate.
 
 namespace LeanNPHardness
 
-open Computability Turing
+open Computability Turing StateTransition
 
 namespace FramedNatListQueries
 

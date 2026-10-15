@@ -3,7 +3,7 @@ import LeanNPHardness.PairReductionProgram
 
 namespace LeanNPHardness.MachineAdapters
 
-open Turing
+open Turing StateTransition
 
 /-- Finite control labels for the existing pair/reduction dispatcher followed
 by output/certificate reassembly. -/

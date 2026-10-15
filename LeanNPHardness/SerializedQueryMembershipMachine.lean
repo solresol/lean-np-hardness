@@ -20,7 +20,7 @@ full SAT verifier remain separate.
 
 namespace LeanNPHardness.MachinePrimitives.SerializedQueryMembership
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := EncodedQueryMembership.Stack
 abbrev Alphabet := EncodedQueryMembership.Alphabet
@@ -271,7 +271,7 @@ theorem certificate_whole_frame
         input query remaining candidate [] [] output bits outer) := by
   have run := certificate_run _ _ _ remaining candidate output outer
     (FrameExtraction.whole_frame bits input query [])
-  simpa only [List.append_nil, certificateCfg_cfg, Option.elim_some, Option.elim_none] using run
+  simpa only [List.append_nil, certificateCfg_cfg, Option.elim_some, Option.elim_none] using! run
 
 /-- One outer certificate frame followed by the complete query-list encoding. -/
 def encodeInput (queries xs : List Nat) : List Bool :=

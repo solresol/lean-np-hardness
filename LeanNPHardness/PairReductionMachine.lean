@@ -2,7 +2,7 @@ import LeanNPHardness.PairReductionOutputProgram
 
 namespace LeanNPHardness.MachineAdapters
 
-open Turing
+open Turing StateTransition
 
 private theorem initList_eq_update (tm : FinTM2)
     (input : List (tm.Γ tm.k₀)) :
@@ -55,6 +55,42 @@ def pairReductionAux {Γ₀ Γ₁ Δ : Type}
   tm := pairReductionMachine computer
   inputAlphabet := Equiv.refl _
   outputAlphabet := Equiv.refl _
+
+/-- The adapter's input alphabet map is the identity. -/
+theorem pairReductionAux_inputAlphabet_invFun {Γ₀ Γ₁ Δ : Type}
+    [Fintype Γ₀] [Fintype Γ₁] [Fintype Δ]
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    (pairReductionAux (Δ := Δ) computer).inputAlphabet.invFun = id :=
+  rfl
+
+/-- The adapter's output alphabet map is the identity. -/
+theorem pairReductionAux_outputAlphabet_invFun {Γ₀ Γ₁ Δ : Type}
+    [Fintype Γ₀] [Fintype Γ₁] [Fintype Δ]
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    (pairReductionAux (Δ := Δ) computer).outputAlphabet.invFun = id :=
+  rfl
+
+@[simp]
+theorem pairReductionAux_tm {Γ₀ Γ₁ Δ : Type}
+    [Fintype Γ₀] [Fintype Γ₁] [Fintype Δ]
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    (pairReductionAux (Δ := Δ) computer).tm =
+      pairReductionMachine (Δ := Δ) computer :=
+  rfl
+
+theorem pairReductionAux_inputAlphabet_symm {Γ₀ Γ₁ Δ : Type}
+    [Fintype Γ₀] [Fintype Γ₁] [Fintype Δ]
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    ⇑(pairReductionAux (Δ := Δ) computer).inputAlphabet.symm =
+      (id : Sum Γ₀ Δ → Sum Γ₀ Δ) :=
+  rfl
+
+theorem pairReductionAux_outputAlphabet_symm {Γ₀ Γ₁ Δ : Type}
+    [Fintype Γ₀] [Fintype Γ₁] [Fintype Δ]
+    (computer : TM2ComputableAux Γ₀ Γ₁) :
+    ⇑(pairReductionAux (Δ := Δ) computer).outputAlphabet.symm =
+      (id : Sum Γ₁ Δ → Sum Γ₁ Δ) :=
+  rfl
 
 /-- The canonical machine input is exactly the start of the checked dispatcher
 execution, with every private reduction stack empty. -/
@@ -151,11 +187,13 @@ def pairReductionMachine_outputs {Γ₀ Γ₁ Δ : Type}
   refine (congrArg (flip Option.bind
     (TM2.step (pairReductionOutputProgram computer)))
       complete.evals_in_steps).trans ?_
-  simpa only [flip, Option.bind_some, Function.update_eq_self] using
-    pairReductionMachine_done_step computer
-      ((privateOutput.map computer.outputAlphabet).map
-          (Sum.inl : Γ₁ → Sum Γ₁ Δ) ++
-        (PairEncoding.rightSymbols source).map (Sum.inr : Δ → Sum Γ₁ Δ))
+  have doneStep := pairReductionMachine_done_step computer
+    ((privateOutput.map computer.outputAlphabet).map
+        (Sum.inl : Γ₁ → Sum Γ₁ Δ) ++
+      (PairEncoding.rightSymbols source).map (Sum.inr : Δ → Sum Γ₁ Δ))
+  simp only [flip, Option.bind_some, Option.map_some, FinTM2.step,
+    Function.update_eq_self] at doneStep ⊢
+  exact doneStep
 
 /-- The list-output witness has an exact linear overhead in the tagged source
 and private reduced output lengths. Polynomial runtime packaging remains

@@ -108,7 +108,7 @@ theorem decode_encode (formula : Formula ℕ) : decode (encode formula) = some f
   simp [decode, this, parseAux]
 
 /-- The unary-index CNF encoding. -/
-def finEncoding : Computability.FinEncoding (Formula ℕ) where
+def finEncoding : FinEncoding (Formula ℕ) where
   Γ := Sym
   encode := encode
   decode := decode

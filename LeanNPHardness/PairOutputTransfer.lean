@@ -2,7 +2,7 @@ import LeanNPHardness.PairReduction
 
 namespace LeanNPHardness.MachineAdapters
 
-open Turing
+open Turing StateTransition
 
 /-- Two stacks used only after the reduction machine halts: one reverses the
 reduced output, and the other stores the final tagged output/certificate pair.
@@ -318,7 +318,7 @@ theorem pairOutputTransfer_certificateReverse_whole_list
         machineContents reducedReverse output) := by
   induction certificate generalizing state rightReverse with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         pairOutputTransfer_certificateReverse_iteration_empty computer state
           source leftReverse leftOrdered rightReverse machineContents
           reducedReverse output
@@ -339,7 +339,7 @@ theorem pairOutputTransfer_certificateReverse_whole_list
           some (pairOutputTransferCfg computer .certificateReverseScan
             (some (Sum.inr head)) source leftReverse leftOrdered
             (head :: rightReverse) tail machineContents reducedReverse output) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.reverse_cons, List.append_assoc] using
         ih (some (Sum.inr head)) (head :: rightReverse)
 
@@ -412,7 +412,7 @@ theorem pairOutputTransfer_certificateFill_whole_list
           output)) := by
   induction certificateScratch generalizing state output with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         pairOutputTransfer_certificateFill_iteration_empty computer state
           source leftReverse leftOrdered rightOrdered machineContents
           reducedReverse output
@@ -434,7 +434,7 @@ theorem pairOutputTransfer_certificateFill_whole_list
             (some (Sum.inr head)) source leftReverse leftOrdered tail
             rightOrdered machineContents reducedReverse
             (Sum.inr head :: output)) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.map, List.reverse_cons, List.append_assoc] using
         ih (some (Sum.inr head)) (Sum.inr head :: output)
 
@@ -518,7 +518,7 @@ theorem pairOutputTransfer_reducedReverse_whole_list
           reducedReverse) output) := by
   induction privateOutput generalizing state reducedReverse with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         pairOutputTransfer_reducedReverse_iteration_empty computer state source
           leftReverse leftOrdered rightReverse rightOrdered machineContents
           reducedReverse output
@@ -542,7 +542,7 @@ theorem pairOutputTransfer_reducedReverse_whole_list
             leftOrdered rightReverse rightOrdered
             (Function.update machineContents computer.tm.k₁ tail)
             (computer.outputAlphabet head :: reducedReverse) output) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.map, List.reverse_cons, List.append_assoc] using
         ih (some (Sum.inl (computer.outputAlphabet head)))
           (computer.outputAlphabet head :: reducedReverse)
@@ -611,7 +611,7 @@ theorem pairOutputTransfer_reducedFill_whole_list
           output)) := by
   induction reducedScratch generalizing state output with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         pairOutputTransfer_reducedFill_iteration_empty computer state source
           leftReverse leftOrdered rightReverse rightOrdered machineContents
           output
@@ -632,7 +632,7 @@ theorem pairOutputTransfer_reducedFill_whole_list
           some (pairOutputTransferCfg computer .reducedFillScan
             (some (Sum.inl head)) source leftReverse leftOrdered rightReverse
             rightOrdered machineContents tail (Sum.inl head :: output)) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.map, List.reverse_cons, List.append_assoc] using
         ih (some (Sum.inl head)) (Sum.inl head :: output)
 

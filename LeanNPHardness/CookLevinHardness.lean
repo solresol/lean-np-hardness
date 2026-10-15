@@ -16,7 +16,7 @@ language's encoding of the input.
 
 namespace LeanNPHardness.CookLevin
 
-open Turing Computability CNF CNF.Unary MachineTableau TableauStacks Routines EncodedLanguage
+open Turing Computability CNF CNF.Unary MachineTableau TableauStacks Routines EncodedLanguage StateTransition
   Polynomial MachinePrimitives
 
 variable {α : Type} {problem : EncodedLanguage α}
@@ -47,7 +47,7 @@ noncomputable def computableInPolyTime (verify : α × List Bool → Bool) (boun
   outputsFun x := by
     have run := evalsToInTimeMono (machine_outputsInTime verify bound computer x)
       (cost_le verify bound computer x)
-    simpa [Equiv.refl] using run
+    simpa [Equiv.refl] using! run
 
 /-- The checked polynomial-time reduction from an NP language to unary SAT. -/
 noncomputable def polytimeReduction (V : PolytimeVerifier problem)

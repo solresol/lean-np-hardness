@@ -3,7 +3,7 @@ import LeanNPHardness.MachineRuntimeBounds
 
 namespace LeanNPHardness
 
-open Computability Turing
+open Computability Turing StateTransition
 
 namespace MachineRuntime
 

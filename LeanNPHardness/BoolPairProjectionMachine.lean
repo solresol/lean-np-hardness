@@ -13,7 +13,7 @@ verifier that ignores its string certificate. The exact run takes
 
 namespace LeanNPHardness.MachinePrimitives.BoolPairFirst
 
-open Computability Turing
+open Computability Turing StateTransition
 
 inductive Stack
   | input
@@ -164,6 +164,6 @@ noncomputable def computableInPolyTime :
     simp only [PairEncoding.finEncoding_encode, finEncodingBoolBool, encodeBool,
       RawBoolList.finEncoding, Equiv.refl, Equiv.invFun_as_coe, Equiv.coe_fn_symm_mk,
       Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_one]
-    simpa using run
+    simpa [Nat.add_assoc] using run
 
 end LeanNPHardness.MachinePrimitives.BoolPairFirst

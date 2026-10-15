@@ -628,10 +628,14 @@ Axiom audit (`LeanNPHardness/Audit.lean`): `propext`, `Classical.choice`,
 
 ## Toolchain
 
-The repository initially shares its toolchain with `phd-thesis-lean`:
+- Lean `v4.35.0`;
+- mathlib tag `v4.35.0`.
 
-- Lean `v4.27.0-rc1`;
-- mathlib commit `cd479940d5ab509f094f7e55ed6433b5aaa37870`.
+mathlib unbundled the alphabet from `Encoding` in May 2026. The library keeps
+the bundled interface through `LeanNPHardness.FinEncoding` and an alphabet-
+supplying `TM2ComputableInPolyTime` that is definitionally mathlib's; see
+[docs/MATHLIB_MIGRATION.md](docs/MATHLIB_MIGRATION.md), which also explains the
+`backward.isDefEq.respectTransparency` package option.
 
 Build with:
 
@@ -665,9 +669,9 @@ the Lean kernel.
 
 ### Mathlib
 
-This project uses mathlib's current `FinEncoding`, finite Turing-machine, and
+This project uses mathlib's finite Turing-machine and
 `TM2ComputableInPolyTime` definitions rather than creating an unrelated cost
-model. Any generally useful results should be designed with eventual upstream
+model; `FinEncoding` is a thin bundling of mathlib's `Encoding`. Any generally useful results should be designed with eventual upstream
 contribution in mind.
 
 ## Completion policy

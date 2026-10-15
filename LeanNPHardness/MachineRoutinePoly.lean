@@ -89,6 +89,7 @@ theorem hornerStep_exits (x acc tmp scr bc : WorkName)
   have hS₃acc : S₃ (.work acc) = marks (n * a) := by rw [hS₃, Function.update_self]
   rw [hS₃acc, ← marks_append] at pu
   have combined := seq_exits _ _ mul (seq_exits _ _ dr (seq_exits _ _ mv pu))
+  unfold hornerStep
   convert combined using 1
   · simp only [hornerStepCost]; omega
   · funext k

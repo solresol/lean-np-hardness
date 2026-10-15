@@ -8,7 +8,7 @@ the original explicit finite-alphabet input encodings.
 
 namespace LeanNPHardness.MachinePrimitives
 
-open Computability Turing
+open Computability Turing StateTransition
 open LeanNPHardness.MachineComposition
 
 inductive SourceOrderRawFieldStack
@@ -116,7 +116,7 @@ private def sourceOrderRawFieldEvalsToInTimeOne
       start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private def sourceOrderRawField_copy_evals

@@ -1,4 +1,5 @@
 import LeanNPHardness.Audit
+import LeanNPHardness.FinEncoding
 import LeanNPHardness.CNF
 import LeanNPHardness.CNFEncoding
 import LeanNPHardness.CNFCertificate

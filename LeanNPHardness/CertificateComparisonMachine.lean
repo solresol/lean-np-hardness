@@ -18,7 +18,7 @@ kernel does not consume or validate the retained count.
 
 namespace LeanNPHardness.MachinePrimitives.CertificateComparison
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := CertificateCount.Stack
 abbrev Alphabet := CertificateCount.Alphabet
@@ -205,7 +205,7 @@ theorem natural_run (query candidate : Nat) (input remaining output : List Bool)
         (BinaryNatLists.encodeNat candidate ++ input) (encodeNat query) remaining [] [] [] output)) =
       some (cfg (some .done) FrameComparison.initialState input (encodeNat query) remaining [] [] []
         (decide (query = candidate) :: output)) := by
-  simpa only [BinaryEquality.encodeNat_eq_iff] using
+  simpa only [BinaryEquality.encodeNat_eq_iff] using!
     whole_frame (encodeNat query) (encodeNat candidate) input remaining output
 
 /-- The natural-number interface uses binary query and framed candidate sizes. -/

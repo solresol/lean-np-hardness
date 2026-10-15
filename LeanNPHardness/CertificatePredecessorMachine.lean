@@ -18,7 +18,7 @@ obligations. The final continuation's halt is excluded from the bound.
 
 namespace LeanNPHardness.MachinePrimitives.CertificatePredecessor
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := CertificateCount.Stack
 abbrev Alphabet := CertificateCount.Alphabet

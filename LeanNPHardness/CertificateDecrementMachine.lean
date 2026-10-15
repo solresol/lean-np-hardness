@@ -17,7 +17,7 @@ Header dispatch, membership accumulation, and full traversal remain separate.
 
 namespace LeanNPHardness.MachinePrimitives.CertificateDecrement
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := CertificateCount.Stack
 abbrev Alphabet := CertificateCount.Alphabet
@@ -267,7 +267,7 @@ theorem whole_word (bits input query count output : List Bool) :
         input query (binaryPredBits bits) [] [] count output) := by
   rw [Nat.add_comm (binaryPred_outputsInTime bits).steps,
     Function.iterate_add_apply, predecessor_run]
-  simpa only [transferCfg, CertificateCountTransfer.cfg, cfg, initialState, List.append_nil] using
+  simpa only [transferCfg, CertificateCountTransfer.cfg, cfg, initialState, List.append_nil] using!
     transfer_run _ _ _
       (CertificateCountTransfer.whole_word (binaryPredBits bits) input query [] count output)
 

@@ -21,7 +21,7 @@ The final live decrement continuation's halt is excluded.
 
 namespace LeanNPHardness.MachinePrimitives.QueryMembershipStep
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := QueryMembership.Stack
 abbrev Alphabet := QueryMembership.Alphabet
@@ -315,7 +315,7 @@ theorem decrement_whole_word (outer input query remaining count output backup : 
         input query remaining [] [] count output backup outer)) =
       some (cfg (some (.decrement (.transfer .done))) initialState
         input query remaining [] [] count output backup (binaryPredBits outer)) := by
-  simpa only [decrementCfg_cfg, Option.map_some, initialState] using
+  simpa only [decrementCfg_cfg, Option.map_some, initialState] using!
     decrement_run _ _ _ remaining backup
       (CertificateDecrement.whole_word outer input query count output)
 

@@ -48,7 +48,7 @@ noncomputable def reflComp {α β : Type}
       PolytimeManyOneReduction sourceEncoding targetEncoding source target) :
     PolytimeManyOneReduction sourceEncoding targetEncoding source target :=
   compOfWitness (refl sourceEncoding source) reduction (by
-    simpa only [Function.comp_id] using reduction.polytime)
+    simpa only [refl, Function.comp_id] using reduction.polytime)
 
 /-- Compose a polynomial-time reduction before the identity reduction without
 requiring the unfinished generic machine-composition theorem. The original
@@ -60,7 +60,7 @@ noncomputable def compRefl {α β : Type}
       PolytimeManyOneReduction sourceEncoding targetEncoding source target) :
     PolytimeManyOneReduction sourceEncoding targetEncoding source target :=
   compOfWitness reduction (refl targetEncoding target) (by
-    simpa only [Function.id_comp] using reduction.polytime)
+    simpa only [refl, Function.id_comp] using reduction.polytime)
 
 @[simp]
 theorem reflComp_map {α β : Type}

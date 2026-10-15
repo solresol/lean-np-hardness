@@ -17,7 +17,7 @@ unary exact 3-SAT, and `encodedUnaryExactThreeSAT_NPHard` follows from
 
 namespace LeanNPHardness.ChainMachine
 
-open Turing Computability CNF CNF.Unary CNF.Chain TableauJobs TableauStacks Routines ChainJob
+open Turing Computability CNF CNF.Unary CNF.Chain TableauJobs TableauStacks Routines ChainJob StateTransition
   Polynomial MachinePrimitives
 
 /-- The register stacks drained after interpretation. -/
@@ -154,7 +154,7 @@ noncomputable def computableInPolyTime :
       (show cost F ≤ timePoly.eval (encode F).length by
         simp only [timePoly, eval_mul, eval_C, eval_pow, eval_add, eval_X, eval_one]
         exact cost_le F)
-    simpa [Equiv.refl] using run
+    simpa [Equiv.refl] using! run
 
 /-- The checked polynomial-time reduction from unary SAT to unary exact 3-SAT. -/
 noncomputable def reduction : encodedUnarySAT.PolytimeReducesTo encodedUnaryExactThreeSAT where

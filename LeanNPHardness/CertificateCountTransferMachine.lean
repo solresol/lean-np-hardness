@@ -18,7 +18,7 @@ a live `done` continuation whose own halt is excluded.
 
 namespace LeanNPHardness.MachinePrimitives.CertificateCountTransfer
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := CertificateCount.Stack
 abbrev Alphabet := CertificateCount.Alphabet
@@ -160,7 +160,7 @@ def predecessor_evalsToInTime (bits input query count output : List Bool) :
       (2 * bits.length + 2) where
   steps := 2 * (binaryPredBits bits).length + 2
   evals_in_steps := by
-    simpa only [List.append_nil] using
+    simpa only [List.append_nil] using!
       whole_word (binaryPredBits bits) input query [] count output
   steps_le_m := by have := binaryPredBits_length_le bits; omega
 

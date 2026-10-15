@@ -12,7 +12,7 @@ building blocks of the tableau generator; no polynomial claim is made here.
 
 namespace LeanNPHardness.Routines
 
-open Turing
+open Turing StateTransition
 
 variable {K : Type} [DecidableEq K] {Γ : K → Type}
 
@@ -143,6 +143,7 @@ theorem moveAll_exits (src dst : K) [Fintype (Γ src)] (hne : src ≠ dst) (f : 
     have hsteps : loopSteps (fun _ => 1) (S src).length = 2 * (S src).length + 1 := by
       rw [loopSteps_eq_sum]; simp; omega
     rw [hsteps] at key
+    unfold moveAll
     convert key using 1
     simp [moveStacks]
   · intro i hi
@@ -170,7 +171,7 @@ theorem drain_exits (k : K) (S : Stacks Γ) :
   · have hsteps : loopSteps (fun _ => 1) (S k).length = 2 * (S k).length + 1 := by
       rw [loopSteps_eq_sum]; simp; omega
     rw [hsteps] at key
-    simpa using key
+    simpa [drain] using key
   · intro i hi
     have := popOne_exits k (Function.update S k ((S k).drop i))
     simp only [Function.update_self, Function.update_idem] at this
@@ -284,6 +285,7 @@ theorem copyAll_exits (src dst scratch : K) [Fintype (Γ src)] [Fintype (Γ scra
         4 * (S src).length + 2 := by
       rw [loopSteps_eq_sum]; simp; omega
     rw [hsteps] at combined
+    unfold copyAll
     convert combined using 1
     funext k
     simp only [restoreStacks, hS₁scr, hS₁src, hS₁dst]

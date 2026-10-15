@@ -15,7 +15,7 @@ the exact 3-SAT verifier.
 
 namespace LeanNPHardness.SatVerify
 
-open Turing Computability Routines CNF CNF.Unary Polynomial MachinePrimitives ExactThreeVerify
+open Turing Computability Routines CNF CNF.Unary Polynomial MachinePrimitives ExactThreeVerify StateTransition
 open LeanNPHardness.BinaryConvert (b2s s2b s2b_b2s marks marks_succ marks_zero marks_length
   marks_eq_nil marks_reverse marks_add bitsOf bitsOf_eq bitsOf_pos)
 
@@ -672,7 +672,7 @@ noncomputable def computableInPolyTime :
           ExactThreeVerify.timePoly.eval ((Formula.encode F).length + w.length) by
         simp [ExactThreeVerify.timePoly, vCost])
     simpa [Equiv.refl, PairEncoding.finEncoding_encode, finEncodingBoolBool, encodeBool,
-      RawBoolList.finEncoding, encodedSAT, Formula.finEncoding] using run'
+      RawBoolList.finEncoding, encodedSAT, Formula.finEncoding] using! run'
 
 /-- The checked polynomial-time verifier for binary CNF-SAT. -/
 noncomputable def polytimeVerifier : EncodedLanguage.PolytimeVerifier encodedSAT where

@@ -9,7 +9,7 @@ the original explicit finite-alphabet input encodings.
 
 namespace LeanNPHardness.MachinePrimitives
 
-open Computability Turing
+open Computability Turing StateTransition
 open LeanNPHardness.MachineComposition
 
 /-- Four Boolean stacks suffice to preserve the payload while prefixing its
@@ -150,7 +150,7 @@ private def evalsToInTimeOne
     EvalsToInTime frameComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 
@@ -301,14 +301,14 @@ natural from mathlib's raw binary representation to the self-delimiting
 framed representation used by the CSP wire format.  The computed mathematical
 function is the identity; the machine performs the nontrivial encoding pass. -/
 noncomputable def framedNatComputableInPolyTime :
-    @TM2ComputableInPolyTime ℕ ℕ Computability.finEncodingNatBool
+    @TM2ComputableInPolyTime ℕ ℕ finEncodingNatBool
       FramedNat.finEncoding id where
   tm := frameComputer
   inputAlphabet := Equiv.refl Bool
   outputAlphabet := Equiv.refl Bool
   time := 3 * Polynomial.X + 3
   outputsFun n := by
-    simpa [Computability.finEncodingNatBool,
+    simpa [finEncodingNatBool,
       Computability.encodingNatBool, FramedNat.finEncoding,
       BinaryNatLists.encodeNat, Equiv.refl,
       Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_natCast,
@@ -502,7 +502,7 @@ private def listEvalsToInTimeOne
     EvalsToInTime listFrameComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private def list_scanSegment_evals
@@ -546,6 +546,7 @@ private def list_scanSegment_evals
           (false :: ((bit :: reversedBits).reverse ++ output))))
         hone
         (by
+          rw [List.length_cons, List.replicate_succ, List.cons_append]
           simpa [middle, listPoppedRaw, List.reverse_cons,
             List.append_assoc, replicate_true_append_cons] using hrest)
       simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htrans
@@ -579,6 +580,7 @@ private def list_prefix_evals
           input [] (List.replicate (tick :: count).length true ++ output)))
         hone
         (by
+          rw [List.length_cons, List.replicate_succ, List.cons_append]
           simpa [middle, listPoppedTick, List.append_assoc,
             replicate_true_append_cons] using hrest)
       simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htrans
@@ -1021,7 +1023,7 @@ private def unframeEvalsToInTimeOne
     EvalsToInTime unframeComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private def unframe_scan_evals (prefixLength : ℕ) (input count : List Bool)

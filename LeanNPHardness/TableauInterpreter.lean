@@ -176,7 +176,7 @@ theorem interpret_exits (S : Stacks (GAlphabet Γx)) (hscr : S (.work .scratch) 
     (fun i => interpStacks S (J.drop i) ((render R (J.take i)).1.reverse ++ B) (render R (J.take i)).2)
     (fun i => instrCost (render R (J.take i)).2 (J[i]?.getD .mark) + 1) ?_ ?_ ?_
   · rw [loopSteps_interp] at key
-    simpa using key
+    simpa using! key
   · intro i hi
     have hsplit : J.drop i = J[i] :: J.drop (i + 1) := List.drop_eq_getElem_cons hi
     have hdrop : (interpStacks S (J.drop i) ((render R (J.take i)).1.reverse ++ B)
@@ -186,7 +186,6 @@ theorem interpret_exits (S : Stacks (GAlphabet Γx)) (hscr : S (.work .scratch) 
       (hJ _ (List.getElem_mem hi))
     rw [← interpStacks_update_job] at handler
     have := dispatch_exits (Γ := GAlphabet Γx) .job instrHandler _ _ _ hdrop handler
-    dsimp only
     rw [List.getElem?_eq_getElem hi, Option.getD_some, render_take_succ R J i hi]
     simpa [List.reverse_append, List.append_assoc] using this
   · intro i hi

@@ -2,7 +2,7 @@ import LeanNPHardness.MachineCompositionProgram
 
 namespace LeanNPHardness.MachineComposition
 
-open Computability Turing
+open Computability Turing StateTransition
 
 /-- Iterating an option-valued transition from `none` remains at `none`. -/
 private theorem iterate_bind_none {α : Type} (step : α → Option α) (steps : ℕ) :

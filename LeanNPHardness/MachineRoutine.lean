@@ -1,4 +1,4 @@
-import Mathlib.Computability.TMComputable
+import LeanNPHardness.FinEncoding
 
 /-!
 # Structured routines over shared stacks
@@ -16,7 +16,7 @@ the context.
 
 namespace LeanNPHardness.Routines
 
-open Turing
+open Turing StateTransition
 
 variable {K : Type} [DecidableEq K] {Γ : K → Type}
 

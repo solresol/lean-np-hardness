@@ -17,7 +17,7 @@ binary CNF encoding.
 
 namespace LeanNPHardness.BinaryConvert
 
-open Turing Computability Routines CNF CNF.Unary Polynomial MachinePrimitives
+open Turing Computability Routines CNF CNF.Unary Polynomial MachinePrimitives StateTransition
 
 /-- Empty clause-stage stacks. -/
 structure Idle (S : CS) : Prop extends Clean S where
@@ -291,7 +291,7 @@ noncomputable def computableInPolyTime :
       (show convBound (encode F).length ≤ timePoly.eval (encode F).length by
         simp only [timePoly, eval_mul, eval_C, eval_pow, eval_add, eval_X, eval_one]
         exact convBound_le _)
-    simpa [Equiv.refl] using run'
+    simpa [Equiv.refl] using! run'
 
 /-- Unary SAT reduces to binary SAT by re-encoding. -/
 noncomputable def satReduction : encodedUnarySAT.PolytimeReducesTo encodedSAT where

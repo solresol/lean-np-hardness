@@ -17,7 +17,7 @@ query-preserving equality remain separate obligations.
 
 namespace LeanNPHardness.MachinePrimitives.FrameExtraction
 
-open Computability Turing
+open Computability Turing StateTransition
 
 inductive Stack
   | input

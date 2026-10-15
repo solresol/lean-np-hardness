@@ -21,7 +21,7 @@ SAT verifier remain separate obligations.
 
 namespace LeanNPHardness.MachinePrimitives.EncodedQueryMembership
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := QueryMembershipLoop.Stack
 abbrev Alphabet := QueryMembershipLoop.Alphabet
@@ -271,7 +271,7 @@ theorem header_whole_frame (bits input query remaining candidate output backup :
         input query remaining candidate [] [] output backup bits) := by
   have run := header_run _ _ _ remaining candidate output backup
     (FrameExtraction.whole_frame bits input query [])
-  simpa only [List.append_nil, headerCfg_cfg, Option.elim_some, Option.elim_none] using run
+  simpa only [List.append_nil, headerCfg_cfg, Option.elim_some, Option.elim_none] using! run
 
 /-- Exact cost of header loading, loop entry, and all repeated membership queries. -/
 def runSteps (queries xs : List Nat) : Nat :=

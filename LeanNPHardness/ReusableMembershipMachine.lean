@@ -20,7 +20,7 @@ verifier remain separate obligations.
 
 namespace LeanNPHardness.MachinePrimitives.ReusableMembership
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := PreservingMembership.Stack
 abbrev Alphabet := PreservingMembership.Alphabet
@@ -257,7 +257,7 @@ theorem query_whole_frame (bits input remaining candidate output backup : List B
         input bits remaining candidate [] [] output backup) := by
   have run := query_run _ _ _ candidate output backup
     (FrameExtraction.whole_frame bits input remaining [])
-  simpa only [List.append_nil] using run
+  simpa only [List.append_nil] using! run
 
 /-- The live membership continuation enters cleanup in one counted step. -/
 theorem cleanup_entry_step (state : State)

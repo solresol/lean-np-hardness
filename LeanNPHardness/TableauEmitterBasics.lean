@@ -60,7 +60,7 @@ theorem emit_exits (chunk : List Instr) (x xk : List Γx) (n q m t tpb g w pw c1
       (emitStacks x xk n q m t tpb g w pw c1 c2 (chunk.reverse ++ sk)) := by
   have := pushList_exits (Γ := GAlphabet Γx) .skel chunk.reverse
     (emitStacks x xk n q m t tpb g w pw c1 c2 sk)
-  convert this using 1
+  convert (config := {preTransparency := .default}) this using 1
   estacks_ext
 
 /-- Emit a list of chunks in order. -/
@@ -82,7 +82,7 @@ theorem emitList_exits (cs : List (List Instr)) :
         (ih x xk n q m t tpb g w pw c1 c2 (c.reverse ++ sk))
       simp only [emitList]
       rw [show (c :: cs).length + 1 = 1 + (cs.length + 1) by simp; omega]
-      convert this using 2
+      convert (config := {preTransparency := .default}) this using 2
       simp [List.reverse_append]
 
 /-- Emit a chunk once per mark of the second loop copy, consuming it. -/
@@ -100,7 +100,7 @@ theorem loopEmit2_exits (chunk : List Instr) (x xk : List Γx) (n q m t tpb g w 
   · have hsteps : loopSteps (fun _ => 2) k = 3 * k + 1 := by
       rw [loopSteps_eq_sum]; simp; omega
     rw [hsteps] at key
-    simpa using key
+    simpa using! key
   · intro i hi
     have pop := popOne_exits (Γ := GAlphabet Γx) (.work (.cnt .copy2))
       (emitStacks x xk n q m t tpb g w pw c1 (k - i) ((List.replicate i chunk).flatten.reverse ++ sk))
@@ -117,7 +117,7 @@ theorem loopEmit2_exits (chunk : List Instr) (x xk : List Γx) (n q m t tpb g w 
     have em := emit_exits (Γx := Γx) chunk x xk n q m t tpb g w pw c1 (k - (i + 1))
       ((List.replicate i chunk).flatten.reverse ++ sk)
     have := seq_exits _ _ pop em
-    convert this using 2
+    convert (config := {preTransparency := .default}) this using 2
     simp [List.replicate_succ', List.flatten_append, List.reverse_append]
   · intro i hi
     simp [emitStacks, marks, List.replicate_eq_nil_iff]; omega
@@ -137,7 +137,7 @@ theorem loopInput_exits (f : Γx → List Instr) (x xk : List Γx) (n q m t tpb 
   · have hsteps : loopSteps (fun _ => 2) x.length = 3 * x.length + 1 := by
       rw [loopSteps_eq_sum]; simp; omega
     rw [hsteps] at key
-    simpa using key
+    simpa using! key
   · intro i hi
     have hsplit : (x.drop i) = x[i] :: x.drop (i + 1) := List.drop_eq_getElem_cons hi
     have em := emit_exits (Γx := Γx) (f x[i]) (x.drop (i + 1)) xk n q m t tpb g w pw c1 c2
@@ -150,8 +150,7 @@ theorem loopInput_exits (f : Γx → List Instr) (x xk : List Γx) (n q m t tpb 
     have body := dispatch_exits (Γ := GAlphabet Γx) .input (fun s => emit (f s))
       (emitStacks (x.drop i) xk n q m t tpb g w pw c1 c2 (((x.take i).map f).flatten.reverse ++ sk))
       x[i] (x.drop (i + 1)) hsplit em
-    convert body using 2
-    dsimp only
+    convert (config := {preTransparency := .default}) body using 2
     simp only [List.take_add_one, List.getElem?_eq_getElem hi,
       Option.toList_some, List.map_append, List.map_cons, List.map_nil, List.flatten_append,
       List.flatten_cons, List.flatten_nil, List.append_nil, List.reverse_append, List.append_assoc]
@@ -167,7 +166,7 @@ theorem copyG2_exits (x xk : List Γx) (n q m t tpb g w pw c1 : ℕ) (sk : List 
       (emitStacks x xk n q m t tpb g w pw c1 g sk) := by
   have := copyWork_exits (Γx := Γx) (.cnt .g) (.cnt .copy2) .scratch (by decide) (by decide)
     (by decide) (emitStacks x xk n q m t tpb g w pw c1 0 sk) rfl
-  convert this using 1
+  convert (config := {preTransparency := .default}) this using 1
   · simp [emitStacks]
   · estacks_ext
 
@@ -179,7 +178,7 @@ theorem copyTo2_q_exits (x xk : List Γx) (n q m t tpb g w pw c1 : ℕ) (sk : Li
       (emitStacks x xk n q m t tpb g w pw c1 q sk) := by
   have := copyWork_exits (Γx := Γx) (.cnt .q) (.cnt .copy2) .scratch (by decide) (by decide)
     (by decide) (emitStacks x xk n q m t tpb g w pw c1 0 sk) rfl
-  convert this using 1
+  convert (config := {preTransparency := .default}) this using 1
   · simp [emitStacks]
   · estacks_ext
 
@@ -188,7 +187,7 @@ theorem copyTo2_tpb_exits (x xk : List Γx) (n q m t tpb g w pw c1 : ℕ) (sk : 
       (emitStacks x xk n q m t tpb g w pw c1 tpb sk) := by
   have := copyWork_exits (Γx := Γx) (.cnt .tpb) (.cnt .copy2) .scratch (by decide) (by decide)
     (by decide) (emitStacks x xk n q m t tpb g w pw c1 0 sk) rfl
-  convert this using 1
+  convert (config := {preTransparency := .default}) this using 1
   · simp [emitStacks]
   · estacks_ext
 
@@ -200,7 +199,7 @@ theorem copyT1_exits (x xk : List Γx) (n q m t tpb g w pw c2 : ℕ) (sk : List 
       (emitStacks x xk n q m t tpb g w pw t c2 sk) := by
   have := copyWork_exits (Γx := Γx) (.cnt .t) (.cnt .copy1) .scratch (by decide) (by decide)
     (by decide) (emitStacks x xk n q m t tpb g w pw 0 c2 sk) rfl
-  convert this using 1
+  convert (config := {preTransparency := .default}) this using 1
   · simp [emitStacks]
   · estacks_ext
 
@@ -249,7 +248,7 @@ theorem emitsOnly_emitG (chunk : List Instr) :
   intro x xk n q m t tpb g w pw c1 sk
   have := seq_exits _ _ (copyG2_exits x xk n q m t tpb g w pw c1 sk)
     (loopEmit2_exits chunk x xk n q m t tpb g w pw c1 g sk)
-  convert this using 1
+  convert (config := {preTransparency := .default}) this using 1
   dsimp only
   omega
 
@@ -282,7 +281,7 @@ theorem emitsOnly_foldStacks {K : Type} (L : List K) (f : K → GRoutine Γx)
   | cons k L ih =>
       have := emitsOnly_seq (h k (by simp)) (ih fun k' hk' => h k' (by simp [hk']))
       simp only [foldStacks, List.foldr_cons, List.flatMap_cons, List.map_cons, List.sum_cons]
-      convert this using 1
+      convert (config := {preTransparency := .default}) this using 1
 
 omit [Fintype Γx] [DecidableEq Γx] in
 /-- A prefix of emit-only routines before a routine with an arbitrary
@@ -305,7 +304,7 @@ theorem foldr_emitsOnly_prefix {K : Type} (pre : List K) (f : K → GRoutine Γx
       have rest := ih (fun k' hk' => h k' (by simp [hk'])) ((chunks k g).reverse ++ sk)
       have := seq_exits _ _ first rest
       simp only [List.foldr_cons, List.flatMap_cons, List.map_cons, List.sum_cons]
-      convert this using 1
+      convert (config := {preTransparency := .default}) this using 1
       · omega
       · simp [List.reverse_append, List.append_assoc]
 
@@ -360,7 +359,6 @@ theorem loopRounds_exits (r : GRoutine Γx) (chunks : ℕ → List Instr) (cost 
       simp only [marks, ne_eq, List.replicate_eq_nil_iff]
       omega)
     (by show marks (t - t) = []; rw [Nat.sub_self]; rfl)
-  dsimp only at key
   rw [Nat.sub_zero, Nat.sub_self, List.replicate_zero, List.flatten_nil, List.reverse_nil,
     List.nil_append] at key
   exact seq_exits _ _ copy key

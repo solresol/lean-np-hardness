@@ -2,7 +2,7 @@ import LeanNPHardness.PairAdapter
 
 namespace LeanNPHardness.MachineAdapters
 
-open Turing
+open Turing StateTransition
 
 /-- Extend the five preprocessing stacks with every private stack of a
 reduction machine. Keeping the families disjoint lets the reduction run
@@ -411,7 +411,7 @@ theorem pairInputTransfer_reverse_whole_list {Γ₀ Γ₁ Δ : Type}
         machineContents) := by
   induction input generalizing state leftReverse with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         pairInputTransfer_reverse_iteration_empty computer state source
           leftReverse rightReverse rightOrdered machineContents
   | cons head tail ih =>
@@ -430,7 +430,7 @@ theorem pairInputTransfer_reverse_whole_list {Γ₀ Γ₁ Δ : Type}
           some (pairInputTransferCfg computer .reverseScan (some head) source
             (head :: leftReverse) tail rightReverse rightOrdered
             machineContents) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.reverse_cons, List.append_assoc] using
         ih (some head) (head :: leftReverse)
 
@@ -547,7 +547,7 @@ theorem pairInputTransfer_fill_whole_list {Γ₀ Γ₁ Δ : Type}
             machineContents computer.tm.k₀))) := by
   induction scratch generalizing state machineContents with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         pairInputTransfer_fill_iteration_empty computer state source
           leftOrdered rightReverse rightOrdered machineContents
   | cons head tail ih =>
@@ -568,7 +568,7 @@ theorem pairInputTransfer_fill_whole_list {Γ₀ Γ₁ Δ : Type}
             (Function.update machineContents computer.tm.k₀
               (computer.inputAlphabet.symm head ::
                 machineContents computer.tm.k₀))) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.map, List.reverse_cons, List.append_assoc] using
         ih (some head)
           (Function.update machineContents computer.tm.k₀

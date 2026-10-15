@@ -16,7 +16,7 @@ Malformed-input rejection and the full SAT verifier remain separate obligations.
 
 namespace LeanNPHardness.MachinePrimitives.CanonicalMembership
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := SerializedMembership.Stack
 abbrev Alphabet := SerializedMembership.Alphabet
@@ -233,7 +233,7 @@ def outputsInTime (query : Nat) (xs : List Nat) :
   simp only [Option.map_some, encodeBool, List.pure_def, haltList_eq_cfg]
   exact {
     steps := runSteps query xs
-    evals_in_steps := by simpa only [List.append_nil] using whole_input query xs [] []
+    evals_in_steps := by simpa only [List.append_nil] using! whole_input query xs [] []
     steps_le_m := runSteps_le_bit_bound query xs
   }
 

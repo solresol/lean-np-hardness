@@ -1,4 +1,4 @@
-import Mathlib.Computability.Encoding
+import LeanNPHardness.FinEncoding
 
 namespace LeanNPHardness
 

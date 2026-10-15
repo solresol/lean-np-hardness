@@ -18,7 +18,7 @@ remain separate obligations.
 
 namespace LeanNPHardness.MachinePrimitives.CanonicalQueryMembership
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := SerializedQueryMembership.Stack
 abbrev Alphabet := SerializedQueryMembership.Alphabet
@@ -258,7 +258,7 @@ def outputsInTime (queries xs : List Nat) :
   simp only [Option.map_some, haltList_eq_cfg]
   exact {
     steps := runSteps queries xs
-    evals_in_steps := by simpa only [List.append_nil] using whole_input queries xs [] []
+    evals_in_steps := by simpa only [List.append_nil] using! whole_input queries xs [] []
     steps_le_m := runSteps_le_bit_bound queries xs
   }
 

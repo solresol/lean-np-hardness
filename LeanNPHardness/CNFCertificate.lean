@@ -61,7 +61,7 @@ def assignment {α : Type u} [DecidableEq α] (certificate : Certificate α) :
     Assignment α := fun v => decide (v ∈ certificate)
 
 /-- Use the existing framed binary natural-list encoding for certificates. -/
-def finEncoding : Computability.FinEncoding (Certificate Nat) :=
+def finEncoding : FinEncoding (Certificate Nat) :=
   FramedNatList.finEncoding
 
 /-- Executable Boolean verification, with no machine-runtime claim. -/

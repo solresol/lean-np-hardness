@@ -13,7 +13,7 @@ encoding, without an aligned-pair encoding or a maximum-variable bound.
 
 namespace LeanNPHardness.MachinePrimitives.BinaryEquality
 
-open Computability Turing
+open Computability Turing StateTransition
 
 inductive Stack
   | left

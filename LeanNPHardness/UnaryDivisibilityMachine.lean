@@ -9,7 +9,7 @@ asserted for these algorithms.
 
 namespace LeanNPHardness.MachinePrimitives
 
-open Computability Turing
+open Computability Turing StateTransition
 open LeanNPHardness.MachineComposition LeanNPHardness.BoundedPrime
 
 /-! ## Unary-padded divisibility
@@ -519,7 +519,7 @@ private def dvdEvalsToInTimeOne
     EvalsToInTime unaryDvdComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private theorem dvd_step_scanDividend_true
@@ -1731,7 +1731,7 @@ private def trialPairEvalsToInTimeOne
     EvalsToInTime trialDivisionPairComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private theorem trialPair_step_scan_cons
@@ -2523,7 +2523,7 @@ private def trialPair_loop_evals
         (by simpa [afterDivisor] using hcleanupDividend)
       simpa [trialPairLoopTime, encodedTrialPairSuffix,
         trialPairInitialState, unaryEncodeNat_length, Nat.add_assoc,
-        Nat.add_comm, Nat.add_left_comm] using hall
+        Nat.add_comm, Nat.add_left_comm] using! hall
   | succ count ih =>
       let afterLoop := trialPairCfg (some .emitStart) ⟨some true⟩ []
         (unaryEncodeNat n) (unaryEncodeNat count)
@@ -2552,7 +2552,7 @@ private def trialPair_loop_evals
         (by
           simpa [afterLoop, afterEmit, UnaryNatPair.encode,
             unaryEncodeNat_eq_replicate]
-            using hemit)
+            using! hemit)
       have hrest := ih (first + 1)
         (RawNatList.segment (UnaryNatPair.encode (n, first)) ++ output)
         ⟨none⟩
@@ -2692,7 +2692,7 @@ def trialDivisionPairs_outputsInTime (n : ℕ) :
       rw [TM2OutputsInTime, trialPair_initList_eq_cfg]
       simp only [Option.map_some]
       rw [trialPair_haltList_eq_cfg]
-      simpa [trialDivisionPairs, trialDivisors, RawUnaryPairList.encode] using
+      simpa [trialDivisionPairs, trialDivisors, RawUnaryPairList.encode] using!
         hmono
   | succ n =>
       cases n with

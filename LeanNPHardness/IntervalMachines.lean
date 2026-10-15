@@ -11,7 +11,7 @@ asserted for these algorithms.
 
 namespace LeanNPHardness.MachinePrimitives
 
-open Computability Turing
+open Computability Turing StateTransition
 open LeanNPHardness.MachineComposition LeanNPHardness.BoundedPrime
 
 /-! ## Bertrand-interval candidate enumeration
@@ -237,7 +237,7 @@ private def enumerateEvalsToInTimeOne
     EvalsToInTime bertrandCandidateComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private theorem enumerate_step_count_cons
@@ -520,7 +520,7 @@ private def enumerate_inc_copy_evals
       (bits.length + 1) := by
   induction bits generalizing work state with
   | nil =>
-      simpa using enumerateEvalsToInTimeOne
+      simpa using! enumerateEvalsToInTimeOne
         (enumerate_step_inc_copy_nil input unary work output state)
   | cons bit bits ih =>
       let nextState := enumeratePoppedBit state (some bit)
@@ -752,7 +752,7 @@ private def enumerate_emit_copy_evals
       (bits.length + 1) := by
   induction bits generalizing work output state with
   | nil =>
-      simpa using enumerateEvalsToInTimeOne
+      simpa using! enumerateEvalsToInTimeOne
         (enumerate_step_emit_copy_nil input unary work output state)
   | cons bit bits ih =>
       let nextState := enumeratePoppedBit state (some bit)
@@ -793,7 +793,7 @@ private def enumerate_emit_restore_evals
       (work.length + 1) := by
   induction work generalizing counter state with
   | nil =>
-      simpa using enumerateEvalsToInTimeOne
+      simpa using! enumerateEvalsToInTimeOne
         (enumerate_step_emit_restore_nil input unary counter output state)
   | cons head tail ih =>
       let nextState := enumeratePoppedBit state (some head)
@@ -921,7 +921,7 @@ private def enumerate_count_evals
       (enumerateCountTime remaining processed) := by
   induction remaining generalizing processed with
   | zero =>
-      simpa [enumerateCountTime] using
+      simpa [enumerateCountTime] using!
         enumerateEvalsToInTimeOne
           (enumerate_step_count_nil (unaryEncodeNat processed)
             (encodeNat processed) output)
@@ -1015,7 +1015,7 @@ private def enumerate_candidates_evals
         hpop
         (by simpa [afterPop] using hcleanup)
       simpa [enumerateCandidateTime, encodedIntervalSuffix, intervalFrom,
-        Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hall
+        Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using! hall
   | succ count ih =>
       let afterPop := enumerateCfg (some .incCarry) ⟨none, true⟩
         [] (unaryEncodeNat count) (encodeNat current) [] output
@@ -1520,7 +1520,7 @@ private def unaryBertrandEvalsToInTimeOne
     where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private def unaryBertrand_count_evals
@@ -1768,7 +1768,7 @@ private def unaryBertrand_candidates_evals
         (by simpa [afterCandidates] using hcleanup)
       simpa [unaryBertrandLoopTime, encodedUnaryIntervalSuffix,
         unaryEncodeNat_length, Nat.add_assoc, Nat.add_comm,
-        Nat.add_left_comm] using hall
+        Nat.add_left_comm] using! hall
   | succ count ih =>
       let afterCandidates := unaryBertrandCfg (some .emitStart) (some true) []
         (unaryEncodeNat count) (unaryEncodeNat (current + 1)) [] output

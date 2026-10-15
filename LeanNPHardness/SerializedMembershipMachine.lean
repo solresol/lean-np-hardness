@@ -19,7 +19,7 @@ Malformed-input rejection and the full SAT verifier remain separate obligations.
 
 namespace LeanNPHardness.MachinePrimitives.SerializedMembership
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := CertificateCount.Stack
 abbrev Alphabet := CertificateCount.Alphabet
@@ -247,7 +247,7 @@ theorem query_whole_frame (bits input remaining candidate output : List Bool) :
         input bits remaining candidate [] [] output) := by
   have run := query_run _ _ _ candidate output
     (FrameExtraction.whole_frame bits input remaining [])
-  simpa only [List.append_nil] using run
+  simpa only [List.append_nil] using! run
 
 /-- A framed query followed by the complete framed certificate. -/
 def encodeInput (query : Nat) (xs : List Nat) : List Bool :=

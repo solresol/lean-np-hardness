@@ -1,5 +1,5 @@
 import LeanNPHardness.SemanticReduction
-import Mathlib.Computability.TMComputable
+import LeanNPHardness.FinEncoding
 
 namespace LeanNPHardness
 
@@ -14,7 +14,7 @@ structure PolytimeManyOneReduction {α β : Type}
   correct : ∀ x, source x ↔ target (map x)
   polytime :
     Nonempty
-      (Turing.TM2ComputableInPolyTime sourceEncoding targetEncoding map)
+      (TM2ComputableInPolyTime sourceEncoding targetEncoding map)
 
 namespace PolytimeManyOneReduction
 
@@ -34,7 +34,7 @@ noncomputable def refl {α : Type} (encoding : FinEncoding α)
     PolytimeManyOneReduction encoding encoding language language where
   map := id
   correct _ := Iff.rfl
-  polytime := ⟨Turing.idComputableInPolyTime encoding⟩
+  polytime := ⟨idComputableInPolyTime encoding⟩
 
 /-- Compose polynomial reductions when a checked machine witness for the
 composed map is supplied explicitly.
@@ -51,7 +51,7 @@ def compOfWitness {α β γ : Type}
       PolytimeManyOneReduction middleEncoding targetEncoding middle target)
     (polytime :
       Nonempty
-        (Turing.TM2ComputableInPolyTime sourceEncoding targetEncoding
+        (TM2ComputableInPolyTime sourceEncoding targetEncoding
           (second.map ∘ first.map))) :
     PolytimeManyOneReduction sourceEncoding targetEncoding source target where
   map := second.map ∘ first.map
@@ -75,7 +75,7 @@ theorem compOfWitness_map {α β γ : Type}
       PolytimeManyOneReduction middleEncoding targetEncoding middle target)
     (polytime :
       Nonempty
-        (Turing.TM2ComputableInPolyTime sourceEncoding targetEncoding
+        (TM2ComputableInPolyTime sourceEncoding targetEncoding
           (second.map ∘ first.map)))
     (x : α) :
     (compOfWitness first second polytime).map x =

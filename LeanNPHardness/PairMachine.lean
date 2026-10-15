@@ -1,9 +1,9 @@
 import LeanNPHardness.PairEncoding
-import Mathlib.Computability.TMComputable
+import LeanNPHardness.FinEncoding
 
 namespace LeanNPHardness.MachineAdapters
 
-open Turing
+open Turing StateTransition
 
 /-- The stacks used by the first phase of a machine adapter on tagged pairs.
 The source stack contains the combined tagged encoding; each component has a
@@ -232,7 +232,8 @@ theorem pairSplit_whole_list {Γ Δ : Type}
         ((PairEncoding.rightSymbols source).reverse ++ rightReverse)) := by
   induction source generalizing state leftReverse rightReverse with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip, PairEncoding.leftSymbols,
+        PairEncoding.rightSymbols] using
         pairSplit_iteration_empty state leftReverse rightReverse
   | cons head tail ih =>
       cases head with
@@ -249,7 +250,7 @@ theorem pairSplit_whole_list {Γ Δ : Type}
                   (Sum.inl symbol :: tail) leftReverse rightReverse)) =
               some (pairSplitCfg .scan (some (Sum.inl symbol)) tail
                 (symbol :: leftReverse) rightReverse) by
-            simpa [Function.iterate_succ_apply'] using firstIteration]
+            simpa [Function.iterate_succ_apply', flip] using firstIteration]
           simpa [PairEncoding.leftSymbols, PairEncoding.rightSymbols,
             List.reverse_cons, List.append_assoc] using
             ih (some (Sum.inl symbol)) (symbol :: leftReverse) rightReverse
@@ -266,7 +267,7 @@ theorem pairSplit_whole_list {Γ Δ : Type}
                   (Sum.inr symbol :: tail) leftReverse rightReverse)) =
               some (pairSplitCfg .scan (some (Sum.inr symbol)) tail leftReverse
                 (symbol :: rightReverse)) by
-            simpa [Function.iterate_succ_apply'] using firstIteration]
+            simpa [Function.iterate_succ_apply', flip] using firstIteration]
           simpa [PairEncoding.leftSymbols, PairEncoding.rightSymbols,
             List.reverse_cons, List.append_assoc] using
             ih (some (Sum.inr symbol)) leftReverse (symbol :: rightReverse)
@@ -286,8 +287,8 @@ def pairSplit_evalsTo {Γ Δ : Type}
 /-- On the repository's canonical tagged encoding, classification produces
 exactly the reversed input and certificate encodings on their private stacks. -/
 theorem pairSplit_finEncoding_whole_list {α β : Type}
-    (left : Computability.FinEncoding α)
-    (right : Computability.FinEncoding β) (pair : α × β) :
+    (left : FinEncoding α)
+    (right : FinEncoding β) (pair : α × β) :
     (flip Option.bind (TM2.step pairSplitProgram))^[
         2 * ((PairEncoding.finEncoding left right).encode pair).length + 2]
       (some (pairSplitCfg .scan none
@@ -610,7 +611,7 @@ theorem pairRestore_left_whole_list {Γ Δ : Type}
         (leftReverse.reverse ++ leftOrdered) rightReverse rightOrdered) := by
   induction leftReverse generalizing state leftOrdered with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         pairRestore_left_iteration_empty state leftOrdered rightReverse
           rightOrdered
   | cons head tail ih =>
@@ -627,7 +628,7 @@ theorem pairRestore_left_whole_list {Γ Δ : Type}
               rightReverse rightOrdered)) =
           some (pairRestoreCfg .leftScan (some (.inl head)) tail
             (head :: leftOrdered) rightReverse rightOrdered) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.reverse_cons, List.append_assoc] using
         ih (some (.inl head)) (head :: leftOrdered)
 
@@ -645,7 +646,7 @@ theorem pairRestore_right_whole_list {Γ Δ : Type}
         (rightReverse.reverse ++ rightOrdered)) := by
   induction rightReverse generalizing state rightOrdered with
   | nil =>
-      simpa [Function.iterate_succ_apply'] using
+      simpa [Function.iterate_succ_apply', flip] using
         pairRestore_right_iteration_empty state leftOrdered rightOrdered
   | cons head tail ih =>
       have firstIteration :=
@@ -661,7 +662,7 @@ theorem pairRestore_right_whole_list {Γ Δ : Type}
               (head :: tail) rightOrdered)) =
           some (pairRestoreCfg .rightScan (some (.inr head)) [] leftOrdered
             tail (head :: rightOrdered)) by
-        simpa [Function.iterate_succ_apply'] using firstIteration]
+        simpa [Function.iterate_succ_apply', flip] using firstIteration]
       simpa [List.reverse_cons, List.append_assoc] using
         ih (some (.inr head)) (head :: rightOrdered)
 
@@ -716,8 +717,8 @@ def pairRestore_evalsTo {Γ Δ : Type}
 /-- Reversing the two stacks produced by canonical tagged-pair
 classification restores exactly the original component encodings. -/
 theorem pairRestore_finEncoding_whole_list {α β : Type}
-    (left : Computability.FinEncoding α)
-    (right : Computability.FinEncoding β) (pair : α × β) :
+    (left : FinEncoding α)
+    (right : FinEncoding β) (pair : α × β) :
     (flip Option.bind (TM2.step pairRestoreProgram))^[
         2 * (left.encode pair.1).length +
           2 * (right.encode pair.2).length + 4]

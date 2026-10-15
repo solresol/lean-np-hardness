@@ -16,7 +16,7 @@ separate obligations.
 
 namespace LeanNPHardness.CookLevin
 
-open Turing Computability CNF MachineTableau MachinePaddedRun EncodedLanguage
+open Turing Computability CNF MachineTableau MachinePaddedRun EncodedLanguage StateTransition
 
 variable {α : Type} {problem : EncodedLanguage α}
 

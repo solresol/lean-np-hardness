@@ -8,7 +8,7 @@ the original explicit finite-alphabet input encodings.
 
 namespace LeanNPHardness.MachinePrimitives
 
-open Computability Turing
+open Computability Turing StateTransition
 open LeanNPHardness.MachineComposition
 
 
@@ -229,7 +229,7 @@ private def succEvalsToInTimeOne
     EvalsToInTime binarySuccComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private def succ_copy_evals (bits work output : List Bool)
@@ -663,7 +663,7 @@ private def predEvalsToInTimeOne
     EvalsToInTime binaryPredComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private def pred_copy_evals (bits work output : List Bool)
@@ -1322,7 +1322,7 @@ private def compareEvalsToInTimeOne
     EvalsToInTime binaryLEComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private def compare_scan_evals
@@ -1809,7 +1809,7 @@ private def addEvalsToInTimeOne
     EvalsToInTime binaryAddComputer.step start (some finish) 1 where
   steps := 1
   evals_in_steps := by
-    simpa [Function.iterate_one] using hstep
+    simpa [Function.iterate_one, flip] using hstep
   steps_le_m := Nat.le_refl 1
 
 private def addFoldState :
@@ -1831,11 +1831,11 @@ private def add_scan_evals
       rcases state with ⟨pair, bit, carry⟩
       cases carry with
       | false =>
-          simpa [addFoldState, binaryAddPairsAux] using
+          simpa [addFoldState, addPoppedPair, binaryAddPairsAux] using
             addEvalsToInTimeOne
               (add_step_scan_nil_false work output pair bit)
       | true =>
-          simpa [addFoldState, binaryAddPairsAux] using
+          simpa [addFoldState, addPoppedPair, binaryAddPairsAux] using
             addEvalsToInTimeOne
               (add_step_scan_nil_true work output pair bit)
   | cons pair pairs ih =>
@@ -1931,7 +1931,7 @@ def binaryAdd_outputsInTime (pair : ℕ × ℕ) :
     (addCfg (some .reverse) (addFoldState addInitialState input) []
       result.reverse [])
     (some (addCfg none addInitialState [] [] result))
-    (by simpa [result] using hscan)
+    (by simpa [result, addInitialState] using hscan)
     (by simpa [result] using hreverse)
   have hlength := binaryAddPairsAux_length_le false input
   change result.length ≤ input.length + 1 at hlength

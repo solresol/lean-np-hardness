@@ -75,7 +75,7 @@ theorem optionCode_le {α : Type} (L : List α) (o : Option α) (h : ∀ x ∈ o
     optionCode L o ≤ L.length := by
   cases o with
   | none => simp
-  | some x => simpa [optionCode] using codeIn_lt L x (h x rfl)
+  | some x => simpa [optionCode, Nat.add_one_le_iff] using codeIn_lt L x (h x rfl)
 
 theorem optionCode_eq_zero_iff {α : Type} (L : List α) (o : Option α) :
     optionCode L o = 0 ↔ o = none := by

@@ -21,7 +21,7 @@ Clause aggregation, exact-width checking, and the full verifier remain separate.
 
 namespace LeanNPHardness.MachinePrimitives.LiteralEvaluation
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := ReusableMembership.Stack
 abbrev Alphabet := ReusableMembership.Alphabet

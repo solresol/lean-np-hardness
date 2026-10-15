@@ -19,7 +19,7 @@ literal/formula evaluation, and the full verifier remain separate. Execution end
 
 namespace LeanNPHardness.MachinePrimitives.QueryMembershipLoop
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := QueryMembershipStep.Stack
 abbrev Alphabet := QueryMembershipStep.Alphabet

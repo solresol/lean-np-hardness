@@ -17,7 +17,7 @@ Execution ends at a live `done` continuation before its halt.
 
 namespace LeanNPHardness.MachinePrimitives.CertificateMembershipLoop
 
-open Computability Turing
+open Computability Turing StateTransition
 
 abbrev Stack := CertificateCount.Stack
 abbrev Alphabet := CertificateCount.Alphabet
@@ -155,7 +155,7 @@ theorem entrySteps_le (query head : Nat) (tail : List Nat) :
     entrySteps query head tail ≤
       2 * (encodeNat query).length + 2 * BinaryNatLists.natWireSize head +
         4 * (encodeNat (head :: tail).length).length + 9 := by
-  simpa only [BinaryNatLists.natWireSize, BinaryNatLists.frame_length] using
+  simpa only [BinaryNatLists.natWireSize, BinaryNatLists.frame_length] using!
     (CertificateMembershipStep.evalsToInTime (encodeNat query) (encodeNat head) []
       (encodeNat (head :: tail).length) [] false).steps_le_m
 
@@ -183,7 +183,7 @@ theorem entry_run (query head : Nat) (tail : List Nat) (input output : List Bool
         ((decide (query = head) || accumulated) :: output)) from by
           simpa only [entrySteps, BinaryNatLists.encodeNat, List.flatMap_cons, List.append_assoc,
             List.length_cons, Nat.pred_succ, BinaryEquality.encodeNat_eq_iff,
-            binaryPredBits_encodeNat] using run,
+            binaryPredBits_encodeNat] using! run,
     Option.bind_some, return_step]
 
 /-- Exact runtime: one test per entry, one return per entry, and a final test. -/
