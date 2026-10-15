@@ -13,10 +13,22 @@ Relevant completed results:
 - exact observation counts; and
 - polynomial unit-cell output and construction bounds.
 
-This repository should eventually supply the common encoded language,
-bit-level polynomial-time compiler framework, and checked 3-SAT hardness
-theorem needed to turn that reduction into a library-native Lean NP-hardness
-result.
+This repository now supplies the checked hardness sources for that transfer
+(see [REDUCTION_GUIDE.md](REDUCTION_GUIDE.md)):
+
+- exact 3-SAT: `UnaryNPComplete.encodedUnaryExactThreeSAT_NPComplete` and
+  `ExactThreeVerify.encodedExactThreeSAT_NPComplete`; clauses may repeat
+  literals, which the thesis's `GeneralCNF` route
+  (`general_compileFixedPrime_correct`) already accepts;
+- Max-Cut, for the fixed-prime and published `2`-adic results:
+  `UnaryNPComplete.encodedUnaryMaxCut_NPComplete` and
+  `MaxCutVerify.encodedMaxCut_NPComplete`.
+
+The unary-index encodings keep every variable and vertex index below the input
+length, so a thesis-side map to `Fin numVars` or `Fin n` syntax stays
+polynomial; binary indices can be exponentially larger than their encoding.
+The remaining thesis-side step is a polynomial-time TM2 machine for its
+compiler, composed with these sources by `EncodedLanguage.NPHard.of_reduction`.
 
 ## `phd-thesis-coq`
 
