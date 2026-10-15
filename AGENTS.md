@@ -46,6 +46,9 @@ explicitly includes them.
   proved normalization theorem justifies removing them.
 - Audit headline results with `#print axioms`.
 - Keep `THEOREM_STATUS.md` synchronized with the checked declarations.
+- Keep `README.md` a short front page for outside readers: main results, the
+  definitions to audit, related work, and disclosure. Record per-result detail
+  in `THEOREM_STATUS.md` and component descriptions in `docs/COMPONENTS.md`.
 
 ## Working practice
 
