@@ -55,6 +55,12 @@ def toEncoding {α : Type u} (e : FinEncoding α) : Encoding α e.Γ where
   decode := e.decode
   decode_encode := e.decode_encode
 
+@[simp] theorem toEncoding_encode {α : Type u} (e : FinEncoding α) :
+    e.toEncoding.encode = e.encode := rfl
+
+@[simp] theorem toEncoding_decode {α : Type u} (e : FinEncoding α) :
+    e.toEncoding.decode = e.decode := rfl
+
 theorem encode_injective {α : Type u} (e : FinEncoding α) :
     Function.Injective e.encode :=
   e.toEncoding.encode_injective
