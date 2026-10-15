@@ -213,8 +213,9 @@ repository as a whole.
 - Select a self-contained headline theorem with a concise informal account.
 - Expose the statement in a small, readable `Challenge.lean` module and the
   proved declaration in a matching `Solution.lean` module.
-- Add the Comparator configuration, `formalization.yaml`, and a root licence,
-  with accurate provenance, automation, review, and limitation disclosures.
+- Add the Comparator configuration and `formalization.yaml`, with accurate
+  provenance, automation, review, and limitation disclosures. The root licence
+  (Apache-2.0) is in place.
 - Pass the full build, unfinished-proof scan, axiom audit, and Palomar's
   Comparator checks.
 - Commit and push the exact public snapshot before submission.
