@@ -84,25 +84,51 @@ structure-literal definitions provided. -/
     encodingBoolBool.decode l = some (decodeBool l) := rfl
 @[simp] theorem encodeBool_apply (b : Bool) : encodeBool b = [b] := rfl
 
+/-! The standard encodings are structure literals, exactly as in pre-2026
+mathlib, so that unfolding one (`simp only [finEncodingNatBool]`) exposes its
+`encode` field directly. Each is definitionally `FinEncoding.ofEncoding` of the
+corresponding unbundled mathlib encoding. -/
+
 /-- Binary encoding of natural numbers over `Bool`. -/
-@[reducible]
-def finEncodingNatBool : FinEncoding ℕ :=
-  FinEncoding.ofEncoding encodingNatBool
+def finEncodingNatBool : FinEncoding ℕ where
+  Γ := Bool
+  encode := encodeNat
+  decode n := some (decodeNat n)
+  decode_encode n := congr_arg _ (decode_encodeNat n)
+  ΓFin := inferInstance
 
 /-- Binary encoding of natural numbers over mathlib's `Γ'`. -/
-@[reducible]
-def finEncodingNatΓ' : FinEncoding ℕ :=
-  FinEncoding.ofEncoding encodingNatΓ'
+def finEncodingNatΓ' : FinEncoding ℕ where
+  Γ := Γ'
+  encode x := List.map inclusionBoolΓ' (encodeNat x)
+  decode x := some (decodeNat (List.map sectionΓ'Bool x))
+  decode_encode := encodingNatΓ'.decode_encode
+  ΓFin := inferInstance
 
 /-- Unary encoding of natural numbers over `Bool`. -/
-@[reducible]
-def unaryFinEncodingNat : FinEncoding ℕ :=
-  FinEncoding.ofEncoding unaryEncodingNat
+def unaryFinEncodingNat : FinEncoding ℕ where
+  Γ := Bool
+  encode := unaryEncodeNat
+  decode n := some (unaryDecodeNat n)
+  decode_encode n := congr_arg _ (unary_decode_encode_nat n)
+  ΓFin := inferInstance
 
 /-- Encoding of a Boolean as a single symbol. -/
-@[reducible]
-def finEncodingBoolBool : FinEncoding Bool :=
-  FinEncoding.ofEncoding encodingBoolBool
+def finEncodingBoolBool : FinEncoding Bool where
+  Γ := Bool
+  encode := encodeBool
+  decode x := some (decodeBool x)
+  decode_encode x := congr_arg _ (decode_encodeBool x)
+  ΓFin := inferInstance
+
+theorem finEncodingNatBool_eq_ofEncoding :
+    finEncodingNatBool = FinEncoding.ofEncoding encodingNatBool := rfl
+
+theorem unaryFinEncodingNat_eq_ofEncoding :
+    unaryFinEncodingNat = FinEncoding.ofEncoding unaryEncodingNat := rfl
+
+theorem finEncodingBoolBool_eq_ofEncoding :
+    finEncodingBoolBool = FinEncoding.ofEncoding encodingBoolBool := rfl
 
 /-- A function computed by a finite two-stack Turing machine, with the bundled
 alphabets supplied to mathlib's `Turing.TM2Computable`. -/
