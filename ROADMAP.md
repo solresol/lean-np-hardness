@@ -203,8 +203,13 @@ for those membership results.
   are checked in `CNFRenaming`: `Formula.denseRename` preserves satisfiability,
   exact widths, and all occurrences; variables occupy exactly the dictionary
   index range, below the original binary input length `n`. Its unary output
-  has at most `n * (n + 1)` symbols. A TM2 implementation and runtime bound
-  remain pending; this is not yet a polynomial-time re-encoding reduction.
+  has at most `n * (n + 1)` symbols. `FirstMatch.firstMemberComputableInPolyTime`
+  now supplies serialized first-member lookup with unary output; singleton
+  queries give `List.idxOf` and agree with `denseIndex`. Its comparison
+  postprocessor takes exactly `3m + 2` steps for `m` bits. Dictionary
+  construction, preservation across lookups, and occurrence-preserving
+  formula traversal remain pending; the full renaming is not yet a
+  polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

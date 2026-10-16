@@ -37,6 +37,16 @@ range, and the unary output has at most `n * (n + 1)` symbols for original
 binary input length `n`. Its TM2 implementation and runtime proof remain
 pending; the checked bound is on output size.
 
+`FirstMatchMachine` supplies a polynomial-time dictionary lookup component.
+It composes the serialized repeated-membership machine with a three-stack
+postprocessor that restores comparison order and emits the first match's
+position in unary, in exactly `3m + 2` steps for `m` comparison bits.
+`FirstMatch.firstMemberComputableInPolyTime` uses the full bit length of
+`FramedNatListQueries.finEncoding`. With a singleton query list, the result
+is `List.idxOf`, including the dictionary-length sentinel when absent;
+`firstMember_denseIndex` connects this to dense CNF renaming. Dictionary
+construction, preservation across lookups, and formula traversal remain pending.
+
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
 which are built directly on the routine framework. Remarks below that a full

@@ -88,6 +88,7 @@ the separate routine framework, as recorded in the main result table.
 | Result | Status | Checked declaration or encoding boundary |
 |---|---|---|
 | Dense CNF variable renaming: semantics and output size | Complete | `CNF.Formula.denseRename` maps each variable to its index in the deduplicated auxiliary dictionary, retaining every literal and clause occurrence. `satisfiable_denseRename`, `exactWidth_denseRename`, and `CNF.exactKSAT_denseRename` preserve the languages; `mem_vars_denseRename` identifies the support exactly as the dictionary index range, and `denseRename_var_lt_encodedSize` bounds every index by the original binary input length. `denseRename_unary_length_le` bounds the unary output by `n * (n + 1)` symbols for original binary bit length `n`. No TM2 runtime or polynomial-time reduction is asserted. |
+| Serialized first-member dictionary lookup | Complete | `MachinePrimitives.FirstMatch.firstMemberComputableInPolyTime` composes `CanonicalQueryMembership` with a three-stack order-restoration and unary-position routine. Input is `(dictionary, membershipList)` under `FramedNatListQueries.finEncoding`, measured by its full serialized bit length; output uses `unaryFinEncodingNat`. `scan_run` takes exactly `m + 1` steps and `routine_exits` exactly `3m + 2` for `m` comparison bits; `outputsInTime` includes canonical cleanup and halting, and generic checked TM2 composition supplies the full polynomial. `firstMember_singleton` gives `List.idxOf`, preserving first-occurrence semantics for repeated entries; `firstMember_singleton_eq_length` characterizes absence and `firstMember_denseIndex` agrees with dense renaming. The canonical computation consumes its input; dictionary construction, preservation across lookups, and full CNF traversal remain pending. |
 | Binary natural/list/nested-list encoding | Complete | `BinaryNatLists.finEncoding`, `decode_encode`, and `encode_length`; raw encodings in `RawNatEncoding`. |
 | Framing and raw-field conversion | Complete | `MachinePrimitives.framedNatComputableInPolyTime`, `framedNatListComputableInPolyTime`, `unframedNatListsComputableInPolyTime`, and `sourceOrderRawFieldsComputableInPolyTime`. |
 | Binary arithmetic | Complete | `MachinePrimitives.binarySuccComputableInPolyTime`, `binaryPredComputableInPolyTime`, `binaryLEComputableInPolyTime`, and `binaryAddComputableInPolyTime`; the latter two use `BinaryNatPair.finEncoding`. |
@@ -752,3 +753,13 @@ The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
   preserved occurrence shape, and the `n * (n + 1)` unary-output bound in
   original binary bits are checked. A polynomial-time TM2 renaming machine
   remains a separate obligation.
+
+- On 2026-10-17 the twelve `FirstMatchMachine` audits pass, each using only
+  `propext`, `Classical.choice`, and `Quot.sound`. Full `lake build` passes
+  2,470 jobs; all 654 reported axiom lists contain only those standard axioms,
+  with three further axiom-free reports. The 130-file project Lean/config
+  scan finds only the existing explanatory `proof_wanted` comment. The new
+  module has no warnings. Exact `m + 1` scan and `3m + 2` postprocessing runs,
+  canonical output, composed polynomial-time first-member lookup, singleton
+  `idxOf`/absence semantics, and the `denseIndex` bridge are checked. The
+  complete dense-renaming machine remains pending.

@@ -82,6 +82,7 @@ import LeanNPHardness.CNF
 import LeanNPHardness.CNFEncoding
 import LeanNPHardness.CNFCertificate
 import LeanNPHardness.CNFRenaming
+import LeanNPHardness.FirstMatchMachine
 import LeanNPHardness.CNFNormalization
 
 namespace LeanNPHardness.Audit
@@ -766,3 +767,16 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.CNF.Unary.encode_length_le_of_vars_lt
 #print axioms LeanNPHardness.CNF.Formula.denseRename_unary_length_le
 #print axioms LeanNPHardness.CNF.exactKSAT_denseRename
+
+#print axioms LeanNPHardness.MachinePrimitives.FirstMatch.scan_step_cons
+#print axioms LeanNPHardness.MachinePrimitives.FirstMatch.scan_step_nil
+#print axioms LeanNPHardness.MachinePrimitives.FirstMatch.scan_run
+#print axioms LeanNPHardness.MachinePrimitives.FirstMatch.scan_exits
+#print axioms LeanNPHardness.MachinePrimitives.FirstMatch.routine_exits
+#print axioms LeanNPHardness.MachinePrimitives.FirstMatch.outputsInTime
+#print axioms LeanNPHardness.MachinePrimitives.FirstMatch.computableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.FirstMatch.firstMember_le_length
+#print axioms LeanNPHardness.MachinePrimitives.FirstMatch.firstMember_singleton
+#print axioms LeanNPHardness.MachinePrimitives.FirstMatch.firstMember_singleton_eq_length
+#print axioms LeanNPHardness.MachinePrimitives.FirstMatch.firstMemberComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.FirstMatch.firstMember_denseIndex

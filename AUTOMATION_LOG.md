@@ -4256,3 +4256,66 @@ avoid failed routes, and choose a materially different experiment when blocked.
   the binary comparison kernel and routine framework, then assemble dictionary
   construction and occurrence-preserving formula traversal. Keep its runtime
   separate from the already checked output-size theorem.
+
+## 2026-10-17 — polynomial-time first matching dictionary position
+
+- **Starting commit:** `81cd3f8d877c1ff6417048da31f35fa684404888` on clean
+  `main`. Fetch confirmed local/tracking parity, ahead/behind 0/0. Read
+  instructions, roadmap, status, prior journal, and automation memory.
+- **Goal and route:** advance Milestone 5's dense-variable lookup. Inspection
+  showed `CanonicalQueryMembership` already computes every dictionary-entry
+  membership bit in reverse order. Reuse it with a singleton query and add
+  a first-match postprocessor, avoiding another framed-list parser. This
+  completes canonical lookup; preservation across repeated lookups is separate.
+- **Checked increment:** new `FirstMatchMachine.lean` defines a finite
+  three-stack routine, moving the reversed comparison stream into original
+  dictionary order, then counting false bits until the first true. The rest
+  of the stream is consumed without changing the count. `scan_run` and
+  `scan_exits` take exactly `m + 1` steps, preserving arbitrary unrelated
+  input and output suffixes. `routine_exits` and `outputsInTime` include
+  reversal, empty non-output stacks, state reset, and halting in `3m + 2`
+  steps. `computableInPolyTime` packages this linear postprocessor.
+  `firstMemberComputableInPolyTime` uses checked generic TM2 composition
+  with the existing membership machine. `firstMember_le_length`,
+  `firstMember_singleton`, `firstMember_singleton_eq_length`, and
+  `firstMember_denseIndex` give the size bound, first-occurrence `idxOf`
+  semantics, exact absence sentinel, and dense-renaming interface. Empty
+  dictionaries and repeated entries are included without normalization.
+- **Model and boundary:** full lookup input is `(dictionary, membershipList)`
+  under `FramedNatListQueries.finEncoding`, measured by its complete serialized
+  Boolean length; output uses `unaryFinEncodingNat`. The full polynomial is
+  supplied by `compositionComputableInPolyTime`, including transfer costs;
+  `3m + 2` is the postprocessor cost alone. Dense dictionary construction,
+  retention across lookups, and CNF occurrence traversal remain pending.
+- **Files:** new module, root/audit imports, twelve audits, README, roadmap,
+  theorem status, and this log.
+- **Checks:** targeted build passes 1,326 jobs; full `lake build` passes
+  2,470 jobs. All twelve new audit lists use only `propext`, `Classical.choice`,
+  and `Quot.sound`; all 654 reported lists are standard, with three additional
+  axiom-free reports. The 130-file Lean source/config scan finds only the
+  pre-existing explanatory `proof_wanted` comment. No new-module warnings;
+  existing migration/deprecation warnings elsewhere remain. `git diff --check`
+  passes. Full build log: `/tmp/lean-np-hardness-2026-10-17-build.log`.
+- **Failed approaches/API discoveries:** a bare `lake env lean` check does
+  not apply the package's Lean 4.35 transparency option and failed at derived
+  `Fintype`; use `lake build <module>`. Even with package options, rewriting
+  through routine/encoding aliases sometimes needs `change` to expose the
+  concrete configuration or function. Prove the combined arithmetic cost
+  separately with `omega`, rather than expecting `simp` to collect multiples.
+  `compositionComputableInPolyTime` takes three encodings and both functions
+  explicitly before its two witnesses. `List.replicate_succ'` aligns suffix
+  accumulation; `List.idxOf_le_length` and `List.idxOf_eq_length_iff` give the
+  semantic boundary lemmas. No remaining blocker for this scope.
+- **Comparison evidence:** reread sibling Coq `SourceAdapter.v` (maximum-variable
+  bounds) and `Hardness.v` (separate runtime witness and correctness), and pinned
+  Complexity [kSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/kSAT.v)
+  (list-entry widths and separate time extraction/bounds). All new proofs are
+  checked in Lean; no Coq terms or sibling edits are part of this increment.
+- **Ending state:** verified increment prepared for commit/push on `main`;
+  commit hash and final local/tracking/live-remote parity are recorded in
+  automation memory.
+- **Best next experiment:** give direct `(query, dictionary)` lookup its own
+  finite encoding by serializing `(dictionary, [query])`; require the decoder
+  to recognize a singleton membership list, prove its round trip, and reuse
+  this same machine to package `List.idxOf`. Then retain the dictionary via
+  the pair-left adapter before assembling repeated occurrence renaming.
