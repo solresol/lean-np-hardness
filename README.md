@@ -44,7 +44,15 @@ position in unary, in exactly `3m + 2` steps for `m` comparison bits.
 `FirstMatch.firstMemberComputableInPolyTime` uses the full bit length of
 `FramedNatListQueries.finEncoding`. With a singleton query list, the result
 is `List.idxOf`, including the dictionary-length sentinel when absent;
-`firstMember_denseIndex` connects this to dense CNF renaming. Dictionary
+`firstMember_denseIndex` connects this to dense CNF renaming.
+
+`DictionaryLookup.computableInPolyTime` exposes direct `(query, dictionary)`
+lookup using that same machine and polynomial. `FramedNatLookup.finEncoding`
+serializes the input as `(dictionary, [query])`, with checked round trip,
+injectivity, exact bit length, and decoder rejection of non-singleton queries
+and trailing data. The unary result size is at most the input bit length;
+`lookup_denseIndex` supplies the dense-renaming interface. This wire format
+is specified directly; conversion from a tagged pair encoding, dictionary
 construction, preservation across lookups, and formula traversal remain pending.
 
 The component verifier machines listed in this section predate the complete

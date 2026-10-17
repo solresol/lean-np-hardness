@@ -83,6 +83,7 @@ import LeanNPHardness.CNFEncoding
 import LeanNPHardness.CNFCertificate
 import LeanNPHardness.CNFRenaming
 import LeanNPHardness.FirstMatchMachine
+import LeanNPHardness.DictionaryLookup
 import LeanNPHardness.CNFNormalization
 
 namespace LeanNPHardness.Audit
@@ -780,3 +781,16 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.FirstMatch.firstMember_singleton_eq_length
 #print axioms LeanNPHardness.MachinePrimitives.FirstMatch.firstMemberComputableInPolyTime
 #print axioms LeanNPHardness.MachinePrimitives.FirstMatch.firstMember_denseIndex
+
+#print axioms LeanNPHardness.FramedNatLookup.decode_serialized
+#print axioms LeanNPHardness.FramedNatLookup.decode_encode
+#print axioms LeanNPHardness.FramedNatLookup.decode_reject_non_singleton
+#print axioms LeanNPHardness.FramedNatLookup.decode_encode_append_nonempty
+#print axioms LeanNPHardness.FramedNatLookup.finEncoding
+#print axioms LeanNPHardness.FramedNatLookup.encode_injective
+#print axioms LeanNPHardness.FramedNatLookup.encode_length
+#print axioms LeanNPHardness.MachinePrimitives.DictionaryLookup.lookup_eq_length_iff
+#print axioms LeanNPHardness.MachinePrimitives.DictionaryLookup.lookup_getElem?
+#print axioms LeanNPHardness.MachinePrimitives.DictionaryLookup.lookup_le_encode_length
+#print axioms LeanNPHardness.MachinePrimitives.DictionaryLookup.computableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.DictionaryLookup.lookup_denseIndex

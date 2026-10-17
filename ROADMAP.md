@@ -206,9 +206,14 @@ for those membership results.
   has at most `n * (n + 1)` symbols. `FirstMatch.firstMemberComputableInPolyTime`
   now supplies serialized first-member lookup with unary output; singleton
   queries give `List.idxOf` and agree with `denseIndex`. Its comparison
-  postprocessor takes exactly `3m + 2` steps for `m` bits. Dictionary
-  construction, preservation across lookups, and occurrence-preserving
-  formula traversal remain pending; the full renaming is not yet a
+  postprocessor takes exactly `3m + 2` steps for `m` bits.
+  `DictionaryLookup.computableInPolyTime` now packages direct `(query, dictionary)`
+  lookup under `FramedNatLookup.finEncoding`, reusing the identical machine
+  and polynomial; the decoder checks singleton shape and stream exhaustion,
+  and the unary result size is bounded by the full input bit length. Conversion
+  from a tagged pair encoding, dictionary construction, preservation across
+  lookups, and occurrence-preserving formula traversal remain pending;
+  the full renaming is not yet a
   polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.

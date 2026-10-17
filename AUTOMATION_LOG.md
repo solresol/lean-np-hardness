@@ -4319,3 +4319,63 @@ avoid failed routes, and choose a materially different experiment when blocked.
   to recognize a singleton membership list, prove its round trip, and reuse
   this same machine to package `List.idxOf`. Then retain the dictionary via
   the pair-left adapter before assembling repeated occurrence renaming.
+
+
+## 2026-10-18 — direct polynomial-time natural/dictionary lookup
+
+- **Starting commit:** `0571ef7f0bb3fe422efe9371e7bc54ac248d3119` on clean
+  `main`. Fetch confirmed local/tracking parity, ahead/behind 0/0. Read
+  instructions, roadmap, theorem status, prior journal and automation memory.
+- **Goal:** the previous run's direct lookup interface, advancing Milestone 5
+  while retaining the existing checked machine and its full runtime bound.
+- **Checked increment:** new `DictionaryLookup.lean` defines
+  `FramedNatLookup.encode`, `decode`, and `finEncoding` for `(query, dictionary)`
+  represented as `(dictionary, [query])`. `decode_serialized` exposes the
+  singleton check; `decode_encode`, `decode_reject_non_singleton`,
+  `decode_encode_append_nonempty`, and `encode_injective` prove its round trip,
+  shape/suffix rejection, and injectivity. `encode_length` states the exact
+  bit size, including both headers and the singleton query's outer frame.
+  `DictionaryLookup.lookup` is `List.idxOf`; `lookup_eq_length_iff` and
+  `lookup_getElem?` give absence and present-query semantics, retaining empty
+  dictionaries and repeated entries. `lookup_le_encode_length` bounds unary
+  output size by complete input bits. `computableInPolyTime` reuses
+  `FirstMatch.firstMemberComputableInPolyTime`'s machine, alphabet equivalences,
+  and polynomial verbatim. `lookup_denseIndex` exposes the renaming interface.
+- **Model and boundary:** mathlib finite TM2, Boolean input under
+  `FramedNatLookup.finEncoding`, unary natural output, runtime in the entire
+  input bit length. This is a semantic restriction/reindexing of the same
+  encoded stream, with no uncharged preprocessing. The decoder's rejection
+  lemmas do not claim machine rejection of malformed streams. Conversion
+  from a tagged pair, dictionary construction/preservation, and occurrence
+  traversal remain separate; no full dense-renaming runtime is asserted.
+- **Files:** new module, root/audit imports, twelve audits, README, roadmap,
+  theorem status, and this log.
+- **Checks:** targeted module build passes 1,327 jobs; full `lake build` passes
+  2,471 jobs. Eleven new audits use only `propext`, `Classical.choice`, and
+  `Quot.sound`; `lookup_denseIndex` is axiom-free. All 665 axiom lists are
+  standard, with four axiom-free reports. The 131-file Lean source/config scan
+  finds only the existing explanatory `proof_wanted` comment. No new-module
+  warnings; existing migration/deprecation warnings elsewhere remain.
+  `git diff --check` passes. Full build log:
+  `/tmp/lean-np-hardness-2026-10-18-build.log`.
+- **Failed approaches/API discoveries:** no failed Lean proof approaches.
+  Reusing the bundled fields and specializing `outputsFun` works directly;
+  `simpa only` with both encoding structure literals and
+  `FirstMatch.firstMember_singleton` discharges the input/output boundary.
+  `List.getElem?_idxOf`, `List.idxOf_eq_length_iff`, and
+  `BinaryNatLists.length_le_listWireSize` supply the semantic/size interfaces.
+  `CODEX_HOME` was unset in the shell; read automation memory using the
+  supplied absolute `/Users/gregb/.codex/automations/...` location.
+- **Comparison evidence:** consulted sibling Coq `SourceAdapter.v` and
+  `Hardness.v`, plus pinned Complexity
+  [kSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/kSAT.v)
+  (list-entry widths, separate semantic and extracted runtime results).
+  New definitions/proofs are checked in Lean; no sibling repository edits.
+- **Ending state:** verified increment prepared for commit/push on `main`;
+  commit and final local/tracking/live-remote parity go in automation memory.
+- **Best next experiment:** implement generic encoded-input duplication
+  `a ↦ (a, a)` from `e` to `PairEncoding.finEncoding e e`, then compose with
+  the checked pair-left adapter to obtain `(lookup a, a)` from one supplied
+  lookup input. This would retain the dictionary without assuming a second
+  caller-provided copy. Give the duplication machine its own exact linear
+  run before polynomial packaging; formula traversal remains later work.

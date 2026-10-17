@@ -89,6 +89,7 @@ the separate routine framework, as recorded in the main result table.
 |---|---|---|
 | Dense CNF variable renaming: semantics and output size | Complete | `CNF.Formula.denseRename` maps each variable to its index in the deduplicated auxiliary dictionary, retaining every literal and clause occurrence. `satisfiable_denseRename`, `exactWidth_denseRename`, and `CNF.exactKSAT_denseRename` preserve the languages; `mem_vars_denseRename` identifies the support exactly as the dictionary index range, and `denseRename_var_lt_encodedSize` bounds every index by the original binary input length. `denseRename_unary_length_le` bounds the unary output by `n * (n + 1)` symbols for original binary bit length `n`. No TM2 runtime or polynomial-time reduction is asserted. |
 | Serialized first-member dictionary lookup | Complete | `MachinePrimitives.FirstMatch.firstMemberComputableInPolyTime` composes `CanonicalQueryMembership` with a three-stack order-restoration and unary-position routine. Input is `(dictionary, membershipList)` under `FramedNatListQueries.finEncoding`, measured by its full serialized bit length; output uses `unaryFinEncodingNat`. `scan_run` takes exactly `m + 1` steps and `routine_exits` exactly `3m + 2` for `m` comparison bits; `outputsInTime` includes canonical cleanup and halting, and generic checked TM2 composition supplies the full polynomial. `firstMember_singleton` gives `List.idxOf`, preserving first-occurrence semantics for repeated entries; `firstMember_singleton_eq_length` characterizes absence and `firstMember_denseIndex` agrees with dense renaming. The canonical computation consumes its input; dictionary construction, preservation across lookups, and full CNF traversal remain pending. |
+| Direct natural/dictionary lookup | Complete | `FramedNatLookup.finEncoding` serializes `(query, dictionary)` as the existing `(dictionary, [query])` first-member input. `decode_encode`, `decode_reject_non_singleton`, `decode_encode_append_nonempty`, `encode_injective`, and `encode_length` check the round trip, decoder shape/exhaustion, injectivity, and full bit size. `MachinePrimitives.DictionaryLookup.computableInPolyTime` reuses the identical finite TM2 machine and polynomial to compute `List.idxOf` with unary output. `lookup_eq_length_iff` characterizes absence, `lookup_getElem?` recovers a present query, `lookup_le_encode_length` bounds unary output by input bits, and `lookup_denseIndex` agrees with dense renaming. The encoding decoder checks malformed streams; the machine contract covers canonical encodings. Tagged-pair conversion, dictionary preservation/construction, and CNF traversal remain separate. |
 | Binary natural/list/nested-list encoding | Complete | `BinaryNatLists.finEncoding`, `decode_encode`, and `encode_length`; raw encodings in `RawNatEncoding`. |
 | Framing and raw-field conversion | Complete | `MachinePrimitives.framedNatComputableInPolyTime`, `framedNatListComputableInPolyTime`, `unframedNatListsComputableInPolyTime`, and `sourceOrderRawFieldsComputableInPolyTime`. |
 | Binary arithmetic | Complete | `MachinePrimitives.binarySuccComputableInPolyTime`, `binaryPredComputableInPolyTime`, `binaryLEComputableInPolyTime`, and `binaryAddComputableInPolyTime`; the latter two use `BinaryNatPair.finEncoding`. |
@@ -763,3 +764,15 @@ The source tree contains no `sorry`, `admit`, project-defined `axiom`, or
   canonical output, composed polynomial-time first-member lookup, singleton
   `idxOf`/absence semantics, and the `denseIndex` bridge are checked. The
   complete dense-renaming machine remains pending.
+
+
+- On 2026-10-18 the twelve `DictionaryLookup` audits pass: eleven use only
+  `propext`, `Classical.choice`, and `Quot.sound`; `lookup_denseIndex` is
+  axiom-free. Full `lake build` passes 2,471 jobs, with 665 standard axiom
+  lists and four axiom-free reports. The 131-file project Lean/config scan
+  finds only the existing explanatory `proof_wanted` comment. The new module
+  has no warnings. Direct `List.idxOf` lookup is polynomial in the complete
+  `FramedNatLookup` input bit length and retains the prior machine and time
+  polynomial verbatim. Encoding round trip, singleton and suffix rejection,
+  exact bit length, semantic lookup interfaces, and the unary-output size
+  bound are checked. Full polynomial-time dense renaming remains pending.
