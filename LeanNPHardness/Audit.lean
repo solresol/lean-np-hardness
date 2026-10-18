@@ -84,6 +84,7 @@ import LeanNPHardness.CNFCertificate
 import LeanNPHardness.CNFRenaming
 import LeanNPHardness.FirstMatchMachine
 import LeanNPHardness.DictionaryLookup
+import LeanNPHardness.PairDuplication
 import LeanNPHardness.CNFNormalization
 
 namespace LeanNPHardness.Audit
@@ -794,3 +795,11 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.DictionaryLookup.lookup_le_encode_length
 #print axioms LeanNPHardness.MachinePrimitives.DictionaryLookup.computableInPolyTime
 #print axioms LeanNPHardness.MachinePrimitives.DictionaryLookup.lookup_denseIndex
+#print axioms LeanNPHardness.MachineAdapters.PairDuplication.copy_run
+#print axioms LeanNPHardness.MachineAdapters.PairDuplication.right_run
+#print axioms LeanNPHardness.MachineAdapters.PairDuplication.left_run
+#print axioms LeanNPHardness.MachineAdapters.PairDuplication.routine_exits
+#print axioms LeanNPHardness.MachineAdapters.PairDuplication.outputsInTime
+#print axioms LeanNPHardness.MachineAdapters.PairDuplication.computableInPolyTime
+#print axioms LeanNPHardness.MachineAdapters.PairDuplication.retainInputComputableInPolyTime
+#print axioms LeanNPHardness.MachinePrimitives.DictionaryLookup.preservingComputableInPolyTime

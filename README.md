@@ -53,7 +53,17 @@ injectivity, exact bit length, and decoder rejection of non-singleton queries
 and trailing data. The unary result size is at most the input bit length;
 `lookup_denseIndex` supplies the dense-renaming interface. This wire format
 is specified directly; conversion from a tagged pair encoding, dictionary
-construction, preservation across lookups, and formula traversal remain pending.
+construction, and formula traversal remain pending.
+
+`PairDuplication.computableInPolyTime` copies one encoded value into its
+canonical tagged pair in exactly `6n + 3` TM2 steps for input length `n`,
+including workspace cleanup and halting. It supports any finite alphabet,
+including an empty one. `retainInputComputableInPolyTime` composes duplication
+with the pair-left adapter to compute `(f a, a)` from one input.
+`DictionaryLookup.preservingComputableInPolyTime` specializes this to return
+the unary index alongside the complete original query and dictionary, with
+polynomial runtime in the original `FramedNatLookup` input bits. Changing the
+retained query and connecting repeated lookups to CNF traversal remain pending.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

@@ -4379,3 +4379,66 @@ avoid failed routes, and choose a materially different experiment when blocked.
   lookup input. This would retain the dictionary without assuming a second
   caller-provided copy. Give the duplication machine its own exact linear
   run before polynomial packaging; formula traversal remains later work.
+
+## 2026-10-19 — linear encoded-input duplication and preserving lookup
+
+- **Starting commit:** `0cfb557b393ca8ebfadcf152d3e15742eb3509d7`, clean
+  `main`. Read instructions, roadmap, theorem status, prior journal and
+  automation memory. Fetch confirmed tracking parity, ahead/behind 0/0.
+- **Goal:** the prior run's duplication experiment, enabling dictionary
+  retention from one supplied lookup input for Milestone 5.
+- **Checked increment:** new `PairDuplication.lean` supplies a four-stack
+  finite TM2 routine with finite symbol-carrying labels. `copy_run` reverses
+  two copies; `right_run` and `left_run` emit each in original order with
+  disjoint tags. Each phase takes exactly `2n + 1` steps. `routine_exits`
+  composes them in exactly `6n + 3`, retaining any output suffix;
+  `outputsInTime` includes canonical empty workspace, reset, and halting.
+  `computableInPolyTime` packages `a ↦ (a, a)` for every `FinEncoding`,
+  including empty alphabets, with polynomial `6X + 3`.
+  `retainInputComputableInPolyTime` composes duplication with the existing
+  pair-left machine to compute `(f a, a)`. The specialization
+  `DictionaryLookup.preservingComputableInPolyTime` returns the unary index
+  alongside the exact original query and dictionary from one input.
+- **Model and boundary:** finite mathlib TM2, complete encoded input length;
+  duplication's output uses `PairEncoding.finEncoding e e`. Preserving
+  lookup starts with `FramedNatLookup.finEncoding` and outputs a tagged pair
+  of `unaryFinEncodingNat` and that original encoding. Generic checked
+  composition charges duplication and pair-left execution; no preloaded
+  backup or free copy is assumed. Dictionary construction, tagged-pair input
+  conversion, changing the retained query, and CNF traversal remain pending.
+- **Files:** new machine module; dictionary wrapper; root/audit imports and
+  eight audits; README, ROADMAP, THEOREM_STATUS, and this journal.
+- **Checks:** targeted build passed 1,328 jobs; full `lake build` passed
+  2,472 jobs. All eight new audits and all 673 reported axiom lists use only
+  `propext`, `Classical.choice`, `Quot.sound`; four other reports are axiom-free.
+  The 132-file Lean/config scan finds only the existing explanatory
+  `proof_wanted` comment. No new/modified-module warnings; existing migration
+  warnings elsewhere remain. `git diff --check` passes. Full build log:
+  `/tmp/lean-np-hardness-2026-10-19-build.log`.
+- **Failed approaches/API discoveries:** existing `moveAll`/`copyAll` require
+  default symbols, so used finite symbol-carrying labels instead to support
+  empty alphabets without a case split. First whole-run proof expanded the
+  wrong outer addition with `Function.iterate_add_apply`; parenthesize the
+  remaining-phase costs together, rewrite the innermost run, then expand the
+  next sum. Register `Fintype (Alphabet Γ k)` explicitly for the dependent
+  stack family. `List.length_reverse` takes its list implicitly; specialize
+  the phase run and simplify its reverse lengths instead of applying that
+  lemma to a positional argument. These failures are resolved; no proof
+  blocker remains for this scope.
+- **Comparison evidence:** consulted sibling Coq `SourceAdapter.v`,
+  `CompilerComplexity.v`, and `Hardness.v` (source-size and semantic/runtime
+  separation), plus pinned Complexity
+  [NP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/Complexity/NP.v),
+  whose `red_inNP` separately charges paired verifier computation and
+  transported certificate bounds. These are design comparisons only; all
+  new machine proofs are checked in Lean. No sibling edits.
+- **Ending state:** verified increment prepared for commit/push on `main`;
+  final commit hash and local/tracking/live-remote parity go in automation
+  memory.
+- **Best next experiment:** convert
+  `PairEncoding.finEncoding FramedNat.finEncoding FramedNatList.finEncoding`
+  into `FramedNatLookup.finEncoding` with a checked linear routine: split the
+  tags, prefix the framed singleton-list count to the already framed query,
+  add its outer frame, then append the dictionary verbatim. Prove exact
+  serialization and cost before composition with preserving lookup. This
+  exposes a compositional query/dictionary interface for later traversal.

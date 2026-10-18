@@ -1,4 +1,5 @@
 import LeanNPHardness.FirstMatchMachine
+import LeanNPHardness.PairDuplication
 
 /-!
 # Polynomial-time lookup of a natural in an ordered dictionary
@@ -10,8 +11,10 @@ requires a singleton query list and exhaustion of the complete stream.
 The existing finite TM2 machine therefore computes `List.idxOf` with its
 unchanged polynomial in the complete input bit length. Output is unary,
 including the dictionary-length sentinel for an absent query. Repeated
-dictionary entries retain first-occurrence semantics. Dictionary construction,
-preservation across lookups, and CNF traversal are separate obligations.
+dictionary entries retain first-occurrence semantics. A separate wrapper
+duplicates the supplied input before lookup and returns the result alongside
+the original query and dictionary. Dictionary construction, changing the
+retained query, and CNF traversal are separate obligations.
 -/
 
 namespace LeanNPHardness
@@ -125,6 +128,16 @@ noncomputable def computableInPolyTime :
 /-- Direct lookup agrees with the semantic dense-renaming index. -/
 theorem lookup_denseIndex (F : CNF.Formula Nat) (query : Nat) :
     lookup (query, F.variableDictionary) = F.denseIndex query := rfl
+
+/-- Compute the index and retain the exact original query and dictionary,
+starting from one supplied input. Output is a tagged pair of unary result
+and complete `FramedNatLookup` input; the bound uses the original input bits. -/
+noncomputable def preservingComputableInPolyTime :
+    TM2ComputableInPolyTime FramedNatLookup.finEncoding
+      (PairEncoding.finEncoding unaryFinEncodingNat FramedNatLookup.finEncoding)
+      (fun input => (lookup input, input)) :=
+  MachineAdapters.PairDuplication.retainInputComputableInPolyTime
+    FramedNatLookup.finEncoding unaryFinEncodingNat lookup computableInPolyTime
 
 end MachinePrimitives.DictionaryLookup
 

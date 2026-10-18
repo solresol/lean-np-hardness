@@ -211,8 +211,15 @@ for those membership results.
   lookup under `FramedNatLookup.finEncoding`, reusing the identical machine
   and polynomial; the decoder checks singleton shape and stream exhaustion,
   and the unary result size is bounded by the full input bit length. Conversion
-  from a tagged pair encoding, dictionary construction, preservation across
-  lookups, and occurrence-preserving formula traversal remain pending;
+  from a tagged pair encoding and dictionary construction remain pending.
+  `PairDuplication.computableInPolyTime` now duplicates any finitely encoded
+  input into its tagged pair in exactly `6n + 3` TM2 steps, including cleanup
+  and halt, without requiring a nonempty alphabet. Its checked composition
+  `retainInputComputableInPolyTime` computes `(f a, a)` from a single input;
+  `DictionaryLookup.preservingComputableInPolyTime` returns the unary lookup
+  result alongside the original query and dictionary, polynomial in the
+  original input bits. Updating the retained query and occurrence-preserving
+  formula traversal remain pending;
   the full renaming is not yet a
   polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
