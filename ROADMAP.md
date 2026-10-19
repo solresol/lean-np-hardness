@@ -210,18 +210,22 @@ for those membership results.
   `DictionaryLookup.computableInPolyTime` now packages direct `(query, dictionary)`
   lookup under `FramedNatLookup.finEncoding`, reusing the identical machine
   and polynomial; the decoder checks singleton shape and stream exhaustion,
-  and the unary result size is bounded by the full input bit length. Conversion
-  from a tagged pair encoding and dictionary construction remain pending.
+  and the unary result size is bounded by the full input bit length.
   `PairDuplication.computableInPolyTime` now duplicates any finitely encoded
   input into its tagged pair in exactly `6n + 3` TM2 steps, including cleanup
   and halt, without requiring a nonempty alphabet. Its checked composition
   `retainInputComputableInPolyTime` computes `(f a, a)` from a single input;
   `DictionaryLookup.preservingComputableInPolyTime` returns the unary lookup
   result alongside the original query and dictionary, polynomial in the
-  original input bits. Updating the retained query and occurrence-preserving
-  formula traversal remain pending;
-  the full renaming is not yet a
-  polynomial-time re-encoding reduction.
+  original input bits. `DictionaryLookupEncoding.computableInPolyTime` now
+  converts the tagged pair of `FramedNat` and `FramedNatList` into the lookup
+  encoding in exactly `3q + 2d + 8` steps for the complete component bit
+  lengths, bounded by `3n + 8` in tagged input length `n = q + d`.
+  `lookupComputableInPolyTime` and `preservingLookupComputableInPolyTime`
+  compose conversion, lookup, and original tagged-input retention with all
+  costs charged. Dictionary construction, updating the retained query, and
+  occurrence-preserving formula traversal remain pending; full renaming is
+  not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

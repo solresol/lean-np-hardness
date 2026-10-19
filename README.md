@@ -51,9 +51,8 @@ lookup using that same machine and polynomial. `FramedNatLookup.finEncoding`
 serializes the input as `(dictionary, [query])`, with checked round trip,
 injectivity, exact bit length, and decoder rejection of non-singleton queries
 and trailing data. The unary result size is at most the input bit length;
-`lookup_denseIndex` supplies the dense-renaming interface. This wire format
-is specified directly; conversion from a tagged pair encoding, dictionary
-construction, and formula traversal remain pending.
+`lookup_denseIndex` supplies the dense-renaming interface. Dictionary
+construction and formula traversal remain pending.
 
 `PairDuplication.computableInPolyTime` copies one encoded value into its
 canonical tagged pair in exactly `6n + 3` TM2 steps for input length `n`,
@@ -64,6 +63,17 @@ with the pair-left adapter to compute `(f a, a)` from one input.
 the unary index alongside the complete original query and dictionary, with
 polynomial runtime in the original `FramedNatLookup` input bits. Changing the
 retained query and connecting repeated lookups to CNF traversal remain pending.
+
+`DictionaryLookupEncoding.computableInPolyTime` converts the tagged pair
+`PairEncoding.finEncoding FramedNat.finEncoding FramedNatList.finEncoding`
+to the serialized lookup encoding. Its five-stack TM2 takes exactly
+`3q + 2d + 8` steps for complete query/dictionary bit lengths `q`/`d`, including
+cleanup and halt, bounded by `3n + 8` in tagged input symbols `n = q + d`.
+`lookupComputableInPolyTime` composes conversion with lookup;
+`preservingLookupComputableInPolyTime` additionally retains the original
+tagged query/dictionary pair alongside the unary result. All conversion and
+copying costs are charged to the original input. The contract covers canonical
+component encodings and does not assert rejection of malformed streams.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

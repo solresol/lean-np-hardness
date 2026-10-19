@@ -6,6 +6,7 @@ import LeanNPHardness.CNFCertificate
 import LeanNPHardness.CNFRenaming
 import LeanNPHardness.FirstMatchMachine
 import LeanNPHardness.DictionaryLookup
+import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.PairDuplication
 import LeanNPHardness.CNFNormalization
 import LeanNPHardness.CNFConstraint

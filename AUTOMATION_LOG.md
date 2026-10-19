@@ -4442,3 +4442,63 @@ avoid failed routes, and choose a materially different experiment when blocked.
   add its outer frame, then append the dictionary verbatim. Prove exact
   serialization and cost before composition with preserving lookup. This
   exposes a compositional query/dictionary interface for later traversal.
+
+## 2026-10-20 — tagged query/dictionary conversion and preserving lookup
+
+- **Starting commit:** `4d3f62100d7dea879d0c72213c390cbd4b714c91`, clean
+  `main`. Read AGENTS, roadmap, theorem status, prior journal and automation
+  memory. Fetch confirmed local/tracking parity, ahead/behind 0/0; no
+  fast-forward was needed. `CODEX_HOME` is unset, so used the supplied absolute
+  automation-memory path.
+- **Goal:** the previous run's tagged-pair conversion experiment for
+  Milestone 5, exposing independently encoded query/dictionary components.
+- **Checked increment:** new `DictionaryLookupEncoding.lean` supplies a
+  five-stack finite TM2. `scan_run` separates tags without dropping any
+  occurrence; `dictionary_run` restores dictionary order; `query_run`
+  restores and counts the query; `count_run` emits the outer unary length.
+  `routine_exits` proves exact serialization with an arbitrary output suffix
+  in `3q + 2d + 8` steps. `outputsInTime` includes empty workspace, reset state,
+  and halt. `encode_eq` identifies the framed singleton header and target
+  encoding. `computableInPolyTime` re-encodes the identity from the tagged
+  `FramedNat`/`FramedNatList` pair to `FramedNatLookup` with polynomial
+  `3X + 8`. `lookupComputableInPolyTime` composes conversion with direct
+  lookup; `preservingLookupComputableInPolyTime` also retains the original
+  tagged pair beside the unary result, charging all copying and conversion.
+- **Model and boundary:** mathlib finite TM2; `q`/`d` are complete component
+  bit lengths and `n = q + d` counts source symbols in `Sum Bool Bool`.
+  The constant singleton header is `[true, false, true]`; adding its three
+  count ticks and the outer separator takes one fixed program step.
+  Canonical encodings include zero, empty dictionaries and repetitions.
+  Malformed-stream rejection, dictionary construction, query updates and
+  occurrence-preserving formula traversal remain separate obligations.
+- **Files:** new module, root/audit imports and ten audits; README, roadmap,
+  theorem status and this journal. No sibling repository changes.
+- **Checks:** targeted module build passed 1,329 jobs; full `lake build`
+  passed 2,473 jobs. All ten new audits and all 683 reported axiom lists use
+  only `propext`, `Classical.choice`, `Quot.sound`; four other reports are
+  axiom-free. The 133-file project Lean/config scan finds only the existing
+  explanatory `proof_wanted` comment. No new-module warnings; existing
+  migration warnings elsewhere remain. `git diff --check` passes. Build log:
+  `/tmp/lean-np-hardness-2026-10-20-build.log`.
+- **Failed approaches/API discoveries:** all four loop proofs and exact
+  serialization checked on the first targeted build. Runtime weakening
+  initially used an unqualified `evalsToInTimeMono`; its namespace is
+  `MachinePrimitives`. The following wrapper simplification exposed
+  `EvalsToInTime` versus `TM2OutputsInTime`; explicitly unfold
+  `TM2OutputsInTime` and `FinTM2.step` in `simpa`. Both issues are resolved.
+  No remaining blocker within this scope. Package builds retain the pinned
+  transparency option; no ad-hoc Lean invocation was needed.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v`,
+  `CompilerComplexity.v` and `Hardness.v`, and pinned Complexity
+  [NP.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/Complexity/NP.v).
+  Its composition theorem charges the second computation through a bound on
+  the first result size; paired verifier computation and certificate bounds
+  remain separate. This is design guidance only, with all new evidence
+  supplied by Lean declarations and the axiom audit.
+- **Ending state:** verified increment prepared for commit/push on `main`;
+  final commit and local/tracking/live-remote parity go in automation memory.
+- **Best next experiment:** implement framed-list cons from a tagged
+  `(query, dictionary)` input. Extract and increment the dictionary's binary
+  list count, prepend the already framed query, and retain all existing entry
+  frames. Prove serialization and runtime separately; this supplies a small
+  dictionary-construction primitive before deduplication and CNF traversal.
