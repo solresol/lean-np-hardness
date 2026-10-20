@@ -4502,3 +4502,67 @@ avoid failed routes, and choose a materially different experiment when blocked.
   list count, prepend the already framed query, and retain all existing entry
   frames. Prove serialization and runtime separately; this supplies a small
   dictionary-construction primitive before deduplication and CNF traversal.
+
+## 2026-10-21 — linear framed successor with preserved list entries
+
+- **Starting commit:** `8f8586b487d5f14b937783c6ca9c69e6df90beb1`, clean
+  `main`. Read AGENTS, roadmap, theorem status, prior journal and automation
+  memory. Fetch confirmed local/tracking parity (0/0); no fast-forward was
+  needed. `CODEX_HOME` is unset; used the supplied absolute memory path.
+- **Goal:** isolate the count-update component of the previous run's proposed
+  framed-list cons, advancing Milestone 5 dictionary construction. Existing
+  raw successor has a whole-word input contract; the needed operation must
+  stop at the frame boundary and preserve all following dictionary entries.
+- **Checked increment:** new `FramedSuccMachine.lean` implements one finite
+  four-stack routine. `prefix_run` counts the payload length; `carry_run` and
+  `copy_run` consume exactly that many bits; `restore_run` restores the
+  successor payload while counting its new length; `length_run` emits the
+  new prefix and halts. `routine_exits` proves exact cost `2b + 2b' + 4` for
+  old/new payload lengths, arbitrary input/output suffix preservation, and
+  empty workspace. `runSteps_le_frame_bound` bounds it by `2L + 4` for
+  consumed frame length `L`; `frame_length_le` bounds growth by two bits.
+  `natural_exits` agrees with natural successor, including zero and carry
+  overflow. `listCount_exits` retains every entry frame and trailing input
+  while emitting the incremented header separately. `outputsInTime` checks
+  canonical cleanup/reset/halt; `computableInPolyTime` packages successor
+  under `FramedNat.finEncoding` with polynomial `2X + 4`.
+- **Model and boundary:** mathlib finite TM2, Boolean stacks, complete framed
+  input bit length. Runtime does not depend on the numerical count or either
+  preserved suffix. The standalone function has canonical framed inputs;
+  malformed-stream rejection is not asserted. The list specialization does
+  not insert an entry or reassemble a list. Tagged-pair cons, deduplicated
+  dictionary construction, query updates and full CNF traversal remain open.
+- **Files:** new machine module, root/audit imports and twelve audits; README,
+  ROADMAP, THEOREM_STATUS and this journal. No sibling repository changes.
+- **Checks:** targeted build passed 1,281 jobs; full `lake build` passed
+  2,474 jobs. All twelve new audits and all 695 reported axiom lists use only
+  `propext`, `Classical.choice`, `Quot.sound`; four other reports are axiom-free.
+  The 134-file Lean/config scan finds only the existing explanatory
+  `proof_wanted` comment. No new-module warnings; pre-existing warnings in
+  other modules remain. `git diff --check` passes. Full build log:
+  `/tmp/lean-np-hardness-2026-10-21-build.log`.
+- **Failed approaches/API discoveries:** `prefix_false` initially left a
+  function-update equality; `funext k; cases k <;> rfl` closes it. In the
+  prefix induction, generic `simp` did not commute a new tick past a
+  replicated list. An attempted reverse `List.cons_append` rewrite targeted
+  an absent form: the goal already had `(true :: replicate n true) ++ count`.
+  Rewriting with `← List.replicate_succ`, `List.replicate_succ'`, then
+  `List.append_assoc` and `List.singleton_append` resolves it. Removed two
+  unused `held` simp arguments. All other phase, whole-run, and polynomial
+  proofs checked without changes; no remaining blocker in this scope.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v` and
+  `CompilerComplexity.v`, plus pinned Complexity
+  [kSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/kSAT.v).
+  They preserve list occurrences and separate semantics from extracted time
+  bounds; the sibling's natural-index size inequalities depend on its source
+  encoding. Here count updates are bounded in framed binary bits, proved in
+  Lean. Coq remains comparison evidence only.
+- **Ending state:** verified increment ready for commit/push on `main`;
+  final commit hash and local/tracking/live-remote parity are recorded in
+  automation memory.
+- **Best next experiment:** implement tagged-pair list cons by splitting the
+  query and dictionary, using this count kernel on the dictionary header,
+  then assembling `newHeader ++ framedQuery ++ oldEntryFrames`. Lift the
+  routine into a larger stack layout while preserving the query; account
+  explicitly for header storage and all order-restoration passes. First prove
+  exact serialization and occurrence preservation, then package the runtime.

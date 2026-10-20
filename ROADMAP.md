@@ -223,9 +223,15 @@ for those membership results.
   lengths, bounded by `3n + 8` in tagged input length `n = q + d`.
   `lookupComputableInPolyTime` and `preservingLookupComputableInPolyTime`
   compose conversion, lookup, and original tagged-input retention with all
-  costs charged. Dictionary construction, updating the retained query, and
-  occurrence-preserving formula traversal remain pending; full renaming is
-  not yet a polynomial-time re-encoding reduction.
+  costs charged. `FramedSucc.routine_exits` now supplies exact framed-count
+  successor in `2b + 2b' + 4` steps, bounded by `2L + 4` in consumed frame
+  length `L`, while preserving unread input and output suffixes.
+  `listCount_exits` retains all dictionary entry frames while emitting the
+  incremented header separately; `computableInPolyTime` packages standalone
+  framed successor with polynomial `2X + 4`. Tagged-pair list cons, dictionary
+  construction, updating the retained query, and occurrence-preserving formula
+  traversal remain pending; full renaming is not yet a polynomial-time
+  re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

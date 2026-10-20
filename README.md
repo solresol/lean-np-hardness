@@ -75,6 +75,14 @@ tagged query/dictionary pair alongside the unary result. All conversion and
 copying costs are charged to the original input. The contract covers canonical
 component encodings and does not assert rejection of malformed streams.
 
+`FramedSucc.computableInPolyTime` increments a natural under `FramedNat.finEncoding`
+with polynomial `2X + 4` in the complete framed input bit length. Its four-stack
+routine reads one frame and emits its successor in exactly `2b + 2b' + 4`
+steps for old/new payload lengths `b`/`b'`, retaining arbitrary unread input
+and output suffixes. `listCount_exits` applies this to a list header while
+preserving all entry frames, including repetitions. The new header is emitted
+separately; tagged-pair list cons and dictionary construction remain pending.
+
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
 which are built directly on the routine framework. Remarks below that a full
