@@ -228,8 +228,15 @@ for those membership results.
   length `L`, while preserving unread input and output suffixes.
   `listCount_exits` retains all dictionary entry frames while emitting the
   incremented header separately; `computableInPolyTime` packages standalone
-  framed successor with polynomial `2X + 4`. Tagged-pair list cons, dictionary
-  construction, updating the retained query, and occurrence-preserving formula
+  framed successor with polynomial `2X + 4`. `Routines.extend_exits` now lifts
+  any routine into a larger stack layout, preserving arbitrary extra contents
+  with unchanged exact cost. `FramedListCons.routine_exits` uses this to
+  assemble the full encoding of `x :: xs` from separately supplied query and
+  dictionary stacks, retaining all occurrences and clearing workspace.
+  `runSteps_le` bounds header update and all six transfers by `6(q + d) + 18`
+  in complete component bit lengths. Tagged-input loading and standalone
+  cons packaging, deduplicated dictionary construction, updating the retained
+  query, and occurrence-preserving formula
   traversal remain pending; full renaming is not yet a polynomial-time
   re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common

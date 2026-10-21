@@ -83,6 +83,15 @@ and output suffixes. `listCount_exits` applies this to a list header while
 preserving all entry frames, including repetitions. The new header is emitted
 separately; tagged-pair list cons and dictionary construction remain pending.
 
+`FramedListCons.routine_exits` now constructs the complete encoding of
+`x :: xs` from separately supplied framed-query and dictionary stacks.
+`Routines.extend_exits` lifts the count updater while preserving arbitrary
+extra stacks at the same exact cost. Six subsequent transfers assemble the
+new header, query, and old entries in order, preserving repetitions and
+clearing workspace. `runSteps_le` bounds the total by `6(q + d) + 18` in the
+complete supplied component bit lengths. Tagged-input loading and the
+standalone polynomial-time cons witness remain pending.
+
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
 which are built directly on the routine framework. Remarks below that a full

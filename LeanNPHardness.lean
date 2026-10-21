@@ -8,6 +8,8 @@ import LeanNPHardness.FirstMatchMachine
 import LeanNPHardness.DictionaryLookup
 import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.FramedSuccMachine
+import LeanNPHardness.FramedListCons
+import LeanNPHardness.MachineRoutineExtension
 import LeanNPHardness.PairDuplication
 import LeanNPHardness.CNFNormalization
 import LeanNPHardness.CNFConstraint

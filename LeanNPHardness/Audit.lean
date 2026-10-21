@@ -86,6 +86,8 @@ import LeanNPHardness.FirstMatchMachine
 import LeanNPHardness.DictionaryLookup
 import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.FramedSuccMachine
+import LeanNPHardness.FramedListCons
+import LeanNPHardness.MachineRoutineExtension
 import LeanNPHardness.PairDuplication
 import LeanNPHardness.CNFNormalization
 
@@ -103,6 +105,17 @@ namespace LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.FramedSucc.frame_length_le
 #print axioms LeanNPHardness.MachinePrimitives.FramedSucc.outputsInTime
 #print axioms LeanNPHardness.MachinePrimitives.FramedSucc.computableInPolyTime
+
+#print axioms LeanNPHardness.Routines.extendedStacks_inr
+#print axioms LeanNPHardness.Routines.extendedStacks_update
+#print axioms LeanNPHardness.Routines.extendStmt_stepAux
+#print axioms LeanNPHardness.Routines.extend_step
+#print axioms LeanNPHardness.Routines.extend_run
+#print axioms LeanNPHardness.Routines.extend_exits
+#print axioms LeanNPHardness.MachinePrimitives.FramedListCons.count_exits
+#print axioms LeanNPHardness.MachinePrimitives.FramedListCons.assemble_exits
+#print axioms LeanNPHardness.MachinePrimitives.FramedListCons.routine_exits
+#print axioms LeanNPHardness.MachinePrimitives.FramedListCons.runSteps_le
 
 open Computability
 

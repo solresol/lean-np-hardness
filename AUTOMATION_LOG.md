@@ -4566,3 +4566,70 @@ avoid failed routes, and choose a materially different experiment when blocked.
   routine into a larger stack layout while preserving the query; account
   explicitly for header storage and all order-restoration passes. First prove
   exact serialization and occurrence preservation, then package the runtime.
+
+
+## 2026-10-22 — routine stack extension and framed-list cons kernel
+
+- **Starting commit:** `a4d237fed38b7815bc63c336488cc1caa6b512fc`, clean
+  `main`. Read AGENTS, roadmap, theorem status, prior journal and automation
+  memory. Fetch confirmed local/tracking parity (0/0); no fast-forward was
+  needed. `CODEX_HOME` is unset; used the supplied absolute memory path.
+- **Goal:** advance the previous tagged-pair cons experiment by proving
+  query-preserving count update and complete list reassembly. The existing
+  routine combinators share a fixed stack layout, so first supplied a reusable
+  stack-extension simulation instead of duplicating the successor program.
+- **Checked increment:** `MachineRoutineExtension.lean` defines the disjoint
+  alphabet/contents embedding and statement/configuration lifts.
+  `extendStmt_stepAux`, `extend_step`, `extend_run` and `extend_exits` preserve
+  arbitrary extra stack contents with unchanged exact costs, labels and
+  finite state. No inhabitedness or finiteness of the extras is needed for
+  the simulation. `FramedListCons.lean` specializes it to a fifth query stack.
+  `count_exits` preserves that query; `assemble_exits` stores the header,
+  restores the body, restores the query, then emits the header using six
+  transfers. Exact assembly cost is `4h + 4b + 4q + 6` for new-header/body/query
+  lengths. `routine_exits` outputs exactly the full encoding of `x :: xs`,
+  retaining all repetitions and clearing every non-output stack.
+  `runSteps_le` separately bounds the combined routine by `6(q + d) + 18`.
+- **Model and boundary:** finite-control mathlib TM2 routine on five Boolean
+  stacks; `q` and `d` measure complete framed query and dictionary bits.
+  Query and dictionary are supplied on distinct stacks, with workspace and
+  output initially empty. This is not yet a canonical single-input machine
+  witness: tagged-input loading, reset/packaging, malformed-stream rejection,
+  deduplicated dictionary construction and full renaming remain separate.
+- **Files:** two new modules, root/audit imports and ten audits; README,
+  ROADMAP, THEOREM_STATUS and this journal. No sibling repository edits.
+- **Checks:** targeted extension build passed 1,268 jobs; targeted cons build
+  passed 1,284; full `lake build` passed 2,476. All 704 nonempty axiom reports
+  use only `propext`, `Classical.choice`, `Quot.sound`; five more reports are
+  axiom-free. All ten new audits pass. The 136-file Lean/config scan finds
+  only the existing explanatory `proof_wanted` comment. No new-module
+  warnings; pre-existing warnings elsewhere remain. `git diff --check`
+  passes. Full log: `/tmp/lean-np-hardness-2026-10-22-build.log`.
+- **Failed approaches/API discoveries:** return types for the generic
+  alphabet extension need explicit `(Γ := Γ)`; inference cannot recover the
+  source family from the body. Recursive `extendStmt` calls inside its own
+  definition already specialize section parameter `Δ`; passing it again
+  causes a type mismatch. Supply the concrete `Alphabet` and its finite
+  instances explicitly for `moveAll`; otherwise dependent `id` inference
+  incorrectly tries to identify source/destination stacks. Unfold routine
+  aliases before converting transfer contracts; finish stack equalities by
+  function extensionality and cases on the sum index. `private macro` is not
+  valid here; use `local macro`. `simp` cannot refold a definition using a
+  reverse modifier; unfold `BinaryNatLists.encodeNat` consistently for the
+  linear bound. These issues are resolved; no proof blocker in this scope.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v` and
+  `CompilerComplexity.v`, and pinned Complexity
+  [kSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/kSAT.v).
+  They preserve list occurrences and separate semantic contracts from
+  extracted runtime bounds. This informed the decomposition only; all new
+  evidence is checked in Lean with the binary framed size measure.
+- **Ending state:** verified increment ready to commit/push on `main`;
+  final hash and local/tracking/live-remote parity are recorded in automation
+  memory and the run report.
+- **Best next experiment:** extend the cons layout with a tagged input stack.
+  Scan into reversed query/dictionary stacks, then restore each via the empty
+  work stack using four `moveAll` passes. This should cost `5n + 5` for
+  `n = q + d` (one-step scan plus four transfers). Compose with `routine_exits`
+  and prove canonical reset/halting through `toMachine_outputsInTime`, aiming
+  for a standalone tagged-pair cons witness with bound `11n + 23`. Prove the
+  loading cost and serialization before claiming that polynomial wrapper.
