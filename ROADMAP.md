@@ -234,11 +234,15 @@ for those membership results.
   assemble the full encoding of `x :: xs` from separately supplied query and
   dictionary stacks, retaining all occurrences and clearing workspace.
   `runSteps_le` bounds header update and all six transfers by `6(q + d) + 18`
-  in complete component bit lengths. Tagged-input loading and standalone
-  cons packaging, deduplicated dictionary construction, updating the retained
-  query, and occurrence-preserving formula
-  traversal remain pending; full renaming is not yet a polynomial-time
-  re-encoding reduction.
+  in complete component bit lengths. `TaggedFramedListCons.load_exits` now
+  loads a single tagged pair into these stacks in exactly `3n + 3` steps,
+  reusing count/work for the reversed components and restoring each once.
+  `routine_exits` composes loading and cons; `outputsInTime` includes canonical
+  reset and halt; `computableInPolyTime` packages `(x, xs) ↦ x :: xs` with
+  polynomial `9X + 21` in original tagged input length `n = q + d`.
+  Deduplicated dictionary construction, updating the retained query, and
+  occurrence-preserving formula traversal remain pending; full renaming is not
+  yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

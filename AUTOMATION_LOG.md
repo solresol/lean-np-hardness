@@ -4633,3 +4633,61 @@ avoid failed routes, and choose a materially different experiment when blocked.
   and prove canonical reset/halting through `toMachine_outputsInTime`, aiming
   for a standalone tagged-pair cons witness with bound `11n + 23`. Prove the
   loading cost and serialization before claiming that polynomial wrapper.
+
+## 2026-10-23 — linear tagged-input framed-list cons
+
+- **Starting commit:** `304ef1e6c319b441045e7c8099aa7d7569e44474`, clean
+  `main`. Read instructions, roadmap, theorem status, prior journal and
+  automation memory. Fetch confirmed tracking parity (0/0); no fast-forward
+  was needed. `CODEX_HOME` is unset; used the supplied absolute memory path.
+- **Goal:** finish the prior run's tagged-input loading and canonical cons
+  packaging experiment for Milestone 5.
+- **Checked increment:** new `TaggedFramedListCons.lean` extends the five-stack
+  cons layout with one tagged input stack. `scan_run` processes arbitrary tag
+  order in exactly `n + 1` steps, retaining all occurrences and arbitrary
+  untouched stacks. It puts reversed query/dictionary bits directly on the
+  kernel's initially empty count/work stacks. `restore_exits` restores each
+  component with one `moveAll` pass; `load_exits` proves exact `3n + 3` loading
+  for arbitrary component words, including empty words. `routine_exits`
+  composes loading with the existing cons kernel and emits precisely
+  `encodeNatList (x :: xs)`, retaining repetitions. `runSteps_le` proves the
+  separate `9n + 21` bound; `outputsInTime` includes canonical empty workspace,
+  reset control and halting. `computableInPolyTime` packages cons from the
+  tagged `FramedNat`/`FramedNatList` pair to `FramedNatList`, with `9X + 21`.
+- **Model and boundary:** six-stack finite mathlib TM2; `n` counts original
+  tagged symbols, equal to complete query bits plus complete dictionary bits.
+  No component or backup is preloaded. Canonical inputs cover zero, empty
+  lists and repetitions. Malformed-stream rejection, deduplicated dictionary
+  construction, query updates and full dense renaming remain separate.
+- **Files:** new module, root/audit imports and seven audits; README, ROADMAP,
+  THEOREM_STATUS and this journal. No sibling repository edits.
+- **Checks:** targeted build passed 1,286 jobs; full `lake build` passed
+  2,477 jobs. All seven new audits and all 711 nonempty axiom reports use only
+  `propext`, `Classical.choice`, `Quot.sound`; five additional reports are
+  axiom-free. The 137-file Lean/config scan finds only the pre-existing
+  explanatory `proof_wanted` comment. No new-module warnings; existing
+  warnings elsewhere remain. `git diff --check` passes. Build log:
+  `/tmp/lean-np-hardness-2026-10-23-build.log`.
+- **Approach/API discoveries:** inspection showed the count/work stacks could
+  receive reversed components directly, eliminating the prior proposal's two
+  extra transfers. Thus the checked loading/total bounds are `3n + 3` and
+  `9n + 21`, rather than the previously proposed `5n + 5` / `11n + 23`.
+  Inline `simpa only [...] using scan_run ...` did not simplify projections
+  or lengths under the inferred configuration type, even after changing the
+  goal to explicit `cfg` form. Binding the specialized run first and applying
+  `simp only [...] at run` resolved the mismatch. All other proofs checked on
+  the first build. No unresolved proof blocker in this increment.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v` and
+  `CompilerComplexity.v`, the installed Undecidability `L/Datatypes/Lists.v`
+  (`size_list_cons` charges an encoding-specific constant), and pinned
+  Complexity [kSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/kSAT.v).
+  List occurrence preservation and separate semantic/size/runtime contracts
+  guide the decomposition; the Coq costs are not transferred to the framed
+  binary model. All new evidence is checked in Lean.
+- **Ending state:** verified increment prepared for commit/push on `main`;
+  final hash and local/tracking/live-remote parity go in automation memory.
+- **Best next experiment:** conditional cons for dictionary insertion: retain
+  `(x, xs)` during membership lookup, return `xs` if present and `x :: xs`
+  otherwise, charging lookup and copying. Establish the tail-first fold's
+  agreement with `List.dedup` (rightmost occurrences) before formula traversal;
+  keep formula occurrences unchanged and prove the encoded-size bound.

@@ -81,7 +81,7 @@ routine reads one frame and emits its successor in exactly `2b + 2b' + 4`
 steps for old/new payload lengths `b`/`b'`, retaining arbitrary unread input
 and output suffixes. `listCount_exits` applies this to a list header while
 preserving all entry frames, including repetitions. The new header is emitted
-separately; tagged-pair list cons and dictionary construction remain pending.
+separately; the tagged-pair cons wrapper below assembles the complete result.
 
 `FramedListCons.routine_exits` now constructs the complete encoding of
 `x :: xs` from separately supplied framed-query and dictionary stacks.
@@ -89,8 +89,19 @@ separately; tagged-pair list cons and dictionary construction remain pending.
 extra stacks at the same exact cost. Six subsequent transfers assemble the
 new header, query, and old entries in order, preserving repetitions and
 clearing workspace. `runSteps_le` bounds the total by `6(q + d) + 18` in the
-complete supplied component bit lengths. Tagged-input loading and the
-standalone polynomial-time cons witness remain pending.
+complete supplied component bit lengths.
+
+`TaggedFramedListCons.computableInPolyTime` now computes `(x, xs) ↦ x :: xs`
+from `PairEncoding.finEncoding FramedNat.finEncoding FramedNatList.finEncoding`
+to `FramedNatList.finEncoding`. Its six-stack finite TM2 scans into the cons
+kernel's empty count/work stacks and restores each component with one transfer.
+`load_exits` proves exact loading cost `3n + 3`; `routine_exits` composes this
+with the cons kernel, preserving repetitions. `runSteps_le` and `outputsInTime`
+give the bound `9n + 21`, including empty workspace, reset control, and halt,
+where `n` counts the original tagged symbols (the sum of complete component
+bit lengths). The polynomial witness uses `9X + 21`. Malformed-stream rejection,
+deduplicated dictionary construction, and full dense-renaming runtime remain
+separate obligations.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

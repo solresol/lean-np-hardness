@@ -9,6 +9,7 @@ import LeanNPHardness.DictionaryLookup
 import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.FramedSuccMachine
 import LeanNPHardness.FramedListCons
+import LeanNPHardness.TaggedFramedListCons
 import LeanNPHardness.MachineRoutineExtension
 import LeanNPHardness.PairDuplication
 import LeanNPHardness.CNFNormalization
