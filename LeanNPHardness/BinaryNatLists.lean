@@ -196,6 +196,17 @@ theorem natWireSize_mono : Monotone natWireSize := by
   simp only [natWireSize, encodeNat_length_eq_size]
   exact Nat.add_le_add_right (Nat.mul_le_mul_left 2 (Nat.size_le_size h)) 1
 
+/-- Removing list entries cannot enlarge either the binary count frame or
+the total framed payload. No bound on the numeric values is required. -/
+theorem listWireSize_le_of_sublist {xs ys : List ℕ} (h : xs.Sublist ys) :
+    listWireSize xs ≤ listWireSize ys := by
+  exact Nat.add_le_add (natWireSize_mono h.length_le)
+    ((h.map natWireSize).sum_le_sum (fun _ _ => Nat.zero_le _))
+
+theorem encodeNatList_length_le_of_sublist {xs ys : List ℕ} (h : xs.Sublist ys) :
+    (encodeNatList xs).length ≤ (encodeNatList ys).length := by
+  simpa only [encodeNatList_length] using listWireSize_le_of_sublist h
+
 private theorem encodePosNum_length_le (n : PosNum) :
     (Computability.encodePosNum n).length ≤ (n : ℕ) := by
   induction n with

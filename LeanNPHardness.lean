@@ -6,6 +6,7 @@ import LeanNPHardness.CNFCertificate
 import LeanNPHardness.CNFRenaming
 import LeanNPHardness.FirstMatchMachine
 import LeanNPHardness.DictionaryLookup
+import LeanNPHardness.DictionaryConstruction
 import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.FramedSuccMachine
 import LeanNPHardness.FramedListCons

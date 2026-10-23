@@ -240,9 +240,18 @@ for those membership results.
   `routine_exits` composes loading and cons; `outputsInTime` includes canonical
   reset and halt; `computableInPolyTime` packages `(x, xs) ↦ x :: xs` with
   polynomial `9X + 21` in original tagged input length `n = q + d`.
-  Deduplicated dictionary construction, updating the retained query, and
-  occurrence-preserving formula traversal remain pending; full renaming is not
-  yet a polynomial-time re-encoding reduction.
+  `DictionaryConstruction.insert_eq_lookup` now connects conditional cons to
+  the lookup's absence sentinel. `extend_eq_dedup_append` and `build_eq_dedup`
+  prove that tail-first insertion gives the required rightmost-occurrence
+  dictionary; `suffix_extend` preserves an arbitrary seed verbatim.
+  `build_encode_length_le` proves that framed dictionary construction cannot
+  enlarge the input, including its binary count header;
+  `Formula.variableDictionary_encode_length_le` bounds the auxiliary
+  dictionary by `3n + 1` bits in original formula size. These are executable
+  semantics and output-size results. The dictionary-construction TM2 machine,
+  updating the retained query, and occurrence-preserving formula traversal
+  remain pending; full renaming is not yet a polynomial-time re-encoding
+  reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

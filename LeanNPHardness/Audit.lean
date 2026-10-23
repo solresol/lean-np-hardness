@@ -84,6 +84,7 @@ import LeanNPHardness.CNFCertificate
 import LeanNPHardness.CNFRenaming
 import LeanNPHardness.FirstMatchMachine
 import LeanNPHardness.DictionaryLookup
+import LeanNPHardness.DictionaryConstruction
 import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.FramedSuccMachine
 import LeanNPHardness.FramedListCons
@@ -125,6 +126,22 @@ namespace LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineAdapters.TaggedFramedListCons.runSteps_le
 #print axioms LeanNPHardness.MachineAdapters.TaggedFramedListCons.outputsInTime
 #print axioms LeanNPHardness.MachineAdapters.TaggedFramedListCons.computableInPolyTime
+
+#print axioms LeanNPHardness.BinaryNatLists.listWireSize_le_of_sublist
+#print axioms LeanNPHardness.BinaryNatLists.encodeNatList_length_le_of_sublist
+#print axioms LeanNPHardness.DictionaryConstruction.insert_eq_lookup
+#print axioms LeanNPHardness.DictionaryConstruction.mem_insert
+#print axioms LeanNPHardness.DictionaryConstruction.nodup_insert
+#print axioms LeanNPHardness.DictionaryConstruction.suffix_extend
+#print axioms LeanNPHardness.DictionaryConstruction.extend_sublist
+#print axioms LeanNPHardness.DictionaryConstruction.extend_eq_dedup_append
+#print axioms LeanNPHardness.DictionaryConstruction.nodup_extend
+#print axioms LeanNPHardness.DictionaryConstruction.build_eq_dedup
+#print axioms LeanNPHardness.DictionaryConstruction.extend_encode_length_le
+#print axioms LeanNPHardness.DictionaryConstruction.build_encode_length_le
+#print axioms LeanNPHardness.DictionaryConstruction.build_vars
+#print axioms LeanNPHardness.CNF.Formula.vars_encode_length_le
+#print axioms LeanNPHardness.CNF.Formula.variableDictionary_encode_length_le
 
 open Computability
 

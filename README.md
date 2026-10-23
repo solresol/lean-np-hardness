@@ -100,8 +100,20 @@ with the cons kernel, preserving repetitions. `runSteps_le` and `outputsInTime`
 give the bound `9n + 21`, including empty workspace, reset control, and halt,
 where `n` counts the original tagged symbols (the sum of complete component
 bit lengths). The polynomial witness uses `9X + 21`. Malformed-stream rejection,
-deduplicated dictionary construction, and full dense-renaming runtime remain
+the dictionary-construction machine, and full dense-renaming runtime remain
 separate obligations.
+
+`DictionaryConstruction` supplies the conditional insertion and tail-first
+fold specification for that machine. `insert_eq_lookup` connects insertion
+to the checked lookup's absence sentinel. `extend_eq_dedup_append` proves
+agreement with `List.dedup` for a duplicate-free seed; `suffix_extend` retains
+an arbitrary seed verbatim, including its repetitions. `build_eq_dedup` and
+`build_vars` recover the exact dictionary used by dense renaming, in rightmost
+occurrence order. `build_encode_length_le` proves the complete framed output
+cannot exceed the input length, including the binary count header, and
+`Formula.variableDictionary_encode_length_le` bounds it by `3n + 1` bits in
+the original formula size. These are executable, semantic and output-size
+results; conditional insertion and its fold still need a TM2 runtime proof.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

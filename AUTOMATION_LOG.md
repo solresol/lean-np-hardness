@@ -4691,3 +4691,70 @@ avoid failed routes, and choose a materially different experiment when blocked.
   otherwise, charging lookup and copying. Establish the tail-first fold's
   agreement with `List.dedup` (rightmost occurrences) before formula traversal;
   keep formula occurrences unchanged and prove the encoded-size bound.
+
+## 2026-10-24 — ordered dictionary construction semantics and bit bounds
+
+- **Starting commit:** `db3de6f014cccdfea27cf0ea7f19377bf37efc67`, clean
+  `main`. Read instructions, roadmap/status, prior journal and automation
+  memory; fetch confirmed tracking parity (0/0), with no fast-forward needed.
+  `CODEX_HOME` is unset; used the supplied absolute automation-memory path.
+- **Goal:** isolate and check the prior experiment's conditional insertion,
+  tail-first deduplication order and encoded-size invariant for Milestone 5,
+  before implementing its machine loop.
+- **Checked increment:** new `DictionaryConstruction.lean` defines executable
+  `insert`, `extend` (a right fold into a seed), and `build`. `insert_eq_lookup`
+  selects cons precisely on the checked lookup's dictionary-length sentinel.
+  `mem_insert` / `mem_extend` characterize support; `suffix_extend` preserves
+  the entire seed verbatim, even when it contains repetitions.
+  `extend_eq_dedup_append` identifies the exact result for a duplicate-free
+  seed; `build_eq_dedup` recovers `List.dedup`'s rightmost-occurrence order and
+  `build_vars` agrees with the dictionary already used by dense CNF renaming.
+  `extend_sublist` and the separate `nodup_*` results cover seeded invariants.
+- **Size layer:** added `BinaryNatLists.listWireSize_le_of_sublist` and
+  `encodeNatList_length_le_of_sublist`, using binary count-size monotonicity
+  and nonnegative payload sums. `extend_encode_length_le` and
+  `build_encode_length_le` bound the complete framed result by the concatenated
+  input / original list encoding. `Formula.vars_encode_length_le` and
+  `variableDictionary_encode_length_le` give `3n + 1` bits for original binary
+  formula size `n`, independent of the largest variable's numeric value.
+- **Boundary/files:** only the auxiliary dictionary is deduplicated; no
+  formula occurrence is removed. This increment supplies executable semantics
+  and output-size bounds, not an insertion/fold TM2 or runtime theorem. Full
+  dense renaming remains pending. Changed the new module, `BinaryNatLists`,
+  root/audit imports and fifteen audits, README, ROADMAP, THEOREM_STATUS and
+  this journal. No sibling repository edits.
+- **Checks:** targeted build passed 1,329 jobs; full `lake build` passed
+  2,478. All fifteen new audits and all 726 nonempty reports use only
+  `propext`, `Classical.choice`, `Quot.sound`; five further reports are
+  axiom-free. Four new audits need no `Classical.choice`. The 138-file
+  Lean/config scan finds only the pre-existing explanatory `proof_wanted`
+  comment. No new/modified-module warnings; existing warnings elsewhere
+  remain. `git diff --check` passes. Build log:
+  `/tmp/lean-np-hardness-2026-10-24-build.log`.
+- **Failed approaches/API discoveries:** rewriting `lookup_eq_length_iff`
+  directly inside `ite` fails with a dependent `Decidable` motive mismatch;
+  `simp only` with that unspecialized theorem makes no progress. Specialize
+  the iff to `(query, dictionary)`, split on membership, then derive equality
+  or inequality of the index before simplifying. `List.IsSuffix.refl` is not
+  available; `simp` proves the reflexive suffix case, and `List.suffix_cons`
+  plus transitivity proves preservation. `List.dedup_cons'` matches the
+  tail-first insertion definition directly; sublist mapping followed by
+  `sum_le_sum` with nonnegative summands gives the payload bound. These issues
+  are resolved; no remaining proof blocker in this scope.
+- **Comparison evidence:** reread sibling Coq `SourceAdapter.v` (exact-width
+  clauses retain repetitions) and `CompilerComplexity.v` (separate semantic,
+  runtime and output-size contracts), and pinned Complexity
+  [kSAT.v](https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/SAT/kSAT.v).
+  Its numeric-variable-versus-encoded-size estimates are encoding-specific
+  and are not imported into our binary model. All new evidence is Lean.
+- **Ending state:** verified increment ready to commit/push on `main`; final
+  commit and local/tracking/live-remote parity are recorded in automation memory
+  and the run report.
+- **Best next experiment:** implement Boolean membership on the tagged
+  `(query, dictionary)` input by flattening canonical tags to the existing
+  `FramedNatListQuery` format, then compose
+  `CanonicalMembership.computableInPolyTime` and input retention. This avoids
+  converting the dictionary-length sentinel merely to select an insertion
+  branch. Follow with a Boolean-controlled retain-dictionary/cons dispatcher;
+  charge flattening, copying, selection, and cleanup before packaging insertion.
+  The seeded fold and size invariants above are ready for subsequent traversal.
