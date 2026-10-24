@@ -248,7 +248,13 @@ for those membership results.
   enlarge the input, including its binary count header;
   `Formula.variableDictionary_encode_length_le` bounds the auxiliary
   dictionary by `3n + 1` bits in original formula size. These are executable
-  semantics and output-size results. The dictionary-construction TM2 machine,
+  semantics and output-size results. `TaggedMembership.computableInPolyTime`
+  now erases the canonical pair tags in exactly `4n + 2` steps with no output
+  size growth. `membershipComputableInPolyTime` composes conversion and Boolean
+  membership; `preservingMembershipComputableInPolyTime` also retains the
+  original tagged query/dictionary pair, with copying charged to the input.
+  `DictionaryConstruction.insert_eq_membership` specifies its branch selection.
+  The Boolean-controlled insertion and dictionary-construction TM2 machines,
   updating the retained query, and occurrence-preserving formula traversal
   remain pending; full renaming is not yet a polynomial-time re-encoding
   reduction.

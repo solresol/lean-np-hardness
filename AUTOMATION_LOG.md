@@ -4758,3 +4758,59 @@ avoid failed routes, and choose a materially different experiment when blocked.
   branch. Follow with a Boolean-controlled retain-dictionary/cons dispatcher;
   charge flattening, copying, selection, and cleanup before packaging insertion.
   The seeded fold and size invariants above are ready for subsequent traversal.
+
+## 2026-10-25 — tagged Boolean membership with retained input
+
+- **Starting commit:** `b2c24881398960989da50ab770fd4817ed18d303`, clean
+  `main`. Read AGENTS, roadmap/status, prior journal and automation memory;
+  fetch confirmed tracking parity (0/0), with no fast-forward needed.
+  `CODEX_HOME` is unset; used the supplied absolute automation-memory path.
+- **Goal:** complete the prior run's Boolean-membership preprocessing route
+  for Milestone 5, retaining the original tagged pair for later insertion.
+- **Checked increment:** new `TaggedMembership.lean` uses two `moveAll`
+  routines on three finite TM2 stacks. `routine_exits` removes tags from an
+  arbitrary stream while preserving payload order, every occurrence and an
+  output suffix in exactly `4n + 2` steps. `outputsInTime` includes empty
+  workspace, reset and halt. `encode_eq` identifies the canonical result as
+  `FramedNatListQuery.encode`; `encode_length` proves unchanged full length.
+  `computableInPolyTime` packages identity re-encoding with `4X + 2`.
+  `membershipComputableInPolyTime` composes it with the checked Boolean
+  membership machine; `preservingMembershipComputableInPolyTime` also retains
+  the original query/dictionary pair, with all copying charged.
+  `DictionaryConstruction.insert_eq_membership` supplies the separate semantic
+  contract selecting unchanged dictionary on true and cons on false.
+- **Model/boundary:** `n` counts original tagged symbols, equal to the complete
+  framed query and dictionary bit lengths combined. Conversion alone is
+  linear; membership/retention use the generic checked composition bounds.
+  No preloaded component or backup is assumed. Zero, empty dictionaries and
+  repetitions are covered. Conditional insertion, its seeded fold, full dense
+  renaming and machine rejection of malformed streams remain separate.
+- **Files:** new module; DictionaryConstruction; root/audit imports and eight
+  audits; README, ROADMAP, THEOREM_STATUS and this journal. No sibling edits.
+- **Checks:** targeted build passed 1,308 jobs; full `lake build` passed
+  2,479. Seven new audits use only `propext`, `Classical.choice`, `Quot.sound`;
+  the branch contract uses only `propext`, `Quot.sound`. All 734 nonempty axiom
+  reports use only these standard axioms, with five further axiom-free reports.
+  The 139-file Lean/config scan finds only the existing explanatory
+  `proof_wanted` comment. No new/modified-module warnings; existing warnings
+  elsewhere remain. `git diff --check` passes. Full build log:
+  `/tmp/lean-np-hardness-2026-10-25-build.log`.
+- **Approach/API discoveries:** `moveAll_exits` maps and reverses in exactly
+  `2n + 1`; composing two transfers with `seq_exits` gives `4n + 2` without
+  a new scan dispatcher. `Sum.elim id id` erases the shared Boolean tags, and
+  `List.map_map` checks canonical serialization directly. All new proofs passed
+  their first build; no unresolved proof blocker in this scope.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v` and
+  `CompilerComplexity.v`, plus the installed Undecidability
+  `L/Datatypes/List/List_in.v` in its `_opam` tree. `list_in_decb_iff` and
+  `list_in_decb_iff'` separate Boolean outcomes from `list_in_decb_time` and
+  `term_list_in_decb`; this guides the interface decomposition only. Its
+  lambda-calculus costs are not transferred to the Lean bit/TM2 model.
+- **Ending state:** verified increment ready for commit/push on `main`;
+  final commit and local/tracking/live-remote parity go in automation memory
+  and the run report.
+- **Best next experiment:** consume the Boolean and retained tagged pair in a
+  finite branch dispatcher: true returns the existing dictionary, false
+  invokes the checked framed-list cons. Prove input loading, both branch
+  runs, cleanup and a common polynomial bound before composing this with
+  `preservingMembershipComputableInPolyTime` to package conditional insertion.

@@ -1,4 +1,5 @@
 import LeanNPHardness.DictionaryLookup
+import LeanNPHardness.MembershipComputable
 
 /-!
 # Conditional insertion and ordered dictionary construction
@@ -42,6 +43,15 @@ theorem insert_eq_lookup (query : Nat) (dictionary : List Nat) :
         dictionary.length := fun equal => (sentinel.mp equal) h
     simp [insert, h, index_ne]
   · simp [insert, h, sentinel.mpr h]
+
+/-- Boolean membership directly selects the unchanged-dictionary or cons branch.
+This specifies insertion; the branch machine and its runtime remain separate. -/
+theorem insert_eq_membership (query : Nat) (dictionary : List Nat) :
+    insert query dictionary =
+      if MachinePrimitives.CanonicalMembership.membership (query, dictionary)
+      then dictionary else query :: dictionary := by
+  by_cases h : query ∈ dictionary <;>
+    simp [insert, MachinePrimitives.CanonicalMembership.membership, h]
 
 @[simp]
 theorem mem_insert (query value : Nat) (dictionary : List Nat) :

@@ -75,6 +75,18 @@ tagged query/dictionary pair alongside the unary result. All conversion and
 copying costs are charged to the original input. The contract covers canonical
 component encodings and does not assert rejection of malformed streams.
 
+`TaggedMembership.computableInPolyTime` converts the same tagged pair to
+`FramedNatListQuery.finEncoding` in exactly `4n + 2` steps, using two transfers
+on three finite TM2 stacks. `encode_eq` and `encode_length` check that removing
+the tags preserves the complete serialized query/dictionary word and its
+length. `membershipComputableInPolyTime` composes this with the checked Boolean
+membership machine; `preservingMembershipComputableInPolyTime` also retains
+the original tagged pair, charging copying as well as conversion and lookup.
+The `4X + 2` polynomial belongs to conversion alone. The composed membership
+witnesses use the generic checked composition bounds in original input length.
+`DictionaryConstruction.insert_eq_membership` supplies the semantic branch
+contract; the conditional-insertion machine remains to be assembled.
+
 `FramedSucc.computableInPolyTime` increments a natural under `FramedNat.finEncoding`
 with polynomial `2X + 4` in the complete framed input bit length. Its four-stack
 routine reads one frame and emits its successor in exactly `2b + 2b' + 4`

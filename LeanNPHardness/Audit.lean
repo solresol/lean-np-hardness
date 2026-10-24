@@ -86,6 +86,7 @@ import LeanNPHardness.FirstMatchMachine
 import LeanNPHardness.DictionaryLookup
 import LeanNPHardness.DictionaryConstruction
 import LeanNPHardness.DictionaryLookupEncoding
+import LeanNPHardness.TaggedMembership
 import LeanNPHardness.FramedSuccMachine
 import LeanNPHardness.FramedListCons
 import LeanNPHardness.TaggedFramedListCons
@@ -130,6 +131,7 @@ namespace LeanNPHardness.Audit
 #print axioms LeanNPHardness.BinaryNatLists.listWireSize_le_of_sublist
 #print axioms LeanNPHardness.BinaryNatLists.encodeNatList_length_le_of_sublist
 #print axioms LeanNPHardness.DictionaryConstruction.insert_eq_lookup
+#print axioms LeanNPHardness.DictionaryConstruction.insert_eq_membership
 #print axioms LeanNPHardness.DictionaryConstruction.mem_insert
 #print axioms LeanNPHardness.DictionaryConstruction.nodup_insert
 #print axioms LeanNPHardness.DictionaryConstruction.suffix_extend
@@ -868,3 +870,11 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineAdapters.DictionaryLookupEncoding.computableInPolyTime
 #print axioms LeanNPHardness.MachineAdapters.DictionaryLookupEncoding.lookupComputableInPolyTime
 #print axioms LeanNPHardness.MachineAdapters.DictionaryLookupEncoding.preservingLookupComputableInPolyTime
+
+#print axioms LeanNPHardness.MachineAdapters.TaggedMembership.routine_exits
+#print axioms LeanNPHardness.MachineAdapters.TaggedMembership.outputsInTime
+#print axioms LeanNPHardness.MachineAdapters.TaggedMembership.encode_eq
+#print axioms LeanNPHardness.MachineAdapters.TaggedMembership.encode_length
+#print axioms LeanNPHardness.MachineAdapters.TaggedMembership.computableInPolyTime
+#print axioms LeanNPHardness.MachineAdapters.TaggedMembership.membershipComputableInPolyTime
+#print axioms LeanNPHardness.MachineAdapters.TaggedMembership.preservingMembershipComputableInPolyTime
