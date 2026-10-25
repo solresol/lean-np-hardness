@@ -4814,3 +4814,70 @@ avoid failed routes, and choose a materially different experiment when blocked.
   invokes the checked framed-list cons. Prove input loading, both branch
   runs, cleanup and a common polynomial bound before composing this with
   `preservingMembershipComputableInPolyTime` to package conditional insertion.
+
+
+## 2026-10-26 — polynomial-time conditional dictionary insertion
+
+- **Starting commit:** `49a70705e7d1bd3d717ebb991519f05ceeae69d8`, clean
+  `main`. Read AGENTS, roadmap/status, prior journal and automation memory;
+  fetch confirmed tracking parity (0/0), with no fast-forward needed.
+  `CODEX_HOME` is unset; used the supplied absolute automation-memory path.
+- **Goal:** finish the prior run's Boolean-controlled dictionary-return/cons
+  dispatcher and compose it with membership to implement one insertion.
+- **Checked increment:** new `DictionaryInsertMachine.lean` reuses the tagged
+  cons loader and kernel. `KeepDictionary.routine_exits` projects arbitrary
+  component words in exactly `5q + 7d + 6` steps, retaining the dictionary in
+  original order. `load_exits` removes outer right tags while retaining every
+  inner tag and bit in exactly `4m + 2` steps for inner pair length `m`.
+  `branch_exits` checks true/projection and false/cons. `routine_exits` joins
+  these phases under the existing finite `dispatch`, counting its one-step
+  pop. `runSteps_le` and `outputsInTime` give `13n + 24` for the eight-stack
+  selector, with `n = q + d + 1` the entire nested tagged input length,
+  including the Boolean. Workspace cleanup, reset and final halt are included.
+- **Packaging/boundary:** `selectComputableInPolyTime` packages that linear
+  selector; `computableInPolyTime` composes it with
+  `TaggedMembership.preservingMembershipComputableInPolyTime`, using
+  `DictionaryConstruction.insert_eq_membership` for separate semantic
+  identification. The full insertion charges membership, copying and selection
+  in the original tagged query/dictionary size via the checked composition
+  polynomial. The linear bound belongs to selection alone. Zero, empty
+  dictionaries and repeated entries are covered, with all existing dictionary
+  occurrences retained. Seeded folding, machine rejection of malformed inputs,
+  and full dense-renaming runtime remain separate.
+- **Files:** new machine module, root/audit imports and nine audits; README,
+  ROADMAP, THEOREM_STATUS and this journal. No sibling repository edits.
+- **Checks:** targeted build passed 1,338 jobs; full `lake build` passed 2,480.
+  All nine new audits and all 743 nonempty reports use only `propext`,
+  `Classical.choice`, `Quot.sound`; five further reports are axiom-free.
+  The 140-file Lean/config scan finds only the existing explanatory
+  `proof_wanted` comment. No new-module warnings; existing warnings elsewhere
+  remain. `git diff --check` passes. Full build log:
+  `/tmp/lean-np-hardness-2026-10-26-build.log`.
+- **Failed approaches/API discoveries:** inferred `Fintype` for the new
+  dependent extra-stack alphabet failed until `ExtendedAlphabet` and
+  `ExtraAlphabet` were unfolded; dispatch also needs an explicit
+  `DecidableEq` instance for the input alphabet. Applying `dispatch_exits`
+  without the stack alphabet and unfolded exact cost failed to unify its
+  conclusion with `routine.Exits ... (runSteps ...)`; `(Γ := Alphabet)` plus
+  `unfold routine runSteps` resolves it. The successful proof reuses
+  `seq_exits`, `extend_exits`, and `dispatch_exits` instead of duplicating
+  statement/run lifting. Removed unused simp arguments and replaced deprecated
+  `if_true`/`if_false` with `ite_true`/`ite_false`. No unresolved blocker.
+- **Comparison evidence:** reread sibling Coq `SourceAdapter.v` (exact-width
+  clauses retain repetitions), `CompilerComplexity.v` (distinct semantic,
+  runtime and size contracts), and installed Undecidability
+  `_opam/lib/coq/user-contrib/Undecidability/L/Datatypes/List/List_in.v`.
+  Its `list_in_decb_iff`/`list_in_decb_iff'` and `term_list_in_decb` separate
+  Boolean branch semantics from runtime. This is comparison evidence only;
+  its lambda-calculus costs and numeric-size estimates are not Lean evidence.
+- **Ending state:** verified increment prepared for commit/push on `main`;
+  final commit and local/tracking/live-remote parity go in automation memory
+  and the run report.
+- **Best next experiment:** implement the seeded dictionary fold. First
+  isolate a framed-list traversal/accumulator interface retaining unread
+  values while invoking insertion. Process the source tail first (for example
+  by reversing frame order, without reversing bits within a frame) and prove
+  agreement with `DictionaryConstruction.extend`. Use `extend_sublist` and
+  `extend_encode_length_le` to bound every intermediate dictionary by the
+  original values plus seed before summing insertion costs. Do not substitute
+  a head-first fold, which changes the required rightmost-occurrence order.

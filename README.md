@@ -85,7 +85,7 @@ the original tagged pair, charging copying as well as conversion and lookup.
 The `4X + 2` polynomial belongs to conversion alone. The composed membership
 witnesses use the generic checked composition bounds in original input length.
 `DictionaryConstruction.insert_eq_membership` supplies the semantic branch
-contract; the conditional-insertion machine remains to be assembled.
+contract used by the insertion machine below.
 
 `FramedSucc.computableInPolyTime` increments a natural under `FramedNat.finEncoding`
 with polynomial `2X + 4` in the complete framed input bit length. Its four-stack
@@ -125,7 +125,21 @@ occurrence order. `build_encode_length_le` proves the complete framed output
 cannot exceed the input length, including the binary count header, and
 `Formula.variableDictionary_encode_length_le` bounds it by `3n + 1` bits in
 the original formula size. These are executable, semantic and output-size
-results; conditional insertion and its fold still need a TM2 runtime proof.
+results; the seeded fold still needs a TM2 runtime proof.
+
+`DictionaryInsert.computableInPolyTime` now computes conditional insertion
+from that original tagged query/dictionary input: return the dictionary when
+the query is present, otherwise prepend it. It composes retained-input
+membership with `selectComputableInPolyTime`, an eight-stack finite TM2 on the
+nested tagged `(present, (query, dictionary))` encoding. `load_exits` removes
+the outer tags in exactly `4m + 2` steps for the inner pair length `m`;
+`branch_exits` checks both dictionary projection and cons, preserving all
+existing entries and their order, including repetitions. `routine_exits`
+counts the dispatch and both phases exactly; `outputsInTime` includes empty
+workspace, reset and halt. The selector has bound `13n + 24` in its entire
+input length `n = m + 1`. This linear bound is for selection alone; the full
+insertion uses the checked composition polynomial in the original pair size.
+Dictionary folding and full dense-renaming runtime remain pending.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

@@ -87,6 +87,7 @@ import LeanNPHardness.DictionaryLookup
 import LeanNPHardness.DictionaryConstruction
 import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.TaggedMembership
+import LeanNPHardness.DictionaryInsertMachine
 import LeanNPHardness.FramedSuccMachine
 import LeanNPHardness.FramedListCons
 import LeanNPHardness.TaggedFramedListCons
@@ -878,3 +879,13 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineAdapters.TaggedMembership.computableInPolyTime
 #print axioms LeanNPHardness.MachineAdapters.TaggedMembership.membershipComputableInPolyTime
 #print axioms LeanNPHardness.MachineAdapters.TaggedMembership.preservingMembershipComputableInPolyTime
+
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsert.KeepDictionary.cleanup_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsert.KeepDictionary.routine_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsert.load_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsert.branch_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsert.routine_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsert.runSteps_le
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsert.outputsInTime
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsert.selectComputableInPolyTime
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsert.computableInPolyTime

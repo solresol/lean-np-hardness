@@ -254,10 +254,16 @@ for those membership results.
   membership; `preservingMembershipComputableInPolyTime` also retains the
   original tagged query/dictionary pair, with copying charged to the input.
   `DictionaryConstruction.insert_eq_membership` specifies its branch selection.
-  The Boolean-controlled insertion and dictionary-construction TM2 machines,
-  updating the retained query, and occurrence-preserving formula traversal
-  remain pending; full renaming is not yet a polynomial-time re-encoding
-  reduction.
+  `DictionaryInsert.selectComputableInPolyTime` now consumes the nested tagged
+  Boolean and original pair, returning the dictionary on true and cons on
+  false. Exact loading, branch execution, cleanup and halt are checked;
+  selection is bounded by `13n + 24` in its complete input length.
+  `DictionaryInsert.computableInPolyTime` composes this with retained-input
+  membership to compute conditional insertion, charging all phases in the
+  original tagged query/dictionary size. Existing dictionary occurrences are
+  preserved. The seeded dictionary fold, updating the retained query, and
+  occurrence-preserving formula traversal remain pending; full renaming is
+  not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational
