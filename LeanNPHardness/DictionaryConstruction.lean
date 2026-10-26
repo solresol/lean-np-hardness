@@ -126,6 +126,13 @@ theorem nodup_extend (values : List Nat) {dictionary : List Nat}
   rw [extend_eq_dedup_append values dictionary h]
   exact List.nodup_dedup _
 
+/-- A left-to-right traversal of the reversed stream implements tail-first
+insertion. This is an order contract, independent of a traversal machine. -/
+theorem extend_eq_foldl_reverse (values dictionary : List Nat) :
+    extend values dictionary =
+      values.reverse.foldl (fun acc query => insert query acc) dictionary := by
+  exact List.foldr_eq_foldl_reverse
+
 /-- Construct the auxiliary dictionary with rightmost-occurrence order. -/
 def build (values : List Nat) : List Nat := extend values []
 

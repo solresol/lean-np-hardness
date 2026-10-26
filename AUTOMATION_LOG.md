@@ -4881,3 +4881,73 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `extend_encode_length_le` to bound every intermediate dictionary by the
   original values plus seed before summing insertion costs. Do not substitute
   a head-first fold, which changes the required rightmost-occurrence order.
+
+
+## 2026-10-27 — linear reversal of intact frame bodies
+
+- **Starting commit:** `b0d73257d54ed6005062c85e581c5a07ab4f9bf7`, clean
+  `main`. Read AGENTS, roadmap/status, prior journal and automation memory;
+  fetch confirmed tracking parity (0/0), so no fast-forward was needed.
+  `CODEX_HOME` is unset; used the supplied absolute automation-memory path.
+- **Goal:** isolate the frame-order reversal needed for the pending tail-first
+  dictionary fold, without reversing payload bits or changing occurrence order
+  inside the future dictionary construction.
+- **Checked increment:** new `FrameMoveMachine.lean` has a four-stack finite
+  routine with prefix/copy/restore/length phases. `routine_exits` transfers one
+  complete frame above an arbitrary output suffix in exactly `4b + 4 = 2L + 2`
+  steps for payload/frame lengths `b`/`L`, preserving arbitrary unread input
+  and clearing both work stacks. `natural_exits` specializes the contract.
+  New `FrameReverseMachine.lean` uses the existing `loop` and `loop_exits` to
+  repeat this same finite routine over an isolated body. `routine_exits`
+  preserves each payload and repeated frame, reverses frame order, retains
+  the output suffix, and empties workspace. `runSteps_eq` counts exactly
+  `2B + 3m + 1` steps for body bits `B` and frame count `m`; `runSteps_le`
+  gives `5B + 1`. `output_length` proves no size growth, `natural_body_exits`
+  covers natural encodings, and `outputsInTime` includes reset and final halt.
+  `DictionaryConstruction.extend_eq_foldl_reverse` separately identifies
+  insertion over reversed values with the required tail-first fold semantics.
+- **Boundary:** the reversal input is a complete isolated frame body, without
+  a list-count header or arbitrary input suffix. The single-frame kernel does
+  preserve an arbitrary input suffix. Empty bodies, empty payloads/zero and
+  repetitions are covered. List-header separation, seeded insertion traversal,
+  malformed-input rejection and full dense-renaming runtime remain pending.
+- **Files:** two new modules; DictionaryConstruction; root/audit imports and
+  fourteen audits; README, ROADMAP, THEOREM_STATUS and this journal. No sibling
+  repository edits.
+- **Checks:** targeted module/audit build passed 2,480 jobs; full `lake build`
+  passed 2,482. All fourteen new audits contain only standard axioms: eleven
+  use `propext`, `Classical.choice`, `Quot.sound`, two omit choice, and the
+  output-length theorem uses only `propext`. All 757 nonempty axiom reports
+  contain only those three standard axioms; five further reports are axiom-free.
+  The 142-file Lean/config scan finds only the existing explanatory
+  `proof_wanted` comment. New/modified modules have no warnings; existing
+  warnings elsewhere remain. `git diff --check` passes. Full build log:
+  `/tmp/lean-np-hardness-2026-10-27-build.log`.
+- **Failed approaches/API discoveries:** the loop invariant is unread
+  `drop i` plus frame-reversed `take i`, leaving payload bits untouched.
+  `List.drop_eq_getElem_cons`, `List.take_add_one` and
+  `List.getElem?_eq_getElem` expose one iteration; simplification also needs
+  `flatMap_nil`/`nil_append` after reversing a singleton. `List.take_succ`
+  is deprecated; `List.reverse_map` does not exist (rewrite backward with
+  `List.map_reverse`). Plain simplification did not identify the function
+  argument of `flatMap` with `BinaryNatLists.encodeNat`; an explicit
+  function equality proved by `rfl` closes the natural-body interface.
+  Import `MachineRun` explicitly for `evalsToInTimeMono`.
+  No unresolved proof blocker in this scope.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v` and
+  `CompilerComplexity.v`, and installed Undecidability
+  `_opam/lib/coq/user-contrib/Undecidability/L/Datatypes/List/List_fold.v`.
+  Its `fold_left_time` and `fold_right_time` track changing accumulators and
+  separate fold semantics from per-step costs. That decomposition guides the
+  future seeded loop only; neither lambda-calculus costs nor numeric-variable
+  size estimates are imported into the Lean bit/TM2 model.
+- **Ending state:** verified increment ready for commit/push on `main`;
+  final commit and local/tracking/live-remote parity go in automation memory
+  and the run report.
+- **Best next experiment:** separate the full framed-list count header into
+  a retained stack, leaving an isolated body, then lift `FrameReverse.routine`
+  with `extend_exits` so that it preserves the header and seed. Use the
+  reversed body to supply one intact query at a time to insertion; retain
+  unread frames across the insertion machine. Prove agreement using
+  `extend_eq_foldl_reverse`, and bound intermediate dictionaries with
+  `extend_sublist`/`extend_encode_length_le` before summing insertion costs.

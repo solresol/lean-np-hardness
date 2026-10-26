@@ -261,9 +261,16 @@ for those membership results.
   `DictionaryInsert.computableInPolyTime` composes this with retained-input
   membership to compute conditional insertion, charging all phases in the
   original tagged query/dictionary size. Existing dictionary occurrences are
-  preserved. The seeded dictionary fold, updating the retained query, and
-  occurrence-preserving formula traversal remain pending; full renaming is
-  not yet a polynomial-time re-encoding reduction.
+  preserved. `FrameMove.routine_exits` now moves one intact frame in exactly
+  `4b + 4` steps, preserving unread-input and output suffixes.
+  `FrameReverse.natural_body_exits` reverses an isolated frame body without
+  reversing payload bits or removing occurrences, in exactly `2B + 3m + 1`
+  steps for body bits `B` and frame count `m`. `outputsInTime` includes empty
+  workspace, reset and halt with bound `5B + 1`; output body length is unchanged.
+  `DictionaryConstruction.extend_eq_foldl_reverse` supplies the independent
+  tail-first order contract. List-header separation, the seeded dictionary
+  fold, updating the retained query, and occurrence-preserving formula traversal
+  remain pending; full renaming is not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

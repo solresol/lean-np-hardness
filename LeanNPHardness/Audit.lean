@@ -89,6 +89,8 @@ import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.TaggedMembership
 import LeanNPHardness.DictionaryInsertMachine
 import LeanNPHardness.FramedSuccMachine
+import LeanNPHardness.FrameMoveMachine
+import LeanNPHardness.FrameReverseMachine
 import LeanNPHardness.FramedListCons
 import LeanNPHardness.TaggedFramedListCons
 import LeanNPHardness.MachineRoutineExtension
@@ -96,6 +98,21 @@ import LeanNPHardness.PairDuplication
 import LeanNPHardness.CNFNormalization
 
 namespace LeanNPHardness.Audit
+
+#print axioms LeanNPHardness.MachinePrimitives.FrameMove.prefix_run
+#print axioms LeanNPHardness.MachinePrimitives.FrameMove.copy_run
+#print axioms LeanNPHardness.MachinePrimitives.FrameMove.restore_run
+#print axioms LeanNPHardness.MachinePrimitives.FrameMove.length_run
+#print axioms LeanNPHardness.MachinePrimitives.FrameMove.routine_exits
+#print axioms LeanNPHardness.MachinePrimitives.FrameMove.runSteps_eq_frame_length
+#print axioms LeanNPHardness.MachinePrimitives.FrameMove.natural_exits
+#print axioms LeanNPHardness.MachinePrimitives.FrameReverse.routine_exits
+#print axioms LeanNPHardness.MachinePrimitives.FrameReverse.runSteps_eq
+#print axioms LeanNPHardness.MachinePrimitives.FrameReverse.runSteps_le
+#print axioms LeanNPHardness.MachinePrimitives.FrameReverse.output_length
+#print axioms LeanNPHardness.MachinePrimitives.FrameReverse.natural_body_exits
+#print axioms LeanNPHardness.MachinePrimitives.FrameReverse.outputsInTime
+#print axioms LeanNPHardness.DictionaryConstruction.extend_eq_foldl_reverse
 
 #print axioms LeanNPHardness.MachinePrimitives.FramedSucc.prefix_run
 #print axioms LeanNPHardness.MachinePrimitives.FramedSucc.copy_run

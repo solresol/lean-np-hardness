@@ -10,6 +10,8 @@ import LeanNPHardness.DictionaryConstruction
 import LeanNPHardness.DictionaryInsertMachine
 import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.FramedSuccMachine
+import LeanNPHardness.FrameMoveMachine
+import LeanNPHardness.FrameReverseMachine
 import LeanNPHardness.FramedListCons
 import LeanNPHardness.TaggedFramedListCons
 import LeanNPHardness.MachineRoutineExtension

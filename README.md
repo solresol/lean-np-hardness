@@ -139,7 +139,19 @@ counts the dispatch and both phases exactly; `outputsInTime` includes empty
 workspace, reset and halt. The selector has bound `13n + 24` in its entire
 input length `n = m + 1`. This linear bound is for selection alone; the full
 insertion uses the checked composition polynomial in the original pair size.
-Dictionary folding and full dense-renaming runtime remain pending.
+
+`FrameReverse.natural_body_exits` now reverses an isolated stream of complete
+natural-number frames, preserving bit order inside every frame and retaining
+all occurrences. Its four-stack routine costs exactly `2B + 3m + 1` for `B`
+body bits and `m` frames, bounded by `5B + 1`, including all loop tests and
+canonical halting cleanup. `FrameMove.routine_exits` supplies the one-frame
+transfer with arbitrary unread-input and output suffixes in exactly `4b + 4`
+steps for `b` payload bits. The reversal pass preserves an output suffix and
+empties both workspace stacks; it expects the input body to be isolated.
+`DictionaryConstruction.extend_eq_foldl_reverse` identifies left-to-right
+insertion over that reversed stream with the required tail-first semantics.
+List-header separation, dictionary folding and full dense-renaming runtime
+remain pending.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
