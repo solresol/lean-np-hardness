@@ -12,6 +12,7 @@ import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.FramedSuccMachine
 import LeanNPHardness.FrameMoveMachine
 import LeanNPHardness.FrameReverseMachine
+import LeanNPHardness.FramedListReverseMachine
 import LeanNPHardness.FramedListCons
 import LeanNPHardness.TaggedFramedListCons
 import LeanNPHardness.MachineRoutineExtension

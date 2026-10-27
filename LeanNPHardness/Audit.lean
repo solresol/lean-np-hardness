@@ -91,6 +91,7 @@ import LeanNPHardness.DictionaryInsertMachine
 import LeanNPHardness.FramedSuccMachine
 import LeanNPHardness.FrameMoveMachine
 import LeanNPHardness.FrameReverseMachine
+import LeanNPHardness.FramedListReverseMachine
 import LeanNPHardness.FramedListCons
 import LeanNPHardness.TaggedFramedListCons
 import LeanNPHardness.MachineRoutineExtension
@@ -112,6 +113,17 @@ namespace LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.FrameReverse.output_length
 #print axioms LeanNPHardness.MachinePrimitives.FrameReverse.natural_body_exits
 #print axioms LeanNPHardness.MachinePrimitives.FrameReverse.outputsInTime
+
+#print axioms LeanNPHardness.MachinePrimitives.FramedListReverse.splitHeader_exits
+#print axioms LeanNPHardness.MachinePrimitives.FramedListReverse.reverseBody_exits
+#print axioms LeanNPHardness.MachinePrimitives.FramedListReverse.prepare_exits
+#print axioms LeanNPHardness.MachinePrimitives.FramedListReverse.prepareSteps_le
+#print axioms LeanNPHardness.MachinePrimitives.FramedListReverse.assemble_exits
+#print axioms LeanNPHardness.MachinePrimitives.FramedListReverse.routine_exits
+#print axioms LeanNPHardness.MachinePrimitives.FramedListReverse.runSteps_le
+#print axioms LeanNPHardness.MachinePrimitives.FramedListReverse.output_length
+#print axioms LeanNPHardness.MachinePrimitives.FramedListReverse.outputsInTime
+#print axioms LeanNPHardness.MachinePrimitives.FramedListReverse.computableInPolyTime
 #print axioms LeanNPHardness.DictionaryConstruction.extend_eq_foldl_reverse
 
 #print axioms LeanNPHardness.MachinePrimitives.FramedSucc.prefix_run

@@ -268,9 +268,16 @@ for those membership results.
   steps for body bits `B` and frame count `m`. `outputsInTime` includes empty
   workspace, reset and halt with bound `5B + 1`; output body length is unchanged.
   `DictionaryConstruction.extend_eq_foldl_reverse` supplies the independent
-  tail-first order contract. List-header separation, the seeded dictionary
-  fold, updating the retained query, and occurrence-preserving formula traversal
-  remain pending; full renaming is not yet a polynomial-time re-encoding reduction.
+  tail-first order contract. `FramedListReverse.prepare_exits` now separates
+  the complete count header and reverses the body while preserving an arbitrary
+  seed, in exactly `6H + 2B + 3m + 5` steps for header/body lengths `H`/`B`
+  and entry count `m`, bounded by `6n + 5` in full source length `n = H + B`.
+  `routine_exits` reattaches the unchanged header; `computableInPolyTime`
+  packages full framed-list reversal with `10X + 7`, including workspace
+  cleanup, reset and halt. `output_length` proves unchanged encoded size.
+  The seeded dictionary fold, updating the retained query, and
+  occurrence-preserving formula traversal remain pending; full renaming is
+  not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

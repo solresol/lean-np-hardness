@@ -150,7 +150,14 @@ steps for `b` payload bits. The reversal pass preserves an output suffix and
 empties both workspace stacks; it expects the input body to be isolated.
 `DictionaryConstruction.extend_eq_foldl_reverse` identifies left-to-right
 insertion over that reversed stream with the required tail-first semantics.
-List-header separation, dictionary folding and full dense-renaming runtime
+`FramedListReverse.prepare_exits` now separates the complete count header and
+reverses the body while preserving an arbitrary seed. Its six-stack routine
+takes exactly `6H + 2B + 3m + 5` steps for header/body lengths `H`/`B` and
+entry count `m`, bounded by `6n + 5` in full source length `n = H + B`.
+`routine_exits` reattaches the unchanged header, and `computableInPolyTime`
+packages full list reversal under `FramedNatList.finEncoding` with `10X + 7`,
+including empty workspace, reset and halt. `output_length` proves unchanged
+encoded size. Seeded dictionary folding and full dense-renaming runtime
 remain pending.
 
 The component verifier machines listed in this section predate the complete

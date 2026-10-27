@@ -4951,3 +4951,66 @@ avoid failed routes, and choose a materially different experiment when blocked.
   unread frames across the insertion machine. Prove agreement using
   `extend_eq_foldl_reverse`, and bound intermediate dictionaries with
   `extend_sublist`/`extend_encode_length_le` before summing insertion costs.
+
+## 2026-10-28 — full framed-list reversal with retained-seed preparation
+
+- **Starting commit:** `c3bfbed095a375ca090bcdc889e87e0877e161c5`, clean
+  `main`. Read AGENTS, roadmap/status, prior journal and automation memory;
+  fetch confirmed tracking parity (0/0), with no fast-forward needed.
+  `CODEX_HOME` is unset; used the supplied absolute automation-memory path.
+- **Goal:** separate the full list header and reverse the isolated body while
+  retaining the seed, as proposed by the prior run. Also reattach the same
+  header to expose the resulting complete-list reversal as a reusable function.
+- **Checked increment:** new `FramedListReverseMachine.lean` extends the
+  existing four-stack frame routines with header/seed stacks.
+  `splitHeader_exits` separates an intact frame, preserving arbitrary unread
+  input and seed, in exactly `6H + 4` steps for header length `H`.
+  `reverseBody_exits` preserves both extra stacks and an output suffix.
+  `prepare_exits` consumes a complete framed natural list and leaves its
+  unchanged header and reversed body on separate stacks, with empty workspace
+  and untouched seed. Its exact cost is `6H + 2B + 3m + 5`, bounded by
+  `6n + 5` for body length `B`, entry count `m`, and full source size `n = H + B`.
+  `assemble_exits` reattaches the header in `4H + 2` steps; `routine_exits`
+  proves the complete reversed-list encoding in `10H + 2B + 3m + 7` steps.
+  `output_length` separately proves unchanged encoded size. `outputsInTime`
+  includes empty workspace, reset and halt; `computableInPolyTime` packages
+  reversal under `FramedNatList.finEncoding` with polynomial `10X + 7`.
+- **Boundary/files:** empty lists, zero and repeated values are covered;
+  arbitrary seed contents survive verbatim. Complete input must be an isolated
+  well-formed list; only the single-header contract preserves an arbitrary
+  unread suffix. Seed loading, the insertion fold, malformed-input rejection
+  and full dense-renaming runtime remain separate. Changed the new module,
+  root/audit imports and ten audits, README, ROADMAP, THEOREM_STATUS and this
+  journal. No sibling edits.
+- **Checks:** targeted module/audit build passed 2,481 jobs; full `lake build`
+  passed 2,483. All ten new audits and all 767 nonempty reports use only
+  `propext`, `Classical.choice`, `Quot.sound`; five reports are axiom-free.
+  The 143-file Lean/config scan finds only the pre-existing explanatory
+  `proof_wanted` comment. No new-module warnings; existing warnings elsewhere
+  remain. `git diff --check` passes. Full build log:
+  `/tmp/lean-np-hardness-2026-10-28-build.log`.
+- **Failed approaches/API discoveries:** additive associativity/commutativity
+  simplification did not combine the numerical constants in exact sequence
+  costs, and a rewrite through a local header alias did not match the target.
+  `convert ... using 1`, followed by optional targeted simplification, `rfl`
+  for definitionally equal routine/stack expressions and `omega` for cost
+  equalities resolves this. Unguarded `simp`/`dsimp` reported no progress on
+  already reduced goals; sending all residual goals directly to `omega` failed
+  on non-arithmetic definitional equalities. These failures are resolved.
+  Existing `extend_exits`, `moveAll_exits` and `seq_exits` suffice without a
+  new simulation dispatcher; every additional header transfer is charged.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v` and
+  `CompilerComplexity.v`, and installed Undecidability
+  `_opam/lib/coq/user-contrib/Undecidability/L/Datatypes/List/List_fold.v`.
+  Its `fold_left_time`/`fold_right_time` track the evolving accumulator and
+  reinforce the separation of order semantics and runtime. This guides the
+  next fold interface only; no Coq proof or lambda-calculus cost is Lean evidence.
+- **Ending state:** verified increment ready for commit/push on `main`;
+  final commit and local/tracking/live-remote parity go in automation memory
+  and the run report.
+- **Best next experiment:** from `prepare_exits`, move one intact frame from
+  the reversed body into a tagged `(query, dictionary)` input, preserving the
+  unread frames and stored count while invoking insertion. Isolate this
+  one-entry adapter before the full loop. Prove agreement with
+  `extend_eq_foldl_reverse` and bound each updated dictionary with
+  `extend_sublist`/`extend_encode_length_le` before summing insertion costs.
