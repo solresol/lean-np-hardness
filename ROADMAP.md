@@ -275,6 +275,14 @@ for those membership results.
   `routine_exits` reattaches the unchanged header; `computableInPolyTime`
   packages full framed-list reversal with `10X + 7`, including workspace
   cleanup, reset and halt. `output_length` proves unchanged encoded size.
+  `DictionaryInsertInput.natural_head_exits` now serializes one intact frame
+  and the current dictionary as the insertion machine's tagged input in exactly
+  `6q + 4d + 6` steps, retaining unread frames and the original count header.
+  Its `prepare_exits` places the reversed body on the adapter's input stack
+  within `10n + 7` steps while preserving the seed; `prepare_head_exits`
+  connects preparation and the first tail-first query with exact summed cost.
+  Invoking insertion in this retained-stream layout and returning the result
+  to the seed stack remain to be connected before iterating the fold.
   The seeded dictionary fold, updating the retained query, and
   occurrence-preserving formula traversal remain pending; full renaming is
   not yet a polynomial-time re-encoding reduction.

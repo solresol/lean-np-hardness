@@ -160,6 +160,18 @@ including empty workspace, reset and halt. `output_length` proves unchanged
 encoded size. Seeded dictionary folding and full dense-renaming runtime
 remain pending.
 
+`DictionaryInsertInput.natural_head_exits` now extracts one intact query frame
+and serializes it with the current dictionary as exactly the tagged input
+expected by insertion. Its seven-stack routine costs `6q + 4d + 6` TM2 steps
+for complete query/dictionary lengths `q`/`d`, retaining the arbitrary unread
+stream and original count header while clearing workspace. `prepare_exits`
+places the reversed source body on this adapter's input stack within `10n + 7`
+steps in full source bits, preserving the seed. `prepare_head_exits` connects
+both routines: the last source occurrence is the first tagged query, and every
+remaining frame survives in reverse order. These costs cover preparation and
+serialization; invoking insertion, returning its updated dictionary to the seed
+stack and iterating the fold remain pending.
+
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
 which are built directly on the routine framework. Remarks below that a full

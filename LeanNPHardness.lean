@@ -8,6 +8,7 @@ import LeanNPHardness.FirstMatchMachine
 import LeanNPHardness.DictionaryLookup
 import LeanNPHardness.DictionaryConstruction
 import LeanNPHardness.DictionaryInsertMachine
+import LeanNPHardness.DictionaryInsertInput
 import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.FramedSuccMachine
 import LeanNPHardness.FrameMoveMachine

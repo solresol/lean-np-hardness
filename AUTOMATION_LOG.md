@@ -5014,3 +5014,70 @@ avoid failed routes, and choose a materially different experiment when blocked.
   one-entry adapter before the full loop. Prove agreement with
   `extend_eq_foldl_reverse` and bound each updated dictionary with
   `extend_sublist`/`extend_encode_length_le` before summing insertion costs.
+
+## 2026-10-29 — retained-stream input adapter for dictionary insertion
+
+- **Starting commit:** `d8012e2a55624aa05ae21ad5d566f53fee590aab`, clean
+  `main`. Read AGENTS, roadmap/status, prior journal and automation memory;
+  fetch confirmed tracking parity (0/0), with no fast-forward needed.
+  `CODEX_HOME` is unset; used the supplied absolute automation-memory path.
+- **Goal:** implement the one-entry input adapter proposed by the prior run,
+  preserving unread frames and the original header while preparing the tagged
+  query/dictionary word consumed by the checked insertion machine.
+- **Checked increment:** new `DictionaryInsertInput.lean` extends the previous
+  six-stack layout with one tagged stack. `extract_exits` retains arbitrary
+  unread stream, header, dictionary and tagged suffix. `serialize_exits`
+  orders and tags arbitrary component words in exactly `4q + 4d + 4` steps;
+  `routine_exits` includes extraction in `6q + 4d + 6`, for full framed
+  query/dictionary lengths. `natural_head_exits` produces exactly
+  `DictionaryInsert.pairWord`; `runSteps_le` gives `6N + 6` in tagged-pair
+  length. `returnBody_exits` transfers the reversed body onto the input stack
+  in `4B + 2`. `prepare_exits` combines this with the prior reversal, retaining
+  the seed and original header in exactly `6H + 6B + 3m + 7` steps;
+  `prepareSteps_le` bounds it by `10n + 7` in full source bits.
+  `prepare_head_exits` combines preparation and the first last-occurrence
+  query with exact summed cost, retaining every remaining reversed frame.
+- **Boundary/files:** these are routine exit contracts with finite control;
+  the adapter serializes the dictionary onto the tagged stack, consuming its
+  former seed-stack contents. It does not yet invoke insertion, return the
+  updated dictionary, decrement the retained header or iterate the fold.
+  Zero, empty dictionaries, repetitions, and empty-source preparation are
+  covered. Malformed-input rejection and full dense-renaming runtime remain
+  separate. Updated root/audit imports, nine audits, README, ROADMAP,
+  THEOREM_STATUS and this journal. No sibling edits.
+- **Checks:** targeted module/audit build passed 2,482 jobs; full `lake build`
+  passed 2,484. All nine new audits and all 776 nonempty reports use only
+  `propext`, `Classical.choice`, `Quot.sound`; five reports are axiom-free.
+  The 144-file Lean/config scan finds only the existing explanatory
+  `proof_wanted` comment. No new-module warnings; existing warnings elsewhere
+  remain. `git diff --check` passes. Full build log:
+  `/tmp/lean-np-hardness-2026-10-29-build.log`.
+- **Failed approaches/API discoveries:** nested `extend_exits` with `simpa`
+  reported `Type mismatch: After simplification` despite matching displayed
+  stack expressions. Explicit source alphabet and `convert ... using 1`,
+  followed by simplification and `rfl` on residual definitional equalities,
+  close this. Transfer proofs need stack abbreviations unfolded before
+  simplifying lengths, then `FrameMove.contents` unfolded again after stack
+  case splits. A tactic macro with nested bullets failed with
+  `unexpected token '·'; expected ')'`; flat constructor cases resolve it.
+  No unresolved proof blocker in this scope. Existing `extend_exits`,
+  `moveAll_exits` and `seq_exits` suffice; no additional dispatcher was needed.
+- **Comparison evidence:** reread sibling Coq `SourceAdapter.v`,
+  `CompilerComplexity.v`, and installed Undecidability
+  `_opam/lib/coq/user-contrib/Undecidability/L/Datatypes/List/List_fold.v`.
+  `fold_left_time` charges each call against its current accumulator; this
+  motivates preserving the unread stream separately while serializing the
+  current dictionary. Coq proof terms and lambda-calculus costs remain design
+  comparison only, never Lean evidence or binary/TM2 runtime bounds.
+- **Ending state:** verified increment ready for commit/push on `main`;
+  final commit and local/tracking/live-remote parity go in automation memory
+  and the run report.
+- **Best next experiment:** lift the full
+  `DictionaryInsert.computableInPolyTime` machine (not just its selector)
+  into a layout retaining unread frames and the original header. Bridge the
+  tagged adapter output to that machine's input alphabet and return its
+  canonical framed result to the seed stack, charging each transfer and the
+  supplied polynomial. Prove this one-entry insertion contract before looping;
+  use `extend_eq_foldl_reverse` and intermediate `extend_encode_length_le`
+  bounds when summing calls. Keep the original header distinct from a remaining
+  count if using an empty-stream loop.
