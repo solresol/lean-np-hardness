@@ -89,6 +89,7 @@ import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.TaggedMembership
 import LeanNPHardness.DictionaryInsertMachine
 import LeanNPHardness.DictionaryInsertInput
+import LeanNPHardness.DictionaryInsertCall
 import LeanNPHardness.FramedSuccMachine
 import LeanNPHardness.FrameMoveMachine
 import LeanNPHardness.FrameReverseMachine
@@ -96,10 +97,21 @@ import LeanNPHardness.FramedListReverseMachine
 import LeanNPHardness.FramedListCons
 import LeanNPHardness.TaggedFramedListCons
 import LeanNPHardness.MachineRoutineExtension
+import LeanNPHardness.MachineRoutineCall
 import LeanNPHardness.PairDuplication
 import LeanNPHardness.CNFNormalization
 
 namespace LeanNPHardness.Audit
+
+#print axioms LeanNPHardness.Routines.ofMachine_exits
+#print axioms LeanNPHardness.Routines.ofMachine_extended_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertCall.load_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertCall.invoke_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertCall.returnResult_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertCall.routine_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertCall.output_length_le
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertCall.bounded_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertCall.checked_exits
 
 #print axioms LeanNPHardness.MachinePrimitives.FrameMove.prefix_run
 #print axioms LeanNPHardness.MachinePrimitives.FrameMove.copy_run

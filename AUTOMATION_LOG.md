@@ -5081,3 +5081,76 @@ avoid failed routes, and choose a materially different experiment when blocked.
   use `extend_eq_foldl_reverse` and intermediate `extend_encode_length_le`
   bounds when summing calls. Keep the original header distinct from a remaining
   count if using an empty-stream loop.
+
+
+## 2026-10-30 — retained-stream call to the full insertion machine
+
+- **Starting commit:** `32648145a06046b0eb42a55212bcdbb0553a5971`, clean
+  `main`. Read AGENTS, roadmap/status, prior journal and automation memory;
+  fetch confirmed 0/0 tracking parity, so no fast-forward was needed.
+  `CODEX_HOME` is unset; used the supplied absolute automation-memory path.
+- **Goal:** invoke the complete checked insertion machine from the prepared
+  tagged pair, preserving unread frames and the original count header, then
+  return its result to the seed/dictionary stack with all transfers charged.
+- **Checked increment:** `MachineRoutineCall.lean` adds `ofMachine`,
+  `ofMachine_exits`, and `ofMachine_extended_exits`: a bounded canonical
+  computation becomes an exact routine exit within the same bound, preserving
+  arbitrary caller stacks. `DictionaryInsertCall.lean` extends the previous
+  caller layout with tagged scratch and all private insertion-machine stacks.
+  `load_exits` transfers the prepared pair in order through the actual input
+  alphabet equivalence in exactly `4N + 2` steps. `invoke_exits` calls the
+  complete supplied insertion program at its original polynomial bound.
+  `returnResult_exits` converts/returns the canonical framed result in exactly
+  `4M + 2` steps and clears all private stacks and scratch. `routine_exits`
+  sums both transfers and the actual invocation steps. The independent
+  `output_length_le` proves `M ≤ N + 2`, including count-header growth;
+  `bounded_exits` yields `P(N) + 8N + 12` in original tagged-pair length `N`.
+  `checked_exits` instantiates `DictionaryInsert.computableInPolyTime`, so
+  membership and retained-input copying are included, not just selection.
+- **Boundary/files:** the input is the prepared canonical pair on its caller
+  stack. Unread input and the original header survive verbatim; zero, empty
+  dictionaries and repeated values are covered. The previous frame-extraction
+  and serialization routine still needs lifting into the new caller layout
+  before composing/iterating it. The seeded fold, malformed-input rejection
+  and full dense-renaming runtime remain separate. Updated both new modules,
+  root/audit imports, nine audits, README, ROADMAP, THEOREM_STATUS and this
+  journal. No sibling edits.
+- **Checks:** targeted module/audit build passed 2,484 jobs; full `lake build`
+  passed 2,486. All nine new audits and all 785 nonempty reports use only
+  `propext`, `Classical.choice`, `Quot.sound`; five reports are axiom-free.
+  The 146-file Lean/config scan finds only the pre-existing explanatory
+  `proof_wanted` comment. No new-module warnings; existing warnings elsewhere
+  remain. `git diff --check` passes. Full build log:
+  `/tmp/lean-np-hardness-2026-10-30-build.log`.
+- **Failed approaches/API discoveries:** `FinTM2` does not register its label
+  and state finiteness fields for automatic inference here; explicitly pass
+  `tm.ΛFin` and `tm.σFin` to `ofMachine`. `EvalsToInTime.steps`,
+  `steps_le_m`, and `evals_in_steps` supply the exact exit directly, with no
+  new dispatcher or simulation proof. A `private` binder hit a reserved-token
+  parse error; use `machineStacks`. Caller-stack Fintype instances need
+  explicit instances, including `Fintype.ofEquiv Bool c.outputAlphabet.symm`
+  for private output. In transfer proofs, split the nested caller sum all the
+  way to its concrete constructors before dependent-update simplification;
+  unfold caller contents and normalize mapped alphabet round trips. Explicit
+  `convert` goal counts changed after definitional reduction, so redundant
+  bullets were removed. A second length simplification reported `simp made
+  no progress`; the first simplification already normalized the lengths and
+  `omega` closes the bound. All failures are resolved in this scope.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v`,
+  `CompilerComplexity.v`, and installed Undecidability
+  `_opam/lib/coq/user-contrib/Undecidability/L/Datatypes/List/List_fold.v`.
+  The evolving-accumulator `fold_left_time` reinforces charging each insertion
+  against its current dictionary size. Their source/size/runtime separation
+  guides the interface only; Coq terms and lambda-calculus costs are not
+  Lean proof evidence or TM2 runtime bounds.
+- **Ending state:** verified increment ready for commit/push on `main`;
+  final commit and local/tracking/live-remote parity go in automation memory
+  and the run report.
+- **Best next experiment:** lift `DictionaryInsertInput.routine` into the
+  right-hand caller summand of `DictionaryInsertCall.Alphabet`, preserving
+  empty private stacks and tagged scratch, then compose `natural_head_exits`
+  with `checked_exits`. A right-summand routine extension or checked stack
+  reindexing should reuse the existing statement/run simulation. Prove one
+  raw-frame-to-updated-seed contract before the empty-stream loop; use
+  `extend_eq_foldl_reverse` for order and `extend_encode_length_le` for
+  intermediate dictionary sizes. Keep the original header unchanged.

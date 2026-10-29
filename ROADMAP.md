@@ -281,8 +281,15 @@ for those membership results.
   Its `prepare_exits` places the reversed body on the adapter's input stack
   within `10n + 7` steps while preserving the seed; `prepare_head_exits`
   connects preparation and the first tail-first query with exact summed cost.
-  Invoking insertion in this retained-stream layout and returning the result
-  to the seed stack remain to be connected before iterating the fold.
+  `DictionaryInsertCall.checked_exits` now loads that tagged word through
+  the full insertion machine's input alphabet, invokes its complete program,
+  and returns the framed result to the dictionary stack while retaining the
+  unread stream and original header. Loading/return cost exactly `4N + 2`
+  and `4M + 2` for input/output lengths `N`/`M`; `output_length_le` gives
+  `M ≤ N + 2`, so the complete call costs at most `P(N) + 8N + 12`, with
+  `P` the checked insertion polynomial. All private stacks and scratch clear.
+  The call's extended layout still needs the frame-extraction/serialization
+  routine lifted into its caller stacks before iterating the fold.
   The seeded dictionary fold, updating the retained query, and
   occurrence-preserving formula traversal remain pending; full renaming is
   not yet a polynomial-time re-encoding reduction.

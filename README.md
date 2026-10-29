@@ -169,8 +169,16 @@ places the reversed source body on this adapter's input stack within `10n + 7`
 steps in full source bits, preserving the seed. `prepare_head_exits` connects
 both routines: the last source occurrence is the first tagged query, and every
 remaining frame survives in reverse order. These costs cover preparation and
-serialization; invoking insertion, returning its updated dictionary to the seed
-stack and iterating the fold remain pending.
+serialization. `DictionaryInsertCall.checked_exits` now consumes the prepared
+tagged word, runs the complete insertion machine, and returns its framed result
+to the dictionary stack while preserving unread input and the original header.
+Loading and return take exactly `4N + 2` and `4M + 2` steps in tagged input and
+framed output lengths. The separate size lemma gives `M ≤ N + 2`, so the whole
+call is bounded by `P(N) + 8N + 12`, where `P` is the checked insertion
+polynomial. Private machine stacks and caller scratch finish empty. The generic
+`Routines.ofMachine_extended_exits` supplies the unchanged-cost call interface.
+Lifting frame extraction/serialization into this extended layout, iterating the
+seeded fold, and full dense-renaming runtime remain pending.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
