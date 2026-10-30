@@ -90,6 +90,7 @@ import LeanNPHardness.TaggedMembership
 import LeanNPHardness.DictionaryInsertMachine
 import LeanNPHardness.DictionaryInsertInput
 import LeanNPHardness.DictionaryInsertCall
+import LeanNPHardness.DictionaryInsertStep
 import LeanNPHardness.FramedSuccMachine
 import LeanNPHardness.FrameMoveMachine
 import LeanNPHardness.FrameReverseMachine
@@ -97,6 +98,7 @@ import LeanNPHardness.FramedListReverseMachine
 import LeanNPHardness.FramedListCons
 import LeanNPHardness.TaggedFramedListCons
 import LeanNPHardness.MachineRoutineExtension
+import LeanNPHardness.MachineRoutineRightExtension
 import LeanNPHardness.MachineRoutineCall
 import LeanNPHardness.PairDuplication
 import LeanNPHardness.CNFNormalization
@@ -112,6 +114,18 @@ namespace LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineAdapters.DictionaryInsertCall.output_length_le
 #print axioms LeanNPHardness.MachineAdapters.DictionaryInsertCall.bounded_exits
 #print axioms LeanNPHardness.MachineAdapters.DictionaryInsertCall.checked_exits
+
+#print axioms LeanNPHardness.Routines.extendedStacks_update_right
+#print axioms LeanNPHardness.Routines.extendRightStmt_stepAux
+#print axioms LeanNPHardness.Routines.extendRight_step
+#print axioms LeanNPHardness.Routines.extendRight_run
+#print axioms LeanNPHardness.Routines.extendRight_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertStep.loadFrame_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertStep.routine_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertStep.bounded_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertStep.checked_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertStep.prepare_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryInsertStep.prepare_head_exits
 
 #print axioms LeanNPHardness.MachinePrimitives.FrameMove.prefix_run
 #print axioms LeanNPHardness.MachinePrimitives.FrameMove.copy_run

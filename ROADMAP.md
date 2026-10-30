@@ -288,8 +288,13 @@ for those membership results.
   and `4M + 2` for input/output lengths `N`/`M`; `output_length_le` gives
   `M ≤ N + 2`, so the complete call costs at most `P(N) + 8N + 12`, with
   `P` the checked insertion polynomial. All private stacks and scratch clear.
-  The call's extended layout still needs the frame-extraction/serialization
-  routine lifted into its caller stacks before iterating the fold.
+  `DictionaryInsertStep.checked_exits` now lifts frame extraction/serialization
+  into the caller side and composes it with that complete call, bounded by
+  `P(N) + 14N + 18` in combined framed query/dictionary length. Its
+  `prepare_head_exits` starts from the full source and processes its last
+  occurrence first, retaining the original header and every remaining reversed
+  frame. `Routines.extendRight_exits` preserves arbitrary private stacks and
+  scratch at unchanged exact cost for both caller routines.
   The seeded dictionary fold, updating the retained query, and
   occurrence-preserving formula traversal remain pending; full renaming is
   not yet a polynomial-time re-encoding reduction.

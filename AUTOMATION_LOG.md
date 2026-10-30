@@ -5154,3 +5154,72 @@ avoid failed routes, and choose a materially different experiment when blocked.
   raw-frame-to-updated-seed contract before the empty-stream loop; use
   `extend_eq_foldl_reverse` for order and `extend_encode_length_le` for
   intermediate dictionary sizes. Keep the original header unchanged.
+
+## 2026-10-31 — complete dictionary insertion from a framed stream
+
+- **Starting commit:** `46ad4f08ef5547f43b2fd7d814bad3f6866b786b`, clean
+  `main`. Read AGENTS, roadmap/status, prior journal and automation memory;
+  fetch confirmed 0/0 tracking parity, so no fast-forward was needed.
+  Used the supplied absolute automation-memory path because `CODEX_HOME`
+  is unset. No automation settings changed.
+- **Goal:** lift the frame-input adapter into the full insertion caller layout
+  and compose one raw-frame-to-updated-seed step, as proposed by the last run.
+- **Checked increment:** `MachineRoutineRightExtension.lean` supplies
+  `extendedStacks_update_right`, `extendRightStmt_stepAux`, `extendRight_step`,
+  `extendRight_run`, and `extendRight_exits`. The right-summand embedding
+  preserves arbitrary left-hand contents, the original finite control and
+  exact step count. `DictionaryInsertStep.lean` lifts extraction/serialization
+  with `loadFrame_exits`, retaining arbitrary private-machine stacks and
+  scratch. `routine_exits` composes it with the full insertion call and records
+  the exact phase sum; `bounded_exits` gives `P(N) + 14N + 18` in combined
+  framed query/dictionary length `N`. `checked_exits` instantiates the complete
+  checked insertion witness, including membership/copying. The unread stream
+  and original header survive verbatim; all private stacks and workspace
+  clear. `prepare_exits` lifts full-source reversal/preparation at unchanged
+  cost, and `prepare_head_exits` checks the first insertion of the last source
+  occurrence, with every remaining reversed frame and the header retained.
+- **Boundary/files:** these are canonical-input routine exits, covering zero,
+  empty dictionaries and repeated values. Existing dictionary entries retain
+  their order and multiplicity through `DictionaryConstruction.insert`.
+  The seeded loop, malformed-input rejection and full dense-renaming runtime
+  remain separate. Added two modules, root/audit imports and eleven audits;
+  updated README, ROADMAP, THEOREM_STATUS and this journal. No sibling edits.
+- **Checks:** targeted module build passed 1,346 jobs; audit build passed 2,486;
+  full `lake build` passed 2,488. Four new audits use `propext` and `Quot.sound`,
+  seven additionally use `Classical.choice`. All 796 nonempty reports use
+  only those standard axioms; five further reports are axiom-free. The
+  148-file Lean/config scan finds only the existing explanatory `proof_wanted`
+  comment. No new-module warnings; existing warnings elsewhere remain.
+  `git diff --check` passes. Full log:
+  `/tmp/lean-np-hardness-2026-10-31-build.log`.
+- **Failed approaches/API discoveries:** a standalone `lake env lean` check
+  did not apply the package's existing
+  `backward.isDefEq.respectTransparency=false` option: dependent stack updates
+  remained unsolved and `rw` reported a non-type-correct target under implicit
+  transparency. The unchanged source passes `lake build`, which applies the
+  configured option; no proof relaxation or new compiler option was added.
+  Use the package build for these checks (or explicitly pass its existing
+  option to a standalone invocation). The right-summand simulation mirrors
+  the checked left-summand proof; no control dispatcher or physical stack
+  permutation is needed. Both nested extension contracts compose directly
+  with `exact`, and `seq_exits` adds phase costs without transition overhead.
+  No unresolved proof blocker in this scope.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v`,
+  `CompilerComplexity.v`, and installed Undecidability
+  `_opam/lib/coq/user-contrib/Undecidability/L/Datatypes/List/List_fold.v`.
+  Its `fold_left_time` charges calls at the changing accumulator; this guides
+  the next seeded-loop cost recurrence. Coq's numeric-variable size estimates
+  and lambda-calculus costs are not imported into Lean's binary/TM2 model.
+  Coq terms remain comparison only, never Lean proof evidence.
+- **Ending state:** verified increment ready for commit/push on `main`;
+  final hash and local/tracking/live-remote parity go in automation memory
+  and the run report.
+- **Best next experiment:** wrap `DictionaryInsertStep.routine` in `loop` on
+  the caller's input stack, using empty-stream termination on the isolated
+  reversed body. Prove the evolving dictionary is
+  `foldl (fun seed query => insert query seed)` of the processed prefix, then
+  use `extend_eq_foldl_reverse` for tail-first semantics. Bound every query
+  plus intermediate dictionary with `extend_sublist`/`extend_encode_length_le`
+  before summing the insertion polynomial and loop tests. Keep the original
+  header unchanged; it is not the remaining-entry counter. Lift and compose
+  `prepare_exits` once the loop contract is checked.

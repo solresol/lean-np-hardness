@@ -177,8 +177,15 @@ framed output lengths. The separate size lemma gives `M ≤ N + 2`, so the whole
 call is bounded by `P(N) + 8N + 12`, where `P` is the checked insertion
 polynomial. Private machine stacks and caller scratch finish empty. The generic
 `Routines.ofMachine_extended_exits` supplies the unchanged-cost call interface.
-Lifting frame extraction/serialization into this extended layout, iterating the
-seeded fold, and full dense-renaming runtime remain pending.
+`DictionaryInsertStep.checked_exits` now composes frame extraction/serialization
+with that complete call. From one raw canonical frame and the current framed
+dictionary, it returns the updated dictionary in at most `P(N) + 14N + 18`
+steps, preserving the unread stream and original header and clearing all
+workspace. `Routines.extendRight_exits` supplies the exact-cost caller-side
+embedding. `prepare_head_exits` also connects complete-source preparation to
+the first insertion: the last source occurrence is processed first, with all
+remaining reversed frames retained. The seeded fold and full dense-renaming
+runtime remain pending.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
