@@ -295,9 +295,17 @@ for those membership results.
   occurrence first, retaining the original header and every remaining reversed
   frame. `Routines.extendRight_exits` preserves arbitrary private stacks and
   scratch at unchanged exact cost for both caller routines.
-  The seeded dictionary fold, updating the retained query, and
-  occurrence-preserving formula traversal remain pending; full renaming is
-  not yet a polynomial-time re-encoding reduction.
+  `DictionaryFold.checked_exits` now loops over the full reversed body,
+  preserving the original header and computing `DictionaryConstruction.extend`;
+  `dedup_exits` gives exactly `List.dedup` from an encoded empty seed.
+  Its evolving-accumulator cost recurrence charges every insertion and loop
+  test. `budget_insert_le` reserves two count-header growth bits per remaining
+  entry, bounding preparation plus folding by `n * (Q(3n) + 1) + 10n + 8`
+  for full source-plus-seed bits `n` and one-step polynomial `Q`.
+  Canonical input loading, final header cleanup and polynomial-time function
+  packaging remain pending, along with updating the retained query and
+  occurrence-preserving formula traversal. Full renaming is not yet a
+  polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

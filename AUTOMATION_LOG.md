@@ -5223,3 +5223,71 @@ avoid failed routes, and choose a materially different experiment when blocked.
   before summing the insertion polynomial and loop tests. Keep the original
   header unchanged; it is not the remaining-entry counter. Lift and compose
   `prepare_exits` once the loop contract is checked.
+
+## 2026-11-01 — seeded dictionary folding with a polynomial routine bound
+
+- **Starting commit:** `c086dd6c47bb0816c95d00e1a1ed59fc2017704a`, clean
+  `main`. Read AGENTS, roadmap/status, prior journal and automation memory;
+  fetched upstream and confirmed 0/0 tracking parity. No fast-forward needed.
+  Used the supplied absolute automation-memory path; no schedule changes.
+- **Goal:** iterate the previous complete insertion step over the isolated
+  reversed frame body, preserving tail-first order and charging the changing
+  accumulator size.
+- **Checked increment:** added `DictionaryFold.lean`. `routine_exits` proves
+  stream-order `foldl` for one fixed finite TM2 loop, including zero and
+  repeated entries, with unchanged header and empty private stacks/scratch.
+  `cost` is an evolving-accumulator upper-bound recurrence, charging each
+  insertion and all loop tests, including the final empty test. The independent
+  `pair_length_le_budget` and `budget_insert_le` bound calls by unread frame
+  bits plus current dictionary bits plus two count-header growth bits per
+  remaining entry. `cost_le` sums the calls at that initial budget.
+  `prepared_exits` composes complete-source reversal/preparation with the loop
+  and proves exactly `DictionaryConstruction.extend`; `dedup_exits` gives
+  `List.dedup` from the encoded empty seed. Arbitrary seed repetitions survive.
+  `length_le_inputSize`, `budget_reverse_le` and `prepared_cost_le` give the
+  bound `n * (Q(3n) + 1) + 10n + 8`, with full source-plus-seed bits `n` and
+  `Q(X) = P(X) + 14X + 18`. `bounded_exits` exposes this polynomial routine
+  contract; `checked_exits` uses the full checked insertion machine.
+- **Boundary/files:** source and seed are supplied on separate stacks. The
+  original header remains; canonical single-input loading, final header
+  cleanup, standalone polynomial-time function packaging, malformed-input
+  rejection and full dense renaming remain separate. Added root/audit imports
+  and eleven audits; updated README, ROADMAP, THEOREM_STATUS and this journal.
+  No sibling edits.
+- **Checks:** targeted module/audit build passed 2,487 jobs; full `lake build`
+  passed 2,489. All eleven new audits and all 807 nonempty reports use only
+  `propext`, `Classical.choice`, `Quot.sound`; five reports are axiom-free.
+  The 149-file Lean/config scan finds only the pre-existing explanatory
+  `proof_wanted` comment. No new-module warnings; existing warnings elsewhere
+  remain. `git diff --check` passes. Logs:
+  `/tmp/lean-np-hardness-2026-11-01-audit.log` and
+  `/tmp/lean-np-hardness-2026-11-01-build.log`.
+- **Failed approaches/API discoveries:** applying `contents` to the loop's
+  stack index initially supplied the index as the optional `work` argument
+  (`Application type mismatch ... expected optParam (List Bool) []`); specify
+  `(work := [])` before applying the resulting stack function. `nlinarith`
+  was unavailable under these explicit imports (`unknown tactic`); expanding
+  `Nat.add_mul`/`Nat.one_mul` leaves only linear arithmetic for `omega`.
+  Polynomial monotonicity leaves lambda-wrapped evaluations that `omega`
+  treated as separate atoms (`omega could not prove the goal`); `dsimp only`
+  on the derived inequalities resolves both cost proofs. All failures resolved.
+  `loop_exitsLE_cons` permits direct list induction with a generalized seed;
+  no indexed prefix state or new dispatcher is required. Existing output growth
+  `M <= N + 2` yields a decreasing budget and avoids a larger sublist/permutation
+  proof for intermediate dictionaries. Package build options were retained.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v`,
+  `CompilerComplexity.v`, and installed Undecidability
+  `_opam/lib/coq/user-contrib/Undecidability/L/Datatypes/List/List_fold.v`.
+  Its `fold_left_time` recurrence charges the current accumulator; the new Lean
+  recurrence follows that decomposition but uses checked TM2 call/test costs.
+  Coq terms and lambda-calculus costs remain comparison only, never Lean proof
+  evidence or binary/TM2 runtime bounds.
+- **Ending state:** verified increment ready for commit/push on `main`; final
+  hash and local/tracking/live-remote parity go in automation memory and report.
+- **Best next experiment:** package standalone dictionary construction first:
+  initialize the encoded empty seed with `pushList`, run `preparedRoutine`,
+  drain the retained original header, and apply `toMachine_outputsInTime_le`
+  with the dictionary stack as output. Charge initialization/cleanup and
+  substitute source bits plus the constant empty-seed size into the polynomial.
+  Prove `FramedNatList` polynomial-time `DictionaryConstruction.build` before
+  adding a tagged source/seed loader for the more general seeded function.

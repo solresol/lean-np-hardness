@@ -125,7 +125,7 @@ occurrence order. `build_encode_length_le` proves the complete framed output
 cannot exceed the input length, including the binary count header, and
 `Formula.variableDictionary_encode_length_le` bounds it by `3n + 1` bits in
 the original formula size. These are executable, semantic and output-size
-results; the seeded fold still needs a TM2 runtime proof.
+results; `DictionaryFold` supplies the separate seeded-fold TM2 routine bound.
 
 `DictionaryInsert.computableInPolyTime` now computes conditional insertion
 from that original tagged query/dictionary input: return the dictionary when
@@ -157,8 +157,8 @@ entry count `m`, bounded by `6n + 5` in full source length `n = H + B`.
 `routine_exits` reattaches the unchanged header, and `computableInPolyTime`
 packages full list reversal under `FramedNatList.finEncoding` with `10X + 7`,
 including empty workspace, reset and halt. `output_length` proves unchanged
-encoded size. Seeded dictionary folding and full dense-renaming runtime
-remain pending.
+encoded size. The seeded folding routine is checked below; full dense-renaming
+runtime remains pending.
 
 `DictionaryInsertInput.natural_head_exits` now extracts one intact query frame
 and serializes it with the current dictionary as exactly the tagged input
@@ -184,8 +184,23 @@ steps, preserving the unread stream and original header and clearing all
 workspace. `Routines.extendRight_exits` supplies the exact-cost caller-side
 embedding. `prepare_head_exits` also connects complete-source preparation to
 the first insertion: the last source occurrence is processed first, with all
-remaining reversed frames retained. The seeded fold and full dense-renaming
-runtime remain pending.
+remaining reversed frames retained.
+
+`DictionaryFold.checked_exits` now iterates complete insertion over the whole
+reversed body, yielding `DictionaryConstruction.extend values seed` and
+retaining the original header. `dedup_exits` specializes an encoded empty seed
+to exactly `List.dedup`, with rightmost-occurrence order. Arbitrary seed entries,
+including repetitions, retain their order. The loop consumes zero-valued and
+repeated source entries and clears all private stacks and scratch.
+`cost` charges each insertion against its current dictionary plus every loop
+test. `budget_insert_le` bounds intermediate growth using the unread body bits,
+current dictionary bits and two header-growth bits per remaining entry.
+For total full source-and-seed bit length `n`, preparation plus folding takes
+at most `n * (Q(3n) + 1) + 10n + 8` TM2 steps, where
+`Q(X) = P(X) + 14X + 18` is the checked one-insertion bound.
+The source and seed are supplied on separate stacks; canonical input loading,
+final header cleanup and packaging as a polynomial-time function remain
+pending, as do malformed-stream rejection and full dense renaming.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

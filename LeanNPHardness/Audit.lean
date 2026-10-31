@@ -91,6 +91,7 @@ import LeanNPHardness.DictionaryInsertMachine
 import LeanNPHardness.DictionaryInsertInput
 import LeanNPHardness.DictionaryInsertCall
 import LeanNPHardness.DictionaryInsertStep
+import LeanNPHardness.DictionaryFold
 import LeanNPHardness.FramedSuccMachine
 import LeanNPHardness.FrameMoveMachine
 import LeanNPHardness.FrameReverseMachine
@@ -126,6 +127,18 @@ namespace LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineAdapters.DictionaryInsertStep.checked_exits
 #print axioms LeanNPHardness.MachineAdapters.DictionaryInsertStep.prepare_exits
 #print axioms LeanNPHardness.MachineAdapters.DictionaryInsertStep.prepare_head_exits
+
+#print axioms LeanNPHardness.MachineAdapters.DictionaryFold.routine_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryFold.pair_length_le_budget
+#print axioms LeanNPHardness.MachineAdapters.DictionaryFold.budget_insert_le
+#print axioms LeanNPHardness.MachineAdapters.DictionaryFold.cost_le
+#print axioms LeanNPHardness.MachineAdapters.DictionaryFold.prepared_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryFold.dedup_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryFold.length_le_inputSize
+#print axioms LeanNPHardness.MachineAdapters.DictionaryFold.budget_reverse_le
+#print axioms LeanNPHardness.MachineAdapters.DictionaryFold.prepared_cost_le
+#print axioms LeanNPHardness.MachineAdapters.DictionaryFold.bounded_exits
+#print axioms LeanNPHardness.MachineAdapters.DictionaryFold.checked_exits
 
 #print axioms LeanNPHardness.MachinePrimitives.FrameMove.prefix_run
 #print axioms LeanNPHardness.MachinePrimitives.FrameMove.copy_run
