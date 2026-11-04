@@ -311,9 +311,17 @@ for those membership results.
   empty count/header stacks as reverse buffers. `computableInPolyTime`
   packages general seeded construction with `F(n) + 5n + 4` in the original
   tagged input length, including header cleanup, empty workspace, reset and
-  halt. Arbitrary seed repetitions survive. Updating the retained query and
-  occurrence-preserving formula traversal remain pending. Full renaming is
-  not yet a polynomial-time re-encoding reduction.
+  halt. Arbitrary seed repetitions survive. `LiteralVariable.literal_exits`
+  now consumes one packed literal and emits exactly its framed variable,
+  preserving arbitrary unread-input/output suffixes and clearing workspace.
+  `FrameMove.payload_exits` reuses counted-payload framing in `3b + 3` steps;
+  the complete adapter takes `b + 3(b - 1) + 5` steps (natural subtraction),
+  bounded by `2L + 3` in complete literal-frame bits. Positive zero's empty
+  payload does not consume the next frame. `output_length_le` proves no size
+  growth; `computableInPolyTime` packages variable extraction under the exact
+  standalone CNF literal frame, including reset and halt. Updating the
+  retained query and occurrence-preserving clause/formula traversal remain
+  pending. Full renaming is not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

@@ -5426,3 +5426,81 @@ avoid failed routes, and choose a materially different experiment when blocked.
   `DictionaryBuild.computableInPolyTime`. Retained-query replacement and
   complete dense renaming, as well as malformed-stream rejection, remain
   separately named obligations.
+
+
+## 2026-11-04 — framed variable extraction from packed literals (daily run)
+
+- **Starting commit:** `0515386d784de4090c3f92f7e4d09ce916c66d09`.
+  Verified the discovered `solresol/lean-np-hardness` origin, clean generated
+  `work`, live `origin/main` equality and recent commits before establishing
+  tracking `main`; preserved `work`. No concurrent Lean research process or
+  remote advance was observed. The controller separately checked worker overlap.
+  Read AGENTS, ROADMAP, THEOREM_STATUS and fetched AUTOMATION_LOG. Fresh local
+  memory and `.lake` were absent; created memory without assuming prior caches
+  survived. The live roadmap agrees with the prior suggested literal adapter.
+- **Preparation:** read the managed Cloud runtime skill, its networking guide
+  and saved START instructions; sourced shared runtime `env.sh`. Installed
+  nine exact manifest dependencies into this target's own `.lake`, verified
+  their URLs, revisions and clean sources, and reused 2,325 existing archive
+  artifacts after checking shared-cache common pins. Verified elan 4.2.4,
+  absolute Lean 4.35.0 (`eb6cafb`) and Lake `5.0.0-src+eb6cafb`.
+  Toolchain, manifest and Lake options are unchanged. The `prepare.py` runner
+  primitives enforce two Lean threads, 2 GiB reserve, 12 GiB process-group RSS
+  and a 30-minute command limit. No sibling edits, extra workers, schedule
+  changes, environment publication or Raksasa access occurred. GPT-6 Astra
+  with xhigh reasoning was requested; actual settings were not exposed.
+- **Checked increment:** added `LiteralVariableMachine.lean` and the reusable
+  `FrameMove.payloadRoutine` / `payload_exits` API. The latter reframes an
+  already-counted payload in exactly `3b + 3` steps. `FramedLiteral.finEncoding`
+  supplies the exact standalone CNF literal frame and checked decoder round
+  trip. `LiteralVariable.header_exits` reads the prefix and discards a low bit
+  only within the counted payload, taking `b + 2` steps; positive zero's empty
+  payload cannot consume the next input frame. `routine_exits` composes header
+  handling with reframing, taking `b + 3(b - 1) + 5` steps (natural subtraction).
+  `literal_exits` reuses `PackedLiteral.tail_encode_toNat` to identify exactly
+  the framed variable, preserving arbitrary unread-input/output suffixes and
+  emptying workspace. `runSteps_le` gives `2L + 3` in complete literal-frame
+  bits; `output_length_le` proves no encoded-size growth. `outputsInTime` and
+  `computableInPolyTime` include reset/halt and package `CNF.Literal.var` with
+  polynomial `2X + 3`. One invocation emits one variable frame; no formula
+  traversal, malformed-stream rejection or new hardness theorem is claimed.
+- **Files/checks:** added root/audit imports and ten audits; updated README,
+  ROADMAP and THEOREM_STATUS, retaining historical notes. Targeted build passed
+  1,318 jobs; full `lake build` passed 2,492. All ten new and all 832 nonempty
+  axiom reports use only `propext`, `Classical.choice`, `Quot.sound`; five more
+  are axiom-free. `runSteps_le` uses only `propext` and `Quot.sound`. The
+  152-file source/config scan finds only the existing explanatory
+  `proof_wanted` comment. No new/modified-module warnings; existing warnings
+  elsewhere remain. Full build log: `/tmp/np-literal-full-build-20261104.log`;
+  scoped pin/dependency evidence: `/tmp/np-literal-readiness-20261104.json`.
+  Commands after sourcing runtime `env.sh`:
+  `python3 /tmp/np-run-20261104.py build LeanNPHardness.LiteralVariableMachine`
+  and `python3 /tmp/np-run-20261104.py build`. Both use absolute pinned Lake
+  with the shared resource guard. Full build includes all `#print axioms`.
+- **Failed attempts/useful APIs:** the first target build exposed only an
+  arithmetic elaboration goal after `convert` and a qualified constructor
+  name through an abbreviation (`Stack.input`). Replaced the cost conversion
+  with an explicit equality proved by `omega`, and used the original
+  `FrameMove.Stack` constructor namespace. The fixed target and full builds
+  pass. `seq_exits` adds routine costs without an extra transition step;
+  `toMachine_outputsInTime` includes reset/halt in the routine's last step.
+  Existing `copy_run`, `restore_run`, and `length_run` yield the reusable
+  counted-payload proof without copying the frame-move implementation.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v` and
+  `CompilerComplexity.v` read-only. Its literal variable is a pair projection;
+  the runtime recurrences still charge each visited literal and wrapper.
+  Its representation and lambda-calculus costs are design comparison only.
+  Lean's packed binary frame requires the independently checked stripping,
+  reframing and bit-length bounds above. No additional Coq source was needed.
+- **Ending state:** verified increment ready for ordinary commit and push on
+  tracking `main`; exact resulting hash and local/tracking/live equality go
+  in run memory and the final report. Generated `work` remains at the starting
+  commit. Remote Lean CI is expected on push and remains a separate check.
+- **Best next experiment:** instantiate `Routines.loop_exits` with
+  `LiteralVariable.routine` on an isolated literal-body stream, following
+  `FrameReverse.routine_exits`. Prove the output is the reverse sequence of
+  framed variables, retaining all repetitions, with a sum of per-frame costs
+  plus every loop test. Then restore source order and handle counted clause
+  and formula boundaries to produce framed `Formula.vars`, before composing
+  with `DictionaryBuild.computableInPolyTime`. Do not apply an exhaustion loop
+  directly to a stream that still contains clause/formula count headers.

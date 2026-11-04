@@ -212,7 +212,17 @@ empty count/header stacks as reverse buffers and restores both components
 in exactly `3n + 3` steps. Folding and header cleanup give polynomial
 `F(n) + 5n + 4` in the original tagged input length `n`, with canonical halt
 and all workspace empty. Arbitrary seed repetitions remain unchanged.
-Malformed-stream rejection and full dense renaming remain pending.
+`LiteralVariable.computableInPolyTime` now extracts one framed variable from
+one packed literal using `FramedLiteral.finEncoding`, exactly the literal frame
+inside the CNF encoding. `header_exits` removes the low polarity bit only when
+it is present; positive zero's empty payload leaves the unread input intact.
+`FrameMove.payload_exits` reframes a counted payload in exactly `3b + 3` steps.
+Together, `literal_exits` preserves arbitrary unread-input and output suffixes,
+emits one variable frame, and empties workspace in `b + 3(b - 1) + 5` steps
+(with natural-number subtraction), bounded by `2L + 3` in full literal-frame
+bits `L`. `output_length_le` proves no encoded-size growth; canonical reset
+and halt are included. Whole clause/formula traversal, malformed-stream
+rejection and full dense renaming remain pending.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

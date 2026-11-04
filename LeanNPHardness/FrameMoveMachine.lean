@@ -159,6 +159,28 @@ theorem length_run (input count work output : List Bool) (state : State) :
       rw [List.length_cons, Function.iterate_succ_apply, length_cons, ih]
       simp [List.replicate_succ', List.append_assoc]
 
+/-- Re-enter frame transfer after the payload length has already been loaded. -/
+def payloadRoutine : Routine Alphabet := { routine with entry := .copy }
+
+/-- Reframe a counted payload, preserving both suffixes and clearing workspace. -/
+theorem payload_exits (bits input output : List Bool) :
+    payloadRoutine.Exits
+      (contents (bits ++ input) (List.replicate bits.length true) [] output)
+      (3 * bits.length + 3)
+      (contents input [] [] (BinaryNatLists.frame bits ++ output)) := by
+  refine ⟨none, ?_⟩
+  change step^[_] (some (cfg (some .copy) none _ _ [] output)) = _
+  rw [show 3 * bits.length + 3 =
+      (bits.length + 1 + (bits.length + 1)) + (bits.length + 1) by omega,
+    Function.iterate_add_apply, copy_run, List.append_nil,
+    Function.iterate_add_apply]
+  have hr := restore_run input [] bits.reverse output none
+  simp only [List.length_reverse, List.reverse_reverse, List.append_nil] at hr
+  rw [hr]
+  have hl := length_run input (List.replicate bits.length true) []
+    (false :: (bits ++ output)) none
+  simpa [BinaryNatLists.frame, List.append_assoc, cfg] using hl
+
 /-- Exact frame transfer, preserving both suffixes and every payload bit. -/
 theorem routine_exits (bits input output : List Bool) :
     routine.Exits (contents (BinaryNatLists.frame bits ++ input) [] [] output)
