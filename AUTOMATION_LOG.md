@@ -5349,3 +5349,80 @@ avoid failed routes, and choose a materially different experiment when blocked.
   with `DictionaryFold.bounded_exits` and header cleanup, charging loading
   and final cleanup in the original tagged-pair length. Keep formula traversal
   and malformed-input rejection as separate obligations.
+
+
+## 2026-11-04 — tagged seeded dictionary construction (saved-schedule test)
+
+- **Starting commit:** `0e4999fe5f4418e9a6f40eea428e6aa902d72b57`, clean
+  generated `work` branch. Verified `solresol/lean-np-hardness`, fetched live
+  `origin/main` and checked ancestry/equal heads before creating tracking
+  `main`; preserved `work`. No concurrent research process or remote advance
+  was observed. Read AGENTS, roadmap/status and prior journal entries. The
+  run memory was absent in this fresh snapshot, so created it without assuming
+  that the previous task's caches or local memory survived.
+- **Preparation:** followed managed Cloud runtime and saved Start instructions,
+  with the explicit target-scoped preparation authorization. Restored all nine
+  exact manifest revisions into this checkout's own `.lake`, checked clean
+  dependency sources and common archive-cache pins, and reused 2,325 cached
+  dependency artifacts. Absolute Lean 4.35.0 (`eb6cafb`) / Lake
+  `5.0.0-src+eb6cafb` and elan 4.2.4 were verified. Toolchain, manifest and
+  Lake options remained unchanged. The existing `prepare.py` guarded runner
+  enforced two Lean threads, 2 GiB disk reserve, 12 GiB process-group RSS and
+  a 30-minute command limit. No shared helper, sibling repository, schedule
+  or published environment was changed; no additional worker was started.
+- **Checked increment:** new `DictionaryExtendMachine.lean`.
+  `DictionaryExtend.scan_run` separates arbitrary tag order into reversed
+  source/seed buffers in exactly `n + 1` steps. Reusing the empty count/header
+  stacks avoids extra stacks and transfers; `restore_exits` / `load_exits`
+  give exactly `3n + 3` for arbitrary component words, including empty words.
+  `pairWord_length` identifies the tagged size with full framed source-plus-
+  seed bits. `routine_exits` composes loading, `DictionaryFold.bounded_exits`
+  and existing header cleanup. `runSteps_le` gives `F(n) + 5n + 4` in original
+  tagged input length, where `F` is the checked seeded-fold polynomial.
+  `outputsInTime` checks canonical halt, reset and empty workspace.
+  `computableInPolyTime` packages `(values, seed) ↦ extend values seed` under
+  the tagged pair of `FramedNatList.finEncoding`, retaining arbitrary seed
+  repetitions with no `Nodup` hypothesis. Semantic correctness, encoded size,
+  and runtime remain distinct; this does not complete full dense renaming.
+- **Files/checks:** added root/audit imports and eight audits; updated README,
+  ROADMAP and current THEOREM_STATUS boundaries, preserving historical audit
+  notes. Targeted build passed 1,349 jobs; full `lake build` passed 2,491.
+  All eight new and all 822 nonempty axiom reports use only `propext`,
+  `Classical.choice`, `Quot.sound`; five reports are axiom-free. The 151-file
+  Lean/config scan finds only the pre-existing explanatory `proof_wanted`
+  comment. No new-module warnings; existing warnings elsewhere remain.
+  `git diff --check` passes. Commands (after sourcing runtime `env.sh`):
+  `python3 /tmp/np-run-20261104.py build LeanNPHardness.DictionaryExtendMachine`
+  and `python3 /tmp/np-run-20261104.py build`; these call the absolute pinned
+  Lake through the shared guarded runner. Full build includes `Audit.lean`'s
+  `#print axioms` checks. Final log:
+  `/tmp/np-schedule-test-full-build-20261104.log`; scoped readiness evidence:
+  `/tmp/np-readiness-schedule-test-20261104.json`.
+- **Failed approaches/API discoveries:** initial targeted elaboration needed
+  an explicit `Fintype (Alphabet c (headerStack c))` instance (definitionally
+  Boolean) for `moveAll`; the subsequent conversion errors were cascading
+  from that missing instance. The composed cost equality needed
+  `DictionaryFold.inputSize` unfolded before `omega` could identify the sum
+  of component lengths. Both resolved without changing package options.
+  Initial/fixed logs: `/tmp/np-extend-target-20261104.log` and
+  `/tmp/np-extend-target-fixed-20261104.log`.
+- **Comparison evidence:** read Coq `SourceAdapter.v` and
+  `CompilerComplexity.v` read-only, including separate time/size packaging.
+  The installed `List_fold.v` was missing, so obtained pinned Undecidability
+  `1.0.1+8.16` outside siblings at
+  `/tmp/np-coq-comparison-v1.0.1+8.16/List_fold.v` (read-only). Verified its
+  release archive against opam SHA-256
+  `96febb4482b41810782dca089144b1bffcb91ab1975dc9e312efacf3bf2e4371`.
+  Its accumulator-sensitive fold recurrence and wrapper overhead guide the
+  decomposition only; Coq terms and lambda-calculus costs are not Lean evidence.
+- **Ending state:** verified increment ready for ordinary commit/push on
+  tracking `main`; exact commit and local/tracking/live equality are recorded
+  in run memory and the final report. Generated `work` remains at the starting
+  commit. Actual model/reasoning effort were not exposed by the runtime.
+- **Best next experiment:** begin occurrence-preserving formula traversal:
+  turn one packed literal frame into a framed variable, reusing
+  `PackedLiteral.tail_encode_toNat` while charging reframing and transfers.
+  Then assemble the full framed `Formula.vars` stream and compose it with
+  `DictionaryBuild.computableInPolyTime`. Retained-query replacement and
+  complete dense renaming, as well as malformed-stream rejection, remain
+  separately named obligations.

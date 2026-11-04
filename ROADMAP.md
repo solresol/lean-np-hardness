@@ -306,10 +306,14 @@ for those membership results.
   from a full framed source, initializing the encoded empty seed, running the
   checked fold and draining the retained header. Its bound `F(n + 1) + 2n + 2`
   includes canonical cleanup/reset/halt in original source bits `n`, where `F`
-  is the seeded-fold polynomial. A tagged source/seed loader for general
-  seeded construction, updating the retained query and occurrence-preserving
-  formula traversal remain pending. Full renaming is not yet a polynomial-time
-  re-encoding reduction.
+  is the seeded-fold polynomial. `DictionaryExtend.load_exits` now loads
+  arbitrary tagged source/seed words in exactly `3n + 3` steps, reusing the
+  empty count/header stacks as reverse buffers. `computableInPolyTime`
+  packages general seeded construction with `F(n) + 5n + 4` in the original
+  tagged input length, including header cleanup, empty workspace, reset and
+  halt. Arbitrary seed repetitions survive. Updating the retained query and
+  occurrence-preserving formula traversal remain pending. Full renaming is
+  not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

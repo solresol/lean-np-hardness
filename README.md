@@ -206,8 +206,13 @@ TM2 step and draining the retained source header before canonical halt.
 reset. For source bit length `n`, its polynomial is `F(n + 1) + 2n + 2`, where
 `F` is the checked seeded-fold polynomial; the extra bit is the empty seed's
 count header. The output is the existing rightmost-occurrence dictionary.
-A tagged source/seed loader for general seeded construction, malformed-stream
-rejection and full dense renaming remain pending.
+`DictionaryExtend.computableInPolyTime` supplies general seeded construction
+from a tagged pair of full `FramedNatList` encodings. Its loader uses the
+empty count/header stacks as reverse buffers and restores both components
+in exactly `3n + 3` steps. Folding and header cleanup give polynomial
+`F(n) + 5n + 4` in the original tagged input length `n`, with canonical halt
+and all workspace empty. Arbitrary seed repetitions remain unchanged.
+Malformed-stream rejection and full dense renaming remain pending.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
