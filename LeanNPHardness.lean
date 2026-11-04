@@ -12,6 +12,7 @@ import LeanNPHardness.DictionaryInsertInput
 import LeanNPHardness.DictionaryInsertCall
 import LeanNPHardness.DictionaryInsertStep
 import LeanNPHardness.DictionaryFold
+import LeanNPHardness.DictionaryBuildMachine
 import LeanNPHardness.DictionaryLookupEncoding
 import LeanNPHardness.FramedSuccMachine
 import LeanNPHardness.FrameMoveMachine

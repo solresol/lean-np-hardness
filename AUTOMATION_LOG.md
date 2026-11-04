@@ -5291,3 +5291,61 @@ avoid failed routes, and choose a materially different experiment when blocked.
   substitute source bits plus the constant empty-seed size into the polynomial.
   Prove `FramedNatList` polynomial-time `DictionaryConstruction.build` before
   adding a tagged source/seed loader for the more general seeded function.
+
+## 2026-11-04 — standalone polynomial-time dictionary construction
+
+- **Starting commit:** `f4bc9e00b52ff8a8fa0cefd982dea06fed79aca0`, clean
+  generated `work` branch. Verified repository origin and fetched `main`;
+  ancestry and identical heads allowed creating tracking `main` while retaining
+  `work`. No concurrent Lean/Lake process or upstream advance was observed.
+  Read AGENTS, roadmap/status, prior journal and the initially absent run memory.
+- **Preparation:** explicit authorization covered isolated exact-pinned setup.
+  All nine manifest revisions were fetched into this checkout's own `.lake`;
+  Lean 4.35.0 and Lake 5.0.0-src+eb6cafb came from the existing absolute runtime.
+  Common archive-cache pins matched before reuse. The shared guarded runner
+  enforced two Lean threads, 2 GiB disk reserve, 12 GiB process-group RSS and
+  30-minute command timeout. Baseline `lake build` passed 2,489 jobs; all
+  dependency HEADs and tracked sources verified, with unchanged toolchain,
+  manifest and Lake options. No shared helper, sibling workspace, schedule,
+  security setting or published environment was changed.
+- **Goal/result:** added `DictionaryBuildMachine.lean`.
+  `DictionaryBuild.seedRoutine_exits` initializes the encoded empty seed in
+  one TM2 step; `cleanup_exits` drains the retained header in `2H + 1` steps,
+  preserving the computed dictionary. `routine_exits` composes these with
+  the checked seeded fold. `inputSize_empty` identifies the seed's one-bit
+  overhead; `runSteps_le` gives `F(n + 1) + 2n + 2` in full source bits,
+  where `F` is the seeded-fold polynomial. `outputsInTime` checks canonical
+  input/output, empty workspace, reset and halt. `computableInPolyTime` now
+  computes `DictionaryConstruction.build` under `FramedNatList.finEncoding`.
+  Rightmost-occurrence semantics reuse the existing construction specification;
+  general seeded packaging and full dense renaming remain separate.
+- **Checks/files:** added root/audit imports and seven audits; updated README,
+  ROADMAP, THEOREM_STATUS and this journal. Final `lake build` passes 2,490
+  jobs. All seven new and all 814 nonempty axiom reports use only `propext`,
+  `Classical.choice`, `Quot.sound`; five reports are axiom-free. The 150-file
+  Lean/config scan finds only the existing explanatory `proof_wanted` comment.
+  No new-module warnings; `git diff --check` passes. Logs are
+  `/tmp/np-baseline-20261104.log` and `/tmp/np-final-build-20261104.log`.
+- **Failed approaches/API discoveries:** `initialize` is a reserved Lean
+  command, so the seed routine is named `seedRoutine`. For canonical-stack
+  equalities, unfold `computer` and `toMachine` before splitting nested sums;
+  otherwise updates retain opaque input/output stack projections. `drain_exits`
+  costs `2H + 1` (pop and test), while a constant `pushList` costs one TM2
+  statement. Supply `c.tm.kFin` when packaging the arbitrary insertion witness.
+  These issues were resolved without changing package options or proof standards.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v` and
+  `CompilerComplexity.v`, including its separate runtime/size packaging.
+  The installed `List_fold.v` was absent, so retrieved release `1.0.1+8.16`
+  separately at `/tmp/np-coq-comparison-v1.0.1+8.16/List_fold.v`; the archive
+  matches the opam SHA-256
+  `96febb4482b41810782dca089144b1bffcb91ab1975dc9e312efacf3bf2e4371`.
+  Its fold recurrence charges the evolving accumulator and wrapper overhead.
+  Coq terms and lambda-calculus costs remain comparison only, not Lean evidence.
+- **Ending state:** verified increment ready for ordinary commit/push on
+  tracking `main`; exact commit and local/tracking/live parity go in run memory
+  and the final report. Generated `work` remains at the starting commit.
+- **Best next experiment:** add a tagged `(source, seed)` loader into the
+  existing fold layout, preserving arbitrary seed repetitions. Compose it
+  with `DictionaryFold.bounded_exits` and header cleanup, charging loading
+  and final cleanup in the original tagged-pair length. Keep formula traversal
+  and malformed-input rejection as separate obligations.

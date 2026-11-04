@@ -302,10 +302,14 @@ for those membership results.
   test. `budget_insert_le` reserves two count-header growth bits per remaining
   entry, bounding preparation plus folding by `n * (Q(3n) + 1) + 10n + 8`
   for full source-plus-seed bits `n` and one-step polynomial `Q`.
-  Canonical input loading, final header cleanup and polynomial-time function
-  packaging remain pending, along with updating the retained query and
-  occurrence-preserving formula traversal. Full renaming is not yet a
-  polynomial-time re-encoding reduction.
+  `DictionaryBuild.computableInPolyTime` now packages standalone construction
+  from a full framed source, initializing the encoded empty seed, running the
+  checked fold and draining the retained header. Its bound `F(n + 1) + 2n + 2`
+  includes canonical cleanup/reset/halt in original source bits `n`, where `F`
+  is the seeded-fold polynomial. A tagged source/seed loader for general
+  seeded construction, updating the retained query and occurrence-preserving
+  formula traversal remain pending. Full renaming is not yet a polynomial-time
+  re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

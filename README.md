@@ -198,9 +198,16 @@ current dictionary bits and two header-growth bits per remaining entry.
 For total full source-and-seed bit length `n`, preparation plus folding takes
 at most `n * (Q(3n) + 1) + 10n + 8` TM2 steps, where
 `Q(X) = P(X) + 14X + 18` is the checked one-insertion bound.
-The source and seed are supplied on separate stacks; canonical input loading,
-final header cleanup and packaging as a polynomial-time function remain
-pending, as do malformed-stream rejection and full dense renaming.
+The seeded routine expects source and seed on separate stacks. The standalone
+`DictionaryBuild.computableInPolyTime` now computes `DictionaryConstruction.build`
+from one full `FramedNatList` input, initializing the encoded empty seed in one
+TM2 step and draining the retained source header before canonical halt.
+`routine_exits` and `outputsInTime` include all workspace cleanup and control
+reset. For source bit length `n`, its polynomial is `F(n + 1) + 2n + 2`, where
+`F` is the checked seeded-fold polynomial; the extra bit is the empty seed's
+count header. The output is the existing rightmost-occurrence dictionary.
+A tagged source/seed loader for general seeded construction, malformed-stream
+rejection and full dense renaming remain pending.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
