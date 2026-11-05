@@ -5504,3 +5504,84 @@ avoid failed routes, and choose a materially different experiment when blocked.
   and formula boundaries to produce framed `Formula.vars`, before composing
   with `DictionaryBuild.computableInPolyTime`. Do not apply an exhaustion loop
   directly to a stream that still contains clause/formula count headers.
+
+## 2026-11-05 22:00 UTC — isolated literal-body variable traversal (daily run)
+
+- **Starting commit:** `91b5127c06d22da82c9ed10b72de510478310988`.
+  Read AGENTS, ROADMAP, THEOREM_STATUS and fetched AUTOMATION_LOG. Verified
+  `solresol/lean-np-hardness`, repository ID `1311652678`, clean generated
+  `work`, and local/live `origin/main` equality. Preserved `work` and established
+  tracking `main` at the same commit. No other local Lean research process was
+  present; the controller separately checked worker overlap. Fresh local memory
+  and target `.lake` were absent. Used the fetched journal for continuity and
+  created run memory without assuming earlier task files survived.
+- **Preparation:** read the managed Cloud runtime skill/networking guide and
+  saved START instructions; sourced shared runtime `env.sh`. The shared
+  checker passed. Installed all nine exact manifest dependencies into this
+  target's own `.lake`, verified URLs, revisions and clean tracked sources,
+  matched all shared archive pins and reused 2,325 already-cached artifacts.
+  Scoped checks verified elan 4.2.4, absolute Lean 4.35.0 (`eb6cafb`) and Lake
+  `5.0.0-src+eb6cafb`, unchanged toolchain/manifest/Lake configuration hashes
+  and representative imports. All costly commands used `prepare.py`'s guarded
+  runner with two Lean threads, 2 GiB disk reserve, 12 GiB process-group RSS and
+  a 30-minute command limit. No pin upgrades, sibling edits, extra workers,
+  schedule changes, shared environment publication or Raksasa access occurred.
+  Requested GPT-6 Astra/xhigh; actual model/settings are not exposed.
+- **Checked increment:** added `LiteralBodyMachine.lean`.
+  `LiteralBody.routine_exits` instantiates `Routines.loop_exits` with the checked
+  single-frame `LiteralVariable.routine`, using unread suffix and processed
+  reverse-prefix stack invariants. It consumes an isolated body, emits one
+  tail-payload frame per input frame, retains an arbitrary output suffix and
+  clears input/workspace. `literal_body_exits` specializes this to exactly the
+  framed variables in reverse literal-occurrence order, including repetitions
+  and both signs of zero. `runSteps_eq_sum` gives the sum of all extraction
+  costs plus one test per frame and the final empty test.
+  `runSteps_le_size_count` bounds it by `2B + 4m + 1` for original body bits `B`
+  and frame count `m`; `runSteps_le` gives `6B + 1`. `output_length_le` and
+  `literal_output_length_le` prove no output growth. `outputsInTime` packages
+  canonical output with empty workspace, reset and halt within the same bound.
+  The input contract excludes count headers and trailing input. No full
+  formula traversal, standalone body encoding, malformed-input rejection,
+  full dense renaming or new hardness transfer is claimed.
+- **Files/checks:** added root/audit imports and eight audits; updated README,
+  ROADMAP and THEOREM_STATUS. Targeted build passed 1,319 jobs; full `lake build`
+  passed 2,493. Seven new audits use only `propext`, `Classical.choice`,
+  `Quot.sound`; the generic output-length bound uses `propext`, `Quot.sound`.
+  All 840 nonempty reports use only standard axioms; five more are axiom-free.
+  The 153-file Lean/config scan finds only the pre-existing explanatory
+  `proof_wanted` comment. No new-module warnings; existing warnings elsewhere
+  remain. `git diff --check` passes. Evidence:
+  `/tmp/np-readiness-20261105.json`, `/tmp/np-body-target-20261105-fixed.log`,
+  `/tmp/np-body-full-20261105.log`, `/tmp/np-body-source-scan-20261105.txt`.
+  Commands after sourcing runtime `env.sh`:
+  `python3 /tmp/np-run-20261105.py build LeanNPHardness.LiteralBodyMachine`
+  and `python3 /tmp/np-run-20261105.py build`.
+- **Failed approach/API discovery:** the first targeted build rejected
+  `simp only [← BinaryNatLists.encodeNat]`: the simplifier cannot refold a
+  definition by name. Unfolding `BinaryNatLists.encodeNat` forward on both
+  sides resolves all three specialization goals. The generic indexed loop
+  and its exact cost/size proofs checked without changes. No unfinished
+  proofs or alternative assumptions were introduced.
+- **Comparison evidence:** read sibling Coq `theories/SourceAdapter.v` and
+  `theories/CompilerComplexity.v` read-only. The former represents a variable
+  as a pair projection and explicitly retains repeated literals; the latter's
+  clause recurrences charge each visited literal and recursive tail. These
+  are design comparison only: the new Lean body proof independently checks
+  binary framing, every loop test and exact TM2 execution. No missing Coq
+  dependency source was needed.
+- **Publication state:** the verified increment is ready for a single
+  fast-forward commit on tracking `main`. Initial Git fetch/remote checks
+  succeeded, but a later refresh failed with `could not read Username for
+  'https://github.com'`; the environment then reported offline connectivity.
+  The connected GitHub app still verifies this repository and push access,
+  and its live ref remained at the starting commit. Publication will use that
+  connector with exact local/remote tree comparison, a single-parent commit
+  and an expected-old-head, non-forced ref update. Resulting commit hash,
+  confirmed local/tracking/live equality or any blocker are recorded in run
+  memory and the final report. Remote CI remains a separate, unchecked result.
+- **Best next experiment:** restore source order by composing this isolated
+  extraction with the existing complete-frame reversal routine, charging
+  every transfer. Then handle counted clause/formula boundaries to produce
+  framed `Formula.vars`, before composing with `DictionaryBuild`.
+  Do not run an exhaustion loop across a count header or trailing clause.
+  Retained-query replacement and full dense renaming remain separate targets.

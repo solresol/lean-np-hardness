@@ -55,6 +55,7 @@ import LeanNPHardness.QueryMembershipComputable
 import LeanNPHardness.LiteralEvaluationMachine
 import LeanNPHardness.PackedLiteralMachine
 import LeanNPHardness.LiteralVariableMachine
+import LeanNPHardness.LiteralBodyMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine
@@ -999,3 +1000,12 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.LiteralVariable.output_length_le
 #print axioms LeanNPHardness.MachinePrimitives.LiteralVariable.outputsInTime
 #print axioms LeanNPHardness.MachinePrimitives.LiteralVariable.computableInPolyTime
+
+#print axioms LeanNPHardness.MachinePrimitives.LiteralBody.routine_exits
+#print axioms LeanNPHardness.MachinePrimitives.LiteralBody.runSteps_eq_sum
+#print axioms LeanNPHardness.MachinePrimitives.LiteralBody.runSteps_le_size_count
+#print axioms LeanNPHardness.MachinePrimitives.LiteralBody.runSteps_le
+#print axioms LeanNPHardness.MachinePrimitives.LiteralBody.output_length_le
+#print axioms LeanNPHardness.MachinePrimitives.LiteralBody.literal_body_exits
+#print axioms LeanNPHardness.MachinePrimitives.LiteralBody.literal_output_length_le
+#print axioms LeanNPHardness.MachinePrimitives.LiteralBody.outputsInTime

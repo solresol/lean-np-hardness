@@ -221,8 +221,16 @@ Together, `literal_exits` preserves arbitrary unread-input and output suffixes,
 emits one variable frame, and empties workspace in `b + 3(b - 1) + 5` steps
 (with natural-number subtraction), bounded by `2L + 3` in full literal-frame
 bits `L`. `output_length_le` proves no encoded-size growth; canonical reset
-and halt are included. Whole clause/formula traversal, malformed-stream
-rejection and full dense renaming remain pending.
+and halt are included. `LiteralBody.literal_body_exits` now iterates this
+adapter over an isolated literal body, emitting the framed variables in
+reverse occurrence order, retaining an arbitrary output suffix and clearing
+workspace. Repeated literals and both signs of zero remain distinct visited
+occurrences. `runSteps_eq_sum` charges each extraction and every loop test;
+`outputsInTime` includes canonical reset and halt within `6B + 1` steps in
+original body bits `B`. `literal_output_length_le` proves no body-size growth.
+The exhaustion loop requires an isolated body, without count headers or an
+input suffix. Restoring source order, handling clause/formula boundaries,
+malformed-stream rejection and full dense renaming remain pending.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

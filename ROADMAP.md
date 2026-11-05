@@ -319,9 +319,17 @@ for those membership results.
   bounded by `2L + 3` in complete literal-frame bits. Positive zero's empty
   payload does not consume the next frame. `output_length_le` proves no size
   growth; `computableInPolyTime` packages variable extraction under the exact
-  standalone CNF literal frame, including reset and halt. Updating the
-  retained query and occurrence-preserving clause/formula traversal remain
-  pending. Full renaming is not yet a polynomial-time re-encoding reduction.
+  standalone CNF literal frame, including reset and halt.
+  `LiteralBody.literal_body_exits` now traverses an isolated literal-body
+  stream, emits one framed variable per occurrence in reverse source order,
+  retains an arbitrary output suffix and clears workspace. `runSteps_eq_sum`
+  counts every extraction and loop test; `outputsInTime` includes reset and
+  halt within `6B + 1` steps in original body bits `B`. Output size cannot
+  grow. The exhaustion loop must not see count headers or trailing input.
+  Restore source order and implement counted clause/formula boundaries to
+  produce framed `Formula.vars`, then compose with `DictionaryBuild`.
+  Updating the retained query and full renaming remain pending; full renaming
+  is not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational
