@@ -5585,3 +5585,89 @@ avoid failed routes, and choose a materially different experiment when blocked.
   framed `Formula.vars`, before composing with `DictionaryBuild`.
   Do not run an exhaustion loop across a count header or trailing clause.
   Retained-query replacement and full dense renaming remain separate targets.
+
+## 2026-11-07 22:00 UTC — ordered literal-body variable traversal (daily run)
+
+- **Starting commit:** `f8e86bc314e2d0a2546937cf004e2ea4188b9b0a`.
+  Read AGENTS, ROADMAP, THEOREM_STATUS and fetched AUTOMATION_LOG. Verified
+  the `solresol/lean-np-hardness` origin, clean generated `work`, sole worktree,
+  recent commits and live `origin/main` equality before establishing tracking
+  `main`; preserved `work` at the starting commit. No concurrent local Lean
+  research process was present; the coordinator checked overlapping cloud
+  tasks. Restored local memory and target `.lake` were absent, so continuity
+  came from the fetched journal; created run memory without assuming prior
+  task files survived. Goal: restore the prior isolated variable-body result
+  to source order, charging all transfers.
+- **Preparation:** read the managed Cloud runtime skill, its networking and
+  package-installation guides, and saved START instructions; sourced shared
+  runtime `env.sh`. The mandatory full command
+  `source /workspace/shared/theorem-provers/runtime/env.sh && source /workspace/shared/theorem-provers/env.sh && python3 /workspace/shared/theorem-provers/check.py`
+  passed with exit 0 for thesis, Littlewood and Scholz. The restored Scholz
+  receipt was present; this task did not repair or publish the environment.
+  Installed all nine exact manifest dependencies into this target's own
+  `.lake`, verified their URLs, revisions and clean tracked sources, matched
+  all common archive pins and reused 2,325 cached artifacts without downloads.
+  Verified elan 4.2.4, absolute Lean 4.35.0 (`eb6cafb`) and Lake
+  `5.0.0-src+eb6cafb`. Toolchain, manifest and Lake options are unchanged.
+  Costly commands use `prepare.py`'s guarded runner with two Lean threads,
+  2 GiB reserve, 12 GiB process-group RSS and a 30-minute command limit.
+  Requested GPT-6 Astra/xhigh; actual model/reasoning settings are not exposed.
+- **Checked increment:** added `OrderedLiteralBodyMachine.lean`.
+  `returnBody_exits` moves an arbitrary body back to input in original bit
+  order through the empty count stack in exactly `4V + 2` steps.
+  `routine_exits` composes the checked extraction loop, both transfers and
+  complete-frame reversal on the same four stacks. `literal_body_exits`
+  emits one framed variable per literal in original occurrence order,
+  retaining repetitions and both signs of zero. `runSteps_eq` gives extraction
+  cost plus `6V + 3m + 3` in output bits `V` and literal count `m`;
+  `runSteps_le` bounds all phases by `15B + 4` in original body bits `B`.
+  `output_length_le` / `literal_output_length_le` prove no growth separately.
+  `outputsInTime` checks canonical ordered output, empty workspace, reset and
+  halt. Input must be an isolated body with all other stacks initially empty.
+  No counted formula traversal, standalone body encoding, malformed-input
+  rejection, full dense-renaming runtime or new hardness transfer is claimed.
+- **Files/checks:** added root/audit imports and eight audits; updated README,
+  ROADMAP and THEOREM_STATUS while retaining historical notes. Targeted build
+  passed 1,322 jobs; final full `lake build` passed 2,494. Seven new audits use
+  only `propext`, `Classical.choice`, `Quot.sound`; the generic size bound uses
+  `propext`, `Quot.sound`. All 848 nonempty reports use only standard axioms;
+  five further reports are axiom-free. The 154-file Lean/config scan finds
+  only the pre-existing explanatory `proof_wanted` comment. The final new
+  module has no warnings; existing warnings elsewhere remain.
+  Commands after sourcing runtime `env.sh`:
+  `python3 /tmp/np-run-20261107.py build LeanNPHardness.OrderedLiteralBodyMachine`
+  and `python3 /tmp/np-run-20261107.py build`. Full build includes all audits.
+  Evidence: `/tmp/np-readiness-20261107.json`,
+  `/tmp/np-ordered-body-full-20261107.log`,
+  `/tmp/np-ordered-body-audits-20261107.json`, and
+  `/tmp/np-ordered-body-source-scan-20261107.txt`. `git diff --check` passes.
+- **Failed approaches/API discoveries:** the first target build used the
+  nonexistent `List.reverse_map`; the actual reverse-map rewrite is
+  `← List.map_reverse`. The exact-cost simplification also needed
+  `List.map_map` after `List.length_flatMap` before `omega` could identify the
+  two output-size sums. The fixed target passed; one unused simp argument
+  was then removed and the full build passed without new-module warnings.
+  `seq_exits` composes the phase costs without an extra transition, and the
+  two `moveAll_exits` calls charge `4V + 2`, including both empty tests.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v` and
+  `CompilerComplexity.v` read-only. Their pair projection and per-literal
+  recurrence remain design references only. Missing pinned Undecidability
+  `1.0.1+8.16` list sources were obtained in the separate read-only directory
+  `/tmp/np-coq-comparison-20261107`, with archive SHA-256
+  `96febb4482b41810782dca089144b1bffcb91ab1975dc9e312efacf3bf2e4371`
+  verified against its opam metadata. `List_basics.termT_rev_append` /
+  `termT_rev`, `rev_concat_rev` and `Lists.size_rev` separate order restoration,
+  runtime and size. Their lambda-calculus costs are not Lean evidence; the
+  new TM2 proofs independently charge every bit transfer and frame reversal.
+- **Ending state:** verified coherent increment ready for ordinary commit
+  and fast-forward push on tracking `main`; exact resulting commit and
+  local/tracking/live equality are recorded in run memory and the final
+  report. No schedules, credentials, shared configuration, sibling sources
+  or Raksasa were accessed for mutation. Remote CI is a separate check.
+- **Best next experiment:** build a counted clause adapter that reads its
+  literal-count header, extracts exactly that many literal frames, and
+  retains the arbitrary unread clause/formula suffix. Inspect
+  `SatVerify.readLen_exits` as a counted-traversal template, explicitly
+  accounting for its different symbol alphabet. Then restore variable-frame
+  order, assemble framed `Formula.vars` and compose with `DictionaryBuild`.
+  Never apply the exhaustion loop across a count header or trailing clause.

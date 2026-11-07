@@ -326,8 +326,15 @@ for those membership results.
   counts every extraction and loop test; `outputsInTime` includes reset and
   halt within `6B + 1` steps in original body bits `B`. Output size cannot
   grow. The exhaustion loop must not see count headers or trailing input.
-  Restore source order and implement counted clause/formula boundaries to
-  produce framed `Formula.vars`, then compose with `DictionaryBuild`.
+  `OrderedLiteralBody.literal_body_exits` now restores source order on the
+  same four stacks, returning the extracted body to input and then reversing
+  complete frames. Exact cost is extraction plus `6V + 3m + 3` for output
+  bits `V` and literal count `m`; `outputsInTime` includes empty workspace,
+  reset and halt within `15B + 4` steps in original input bits `B`. Output
+  size cannot grow, and repetitions survive. The ordered routine requires
+  an isolated body and initially empty output. Implement counted clause and
+  formula boundaries to produce framed `Formula.vars`, then compose with
+  `DictionaryBuild`; standalone body-encoding packaging remains separate.
   Updating the retained query and full renaming remain pending; full renaming
   is not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common

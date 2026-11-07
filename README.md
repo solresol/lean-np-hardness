@@ -228,9 +228,16 @@ workspace. Repeated literals and both signs of zero remain distinct visited
 occurrences. `runSteps_eq_sum` charges each extraction and every loop test;
 `outputsInTime` includes canonical reset and halt within `6B + 1` steps in
 original body bits `B`. `literal_output_length_le` proves no body-size growth.
-The exhaustion loop requires an isolated body, without count headers or an
-input suffix. Restoring source order, handling clause/formula boundaries,
-malformed-stream rejection and full dense renaming remain pending.
+`OrderedLiteralBody.literal_body_exits` then restores source order on the same
+four stacks: it returns the reversed output to input in `4V + 2` steps for
+variable-body bits `V`, then reverses complete frames. `runSteps_eq` charges
+extraction plus `6V + 3m + 3` for `m` literals. `outputsInTime` gives canonical
+ordered output, empty workspace, reset and halt within `15B + 4` steps in
+original body bits `B`; output size cannot grow. Both routines require an
+isolated body, without count headers or an input suffix; the ordered routine
+also starts with empty output. Counted clause/formula traversal, standalone
+body-encoding packaging, malformed-stream rejection and full dense renaming
+remain pending.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
