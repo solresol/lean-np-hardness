@@ -235,9 +235,17 @@ extraction plus `6V + 3m + 3` for `m` literals. `outputsInTime` gives canonical
 ordered output, empty workspace, reset and halt within `15B + 4` steps in
 original body bits `B`; output size cannot grow. Both routines require an
 isolated body, without count headers or an input suffix; the ordered routine
-also starts with empty output. Counted clause/formula traversal, standalone
-body-encoding packaging, malformed-stream rejection and full dense renaming
-remain pending.
+also starts with empty output.
+`CountedLiteralBody.literal_body_exits` instead uses a fifth Boolean stack with
+one preloaded mark per literal. It consumes exactly that many complete frames,
+leaves arbitrary unread input and output suffixes intact, and emits variables
+in reverse occurrence order. `runSteps_eq_sum` charges every count pop and
+loop test; `literal_body_exitsLE` bounds the routine by `7B + 1` in consumed
+body bits, independently of either suffix length. The empty clause takes one
+count test and preserves all input. Workspace and the outer count finish empty;
+output size cannot grow. Loading the count from its binary header, restoring
+source order with retained input, full formula traversal, standalone encoding
+packaging, malformed-stream rejection and full dense renaming remain pending.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

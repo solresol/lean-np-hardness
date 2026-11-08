@@ -332,9 +332,15 @@ for those membership results.
   bits `V` and literal count `m`; `outputsInTime` includes empty workspace,
   reset and halt within `15B + 4` steps in original input bits `B`. Output
   size cannot grow, and repetitions survive. The ordered routine requires
-  an isolated body and initially empty output. Implement counted clause and
-  formula boundaries to produce framed `Formula.vars`, then compose with
-  `DictionaryBuild`; standalone body-encoding packaging remains separate.
+  an isolated body and initially empty output. `CountedLiteralBody` now consumes
+  exactly a preloaded unary count of literal frames while preserving arbitrary
+  unread input and output suffixes. Its exact cost adds one count pop per
+  occurrence to isolated extraction, bounded by `7B + 1` in consumed body bits;
+  variables are emitted in reverse occurrence order, with no size growth.
+  Load the count from the framed binary clause header, restore source order
+  with the suffix retained, and assemble formula boundaries to produce framed
+  `Formula.vars`, then compose with `DictionaryBuild`. Standalone body-encoding
+  packaging remains separate.
   Updating the retained query and full renaming remain pending; full renaming
   is not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common

@@ -142,6 +142,7 @@ import LeanNPHardness.PackedLiteralMachine
 import LeanNPHardness.LiteralVariableMachine
 import LeanNPHardness.LiteralBodyMachine
 import LeanNPHardness.OrderedLiteralBodyMachine
+import LeanNPHardness.CountedLiteralBodyMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine

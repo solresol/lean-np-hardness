@@ -5671,3 +5671,92 @@ avoid failed routes, and choose a materially different experiment when blocked.
   accounting for its different symbol alphabet. Then restore variable-frame
   order, assemble framed `Formula.vars` and compose with `DictionaryBuild`.
   Never apply the exhaustion loop across a count header or trailing clause.
+
+## 2026-11-08 22:00 UTC — counted literal-body boundary (daily run)
+
+- **Starting commit:** `e72f6cf5d1521e689ac4055511a185da027e57f8`.
+  Read AGENTS, ROADMAP, THEOREM_STATUS and fetched AUTOMATION_LOG. Verified
+  the `solresol/lean-np-hardness` origin, clean generated `work`, sole worktree,
+  recent commits, ancestry and live `origin/main` equality before establishing
+  tracking `main`; preserved `work` at the starting commit. No concurrent local
+  research process was present; the controller checked overlapping cloud tasks.
+  Fresh local memory and target `.lake` were absent. Created run memory and
+  used the fetched journal for durable continuity. Scope: prove counted body
+  traversal with unread input before adapting the binary count-header reader.
+- **Preparation:** read the managed Cloud runtime skill and its package/network
+  guides, inspected the attached environment, and read saved START instructions.
+  The full saved Start gate passed for thesis, Littlewood and Scholz after
+  sourcing runtime/shared `env.sh`. Installed all nine exact manifest
+  dependencies into this target's own `.lake`; verified URLs, revisions and
+  clean tracked sources, matched shared archive pins and reused 2,325 cached
+  artifacts without downloads. Scoped imports passed with elan 4.2.4, absolute
+  Lean 4.35.0 (`eb6cafb`) and Lake `5.0.0-src+eb6cafb`. Toolchain, manifest and
+  Lake options are unchanged. Costly commands use `prepare.py`'s guarded runner
+  with two Lean threads, 2 GiB reserve, 12 GiB process-group RSS and a 30-minute
+  limit. Requested Astra/xhigh; actual model/settings are not exposed.
+- **Checked increment:** added `CountedLiteralBodyMachine.lean` on five Boolean
+  stacks. `body_exits` pops one preloaded outer mark and invokes the existing
+  literal extractor while retaining the remaining count. `routine_exits`
+  loops over that count, consuming exactly the given complete frames while
+  preserving arbitrary unread input and output suffixes. `literal_body_exits`
+  emits one framed variable per literal, in reverse occurrence order, retaining
+  repetitions and both signs of zero. A zero count exits after one test without
+  consuming input. Workspace and the outer count finish empty.
+  `runSteps_eq` adds exactly one count pop per occurrence to the isolated-loop
+  cost; `runSteps_eq_sum` gives the sum of extraction costs plus `2m + 1`.
+  `runSteps_le_size_count` bounds execution by `2B + 5m + 1`, and
+  `runSteps_le` / `literal_body_exitsLE` give `7B + 1` in consumed body bits
+  `B`, independent of either suffix length. `literal_output_length_le` proves
+  no output growth separately. These are routine exit contracts with a
+  preloaded unary count, not standalone computation from a binary clause
+  encoding. Count-header loading, source-order restoration with retained input,
+  full formula traversal, malformed-input rejection, full dense renaming and
+  new hardness transfer are not claimed.
+- **Failed approach/API discovery:** the first target build reduced the cost
+  recurrence with associative/commutative `simp` but left `1 + (1 + x) = 2 + x`.
+  Restricting simplification to the list/loop equations and closing with
+  `omega` fixes the sole failure and removes the unused simp argument warning.
+  `extend_exits` retains the independent outer count at unchanged extraction
+  cost; `popOne_exits` charges exactly one extra step. The loop invariant uses
+  `frames.length - i` marks, the unread `drop i` body plus suffix, and the
+  reverse processed `take i` output. It never tests exhaustion of the input.
+- **Comparison evidence:** read sibling Coq `SourceAdapter.v` and the per-literal
+  `max_clause_variable_time` recurrence in `CompilerComplexity.v` read-only.
+  These confirm occurrence-preserving traversal and per-element costs as design
+  references; all execution and cost claims above are independently checked
+  in Lean. No exact external Coq-library source was needed for this increment.
+  Inspected `SatVerify.readLen_exits`: its reader has symbol alphabet `Sym`,
+  whereas this adapter uses Boolean stacks. It cannot be composed directly
+  without a checked alphabet adaptation. Proving the counted loop first
+  isolates that remaining interface instead of assuming it.
+- **Files/checks:** added root/audit imports and nine axiom audits; updated
+  README, ROADMAP and THEOREM_STATUS, retaining historical notes. The corrected
+  targeted build passed 1,323 jobs; full `lake build` passed 2,495 jobs. All nine
+  new reports and all 857 nonempty project reports use only `propext`,
+  `Classical.choice`, `Quot.sound`; five more are axiom-free. The 155-file
+  Lean/config scan finds only the existing explanatory `proof_wanted` comment.
+  No new-module warnings; existing warnings elsewhere remain. `git diff --check`
+  passes. Commands after sourcing runtime `env.sh`:
+  `python3 /tmp/np-run-20261108.py build LeanNPHardness.CountedLiteralBodyMachine`
+  and `python3 /tmp/np-run-20261108.py build`. Evidence:
+  `/tmp/np-start-20261108.log`, `/tmp/np-readiness-20261108.json`,
+  `/tmp/np-counted-body-target-20261108-fixed.log`,
+  `/tmp/np-counted-body-full-20261108.log`,
+  `/tmp/np-counted-body-audits-20261108.json`, and
+  `/tmp/np-counted-body-source-scan-20261108.txt`.
+- **Ending state:** the verified increment is ready for an ordinary commit
+  and fast-forward push on tracking `main`. A final upstream refresh still
+  equalled the starting commit; exact resulting commit and local/tracking/live
+  remote equality are recorded in run memory and the final report. No blocker
+  remains for this increment. Schedules, sibling sources, shared configuration
+  and credentials were unchanged; no Raksasa access or environment publication.
+  Remote CI remains separate and unverified.
+- **Best next experiment:** implement a Boolean count-header reader on this
+  layout, preserving the unread body/suffix and producing unary remaining
+  marks. Use the `SatVerify.readLen_exits` Horner decomposition as a template
+  with explicit Boolean operations and charged transfers, then compose it
+  with `CountedLiteralBody.routine_exits` to consume a complete encoded clause.
+  Bound the numeric count by the clause-body size before deriving a polynomial
+  in original encoded input bits. Then restore source order with retained
+  input, assemble framed `Formula.vars`, and compose with `DictionaryBuild`.
+  Do not apply the isolated exhaustion loop to trailing formula input.
