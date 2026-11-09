@@ -243,9 +243,19 @@ in reverse occurrence order. `runSteps_eq_sum` charges every count pop and
 loop test; `literal_body_exitsLE` bounds the routine by `7B + 1` in consumed
 body bits, independently of either suffix length. The empty clause takes one
 count test and preserves all input. Workspace and the outer count finish empty;
-output size cannot grow. Loading the count from its binary header, restoring
-source order with retained input, full formula traversal, standalone encoding
-packaging, malformed-stream rejection and full dense renaming remain pending.
+output size cannot grow. `CountHeader.natural_exits` now loads that count from
+its framed binary header using Boolean stacks, retaining both suffixes and
+clearing scratch, within `b * (5n + 8) + 3` steps for raw binary length `b`
+and numeric count `n`. `CountedClause.clause_exits` composes loading and body
+traversal to consume a complete encoded clause. `clause_exitsLE` bounds the
+routine by `N * (5N + 15) + 4` in complete clause bits `N`, using the checked
+fact that the literal count is bounded by the body size. The output contains
+one framed variable per occurrence in reverse order; both suffixes survive
+and all three work/count stacks finish empty. `output_length_le` proves no
+size growth. Source-order restoration with retained input, full formula
+traversal, standalone encoding packaging, malformed-stream rejection and full
+dense renaming remain pending. These are routine contracts on canonical input,
+not a polynomial bound for arbitrary binary-to-unary conversion in header bits.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

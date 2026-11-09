@@ -337,10 +337,16 @@ for those membership results.
   unread input and output suffixes. Its exact cost adds one count pop per
   occurrence to isolated extraction, bounded by `7B + 1` in consumed body bits;
   variables are emitted in reverse occurrence order, with no size growth.
-  Load the count from the framed binary clause header, restore source order
-  with the suffix retained, and assemble formula boundaries to produce framed
-  `Formula.vars`, then compose with `DictionaryBuild`. Standalone body-encoding
-  packaging remains separate.
+  `CountHeader.natural_exits` now loads a framed binary header into that unary
+  counter on the same Boolean layout, preserving both suffixes and clearing
+  scratch within `b * (5n + 8) + 3` steps. `CountedClause.clause_exits` composes
+  loading and traversal for one complete encoded clause; `clause_exitsLE`
+  bounds the run by `N * (5N + 15) + 4` in original clause bits `N`, using
+  `count_le_body_length` to bound the numeric count. The output retains all
+  occurrences in reverse order without growth, and both suffixes survive.
+  Restore source order with retained input and assemble formula boundaries
+  to produce framed `Formula.vars`, then compose with `DictionaryBuild`.
+  Standalone packaging and malformed-input rejection remain separate.
   Updating the retained query and full renaming remain pending; full renaming
   is not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common

@@ -58,6 +58,8 @@ import LeanNPHardness.LiteralVariableMachine
 import LeanNPHardness.LiteralBodyMachine
 import LeanNPHardness.OrderedLiteralBodyMachine
 import LeanNPHardness.CountedLiteralBodyMachine
+import LeanNPHardness.CountHeaderMachine
+import LeanNPHardness.CountedClauseMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine
@@ -1030,3 +1032,15 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.CountedLiteralBody.literal_body_exits
 #print axioms LeanNPHardness.MachinePrimitives.CountedLiteralBody.literal_output_length_le
 #print axioms LeanNPHardness.MachinePrimitives.CountedLiteralBody.literal_body_exitsLE
+
+#print axioms LeanNPHardness.MachinePrimitives.CountHeader.readBits_exits
+#print axioms LeanNPHardness.MachinePrimitives.CountHeader.doubleLoop_exits
+#print axioms LeanNPHardness.MachinePrimitives.CountHeader.double_exits
+#print axioms LeanNPHardness.MachinePrimitives.CountHeader.hornLoop_exits
+#print axioms LeanNPHardness.MachinePrimitives.CountHeader.natural_exits
+
+#print axioms LeanNPHardness.MachinePrimitives.CountedClause.clause_exits
+#print axioms LeanNPHardness.MachinePrimitives.CountedClause.count_le_body_length
+#print axioms LeanNPHardness.MachinePrimitives.CountedClause.runBound_le
+#print axioms LeanNPHardness.MachinePrimitives.CountedClause.clause_exitsLE
+#print axioms LeanNPHardness.MachinePrimitives.CountedClause.output_length_le

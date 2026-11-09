@@ -5760,3 +5760,87 @@ avoid failed routes, and choose a materially different experiment when blocked.
   in original encoded input bits. Then restore source order with retained
   input, assemble framed `Formula.vars`, and compose with `DictionaryBuild`.
   Do not apply the isolated exhaustion loop to trailing formula input.
+
+## 2026-11-09 22:00 UTC — binary count loading and complete-clause traversal
+
+- **Starting commit:** `7811d053e48a8502de5257f48be7c8ac23456517`.
+  Read AGENTS, ROADMAP, THEOREM_STATUS and fetched AUTOMATION_LOG. Verified
+  `solresol/lean-np-hardness`, clean generated `work`, sole worktree, ancestry
+  and equal live `origin/main`; established tracking `main`, preserving `work`.
+  No concurrent local research was present; the controller checked cloud-task
+  overlap. Fresh target `.lake` and run memory were absent; created memory and
+  used the fetched journal for continuity. Selected the Boolean count-header
+  obligation and composed the result with the existing counted body routine.
+- **Preparation:** read managed Cloud runtime skill, package/network guides,
+  attached-environment status and saved START. Full saved Start gate passed.
+  Sourced runtime `env.sh`; restored all nine exact pinned dependencies into
+  this target's own `.lake` using independent clones from matching local
+  dependency sources, then verified manifest URLs, HEADs and clean tracked
+  sources. Reused 2,325 shared archive artifacts with no downloads; scoped
+  imports passed. Elan 4.2.4, absolute Lean 4.35.0 (`eb6cafb`) and Lake
+  `5.0.0-src+eb6cafb`; committed toolchain, manifest and Lake options unchanged.
+  All costly commands use `prepare.py`'s guarded runner: two Lean threads,
+  2 GiB reserve, 12 GiB process-group RSS, 30-minute command limit.
+  Astra/xhigh was requested; actual model/reasoning settings are not exposed.
+- **Checked increment:** `CountHeaderMachine.lean` implements a Boolean
+  framed-count reader. `readBits_exits` loads the reversed payload in exactly
+  `2b + 2` steps, retaining arbitrary unread input, work and output suffixes.
+  `doubleLoop_exits`, `double_exits` and `hornLoop_exits` check the unary
+  Horner implementation on the extended Boolean layout. Only the already
+  checked arithmetic interpretation (`SatVerify.hornerB`, `hval_encodeNat`)
+  is reused from the verifier; its symbol-alphabet machine is not composed.
+  `natural_exits` consumes the canonical header for `n`, produces `n` unary
+  marks, clears scratch and preserves both suffixes within
+  `b * (5n + 8) + 3` steps. The dependence on numeric `n` is explicit.
+  `CountedClauseMachine.lean` composes loading and counted extraction.
+  `clause_exits` consumes the exact full clause encoding and emits every
+  variable frame in reverse occurrence order, preserving both suffixes,
+  repetitions and both signs of zero; all count/work stacks finish empty.
+  `count_le_body_length` bounds the numeric count by body bits; `runBound_le`
+  and `clause_exitsLE` give `N * (5N + 15) + 4` in full original clause bits.
+  `output_length_le` separately proves no growth. These are canonical-input
+  routine contracts, not standalone packaging or malformed-input rejection.
+  Source-order restoration with retained input, full formula traversal, dense
+  renaming and new hardness transfer remain separate obligations.
+- **Failed attempts/API discoveries:** the first header build required an
+  explicit `DecidableEq (Alphabet k)` instance and a typed Boolean list for
+  append through the dependent stack alphabet. The doubling equality was
+  already reduced to a natural-number equality by `simp`; an extra `congr 1`
+  split it incorrectly, whereas direct `omega` closes it. For clause bounds,
+  unrestricted `simp` rewrote the encoded length to `listWireSize` before
+  exposing the header/body split; `simp only` preserves the required form.
+  Normalize the induction hypothesis as well as the target when unfolding
+  `encodeNat`, and normalize append lengths in both the output hypothesis
+  and goal. Fixed a let-expression layout error and removed unused simp/tactic
+  warnings. Final new modules have no warnings; old warnings remain elsewhere.
+- **Comparison evidence:** read Coq sibling `SourceAdapter.v` and
+  `CompilerComplexity.v` read-only, particularly `clause_length_le_size` and
+  the per-literal `max_clause_variable_time` recurrence. They motivate bounding
+  the count by the full clause representation and retaining every occurrence.
+  Their lambda-calculus costs and proofs are not Lean evidence. No missing
+  external Coq source was needed for this increment.
+- **Checks/files:** root and Audit imports, ten new axiom reports, README,
+  ROADMAP and THEOREM_STATUS synchronized. Targeted build passed 1,454 jobs;
+  full `lake build` passed 2,497 jobs. All ten new and all 867 nonempty project
+  reports use only `propext`, `Classical.choice`, `Quot.sound`; five further
+  reports are axiom-free. The 157-file Lean/config scan finds only the existing
+  explanatory `proof_wanted` comment. `git diff --check` passes. Commands after
+  sourcing runtime `env.sh`:
+  `python3 /tmp/np-run-20261109.py build LeanNPHardness.CountedClauseMachine`
+  and `python3 /tmp/np-run-20261109.py build`. Evidence:
+  `/tmp/np-start-20261109.log`, `/tmp/np-readiness-20261109.json`,
+  `/tmp/np-clause-target-20261109-final.log`, `/tmp/np-clause-full-20261109.log`,
+  `/tmp/np-clause-audits-20261109.json`,
+  `/tmp/np-clause-source-scan-20261109.txt`.
+- **Ending state:** verified increment ready for ordinary commit and push on
+  tracking `main`; exact resulting commit and local/tracking/live remote
+  equality are recorded in run memory and the final report. No blocker remains
+  for this increment. No sibling source edits, schedule changes, Raksasa
+  access or environment publication. Remote CI remains separate and unverified.
+- **Best next experiment:** restore source order while retaining unread input
+  and an arbitrary output suffix. Keep the extracted clause body isolated in
+  a dedicated buffer and adapt the checked `FrameReverse` routine to that
+  buffer/output layout with a proved stack embedding or reindexing. Do not
+  use `moveAll` across the caller's output suffix or run the isolated reversal
+  loop on trailing formula input. Then add an independent outer formula count,
+  assemble framed `Formula.vars` and compose with `DictionaryBuild`.
