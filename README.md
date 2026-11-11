@@ -252,9 +252,17 @@ routine by `N * (5N + 15) + 4` in complete clause bits `N`, using the checked
 fact that the literal count is bounded by the body size. The output contains
 one framed variable per occurrence in reverse order; both suffixes survive
 and all three work/count stacks finish empty. `output_length_le` proves no
-size growth. Source-order restoration with retained input, full formula
-traversal, standalone encoding packaging, malformed-stream rejection and full
-dense renaming remain pending. These are routine contracts on canonical input,
+size growth. `OrderedClause.clause_exits` now extracts on six Boolean
+stacks with an isolated buffer, then redirects the checked frame reversal to
+that buffer and caller output. The result contains one framed variable per
+literal in source order, retaining repetitions, both suffixes and empty workspace.
+`restore_exits` preserves arbitrary unread input and remaining-count contents
+with unchanged reversal cost; `runBound_eq` adds exactly `2V + 3m + 1` steps
+for variable-body bits `V` and occurrence count `m`. `clause_exitsLE` gives
+`N * (5N + 20) + 5` in original clause bits, and `output_length_le` proves
+no output growth separately. Full formula traversal, standalone encoding
+packaging, malformed-stream rejection and full dense renaming remain pending.
+These are routine contracts on canonical input,
 not a polynomial bound for arbitrary binary-to-unary conversion in header bits.
 
 The component verifier machines listed in this section predate the complete

@@ -344,8 +344,16 @@ for those membership results.
   bounds the run by `N * (5N + 15) + 4` in original clause bits `N`, using
   `count_le_body_length` to bound the numeric count. The output retains all
   occurrences in reverse order without growth, and both suffixes survive.
-  Restore source order with retained input and assemble formula boundaries
-  to produce framed `Formula.vars`, then compose with `DictionaryBuild`.
+  `OrderedClause.clause_exits` now extracts into an isolated buffer and embeds
+  the checked frame reversal on that buffer/output layout, restoring source
+  order while retaining both caller suffixes and clearing all workspace.
+  `reverse_run` preserves exact reversal cost; `runBound_eq` charges `2V + 3m + 1`
+  extra steps in variable-body bits `V` and occurrence count `m`.
+  `clause_exitsLE` bounds the complete run by `N * (5N + 20) + 5` in original
+  clause bits; `output_length_le` proves no growth separately. Assemble formula
+  boundaries and preserve order across clauses to produce framed `Formula.vars`,
+  then compose with `DictionaryBuild`. An outer loop that prepends ordered
+  clause bodies would reverse clause groups; retain a global reversal invariant.
   Standalone packaging and malformed-input rejection remain separate.
   Updating the retained query and full renaming remain pending; full renaming
   is not yet a polynomial-time re-encoding reduction.

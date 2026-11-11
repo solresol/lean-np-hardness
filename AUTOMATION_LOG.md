@@ -5844,3 +5844,80 @@ avoid failed routes, and choose a materially different experiment when blocked.
   use `moveAll` across the caller's output suffix or run the isolated reversal
   loop on trailing formula input. Then add an independent outer formula count,
   assemble framed `Formula.vars` and compose with `DictionaryBuild`.
+
+## 2026-11-11 22:15 UTC — ordered clause variables with retained caller suffixes
+
+- **Start and scope:** `37272c30c625f695c1c5fdfb6d92a180a109e5ff`.
+  Read AGENTS, current ROADMAP/status and fetched journal continuity. Verified
+  `solresol/lean-np-hardness`, clean generated `work`, sole worktree, ancestry
+  and equal live `origin/main`; established tracking `main`, preserving `work`.
+  No local concurrent research process was present. Prior run memory and target
+  dependencies were absent; created memory. Selected source-order restoration
+  for one complete encoded clause with arbitrary input and output suffixes.
+- **Scoped preparation:** read managed Cloud runtime skill, its package/network
+  guides and saved START. This run explicitly authorized scoped target checks
+  and installation of exact target dependencies, superseding START's older
+  all-project gate. The missing sibling Scholz receipt was not repaired or
+  fabricated. Sourced runtime `env.sh`; verified the shared helper deployment,
+  unchanged toolchain/manifest/Lake hashes, elan 4.2.4, absolute Lean 4.35.0 and
+  Lake binaries, all nine exact manifest revisions/URLs and clean tracked
+  dependency sources. Installed missing sources only into target `.lake`;
+  matched shared archive pins and reused 2,325 artifacts without downloads.
+  Scoped imports passed. All Lean commands use `prepare.py`'s guarded runner:
+  two threads, 2 GiB disk reserve, 12 GiB process-group RSS, 30-minute limit.
+  Requested GPT-6 Astra/xhigh; actual model/reasoning identifier is not exposed.
+- **Checked declarations:** new `OrderedClauseMachine.lean`, namespace
+  `MachinePrimitives.OrderedClause`. Added the six-stack layout (`Stack`,
+  `Alphabet`, `ExtraAlphabet`, finite alphabet instance, `contents`), relocation
+  definitions `reverseStack`, `reverseBits`, `reverseStacks`, `reverseStmt`,
+  `reverseCfg`, `reverseRoutine`, and composed `routine` / `runBound`.
+  Theorems `reverseStacks_update`, `reverseStmt_stepAux`, `reverse_step`,
+  `reverse_run`, `reverseRoutine_exits` check exact simulation while retaining
+  arbitrary caller input and remaining-count contents. `restore_exits` runs
+  frame reversal only on the isolated buffer. `clause_exits` emits every framed
+  variable in source order, retaining repetitions, both signs of zero and both
+  suffixes, with all workspace empty. `runBound_eq` charges the previous clause
+  bound plus exact reversal overhead `2V + 3m + 1`; `runBound_le` and
+  `clause_exitsLE` give `N * (5N + 20) + 5` in original full clause bits.
+  `output_length_le` proves no growth separately. Canonical-input routine
+  contracts only: no formula traversal, standalone function packaging,
+  malformed-input rejection, full dense renaming or new hardness transfer.
+- **Failed approach/discovery:** initial push/pop simulation attempted to
+  rewrite a destination update whose dependent alphabet hid the matching stack
+  projection. Rewriting the induction hypothesis first and then specializing
+  the source stack closes the simulation without changing options. `simp`
+  cannot refold `BinaryNatLists.encodeNat` with a reverse modifier; unfold it
+  and normalize `List.map_map` for the length equality. Removed unused simp
+  arguments. No timeout occurred. The isolated buffer avoids both whole-body
+  transfer cost and any scan of caller suffixes; reversal costs `2V + 3m + 1`.
+- **Coq comparison:** read sibling `SourceAdapter.v` and `CompilerComplexity.v`
+  read-only. Missing list-library source was retrieved separately under
+  `/tmp/np-coq-comparison-20261111`, made read-only, pinned to Undecidability
+  `1.0.1+8.16`, with opam/archive SHA-256
+  `96febb4482b41810782dca089144b1bffcb91ab1975dc9e312efacf3bf2e4371`.
+  `termT_rev_append`, `termT_rev`, `rev_concat_rev`, `size_rev` are design
+  comparisons only; their Coq terms and lambda-calculus costs are not Lean evidence.
+- **Checks and evidence:** targeted build passed 1,456 jobs; final `lake build`
+  passed 2,498 jobs with no new-module warnings. All 11 new and all 878 nonempty
+  project axiom reports use only `propext`, `Classical.choice`, `Quot.sound`;
+  five further reports are axiom-free. The 158-file Lean/config token scan
+  finds only the existing explanatory `proof_wanted` comment. `git diff --check`
+  passes. Root/Audit imports and README/ROADMAP/status synchronized.
+  Commands after sourcing runtime `env.sh`: `python3 /tmp/np-run-20261111.py prepare`,
+  `python3 /tmp/np-run-20261111.py build LeanNPHardness.OrderedClauseMachine`,
+  `python3 /tmp/np-run-20261111.py build`. Evidence in `/tmp/np-readiness-20261111.json`,
+  `/tmp/np-ordered-clause-target-20261111-v2.log`,
+  `/tmp/np-ordered-clause-full-20261111.log`,
+  `/tmp/np-ordered-clause-audits-20261111.json`, and
+  `/tmp/np-ordered-clause-source-scan-20261111.json`.
+- **Ending state:** verified increment ready for ordinary commit and push;
+  upstream refresh still equals the starting commit. Exact commit and final
+  local/tracking/live-remote equality are recorded in run memory and the final
+  report. No blocker remains for this increment. No sibling changes, Raksasa
+  access, schedule changes or environment publication; remote CI is unverified.
+- **Next target:** add an independent outer formula count and prove traversal
+  of exactly its clauses with retained trailing input. Accumulate all variable
+  frames in reverse global order, then use the isolated-buffer restoration once;
+  merely prepending ordered clause bodies reverses clause groups. Prove the
+  resulting body equals framed `Formula.vars`, then handle its total count header
+  and compose with `DictionaryBuild`, charging every phase in original formula bits.
