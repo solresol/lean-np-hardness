@@ -350,10 +350,20 @@ for those membership results.
   `reverse_run` preserves exact reversal cost; `runBound_eq` charges `2V + 3m + 1`
   extra steps in variable-body bits `V` and occurrence count `m`.
   `clause_exitsLE` bounds the complete run by `N * (5N + 20) + 5` in original
-  clause bits; `output_length_le` proves no growth separately. Assemble formula
-  boundaries and preserve order across clauses to produce framed `Formula.vars`,
-  then compose with `DictionaryBuild`. An outer loop that prepends ordered
-  clause bodies would reverse clause groups; retain a global reversal invariant.
+  clause bits; `output_length_le` proves no growth separately.
+  `CountedFormula.traversal_exits` now consumes a preloaded outer clause count
+  independently of each clause's literal count, preserving both caller suffixes.
+  It emits the global reverse of `Formula.vars`, including all repetitions
+  across clauses, and clears all counts and scratch. Empty clauses consume an
+  outer mark but emit no variable frames. `count_le_body_length` bounds the outer
+  count even for empty clauses, and `traversalBound_le` gives `B * (5B + 21) + 1`
+  in clause-body bits. `moveCount_exits` isolates the decoded outer count in
+  exactly `2m + 1` steps. `formula_exitsLE` includes binary count loading, this
+  transfer and all traversal within `N * (10N + 31) + 5` in original full formula
+  bits, with no output size growth (`formula_output_length_le`). Next extract
+  this global reverse body into an isolated buffer, restore frame order once
+  while retaining caller input/output, and assemble the total variable count
+  header to produce framed `Formula.vars`. Then compose with `DictionaryBuild`.
   Standalone packaging and malformed-input rejection remain separate.
   Updating the retained query and full renaming remain pending; full renaming
   is not yet a polynomial-time re-encoding reduction.

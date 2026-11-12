@@ -260,9 +260,19 @@ literal in source order, retaining repetitions, both suffixes and empty workspac
 with unchanged reversal cost; `runBound_eq` adds exactly `2V + 3m + 1` steps
 for variable-body bits `V` and occurrence count `m`. `clause_exitsLE` gives
 `N * (5N + 20) + 5` in original clause bits, and `output_length_le` proves
-no output growth separately. Full formula traversal, standalone encoding
-packaging, malformed-stream rejection and full dense renaming remain pending.
-These are routine contracts on canonical input,
+no output growth separately. `CountedFormula.formula_exits` now reads the outer
+formula count, moves it to an independent sixth stack, and traverses exactly
+its complete clauses. Its accumulator is the global reverse of `Formula.vars`,
+including repeated variables across clause boundaries. The routine handles empty
+clauses and retains arbitrary input/output suffixes. All counters and
+scratch finish empty. `traversalBound_le` charges clause extraction and outer
+pop/test steps within `B * (5B + 21) + 1` in consumed clause-body bits.
+`moveCount_exits` charges exactly `2m + 1` steps to isolate the loaded outer
+count; `formula_exitsLE` includes this transfer and binary header loading within
+`N * (10N + 31) + 5` in complete original formula bits. The variable body cannot
+grow (`formula_output_length_le`). Global source-order restoration, the total
+variable count header, standalone encoding packaging, malformed-stream rejection
+and full dense renaming remain pending. These are routine contracts on canonical input,
 not a polynomial bound for arbitrary binary-to-unary conversion in header bits.
 
 The component verifier machines listed in this section predate the complete

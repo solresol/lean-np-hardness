@@ -5921,3 +5921,79 @@ avoid failed routes, and choose a materially different experiment when blocked.
   merely prepending ordered clause bodies reverses clause groups. Prove the
   resulting body equals framed `Formula.vars`, then handle its total count header
   and compose with `DictionaryBuild`, charging every phase in original formula bits.
+
+## 2026-11-12 22:17 UTC — counted formulas with a global variable-order invariant
+
+- **Start/scope:** `b854b222155868f899073c923f29bca458c9733e`. Read saved
+  START, managed Cloud runtime/package/network instructions, AGENTS, ROADMAP,
+  status and fetched journal continuity. Verified `solresol/lean-np-hardness`,
+  clean generated `work`, sole worktree and live `origin/main` equality;
+  established tracking `main` after ancestry checks and preserved `work`.
+  No other local research/Lean process was present. The other remote branch
+  has two divergent README/licence commits dated 2026-10-15 and was preserved;
+  cross-thread task status is not exposed here. The final upstream refresh
+  still equals the starting commit. Prior target `.lake` and run memory were
+  absent; created memory and used this fetched journal as durable continuity.
+- **Preparation:** scoped target preparation was explicitly authorized; no
+  sibling build workspace was repaired or changed. Sourced runtime `env.sh`,
+  verified the shared helper deployment and unchanged toolchain/manifest/Lake
+  hashes, elan 4.2.4, absolute Lean 4.35.0 (`eb6cafb7290e8bd5f2937522d8d804f58f02bafc`)
+  and Lake `5.0.0-src+eb6cafb`. Restored nine exact manifest Git revisions from
+  their recorded URLs into this target's own `.lake`, verified clean tracked
+  dependency sources, and reused 2,325 shared archives with no cache downloads.
+  Scoped imports passed. All costly commands used `prepare.py`'s guarded
+  runner: two Lean threads, 2 GiB reserve, 12 GiB process-group RSS and a
+  30-minute limit. GPT-6 Astra/xhigh was requested; actual model/reasoning
+  settings are not exposed, so selection is unverified.
+- **Checked contribution:** `CountedFormulaMachine.lean` adds a six-stack
+  executable routine. `body_exits` pops one independent outer mark and consumes
+  a whole clause; `traversal_exits` proves the global reverse of `Formula.vars`,
+  retaining all occurrences and both arbitrary caller suffixes. Empty clauses
+  consume a mark but emit no frames. `count_le_body_length` handles their
+  nonempty count headers. `traversalBound_le` gives `B * (5B + 21) + 1`, charging
+  every outer pop/test. `moveCount_exits` isolates the decoded outer marks in
+  exactly `2m + 1` steps. `encode_eq`, `formula_exits`, `runBound_le` and
+  `formula_exitsLE` include binary header loading, count transfer and traversal
+  within `N * (10N + 31) + 5` in complete original formula bits. All counters
+  and scratch finish empty. `output_length_le` and `formula_output_length_le`
+  independently prove no output growth. This is a canonical-input routine
+  contract returning a globally reversed variable body, not yet framed
+  source-order `Formula.vars` or a standalone polynomial encoding conversion.
+- **Failures/API discoveries:** the first build needed explicit unfolding of
+  routine/stack wrappers and normalization of `1 + C + 1` to `C + 2` for the
+  loop bound. For count transfer, an untyped identity map hid the destination
+  dependent alphabet; typing it fixed elaboration, but rewriting a manually
+  reconstructed nested update still did not match. Converting directly from
+  `moveAll_exits`, closing routine equality explicitly and proving stack
+  equality pointwise resolved this. `simp` left a bare `clauseBits` function
+  in the encoding identity; `rfl` closes it after structural normalization.
+  Normalize append lengths in both hypotheses and goal for the size bound.
+  Removed unused simp arguments. No timeout or resource-limit failure occurred.
+- **Comparison:** read Coq `SourceAdapter.v` and `CompilerComplexity.v` only,
+  especially `max_cnf_variable_time`, `formula_length_le_size` and
+  `clause_size_le_formula_size`. Their nested traversal/cost decomposition
+  motivated the Lean proof; their lambda-calculus costs and Coq terms are not
+  Lean evidence. No missing external Coq source was required for this increment.
+- **Verification/files:** targeted build passed 1,455 jobs; full `lake build`
+  passed 2,499 jobs. The new module has no warnings. All twelve new and all 890
+  nonempty project axiom reports use only `propext`, `Classical.choice`,
+  `Quot.sound`; five more reports are axiom-free. The 159-file Lean/config scan
+  found only the existing explanatory `proof_wanted` comment. `git diff --check`
+  passed. Root/Audit imports and README/ROADMAP/status synchronized. Commands
+  after sourcing runtime `env.sh`: `python3 /tmp/np-run-20261112.py prepare`,
+  `python3 /tmp/np-run-20261112.py build LeanNPHardness.CountedFormulaMachine`,
+  and `python3 /tmp/np-run-20261112.py build`. Evidence:
+  `/tmp/np-readiness-20261112.json`, `/tmp/np-formula-target-20261112-v5.log`,
+  `/tmp/np-formula-full-20261112.log`, `/tmp/np-formula-audits-20261112.json`,
+  `/tmp/np-formula-source-scan-20261112.json`.
+- **Ending state:** checked increment ready for ordinary commit and push on
+  tracking `main`; exact resulting commit and HEAD/tracking/live-remote equality
+  are recorded in run memory and the final report after push. No blocker remains
+  for this increment. No sibling source/build changes, Raksasa access, schedule
+  changes or environment publication. Remote CI is unverified.
+- **Next experiment:** extend this routine with an isolated buffer and separate
+  caller-output stack, then restore all complete frames once to obtain global
+  source-order `Formula.vars` while retaining trailing input and output. Charge
+  the embedding/restoration cost, then generate its total occurrence-count
+  header for `FramedNatList` assembly and compose with `DictionaryBuild`.
+  Do not prepend individually ordered clause bodies or scan caller suffixes.
