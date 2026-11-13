@@ -360,10 +360,20 @@ for those membership results.
   in clause-body bits. `moveCount_exits` isolates the decoded outer count in
   exactly `2m + 1` steps. `formula_exitsLE` includes binary count loading, this
   transfer and all traversal within `N * (10N + 31) + 5` in original full formula
-  bits, with no output size growth (`formula_output_length_le`). Next extract
-  this global reverse body into an isolated buffer, restore frame order once
-  while retaining caller input/output, and assemble the total variable count
-  header to produce framed `Formula.vars`. Then compose with `DictionaryBuild`.
+  bits, with no output size growth (`formula_output_length_le`).
+  `OrderedFormula.formula_exits` now extracts that global reverse body into
+  an isolated buffer and restores complete frames once into a seventh stack,
+  emitting the source-order body of `Formula.vars` while retaining both caller
+  suffixes and emptying all workspace. `restore_exits` preserves arbitrary
+  unread input and both independent counters with unchanged exact cost.
+  `runBound_eq` charges `2V + 3m + 1` restoration steps in variable-body bits
+  and occurrence count; `formula_exitsLE` gives `N * (10N + 36) + 6` in full
+  formula bits. `output_length_le` proves no growth separately, and
+  `vars_length_le` reuses the existing occurrence bound in original input bits.
+  Next compute and prepend the total occurrence-count header to produce
+  `FramedNatList`-encoded `Formula.vars`, then compose with `DictionaryBuild`.
+  Keep the body isolated while counting; preserve the caller suffixes and
+  charge header generation/assembly to the original formula bits.
   Standalone packaging and malformed-input rejection remain separate.
   Updating the retained query and full renaming remain pending; full renaming
   is not yet a polynomial-time re-encoding reduction.

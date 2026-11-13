@@ -5997,3 +5997,86 @@ avoid failed routes, and choose a materially different experiment when blocked.
   the embedding/restoration cost, then generate its total occurrence-count
   header for `FramedNatList` assembly and compose with `DictionaryBuild`.
   Do not prepend individually ordered clause bodies or scan caller suffixes.
+
+## 2026-11-13 22:05 UTC — global source-order formula variables with retained suffixes
+
+- **Start/scope:** `5b1783a3d9e1badc4604a4e644b678fac027ee90` for the authorized
+  22:00 UTC run (14 November in Sydney). Read saved START, managed Cloud
+  runtime/package/network instructions, AGENTS, current roadmap/status and
+  fetched journal continuity, including prior relocation failures. Verified
+  `solresol/lean-np-hardness`, clean generated `work`, sole worktree and live
+  `origin/main` equality; preserved `work` and established tracking `main`
+  after ancestry checks. No local concurrent research process was present;
+  parent reported no overlapping worker. Prior run memory was absent in this
+  snapshot, so created it. Final upstream refresh still equals the starting
+  commit. Requested GPT-6 Astra/xhigh; exposed identity is Codex based on GPT-6,
+  with precise variant and reasoning effort not exposed or verifiable.
+- **Scoped preparation:** explicitly authorized target-only readiness and
+  exact dependency installation supersede START's older all-project gate.
+  Sourced runtime `env.sh`; verified shared helper deployment, unchanged
+  toolchain/manifest/Lake-option hashes, elan 4.2.4, absolute Lean 4.35.0
+  (`eb6cafb7290e8bd5f2937522d8d804f58f02bafc`) and Lake 5.0.0-src+eb6cafb.
+  Installed all nine missing exact manifest revisions/URLs only into this
+  target's `.lake`, then verified clean tracked dependency sources. Shared
+  archive pins matched exactly: reused 2,325 archives without downloads.
+  Scoped imports passed. All costly commands used `prepare.py`'s guarded
+  runner with two Lean threads, 2 GiB reserve, 12 GiB process-group RSS and
+  a 30-minute limit. No pin changes, `lake update` or sibling preparation.
+- **Checked contribution:** new `OrderedFormulaMachine.lean`, namespace
+  `MachinePrimitives.OrderedFormula`. Seven-stack layout and finite alphabets;
+  `reverseStack`, `reverseBits`, `reverseStacks`, `reverseStmt`, `reverseCfg`
+  and `reverseRoutine` relocate complete-frame reversal to isolated buffer
+  and caller output. `reverseStacks_update`, `reverseStmt_stepAux`,
+  `reverse_step`, `reverse_run` and `reverseRoutine_exits` check exact
+  simulation, retaining caller input and both independent counters.
+  `restore_exits` preserves arbitrary contents of those three stacks.
+  `formula_exits` composes full formula extraction with restoration, emitting
+  exactly `formula.vars.flatMap BinaryNatLists.encodeNat` above caller output,
+  retaining all occurrences and both suffixes, with empty workspace.
+  `runBound_eq` charges exactly `2V + 3m + 1` restoration steps;
+  `vars_length_le`, `runBound_le` and `formula_exitsLE` give
+  `N * (10N + 36) + 6` in original complete formula bits. `output_length_le`
+  proves no growth separately. Empty clauses and both signs of zero are
+  covered. Canonical-input routine contracts only: no total occurrence-count
+  header, standalone encoding conversion, malformed-input rejection, full
+  dense-renaming runtime or new hardness transfer.
+- **Failures/API discoveries:** no failed Lean build, timeout or resource
+  failure. Reused the earlier successful update-before-stack-cases simulation
+  pattern instead of the recorded failed dependent-update rewrite. Existing
+  `CNF.Formula.vars_length_le_encodedSize` plus `encode_length` supplies the
+  occurrence bound without another induction. `List.length_flatMap`,
+  `map_reverse` and `sum_reverse` transfer the output-size bound without
+  changing any frame or bit order. The new module builds without warnings.
+- **Coq comparison:** read sibling `SourceAdapter.v` and
+  `CompilerComplexity.v` only, including occurrence-preserving syntax,
+  `formula_length_le_size`, `clause_size_le_formula_size` and nested
+  `max_cnf_variable_time`. Their decomposition is a design comparison;
+  neither Coq proofs nor lambda-calculus costs count as Lean evidence. No
+  missing external Coq library source was needed for this increment.
+- **Verification/files:** root/Audit imports, twelve new axiom reports,
+  README, ROADMAP and THEOREM_STATUS synchronized. Targeted build passed
+  1,457 jobs; full `lake build` passed 2,500 jobs. All twelve new and all
+  902 nonempty project audits use only `propext`, `Classical.choice`,
+  `Quot.sound`; five more are axiom-free. The 160-file Lean/config scan finds
+  only the existing explanatory `proof_wanted` comment. Complete diff reviewed
+  and `git diff --check` passed. Commands after sourcing runtime `env.sh`:
+  `python3 /tmp/np-run-20261113.py prepare`,
+  `python3 /tmp/np-run-20261113.py build LeanNPHardness.OrderedFormulaMachine`,
+  and `python3 /tmp/np-run-20261113.py build`. Evidence:
+  `/tmp/np-prepare-20261113.log`, `/tmp/np-readiness-20261113.json`,
+  `/tmp/np-ordered-formula-target-20261113-v1.log`,
+  `/tmp/np-ordered-formula-full-20261113.log`,
+  `/tmp/np-ordered-formula-audits-20261113.json`,
+  `/tmp/np-ordered-formula-source-scan-20261113.json`.
+- **Ending state:** checked increment ready for ordinary commit/push on
+  tracking `main`; the resulting full hash and local/tracking/live-remote
+  equality are recorded after push in run memory and the final report.
+  No blocker remains for this increment. No sibling edits, Raksasa access,
+  schedule changes or environment publication. Remote CI is unverified.
+- **Next experiment:** compute and prepend the total occurrence-count header,
+  obtaining `FramedNatList`-encoded `Formula.vars`, then compose with
+  `DictionaryBuild`. Count only the isolated body; preserve both caller
+  suffixes and charge header generation/assembly to original formula bits.
+  Inspect `FramedSucc` and `FramedListCons.count_exits` for a checked header
+  update kernel, accounting for every transfer rather than treating pure
+  `vars.length` as an executable operation.

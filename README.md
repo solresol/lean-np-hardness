@@ -270,10 +270,19 @@ pop/test steps within `B * (5B + 21) + 1` in consumed clause-body bits.
 `moveCount_exits` charges exactly `2m + 1` steps to isolate the loaded outer
 count; `formula_exitsLE` includes this transfer and binary header loading within
 `N * (10N + 31) + 5` in complete original formula bits. The variable body cannot
-grow (`formula_output_length_le`). Global source-order restoration, the total
-variable count header, standalone encoding packaging, malformed-stream rejection
-and full dense renaming remain pending. These are routine contracts on canonical input,
-not a polynomial bound for arbitrary binary-to-unary conversion in header bits.
+grow (`formula_output_length_le`). `OrderedFormula.formula_exits` now extracts
+that global reverse body into an isolated buffer, then restores complete-frame
+order once above a separate caller-output stack. It emits exactly the framed
+body of `Formula.vars`, retaining all occurrences and both caller suffixes,
+with all workspace empty. `restore_exits` preserves arbitrary unread input and
+both count stacks with unchanged exact cost; `runBound_eq` adds `2V + 3m + 1`
+steps in variable-body bits `V` and occurrence count `m`. `formula_exitsLE`
+gives `N * (10N + 36) + 6` in complete original formula bits, independent of
+both suffix lengths. `output_length_le` separately proves no output growth.
+The total variable count header, standalone encoding packaging, malformed-stream
+rejection and full dense renaming remain pending. These are routine contracts
+on canonical input, not a polynomial bound for arbitrary binary-to-unary
+conversion in header bits.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
