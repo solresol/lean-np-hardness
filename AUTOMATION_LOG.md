@@ -6080,3 +6080,92 @@ avoid failed routes, and choose a materially different experiment when blocked.
   Inspect `FramedSucc` and `FramedListCons.count_exits` for a checked header
   update kernel, accounting for every transfer rather than treating pure
   `vars.length` as an executable operation.
+
+## 2026-11-14 22:00 UTC — executable framed occurrence-count kernel
+
+- **Start/scope:** `b6ec487cc7aba01c3c1b1cb8fdbda3be99b93d8d` for the
+  authorized daily invocation (15 November in Sydney). Read managed Cloud
+  runtime/package/network guidance, saved START, AGENTS, current roadmap/status
+  and fetched journal, including prior successor and stack-update lessons.
+  Verified `solresol/lean-np-hardness`, clean generated `work`, sole worktree
+  and live `origin/main` equality. Preserved `work` and established tracking
+  `main` after clean-state/ancestry checks. No concurrent local researcher was
+  present; parent confirmed no overlapping worker. Published snapshot lacked
+  prior run memory, so created it and used the fetched journal for continuity.
+  Exposed identity is Codex based on GPT-6; precise model variant and reasoning
+  effort are unavailable. Requested Astra/xhigh cannot be verified.
+- **Scoped readiness:** explicit authorization permits target-only exact
+  dependency installation despite START's older all-project gate. Sourced
+  runtime `env.sh`, verified deployed helpers and unchanged toolchain,
+  manifest and Lake-option hashes, elan 4.2.4, absolute Lean 4.35.0
+  (`eb6cafb7290e8bd5f2937522d8d804f58f02bafc`) and Lake 5.0.0-src+eb6cafb.
+  Installed nine missing exact manifest URL/revision pairs into this target's
+  own `.lake`; dependency sources are clean. Shared archive pins match:
+  reused 2,325 cached archives with no downloads; scoped imports passed.
+  Costly commands use `prepare.py`'s guarded runner with two Lean threads,
+  2 GiB disk reserve, 12 GiB process-group RSS and a 30-minute command limit.
+  No pin changes, `lake update`, sibling preparation or environment publication.
+- **Checked contribution:** new `UnaryCountMachine.lean` supplies a six-stack
+  finite Boolean TM2. `increment_exits` consumes one mark, runs framed
+  successor, and restores the counter through two exactly charged transfers.
+  `countLoop_exits` counts arbitrary Boolean marks, ignoring their values,
+  with every loop test charged. `emit_exits` prepends the full header without
+  inspecting caller output. `routine_exits` initializes zero explicitly,
+  emits `BinaryNatLists.encodeNat marks.length`, preserves the arbitrary
+  output suffix and clears every work stack. `natural_exits` specializes to
+  replicated unary marks. `header_length_le` bounds output by `2m + 1`;
+  `runSteps_le`, `routine_exitsLE` and `outputsInTime` give
+  `m * (12m + 30) + 8`, including initialization, all transfers, cleanup,
+  reset and halt. `computableInPolyTime` packages `List.length` from
+  `RawBoolList.finEncoding` to `FramedNat.finEncoding`. The input size is the
+  supplied mark count, not an already encoded count's bit length. This is
+  the executable header-generation kernel; extracting occurrence marks from
+  a formula, full framed variable-list assembly and dense renaming remain
+  separate. No new hardness transfer is claimed.
+- **Failures/API discoveries:** first targeted build rejected mandatory
+  `simp only` on transfer goals already in normal form and an unavailable
+  `nlinarith` tactic. Optional wrapper unfolding handles those transfer goals;
+  distributing `Nat.mul_add` lets existing `omega` close the polynomial bound
+  without another tactic import. Removing a redundant `rfl` branch for linter
+  cleanup initially also removed needed pointwise update proofs; explicit
+  sequential `stack_eq` restores those proofs without warnings. Third target
+  build passes. Existing `FramedSucc.frame_length_le` plus induction bounds
+  the counter size including zero and carry overflow, without introducing a
+  raw-numeric cost assumption. No resource guard fired.
+- **Coq comparison:** read sibling `SourceAdapter.v` and
+  `CompilerComplexity.v` only, including occurrence-preserving source syntax,
+  `formula_length_le_size`, `clause_length_le_size`, and the explicit
+  `max_cnf_variable_time` / `cnf_has_variables_time` recurrences. These
+  motivate charging traversal and size separately. Coq lambda-calculus
+  costs and proof terms are not Lean evidence; no external Coq source was
+  needed for this small kernel.
+- **Verification:** targeted build passed 1,286 jobs; full `lake build`
+  passed 2,501 jobs. Root/Audit imports updated; eleven new axiom reports
+  added. All eleven new and all 913 nonempty project axiom reports use only
+  `propext`, `Classical.choice`, `Quot.sound`; five reports are
+  axiom-free. The 161-file Lean/config scan finds only the existing
+  explanatory `proof_wanted` comment. New module has no warnings. Complete diff
+  reviewed and `git diff --check` passed. Commands after sourcing runtime
+  `env.sh`: `python3 /tmp/np-run-20261114.py prepare`,
+  `python3 /tmp/np-run-20261114.py build LeanNPHardness.UnaryCountMachine`,
+  and `python3 /tmp/np-run-20261114.py build`. Evidence:
+  `/tmp/np-readiness-20261114.json`, `/tmp/np-prepare-20261114.log`,
+  `/tmp/np-unary-count-target-20261114-v3.log`,
+  `/tmp/np-unary-count-full-20261114.log`,
+  `/tmp/np-unary-count-audits-20261114.json`,
+  `/tmp/np-unary-count-source-scan-20261114.json`.
+- **Ending state:** verified increment prepared for ordinary commit/push on
+  tracking `main`; full resulting hash and HEAD/tracking/live-remote equality
+  are recorded after push in run memory and the final report. Final fetch
+  still matched the starting commit (0 ahead / 0 behind), with no concurrent
+  local researcher. No remaining blocker for this increment. Sibling
+  repositories remain untouched; no Raksasa access, schedule changes or
+  environment publication. Remote CI is unverified.
+- **Next experiment:** extend isolated complete-frame restoration with one
+  unary mark per frame. Prove source-order output and exactly
+  `List.replicate formula.vars.length true` on an independent mark stack,
+  retaining caller input. Then embed `UnaryCount.routine` to prepend its
+  header above the restored body and caller output without scanning either.
+  Charge mark generation, embedding and header assembly using
+  `OrderedFormula.vars_length_le`; compose the resulting full `FramedNatList`
+  encoding with `DictionaryBuild` only after the complete contract builds.

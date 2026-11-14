@@ -279,10 +279,20 @@ both count stacks with unchanged exact cost; `runBound_eq` adds `2V + 3m + 1`
 steps in variable-body bits `V` and occurrence count `m`. `formula_exitsLE`
 gives `N * (10N + 36) + 6` in complete original formula bits, independent of
 both suffix lengths. `output_length_le` separately proves no output growth.
-The total variable count header, standalone encoding packaging, malformed-stream
-rejection and full dense renaming remain pending. These are routine contracts
-on canonical input, not a polynomial bound for arbitrary binary-to-unary
-conversion in header bits.
+`UnaryCount.routine_exits` supplies the next header-generation kernel: it
+consumes an isolated mark stack and prepends its framed binary length to
+arbitrary caller output, clearing all workspace. `increment_exits` charges
+framed successor and both counter-restoration transfers; `countLoop_exits`
+charges every mark and test. `runSteps_le` and `outputsInTime` give
+`m * (12m + 30) + 8` in the supplied mark count `m`, including initialization,
+final emission, cleanup, reset and halt. `header_length_le` bounds the frame
+by `2m + 1` bits. `computableInPolyTime` packages `List.length` from raw
+Boolean-list encoding to framed natural encoding. Extracting one mark per
+variable occurrence and composing this kernel with restoration remain pending.
+Full framed formula-variable output, standalone formula encoding conversion,
+malformed-stream rejection and full dense renaming remain pending. Formula
+traversal uses canonical inputs; its count decoding is not bounded polynomially
+in arbitrary binary header bits alone.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

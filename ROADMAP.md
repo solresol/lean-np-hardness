@@ -370,10 +370,19 @@ for those membership results.
   and occurrence count; `formula_exitsLE` gives `N * (10N + 36) + 6` in full
   formula bits. `output_length_le` proves no growth separately, and
   `vars_length_le` reuses the existing occurrence bound in original input bits.
-  Next compute and prepend the total occurrence-count header to produce
-  `FramedNatList`-encoded `Formula.vars`, then compose with `DictionaryBuild`.
-  Keep the body isolated while counting; preserve the caller suffixes and
-  charge header generation/assembly to the original formula bits.
+  `UnaryCount.routine_exits` now converts an isolated mark stack to its
+  framed binary length above arbitrary caller output, clearing workspace.
+  `increment_exits`, `countLoop_exits` and `emit_exits` account for successor,
+  every mark/test and all transfers. `runSteps_le` and `outputsInTime` bound
+  initialization, counting, emission, reset and halt by `m * (12m + 30) + 8`
+  in supplied marks; `header_length_le` bounds the output by `2m + 1` bits.
+  `computableInPolyTime` packages raw Boolean-list length under framed natural
+  output. Next extend isolated complete-frame restoration with one unary
+  mark per variable occurrence, prove the exact mark count, and embed this
+  kernel to prepend the total header above the restored body and caller
+  output. Preserve unread input and charge all phases to original formula
+  bits using `vars_length_le`. Then compose the resulting `FramedNatList`
+  encoding of `Formula.vars` with `DictionaryBuild`.
   Standalone packaging and malformed-input rejection remain separate.
   Updating the retained query and full renaming remain pending; full renaming
   is not yet a polynomial-time re-encoding reduction.
