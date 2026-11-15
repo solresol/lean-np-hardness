@@ -377,11 +377,17 @@ for those membership results.
   initialization, counting, emission, reset and halt by `m * (12m + 30) + 8`
   in supplied marks; `header_length_le` bounds the output by `2m + 1` bits.
   `computableInPolyTime` packages raw Boolean-list length under framed natural
-  output. Next extend isolated complete-frame restoration with one unary
-  mark per variable occurrence, prove the exact mark count, and embed this
-  kernel to prepend the total header above the restored body and caller
-  output. Preserve unread input and charge all phases to original formula
-  bits using `vars_length_le`. Then compose the resulting `FramedNatList`
+  output. `MarkedFormula.moveFrame_exits` now charges one mark push per
+  complete variable frame; `restore_exits` reverses only the isolated buffer,
+  preserving caller input, both count stacks, output and previous marks.
+  `formula_exits` emits the source-order body together with exactly
+  `List.replicate formula.vars.length true` on an independent stack.
+  Restoration costs `2V + 4m + 1`; `formula_exitsLE` gives
+  `N * (10N + 37) + 6` in original formula bits. `output_lengths_le`
+  bounds the body and marks separately. Next embed `UnaryCount.routine`
+  to prepend the total header above the restored body and caller output,
+  retaining unread input and charging all phases to original formula bits.
+  Then compose the resulting `FramedNatList`
   encoding of `Formula.vars` with `DictionaryBuild`.
   Standalone packaging and malformed-input rejection remain separate.
   Updating the retained query and full renaming remain pending; full renaming

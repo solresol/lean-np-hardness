@@ -6169,3 +6169,92 @@ avoid failed routes, and choose a materially different experiment when blocked.
   Charge mark generation, embedding and header assembly using
   `OrderedFormula.vars_length_le`; compose the resulting full `FramedNatList`
   encoding with `DictionaryBuild` only after the complete contract builds.
+
+## 2026-11-15 22:13 UTC (16 November Sydney) — source-order formula variables with occurrence marks
+
+- **Start/scope:** `f5c720a924cb91cc8600711e6959f0f1dd631619`, authorized
+  daily run for 16 November Sydney. Read AGENTS, roadmap/status, fetched
+  journal, managed Cloud runtime guidance and saved START. Verified
+  `solresol/lean-np-hardness`, clean generated `work`, sole worktree and live
+  `origin/main` equality; preserved `work` and established tracking `main`
+  after clean-state/ancestry checks. No concurrent local researcher was
+  present; the parent reports the preceding run completed and synchronized.
+  Snapshot lacked prior memory, so created it and used this journal for
+  continuity. Requested GPT-6 Astra/xhigh; exposed identity is Codex based
+  on GPT-6, with variant/effort and a model-switch control unavailable.
+- **Readiness:** explicit target-only preparation authorization supersedes
+  START's older all-project gate. Sourced runtime `env.sh`; verified deployed
+  helpers and unchanged toolchain/manifest/Lake-option hashes, elan 4.2.4,
+  absolute Lean 4.35.0 (`eb6cafb`) and its exact Lake binary. Installed nine
+  missing exact manifest URL/revision pairs only into this target's `.lake`.
+  Dependency HEADs and clean tracked sources passed before and after builds.
+  Shared-cache toolchain/common pins match; reused 2,325 archives without
+  downloads, and scoped imports passed. Costly commands use `prepare.py`'s
+  guarded runner: two Lean threads, 2 GiB reserve, 12 GiB process-group RSS,
+  30-minute limit. No pin changes, `lake update`, sibling preparation or
+  environment publication. An overlapping read-only readiness invocation
+  correctly refused the build lock; the final post-build check passed.
+- **Checked contribution:** `MarkedFormulaMachine.lean` supplies an eight-stack
+  finite Boolean routine. `moveFrame_exits` lifts the existing isolated
+  frame mover and charges one separate mark push, costing `2L + 3` per frame.
+  `restore_exits` preserves caller input, both independent counters, output
+  and prior marks while reversing complete frame order and adding exactly
+  one `true` per frame. `restoreSteps_eq` gives exact cost `2V + 4m + 1`,
+  including every loop test. `formula_exits` composes complete-formula
+  extraction with marked restoration, producing the source-order body of
+  `Formula.vars` and `List.replicate formula.vars.length true`; all other
+  workspace clears. Empty clauses, both signs of zero and repeated variables
+  are retained. `output_lengths_le` separately bounds body and marks by
+  original formula bits `N`; `runBound_eq`, `runBound_le` and
+  `formula_exitsLE` give `N * (10N + 37) + 6`, independent of caller suffixes.
+  Header assembly, standalone formula conversion, malformed-input rejection,
+  full dense renaming and new hardness transfer are not claimed.
+- **Failures/API discovery:** first target build passed with one unreachable
+  `omega` fallback. Replacing the entire conversion with direct `exact
+  seq_exits ...` failed in the first full build: expected-type inference
+  selected the wrong intermediate step count before reading the component
+  proofs. Retaining `convert ... using 1` and discharging its equalities with
+  `rfl` removes the fallback and passes without warnings. This is a useful
+  distinction between arithmetic equality and expected-type inference; no
+  new arithmetic lemma or larger proof-search limit was needed. No resource
+  guard fired. Existing checked stack relocation plus `extend_exits` avoided
+  duplicating the earlier dependent-update simulation.
+- **Coq comparison:** read sibling `SourceAdapter.v` and
+  `CompilerComplexity.v`, including occurrence-preserving list syntax,
+  `formula_length_le_size`, `clause_length_le_size` and explicit traversal
+  recurrences. The exact complexity-library source was absent; checked out
+  pinned `14b5f413d2fb7adecde79c5451b483f9a1af59a8` separately at
+  `/tmp/np-coq-complexity-20261115`, verified clean and made it read-only.
+  `theories/NP/SAT/SAT.v` retains clause/formula lists and uses occurrence
+  lengths in `size_clause` / `size_cnf`; it does not supply Lean evidence.
+  No Coq proof term or lambda-calculus runtime was imported as a Lean result.
+- **Verification/files:** root and Audit imports, eight headline axiom reports,
+  README, ROADMAP and THEOREM_STATUS updated. Targeted build passed 1,458
+  jobs; final full `lake build` passed 2,502 jobs with no new-module warnings.
+  All eight new and all 921 nonempty project audits use only `propext`,
+  `Classical.choice`, `Quot.sound`; five further reports are axiom-free.
+  The 162-file Lean/config scan finds only the existing explanatory
+  `proof_wanted` comment. Diff review and `git diff --check` passed.
+  Commands after sourcing runtime `env.sh`:
+  `python3 /tmp/np-run-20261115.py prepare`,
+  `python3 /tmp/np-run-20261115.py build LeanNPHardness.MarkedFormulaMachine`,
+  `python3 /tmp/np-run-20261115.py build`, and final `check`.
+  Evidence: `/tmp/np-readiness-20261115.json`,
+  `/tmp/np-marked-formula-target-v1.log`,
+  `/tmp/np-marked-formula-full-v1-20261115.log` (failed cleanup),
+  `/tmp/np-marked-formula-full-20261115.log` (passed),
+  `/tmp/np-marked-formula-audits-20261115.json`, and
+  `/tmp/np-marked-formula-source-scan-20261115.json`.
+- **Ending state:** verified increment ready for ordinary commit/push on
+  tracking `main`; exact commit and local/tracking/live-remote equality are
+  recorded after push in run memory and the final report. No blocker remains
+  for this increment. No sibling edits, Raksasa access, schedule changes or
+  environment publication. Remote CI remains unverified.
+- **Next experiment:** embed `UnaryCount.routine` into the eight-stack layout
+  after `MarkedFormula.routine`, using the now-empty buffer/count/work and
+  one emptied counter for its four private stacks. Preserve caller input;
+  route the mark stack and caller output directly. Prepend the generated
+  header above the restored body without scanning the output suffix, prove
+  full `BinaryNatLists.encodeNatList formula.vars`, and bound the sum of both
+  phases using `OrderedFormula.vars_length_le`. Only then package the
+  standalone `FramedNatList` conversion and compose with `DictionaryBuild`.

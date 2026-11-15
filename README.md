@@ -287,8 +287,15 @@ charges every mark and test. `runSteps_le` and `outputsInTime` give
 `m * (12m + 30) + 8` in the supplied mark count `m`, including initialization,
 final emission, cleanup, reset and halt. `header_length_le` bounds the frame
 by `2m + 1` bits. `computableInPolyTime` packages `List.length` from raw
-Boolean-list encoding to framed natural encoding. Extracting one mark per
-variable occurrence and composing this kernel with restoration remain pending.
+Boolean-list encoding to framed natural encoding. `MarkedFormula.formula_exits`
+now restores the source-order variable body while producing exactly
+`List.replicate formula.vars.length true` on an independent mark stack.
+`moveFrame_exits` charges each mark push; `restore_exits` preserves caller
+input, both count stacks, output and previous marks. `restoreSteps_eq` gives
+`2V + 4m + 1`; `formula_exitsLE` bounds the full run by
+`N * (10N + 37) + 6` in original formula bits. `output_lengths_le` proves
+separately that the body does not grow and the marks use at most `N` bits.
+Embedding the binary-header kernel above the restored body remains pending.
 Full framed formula-variable output, standalone formula encoding conversion,
 malformed-stream rejection and full dense renaming remain pending. Formula
 traversal uses canonical inputs; its count decoding is not bounded polynomially
