@@ -9,8 +9,8 @@ output suffixes, every occurrence and payload bit, and clears its workspace.
 Restoration costs exactly `2V + 4m + 1` in body bits `V` and occurrences `m`.
 The full formula bound is `N * (10N + 37) + 6` in original formula bits `N`.
 
-The marks are supplied for subsequent binary-header generation. This module
-does not yet assemble the full framed list or package a standalone conversion.
+The marks support binary-header generation. `FormulaVariablesMachine` separately
+assembles the full framed list and packages its standalone conversion.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.MarkedFormula

@@ -279,7 +279,7 @@ both count stacks with unchanged exact cost; `runBound_eq` adds `2V + 3m + 1`
 steps in variable-body bits `V` and occurrence count `m`. `formula_exitsLE`
 gives `N * (10N + 36) + 6` in complete original formula bits, independent of
 both suffix lengths. `output_length_le` separately proves no output growth.
-`UnaryCount.routine_exits` supplies the next header-generation kernel: it
+`UnaryCount.routine_exits` supplies the header-generation kernel: it
 consumes an isolated mark stack and prepends its framed binary length to
 arbitrary caller output, clearing all workspace. `increment_exits` charges
 framed successor and both counter-restoration transfers; `countLoop_exits`
@@ -295,8 +295,15 @@ input, both count stacks, output and previous marks. `restoreSteps_eq` gives
 `2V + 4m + 1`; `formula_exitsLE` bounds the full run by
 `N * (10N + 37) + 6` in original formula bits. `output_lengths_le` proves
 separately that the body does not grow and the marks use at most `N` bits.
-Embedding the binary-header kernel above the restored body remains pending.
-Full framed formula-variable output, standalone formula encoding conversion,
+`FormulaVariables.header_exits` now embeds that kernel in the emptied workspace,
+retaining caller input and prepending the complete count above the restored body.
+`formula_exits` emits exactly `BinaryNatLists.encodeNatList formula.vars`,
+preserves both arbitrary suffixes and clears all workspace. `runBound_le` and
+`formula_exitsLE` bound extraction and header generation together by
+`N * (22N + 67) + 14`; `output_length_le` separately bounds the full list by
+`3N + 1` bits. `outputsInTime` includes canonical reset and halt, and
+`computableInPolyTime` packages `Formula.vars` from `CNF.Formula.finEncoding`
+to `FramedNatList.finEncoding`. Composition with `DictionaryBuild`,
 malformed-stream rejection and full dense renaming remain pending. Formula
 traversal uses canonical inputs; its count decoding is not bounded polynomially
 in arbitrary binary header bits alone.

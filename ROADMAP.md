@@ -384,12 +384,18 @@ for those membership results.
   `List.replicate formula.vars.length true` on an independent stack.
   Restoration costs `2V + 4m + 1`; `formula_exitsLE` gives
   `N * (10N + 37) + 6` in original formula bits. `output_lengths_le`
-  bounds the body and marks separately. Next embed `UnaryCount.routine`
-  to prepend the total header above the restored body and caller output,
-  retaining unread input and charging all phases to original formula bits.
-  Then compose the resulting `FramedNatList`
-  encoding of `Formula.vars` with `DictionaryBuild`.
-  Standalone packaging and malformed-input rejection remain separate.
+  bounds the body and marks separately. `FormulaVariables.header_exits` now
+  embeds `UnaryCount.routine` in the emptied workspace, retaining caller input
+  and the unused outer counter with unchanged exact cost. `formula_exits`
+  prepends the total header, yielding the full `BinaryNatLists.encodeNatList
+  formula.vars` above caller output with both suffixes preserved and workspace
+  empty. `runBound_le` / `formula_exitsLE` give `N * (22N + 67) + 14` in original
+  formula bits; `output_length_le` bounds the complete list by `3N + 1` bits.
+  `outputsInTime` includes reset and halt; `computableInPolyTime` packages
+  `Formula.vars` from binary CNF to `FramedNatList.finEncoding`.
+  Next compose this conversion with `DictionaryBuild`, identify the output
+  with `Formula.variableDictionary`, and retain the original formula for
+  subsequent lookups. Malformed-input rejection remains separate.
   Updating the retained query and full renaming remain pending; full renaming
   is not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common

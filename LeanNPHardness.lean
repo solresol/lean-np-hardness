@@ -150,6 +150,7 @@ import LeanNPHardness.CountedFormulaMachine
 import LeanNPHardness.OrderedFormulaMachine
 import LeanNPHardness.UnaryCountMachine
 import LeanNPHardness.MarkedFormulaMachine
+import LeanNPHardness.FormulaVariablesMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine

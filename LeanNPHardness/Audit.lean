@@ -65,6 +65,7 @@ import LeanNPHardness.CountedFormulaMachine
 import LeanNPHardness.OrderedFormulaMachine
 import LeanNPHardness.UnaryCountMachine
 import LeanNPHardness.MarkedFormulaMachine
+import LeanNPHardness.FormulaVariablesMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine
@@ -1108,3 +1109,16 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.MarkedFormula.output_lengths_le
 #print axioms LeanNPHardness.MachinePrimitives.MarkedFormula.runBound_le
 #print axioms LeanNPHardness.MachinePrimitives.MarkedFormula.formula_exitsLE
+
+#print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.headerStacks_update
+#print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.headerStmt_stepAux
+#print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.header_step
+#print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.header_run
+#print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.headerRoutine_exits
+#print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.header_exits
+#print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.formula_exits
+#print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.runBound_le
+#print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.formula_exitsLE
+#print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.output_length_le
+#print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.outputsInTime
+#print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.computableInPolyTime

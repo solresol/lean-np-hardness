@@ -6258,3 +6258,93 @@ avoid failed routes, and choose a materially different experiment when blocked.
   full `BinaryNatLists.encodeNatList formula.vars`, and bound the sum of both
   phases using `OrderedFormula.vars_length_le`. Only then package the
   standalone `FramedNatList` conversion and compose with `DictionaryBuild`.
+
+## 2026-11-16 22:11 UTC (17 November Sydney) — complete framed formula-variable conversion
+
+- **Start/scope:** `b8afbf3032bcf4877e1480f3b75797bf8242d356`, authorized
+  daily run for 17 November Sydney. Read AGENTS, current roadmap/status,
+  fetched journal, managed Cloud runtime guidance and saved START. Verified
+  `solresol/lean-np-hardness`, clean generated `work`, sole worktree and live
+  `origin/main` equality. Preserved `work`; established tracking `main` only
+  after clean-state and ancestry checks. Controller checked task overlap;
+  no concurrent local researcher was present and no new worker was launched.
+  Snapshot lacked prior memory, so created it and used this journal for
+  continuity. Requested Astra/xhigh cannot be verified: exposed identity is
+  Codex based on GPT-6 and no model-switch control is available.
+- **Readiness:** target-only dependency preparation is explicitly authorized,
+  superseding START's older all-project gate. Sourced runtime `env.sh`,
+  verified deployed helpers and unchanged toolchain/manifest/Lake-option
+  hashes, elan 4.2.4, absolute Lean 4.35.0 (`eb6cafb`) and exact Lake binary.
+  Installed nine missing exact manifest URL/revision pairs only into this
+  target's `.lake`. Dependency HEADs and clean tracked sources passed before
+  and after builds. Shared-cache toolchain/common pins match; reused 2,325
+  archives without downloads, and scoped imports passed. Costly commands
+  use `prepare.py`'s guarded runner: two Lean threads, 2 GiB disk reserve,
+  12 GiB process-group RSS and a 30-minute limit. No pin changes, `lake update`,
+  sibling preparation or environment publication.
+- **Checked contribution:** new `FormulaVariablesMachine.lean` composes
+  marked extraction and binary header generation on the same eight Boolean
+  stacks. `headerStacks_update`, `headerStmt_stepAux`, `header_step`,
+  `header_run` and `headerRoutine_exits` relocate the six-stack count routine
+  with unchanged exact cost. `header_exits` reuses emptied buffer/count/work/
+  inner stacks, preserves arbitrary caller input and unused outer-counter
+  contents, and prepends the count without scanning caller output.
+  `formula_exits` produces exactly `BinaryNatLists.encodeNatList formula.vars`
+  in source order with every occurrence, both suffixes and empty workspace.
+  Empty clauses, repetitions and both signs of zero are covered.
+  `runBound_le` / `formula_exitsLE` charge both phases by
+  `N * (22N + 67) + 14` in original formula bits, independent of suffixes.
+  `output_length_le` separately gives `3N + 1` bits. `outputsInTime` includes
+  canonical reset and halt; `computableInPolyTime` computes `Formula.vars`
+  from `CNF.Formula.finEncoding` to `FramedNatList.finEncoding`.
+  Dictionary composition, malformed-input rejection, full dense renaming
+  and new hardness transfer are not claimed.
+- **Failures/API discovery:** first targeted build failed only at the final
+  `outputsInTime` rewrite: after applying `toMachine_outputsInTime_le`, the
+  goal displayed expanded `toMachine`, while stack equalities named
+  `computer`; implicit transparency prevented `rw` from matching. Explicitly
+  changing the goal back to `routine.ExitsLE (initList computer _).stk _
+  (haltList computer _).stk` fixes the wrapper without changing the machine
+  or increasing proof-search limits. Second targeted build passes without
+  new-module warnings. Update-before-stack-cases simulation handles the
+  dependent stack family; `Nat.mul_le_mul` transports the count polynomial
+  using the existing `OrderedFormula.vars_length_le`. No resource guard fired.
+- **Coq comparison:** read sibling `SourceAdapter.v` and
+  `CompilerComplexity.v` only, including occurrence-preserving syntax,
+  formula/clause length bounds and explicit traversal recurrences. Missing
+  complexity-library source was fetched at exact pin
+  `14b5f413d2fb7adecde79c5451b483f9a1af59a8` into the separate, clean, read-only
+  `/tmp/np-coq-complexity-20261117`. Its `theories/NP/SAT/SAT.v` retains
+  clause/formula lists and counts occurrences in `size_clause` / `size_cnf`.
+  No Coq proof or lambda-calculus cost is used as Lean evidence.
+- **Verification/files:** root/Audit imports, twelve new axiom reports,
+  README, ROADMAP, THEOREM_STATUS and predecessor-module documentation
+  synchronized. Targeted build passed 1,461 jobs; full build and final
+  incremental full build after documentation comments passed 2,503 jobs.
+  The four basic embedding audits use only `propext`, `Quot.sound`; the
+  other eight add `Classical.choice`. All 933 nonempty project reports use
+  only those standard axioms; five more are axiom-free. The 163-file
+  Lean/config scan finds only the existing explanatory `proof_wanted` comment.
+  Diff review and `git diff --check` passed. Commands after sourcing runtime
+  `env.sh`: `python3 /tmp/np-run-20261117.py prepare`,
+  `python3 /tmp/np-run-20261117.py build LeanNPHardness.FormulaVariablesMachine`,
+  `python3 /tmp/np-run-20261117.py build`, and final `check`.
+  Evidence: `/tmp/np-readiness-20261117.json`,
+  `/tmp/np-prepare-20261117.log`, `/tmp/np-formula-variables-target-v1.log`
+  (failed wrapper), `/tmp/np-formula-variables-target-v2.log` (passed),
+  `/tmp/np-formula-variables-full-20261117.log`,
+  `/tmp/np-formula-variables-final-20261117.log`,
+  `/tmp/np-formula-variables-audits-20261117.json`, and
+  `/tmp/np-formula-variables-source-scan-20261117.json`.
+- **Ending state:** verified increment prepared for ordinary commit/push on
+  tracking `main`; full resulting hash and local/tracking/live-remote equality
+  are recorded after push in run memory and the final report. No blocker for
+  this increment. Siblings untouched; no Raksasa access or schedule changes.
+  Parent handles the separate post-push synchronization. Remote CI unverified.
+- **Next experiment:** compose `FormulaVariables.computableInPolyTime` with
+  `MachineAdapters.DictionaryBuild.computableInPolyTime`; use
+  `DictionaryConstruction.build_vars` to identify `Formula.variableDictionary`.
+  Then use `MachineAdapters.retainInputComputableInPolyTime` to return the
+  dictionary alongside the original formula, charging all copying and
+  intermediate sizes through checked composition. This prepares repeated
+  dense-index lookup without dropping or reordering source occurrences.

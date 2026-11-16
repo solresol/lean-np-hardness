@@ -12,8 +12,8 @@ two final transfers prepend its frame to arbitrary caller output. The six
 Boolean stacks finish empty except for that output. Marker values are ignored.
 
 The input-size measure is the number of supplied marks, not the bit length
-of an already encoded count. Extracting marks from a formula or frame body
-and composing full framed-list assembly remain separate obligations.
+of an already encoded count. `MarkedFormulaMachine` supplies formula occurrence
+marks; `FormulaVariablesMachine` separately composes full framed-list assembly.
 -/
 
 namespace LeanNPHardness.MachinePrimitives.UnaryCount
