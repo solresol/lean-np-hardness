@@ -393,9 +393,17 @@ for those membership results.
   formula bits; `output_length_le` bounds the complete list by `3N + 1` bits.
   `outputsInTime` includes reset and halt; `computableInPolyTime` packages
   `Formula.vars` from binary CNF to `FramedNatList.finEncoding`.
-  Next compose this conversion with `DictionaryBuild`, identify the output
-  with `Formula.variableDictionary`, and retain the original formula for
-  subsequent lookups. Malformed-input rejection remains separate.
+  `FormulaDictionary.computableInPolyTime` now composes this conversion with
+  `DictionaryBuild`, using `DictionaryConstruction.build_vars` to obtain
+  exactly `Formula.variableDictionary`. `preservingComputableInPolyTime`
+  returns that dictionary alongside the unchanged original formula, charging
+  all copying and intermediate transfers through the checked composition and
+  retained-input adapters. `prepare_encode_length_le` independently bounds
+  the tagged output by `4N + 1` symbols in original formula bits; `lookup_prepare`
+  identifies dictionary lookup with `denseIndex`. Next connect a single literal
+  lookup to the retained dictionary, preserving polarity and unread formula
+  contents, before lifting it over the counted traversal. Malformed-input
+  rejection remains separate.
   Updating the retained query and full renaming remain pending; full renaming
   is not yet a polynomial-time re-encoding reduction.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common

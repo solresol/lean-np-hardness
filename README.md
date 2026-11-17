@@ -51,8 +51,9 @@ lookup using that same machine and polynomial. `FramedNatLookup.finEncoding`
 serializes the input as `(dictionary, [query])`, with checked round trip,
 injectivity, exact bit length, and decoder rejection of non-singleton queries
 and trailing data. The unary result size is at most the input bit length;
-`lookup_denseIndex` supplies the dense-renaming interface. Dictionary
-construction and formula traversal remain pending.
+`lookup_denseIndex` supplies the dense-renaming interface. `FormulaDictionary`
+now constructs the dictionary from a formula and retains the original source;
+connecting repeated lookups to that traversal remains pending.
 
 `PairDuplication.computableInPolyTime` copies one encoded value into its
 canonical tagged pair in exactly `6n + 3` TM2 steps for input length `n`,
@@ -303,10 +304,22 @@ preserves both arbitrary suffixes and clears all workspace. `runBound_le` and
 `N * (22N + 67) + 14`; `output_length_le` separately bounds the full list by
 `3N + 1` bits. `outputsInTime` includes canonical reset and halt, and
 `computableInPolyTime` packages `Formula.vars` from `CNF.Formula.finEncoding`
-to `FramedNatList.finEncoding`. Composition with `DictionaryBuild`,
-malformed-stream rejection and full dense renaming remain pending. Formula
-traversal uses canonical inputs; its count decoding is not bounded polynomially
-in arbitrary binary header bits alone.
+to `FramedNatList.finEncoding`. Formula traversal uses canonical inputs; its
+count decoding is not bounded polynomially in arbitrary binary header bits alone.
+
+`FormulaDictionary.computableInPolyTime` now composes that extraction with
+`DictionaryBuild.computableInPolyTime`, using `DictionaryConstruction.build_vars`
+to obtain exactly `Formula.variableDictionary`. `preservingComputableInPolyTime`
+computes `(formula.variableDictionary, formula)` from one binary formula input,
+with a tagged pair of the framed dictionary and unchanged formula as output.
+The checked composition and retained-input adapters charge transfers, copying,
+cleanup and halting in original input bits. `prepare_formula` preserves every
+source occurrence; `prepare_dictionary_nodup` applies only to the auxiliary
+dictionary, and `lookup_prepare` connects it to `denseIndex`.
+`prepare_encode_length_le` separately bounds the complete output by `4N + 1`
+tagged symbols for original formula bit length `N`. Repeated lookup during
+formula traversal, malformed-stream rejection and full dense renaming remain
+pending; this preparation does not supply a new hardness transfer.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

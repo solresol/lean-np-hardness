@@ -6348,3 +6348,88 @@ avoid failed routes, and choose a materially different experiment when blocked.
   dictionary alongside the original formula, charging all copying and
   intermediate sizes through checked composition. This prepares repeated
   dense-index lookup without dropping or reordering source occurrences.
+
+
+## 2026-11-17 22:07 UTC — polynomial-time formula dictionary with retained source
+
+- **Start/scope:** `d38f56afc7a50b8a6381ff16f481ce219b408904`, clean generated
+  `work`. Read AGENTS, roadmap/status, fetched journal, saved START and managed
+  Cloud runtime guidance. Verified `solresol/lean-np-hardness`, sole worktree,
+  clean state, ancestry and equality with fetched/live `origin/main` before
+  establishing tracking `main`; preserved `work` at the starting commit.
+  Parent checked run overlap; no concurrent local Lean researcher was present.
+  Snapshot lacked run memory, so created it and used this journal for continuity.
+  Requested Astra/xhigh is not verifiable from this runtime: exposed identity
+  is Codex based on GPT-6, with no exposed model/effort confirmation.
+- **Readiness:** sourced `/workspace/shared/theorem-provers/runtime/env.sh`;
+  verified the deployed guarded runner, elan 4.2.4, absolute Lean 4.35.0
+  (`eb6cafb7290e8bd5f2937522d8d804f58f02bafc`) and Lake 5.0.0-src+eb6cafb.
+  Toolchain/manifest/Lake-option hashes match the starting commit and remain
+  unchanged. Installed nine missing exact URL/revision pairs only in this
+  target's `.lake`, under the explicit scoped-setup authorization. All HEADs,
+  origin URLs and clean tracked dependency sources verified before/after builds.
+  Common shared-cache toolchain and dependency pins match; reused 2,325 cached
+  archives with no downloads; all nine direct Mathlib imports passed.
+  Commands use `prepare.py`'s guarded runner with two Lean threads, 2 GiB disk
+  reserve, 12 GiB process-group RSS and a 30-minute command limit. No guard
+  fired; no pin changes, `lake update`, sibling preparation or publication.
+- **Checked increment:** new `FormulaDictionaryMachine.lean`.
+  `FormulaDictionary.computableInPolyTime` composes the complete framed
+  `Formula.vars` extractor with `DictionaryBuild.computableInPolyTime`;
+  `DictionaryConstruction.build_vars` identifies the output with the exact
+  `Formula.variableDictionary`. Executable `prepare` returns that dictionary
+  and the unchanged source, under `outputEncoding`, the tagged framed-list /
+  binary-CNF pair. `prepare_formula`, `prepare_dictionary_nodup` and
+  `lookup_prepare` preserve source occurrences, confine deduplication to the
+  auxiliary dictionary, and identify lookup with `denseIndex`, respectively.
+  `prepare_encode_length_le` separately bounds output by `4N + 1` tagged
+  symbols for original formula bit length `N`. `preservingComputableInPolyTime`
+  uses checked input duplication and pair-left computation, with all copying,
+  intermediate transfers, cleanup and halting charged by the checked generic
+  TM2 composition polynomial in original input bits. No repeated-lookup loop,
+  full dense renaming, malformed-stream rejection or new hardness transfer
+  is claimed.
+- **Failures/API discovery:** no failed Lean build or new-module warning.
+  `simpa only [Function.comp_def, DictionaryConstruction.build_vars]` transports
+  the composed witness directly to the existing dictionary function.
+  The exact retention helper is
+  `MachineAdapters.PairDuplication.retainInputComputableInPolyTime`.
+  `PairEncoding.finEncoding_encode_length` and the existing dictionary-size
+  theorem yield the separate linear output bound; no new machine dispatcher,
+  proof-search limit or package-option change is needed.
+- **Coq comparison:** read sibling `SourceAdapter.v` and
+  `CompilerComplexity.v` only, including list-preserving source syntax and
+  separate encoded-size/runtime bounds. Missing upstream source was fetched
+  at pin `14b5f413d2fb7adecde79c5451b483f9a1af59a8` into the separate clean,
+  read-only `/tmp/np-coq-complexity-20261117-dictionary` checkout.
+  `theories/NP/SAT/SAT.v` retains list occurrences and counts clause/formula
+  entries in its structural size measure. This comparison guides the shape
+  of the retained-source contract; neither Coq terms nor its lambda-calculus
+  costs serve as Lean evidence or binary/TM2 runtime bounds.
+- **Verification/files:** root/Audit imports, six audits, README, ROADMAP and
+  THEOREM_STATUS synchronized. First targeted build passed 1,489 jobs; full
+  `lake build` passed 2,504 jobs. Both machine witnesses and the output-size
+  theorem use only `propext`, `Classical.choice`, `Quot.sound`; the three
+  semantic contracts are axiom-free. All 936 nonempty project reports use
+  only those standard axioms, and eight reports are axiom-free. The 164-file
+  Lean/config scan finds only the existing explanatory `proof_wanted` comment.
+  Diff review and `git diff --check` passed. Commands after sourcing runtime
+  `env.sh`: `python3 /tmp/np-run-20261117-dictionary.py prepare`,
+  `python3 /tmp/np-run-20261117-dictionary.py build LeanNPHardness.FormulaDictionaryMachine`,
+  `python3 /tmp/np-run-20261117-dictionary.py build`, and final `check`.
+  Evidence: `/tmp/np-readiness-20261117-dictionary.json`,
+  `/tmp/np-prepare-20261117-dictionary.log`,
+  `/tmp/np-dictionary-target-v1.log`, `/tmp/np-dictionary-full-20261117.log`,
+  `/tmp/np-dictionary-audits-20261117.json`, and
+  `/tmp/np-dictionary-source-scan-20261117.json`.
+- **Ending state:** verified increment ready for ordinary commit and push on
+  tracking `main`; resulting hash and local/tracking/live-remote equality are
+  recorded after push in run memory and the final report. No blocker for this
+  increment. Siblings unchanged; no schedule changes or Raksasa access. Parent
+  handles synchronization separately. Remote CI remains unverified.
+- **Next experiment:** connect one literal to the retained dictionary using
+  `DictionaryLookupEncoding.lookupComputableInPolyTime`, preserving its
+  polarity and remaining formula contents. Specify the output encoding and
+  charge loading/return transfers before lifting the lookup over counted
+  clauses and formulas. Keep the existing unary index output distinct from
+  a proved whole-formula unary re-encoding reduction.

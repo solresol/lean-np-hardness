@@ -66,6 +66,7 @@ import LeanNPHardness.OrderedFormulaMachine
 import LeanNPHardness.UnaryCountMachine
 import LeanNPHardness.MarkedFormulaMachine
 import LeanNPHardness.FormulaVariablesMachine
+import LeanNPHardness.FormulaDictionaryMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine
@@ -1122,3 +1123,10 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.output_length_le
 #print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.outputsInTime
 #print axioms LeanNPHardness.MachinePrimitives.FormulaVariables.computableInPolyTime
+
+#print axioms LeanNPHardness.MachineAdapters.FormulaDictionary.computableInPolyTime
+#print axioms LeanNPHardness.MachineAdapters.FormulaDictionary.prepare_formula
+#print axioms LeanNPHardness.MachineAdapters.FormulaDictionary.prepare_dictionary_nodup
+#print axioms LeanNPHardness.MachineAdapters.FormulaDictionary.lookup_prepare
+#print axioms LeanNPHardness.MachineAdapters.FormulaDictionary.prepare_encode_length_le
+#print axioms LeanNPHardness.MachineAdapters.FormulaDictionary.preservingComputableInPolyTime
