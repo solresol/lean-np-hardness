@@ -6433,3 +6433,86 @@ avoid failed routes, and choose a materially different experiment when blocked.
   charge loading/return transfers before lifting the lookup over counted
   clauses and formulas. Keep the existing unary index output distinct from
   a proved whole-formula unary re-encoding reduction.
+
+
+## 2026-11-18 22:05 UTC — literal lookup with retained source and context
+
+- **Start/scope:** `a2c1c73aa69b22ec9fdfbf910044843fb88ac9f0`, clean generated
+  `work`. Read AGENTS, roadmap/status, prior journal, saved START and managed
+  Cloud runtime guidance. Verified `solresol/lean-np-hardness`, sole checkout,
+  clean state and equality/ancestry with fetched/live `origin/main`; preserved
+  `work` and established tracking `main`. No concurrent local Lean researcher
+  observed; live remote remained unchanged during the run. Fresh snapshot had
+  no run memory, so created it and used the fetched journal for continuity.
+- **Readiness:** sourced shared runtime `env.sh`, verified the deployed guarded
+  runner, elan 4.2.4, absolute Lean 4.35.0
+  (`eb6cafb7290e8bd5f2937522d8d804f58f02bafc`) and Lake 5.0.0-src+eb6cafb.
+  Toolchain/manifest/Lake-option hashes match the starting commit. Installed
+  nine missing exact dependency URL/revision pairs only in this target's
+  `.lake` under scoped authorization; all HEADs, origins and clean tracked
+  sources verified before/after builds. Shared-cache toolchain and common
+  dependency pins match; reused 2,325 archives without downloading. All nine
+  direct Mathlib imports passed. Commands use `prepare.py`'s guarded runner:
+  two Lean threads, 2 GiB reserve, 12 GiB process-group RSS, 30-minute limit.
+  No guard fired; no pin changes, `lake update`, sibling setup or publication.
+- **Checked increment:** `LiteralDictionaryMachine.lean` defines tagged packed
+  literal/framed dictionary input and executable first-occurrence `lookup`.
+  `computableInPolyTime` composes literal-variable extraction, pair-left
+  dictionary retention and complete tagged lookup, returning the unary index
+  or dictionary-length absence sentinel. `preservingComputableInPolyTime`
+  returns that index and the exact source literal/dictionary from one input;
+  polarity and dictionary repetitions survive. `withContextComputableInPolyTime`
+  additionally retains independently encoded caller data, for example remaining
+  formula data. Checked composition charges copying, conversion, lookup,
+  loading, return transfers, cleanup and halting in the complete original
+  tagged input length. Separate size lemmas bound the index by `N` and retained
+  output by `2N`, also with context. `lookup_getElem?`, `lookup_eq_length_iff`,
+  `lookup_denseIndex`, `lookup_lt_dictionary_length` and `retained_rename`
+  supply first-occurrence, absence, in-range and sign-preserving semantics.
+  This canonical tagged interface does not yet emit renamed unary literals,
+  consume a literal from an arbitrary raw CNF suffix, or iterate over a formula.
+- **Failures/API discovery:** the first target build rejected `variable` as a
+  lambda binder (reserved keyword) and lacked the unary-encoding length lemma.
+  Renaming the binder fixed parsing. Unfolding recursive `unaryEncodeNat` alone
+  in the second attempt did not prove its length for a symbolic natural.
+  A local structural induction supplies that equality in the size proof,
+  avoiding the unrelated large `IntervalMachines` import. The third targeted
+  build passes without new-module warnings. Existing `pairReductionComputableInPolyTime`
+  transports literal-variable extraction while retaining the dictionary;
+  `PairDuplication.retainInputComputableInPolyTime` retains polarity by keeping
+  the exact packed source. No new dispatcher or elaboration-limit change needed.
+- **Coq comparison:** read sibling `SourceAdapter.v` and `CompilerComplexity.v`
+  only, including literal sign/variable decomposition, occurrence-preserving
+  exact-width syntax and separate size/runtime contracts. Missing library source
+  fetched at exact pin `14b5f413d2fb7adecde79c5451b483f9a1af59a8` into clean,
+  read-only `/tmp/np-coq-complexity-20261118`. `theories/NP/SAT/SAT.v` evaluates
+  the sign separately from the variable; `kSAT.v` counts all clause entries.
+  This guides the retained-source contract only; Coq terms and lambda-calculus
+  costs are not Lean evidence or binary/TM2 runtime bounds.
+- **Verification/files:** root/Audit imports, twelve new audits, README, ROADMAP
+  and THEOREM_STATUS synchronized. Targeted build passed 1,334 jobs; full
+  `lake build` passed 2,505 jobs. Nine new reports use only `propext`,
+  `Classical.choice`, `Quot.sound`; source retention, dense-index equality and
+  semantic reconstruction are axiom-free. All 945 nonempty project audits use
+  those standard axioms; eleven are axiom-free. The 165-file Lean/config scan
+  finds only the existing explanatory `proof_wanted` comment. Diff review and
+  `git diff --check` passed. Commands after sourcing runtime `env.sh`:
+  `python3 /tmp/np-run-20261118.py prepare`,
+  `python3 /tmp/np-run-20261118.py build LeanNPHardness.LiteralDictionaryMachine`,
+  `python3 /tmp/np-run-20261118.py build`, and final `check`.
+  Evidence: `/tmp/np-readiness-20261118.json`, `/tmp/np-prepare-20261118.log`,
+  `/tmp/np-literal-dictionary-target-v{1,2,3}.log`,
+  `/tmp/np-literal-dictionary-full-20261118.log`,
+  `/tmp/np-literal-dictionary-audits-20261118.json`, and
+  `/tmp/np-literal-dictionary-source-scan-20261118.json`.
+- **Ending state:** verified increment prepared for ordinary commit/push on
+  tracking `main`; exact resulting hash and local/tracking/live equality are
+  recorded after push in run memory and final report. No blocker for this
+  increment. Sibling repositories unchanged; no schedules or Raksasa access.
+  Parent handles synchronization separately; remote CI unverified.
+- **Next experiment:** assemble `CNF.Unary.encodeLiteral` from the unary result
+  and the retained packed literal's sign, charging polarity extraction,
+  projection and cleanup. Then load successive source frames into this tagged
+  lookup interface while retaining the dictionary and unread stream, before
+  connecting counted clause/formula traversal. Keep that machine re-encoding
+  separate from the already checked semantic `retained_rename` equality.

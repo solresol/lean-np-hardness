@@ -400,9 +400,19 @@ for those membership results.
   all copying and intermediate transfers through the checked composition and
   retained-input adapters. `prepare_encode_length_le` independently bounds
   the tagged output by `4N + 1` symbols in original formula bits; `lookup_prepare`
-  identifies dictionary lookup with `denseIndex`. Next connect a single literal
-  lookup to the retained dictionary, preserving polarity and unread formula
-  contents, before lifting it over the counted traversal. Malformed-input
+  identifies dictionary lookup with `denseIndex`.
+  `LiteralDictionary.computableInPolyTime` now connects packed-literal variable
+  extraction with tagged dictionary lookup, returning the unary first index
+  or dictionary-length sentinel. `preservingComputableInPolyTime` retains
+  the exact source literal, including polarity, and all dictionary entries;
+  `withContextComputableInPolyTime` additionally retains independently encoded
+  caller data. All copying, conversion and pair transfers are charged in the
+  full original tagged input length; separate output-size bounds give `2N`.
+  `retained_rename` gives semantic sign-preserving reconstruction, while
+  `lookup_denseIndex` and `lookup_lt_dictionary_length` connect to the formula
+  dictionary. Next emit the renamed unary literal from the result and retained
+  sign, then load successive framed literals into this canonical tagged
+  interface before lifting it over the counted traversal. Malformed-input
   rejection remains separate.
   Updating the retained query and full renaming remain pending; full renaming
   is not yet a polynomial-time re-encoding reduction.

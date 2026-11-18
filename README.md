@@ -321,6 +321,21 @@ tagged symbols for original formula bit length `N`. Repeated lookup during
 formula traversal, malformed-stream rejection and full dense renaming remain
 pending; this preparation does not supply a new hardness transfer.
 
+`LiteralDictionary.computableInPolyTime` now connects packed-literal variable
+extraction to tagged dictionary lookup. Input is a tagged pair of
+`FramedLiteral.finEncoding` and `FramedNatList.finEncoding`; output is the
+first matching index under `unaryFinEncodingNat`, or dictionary length when
+absent. `preservingComputableInPolyTime` also retains the exact source literal
+(including polarity) and every dictionary entry. `withContextComputableInPolyTime`
+retains an independently encoded context such as remaining formula data.
+Checked composition and pair adapters charge copying, conversion, lookup,
+loading, return transfers and canonical halting in the full original input
+length. The separate output bound is `2N`, with or without context.
+`retained_rename` specifies sign-preserving literal reconstruction semantically,
+and `lookup_denseIndex` identifies formula-dictionary indices. This interface
+uses canonical tagged inputs; emitting the renamed unary literal, extracting
+successive literal frames and connecting a counted traversal remain pending.
+
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
 which are built directly on the routine framework. Remarks below that a full

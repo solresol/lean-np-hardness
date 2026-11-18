@@ -67,6 +67,7 @@ import LeanNPHardness.UnaryCountMachine
 import LeanNPHardness.MarkedFormulaMachine
 import LeanNPHardness.FormulaVariablesMachine
 import LeanNPHardness.FormulaDictionaryMachine
+import LeanNPHardness.LiteralDictionaryMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine
@@ -1130,3 +1131,16 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineAdapters.FormulaDictionary.lookup_prepare
 #print axioms LeanNPHardness.MachineAdapters.FormulaDictionary.prepare_encode_length_le
 #print axioms LeanNPHardness.MachineAdapters.FormulaDictionary.preservingComputableInPolyTime
+
+#print axioms LeanNPHardness.MachineAdapters.LiteralDictionary.lookup_eq_length_iff
+#print axioms LeanNPHardness.MachineAdapters.LiteralDictionary.lookup_getElem?
+#print axioms LeanNPHardness.MachineAdapters.LiteralDictionary.computableInPolyTime
+#print axioms LeanNPHardness.MachineAdapters.LiteralDictionary.retain_source
+#print axioms LeanNPHardness.MachineAdapters.LiteralDictionary.preservingComputableInPolyTime
+#print axioms LeanNPHardness.MachineAdapters.LiteralDictionary.lookup_le_encode_length
+#print axioms LeanNPHardness.MachineAdapters.LiteralDictionary.retain_encode_length_le
+#print axioms LeanNPHardness.MachineAdapters.LiteralDictionary.lookup_denseIndex
+#print axioms LeanNPHardness.MachineAdapters.LiteralDictionary.retained_rename
+#print axioms LeanNPHardness.MachineAdapters.LiteralDictionary.lookup_lt_dictionary_length
+#print axioms LeanNPHardness.MachineAdapters.LiteralDictionary.withContextComputableInPolyTime
+#print axioms LeanNPHardness.MachineAdapters.LiteralDictionary.withContext_encode_length_le
