@@ -6516,3 +6516,68 @@ avoid failed routes, and choose a materially different experiment when blocked.
   lookup interface while retaining the dictionary and unread stream, before
   connecting counted clause/formula traversal. Keep that machine re-encoding
   separate from the already checked semantic `retained_rename` equality.
+
+## 2026-11-19 22:00 UTC (20 November Sydney) — emit a renamed unary literal
+
+- **Start.** Fetched `solresol/lean-np-hardness` at
+  `1e68f4f40ac9763673ad6e170c6e2176032dba41`. Generated `work` was clean,
+  matched live `main`, and had one worktree. Preserved `work` and established
+  tracking `main` after checking ancestry. Found no concurrent local build.
+  Shared run memory was absent in this snapshot. Created it and used the
+  fetched journal for continuity.
+- **Readiness.** Verified deployed START and guard, sourced shared runtime
+  `env.sh`, and checked elan 4.2.4, Lean 4.35.0 (`eb6cafb7290e`), Lake
+  5.0.0-src+eb6cafb, plus toolchain, manifest and Lake option hashes against
+  the starting commit. Installed all nine exact manifest revisions into the
+  target's own `.lake`. All origins and HEADs matched the shared archive
+  receipt and all tracked dependency sources were clean. Reused 2,325 cached
+  files and checked all nine direct Mathlib imports. Expensive commands used
+  the published guarded runner with two Lean threads, 2 GiB disk reserve,
+  12 GiB process-group RSS cap and 30-minute limit per command.
+- **Increment.** `LiteralRenameMachine.lean` adds `CNF.Unary.literalEncoding`,
+  using the existing unary decoder on a singleton clause. A two-stack TM2
+  pushes a mark per index symbol, skips the literal's unary length header,
+  reads its packed low bit, drains the dictionary, and prepends the sign on
+  exhaustion. An empty payload gives positive zero. `outputsInTime` supplies
+  exactly `W + 1` steps in retained lookup symbols, including cleanup and
+  halt. `assembly_steps_le` bounds this stage by `2N + 1` in the original
+  tagged lookup input length. `assembleComputableInPolyTime` and `computableInPolyTime` package the
+  postprocessor and its composition with preserving lookup. The latter
+  starts from one tagged literal/dictionary pair and charges all intermediate
+  transfers. `withContextComputableInPolyTime` carries an independent caller
+  component. `rename_dense` identifies formula-dictionary renaming.
+  `encode_length` gives one sign plus the first index or absence sentinel.
+  `encode_length_le` bounds this by the original tagged input length.
+- **Design comparison.** Sibling `SourceAdapter.v` and `CompilerComplexity.v`
+  decompose signs and variables and separate size from time. Read exact
+  upstream Coq pin `14b5f413d2fb7adecde79c5451b483f9a1af59a8` in a separate,
+  read-only comparison checkout. `SAT.v` evaluates the sign independently,
+  and `kSAT.v` counts literal occurrences. Lean's packed low bit and unary
+  sign are justified by Lean declarations.
+- **Proof experiments.** Repeated simplification of `Function.iterate_succ_apply`
+  unfolded both the first step and the induction hypothesis's remaining run.
+  A single `rw` exposes exactly one step. A definitional header-state
+  reduction and an explicit rewrite of the canonical wire theorem resolved
+  the other two initial goals. Mathlib's `unary_decode_encode_nat` already
+  proves unary length by definitional equality.
+- **Verification.** Imported the module in the root and Audit and updated the
+  README, roadmap and theorem status. Final targeted build passed 1,335 jobs
+  without new-module warnings. Full `lake build` passed all 2,506 jobs. Of
+  965 axiom reports, 953 use only standard axioms and 12 are axiom-free.
+  Eight of the nine new reports use only `propext`, `Classical.choice` and
+  `Quot.sound`; `rename_dense` is axiom-free. The 166-file source/config scan
+  found one pre-existing explanatory `proof_wanted` comment.
+  Six executable guards passed, four running the concrete assembly machine
+  through halt (both signs of zero, repeated entries, and absence). For the
+  two semantic guards, use `encodeLiteral` directly so Boolean equality
+  resolves over the concrete symbol alphabet. Final pins and dependency
+  sources passed again. Logs and parsed audits are in
+  `/tmp/np-rename-final-full-20261119.log`,
+  `/tmp/np-rename-six-guards-20261119.log` and
+  `/tmp/np-rename-verification-20261119.json`.
+- **Ending state and next target.** Verified single-literal increment ready
+  for ordinary commit and push on tracking `main`. Run memory records the
+  resulting commit and remote comparison after push. Next, isolate one
+  packed literal frame from a raw suffix, retain the reusable dictionary
+  and unread input across the call, and charge loading and return. This
+  supplies the body for counted traversal with source order and clause ends.

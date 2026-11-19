@@ -410,12 +410,17 @@ for those membership results.
   full original tagged input length; separate output-size bounds give `2N`.
   `retained_rename` gives semantic sign-preserving reconstruction, while
   `lookup_denseIndex` and `lookup_lt_dictionary_length` connect to the formula
-  dictionary. Next emit the renamed unary literal from the result and retained
-  sign, then load successive framed literals into this canonical tagged
-  interface before lifting it over the counted traversal. Malformed-input
-  rejection remains separate.
-  Updating the retained query and full renaming remain pending; full renaming
-  is not yet a polynomial-time re-encoding reduction.
+  dictionary. `LiteralRename.assembleComputableInPolyTime` now emits the full
+  unary literal in exactly one step per retained input symbol plus one step
+  for exhaustion, sign emission and halt. `LiteralRename.computableInPolyTime`
+  composes assembly with preserving lookup. `rename_dense` identifies its
+  result for the formula dictionary, and `encode_length_le` bounds its output
+  by the original tagged input length.
+  Next consume one literal from a raw framed stream with a reusable dictionary
+  and an arbitrary unread suffix. Then iterate over counted clauses and
+  formulas, preserving occurrence order and emitting clause terminators.
+  Whole-formula polynomial-time re-encoding and malformed-input rejection
+  remain open.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

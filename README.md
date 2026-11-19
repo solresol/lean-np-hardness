@@ -332,9 +332,18 @@ Checked composition and pair adapters charge copying, conversion, lookup,
 loading, return transfers and canonical halting in the full original input
 length. The separate output bound is `2N`, with or without context.
 `retained_rename` specifies sign-preserving literal reconstruction semantically,
-and `lookup_denseIndex` identifies formula-dictionary indices. This interface
-uses canonical tagged inputs; emitting the renamed unary literal, extracting
-successive literal frames and connecting a counted traversal remain pending.
+and `lookup_denseIndex` identifies formula-dictionary indices.
+
+`LiteralRename.computableInPolyTime` computes the complete unary literal from
+that tagged source. Its two-stack postprocessor reads the unary index and the
+original packed sign, then emits exactly `CNF.Unary.encodeLiteral` of the
+renamed literal. The empty payload of positive zero produces a positive sign.
+Assembly takes exactly `W + 1` steps for a retained lookup wire of length `W`,
+including draining the dictionary and halting. For an original lookup input
+of length `N`, assembly costs at most `2N + 1` steps. The complete machine
+from that input runs in polynomial time. The output has `lookup + 1` symbols
+and fits within the original tagged input length. The next step is to load
+successive literal frames while retaining the dictionary and unread stream.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
