@@ -342,8 +342,17 @@ Assembly takes exactly `W + 1` steps for a retained lookup wire of length `W`,
 including draining the dictionary and halting. For an original lookup input
 of length `N`, assembly costs at most `2N + 1` steps. The complete machine
 from that input runs in polynomial time. The output has `lookup + 1` symbols
-and fits within the original tagged input length. The next step is to load
-successive literal frames while retaining the dictionary and unread stream.
+and fits within the original tagged input length.
+
+`LiteralRenameStep.literal_exits` consumes the leading packed literal frame
+from a binary stream. It copies the framed dictionary directly into the
+renamer's private input, retains the caller's dictionary for the next call,
+and leaves the unread bits in place. The unary output stack stores the
+processed prefix in reverse, so returning one literal extends that prefix
+in source order. With `N` bits in the consumed frame and dictionary together,
+the complete step costs at most the renamer's polynomial at `N` plus
+`8N + 7`. `clause_head_exits` specializes this to dense renaming on a formula
+dictionary. Counted clause traversal and clause terminators remain pending.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

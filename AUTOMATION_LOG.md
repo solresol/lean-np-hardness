@@ -6581,3 +6581,63 @@ avoid failed routes, and choose a materially different experiment when blocked.
   packed literal frame from a raw suffix, retain the reusable dictionary
   and unread input across the call, and charge loading and return. This
   supplies the body for counted traversal with source order and clause ends.
+
+## 2026-11-20 22:17 UTC — rename one packed frame with a reusable dictionary
+
+- **Start and readiness.** Clean generated `work` and fetched `origin/main`
+  both pointed to `d57008f626cbce7c95df8ad093539867847c3989`. Preserved
+  `work`, checked ancestry and established tracking `main`. Found one
+  worktree and no competing build. The snapshot had no run memory, so this
+  journal supplied continuity. Verified the deployed Start instructions,
+  sourced the shared runtime and used its absolute Lean 4.35.0 and Lake
+  5.0.0-src+eb6cafb with elan 4.2.4. Toolchain, manifest and Lake options
+  matched the starting commit. Installed the nine exact dependency revisions
+  in this checkout; URLs and revisions matched the shared archive receipt.
+  Reused 2,325 cached artifacts and checked all nine direct Mathlib imports.
+  Costly commands used the published guard with two Lean threads, 2 GiB
+  disk reserve, 12 GiB process-group RSS and a 30-minute limit.
+- **Result.** New `LiteralRenameStep.lean` isolates a leading packed frame
+  with `FrameMove`, copies the right-tagged dictionary directly into the
+  private input with `copyAll`, then prepends the left-tagged frame.
+  `load_exits` takes exactly `6F + 4D + 6` steps in full frame/dictionary
+  bit lengths. `routine_exits` calls the checked renamer and transfers its
+  `R` result symbols to the accumulator in `2R + 1` more steps. The return
+  transfer stores the processed prefix in reverse, so a later loop can
+  traverse left to right and restore order once. `bounded_exits` and the
+  concrete `literal_exits` give `P(N) + 8N + 7` for the renamer's polynomial
+  `P` and `N = F + D`. The framed dictionary and unread suffix survive each
+  call, with scratch and private stacks empty. `clause_head_exits` identifies
+  the updated prefix with dense renaming and retains every remaining frame.
+- **Design comparison.** Read sibling `SourceAdapter.v` on exact-three
+  occurrence counts and `CompilerComplexity.v` on literal/clause sizes.
+  In a separate read-only checkout of the sibling's Coq complexity pin
+  `14b5f413d2fb7adecde79c5451b483f9a1af59a8`, `SAT.evalClause_step_inv`
+  decomposes a head occurrence and tail; `kCNF_clause_length` counts all
+  entries. The Lean stack contracts and costs were proved using TM2 routines.
+- **Proof experiments.** Inferring list append from projected encoding
+  alphabets failed at the raw-bit boundary. Stating the input with
+  `BinaryNatLists.encodeNat` and `encodeNatList` makes the Boolean alphabet
+  explicit; the mapped wire equality connects it to the private input.
+  Constructor disjointness handles dependent stack indices where `decide`
+  rejected the free machine parameter. Unfolding `haltList` on its output
+  index cancels the return alphabet equivalence.
+- **Checks.** Root and Audit import the module; README, ROADMAP and
+  THEOREM_STATUS record the checked interface. The targeted build passed
+  1,339 jobs without new-module warnings. Full `lake build` passed 2,507.
+  All five new axiom reports use only `propext`, `Classical.choice` and
+  `Quot.sound`. All 970 project reports were checked, including 12 axiom-free
+  reports. The 167-file source/config scan found one historical `proof_wanted`
+  comment. A separate Lean example sequenced three calls on dictionary
+  `[4, 0, 4]`: positive zero, negative four (first duplicate), and absent
+  positive nine. It checked the exact accumulated symbols, retained dictionary
+  and trailing incomplete frame header. Its local witness alias needs the
+  same `noncomputable` annotation as the bundled renamer. Final pin and
+  tracked-dependency checks passed. Evidence in this task is under
+  `/tmp/np20-{step4,full,reuse-final}.log` and `/tmp/np20-verified.json`.
+- **Ending state and next target.** The pre-commit fetch still matched the
+  starting HEAD. This entry accompanies the verified code in the ordinary
+  commit to tracking `main`; the run memory records the final local,
+  tracking and live refs. No blocker for this step. Next, extend the
+  layout with a literal-count stack and use the clause-head invariant in
+  a bounded loop. Emit one clause terminator after exhaustion, including
+  the zero-count case, before lifting to formulas.

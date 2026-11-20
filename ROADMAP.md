@@ -416,9 +416,16 @@ for those membership results.
   composes assembly with preserving lookup. `rename_dense` identifies its
   result for the formula dictionary, and `encode_length_le` bounds its output
   by the original tagged input length.
-  Next consume one literal from a raw framed stream with a reusable dictionary
-  and an arbitrary unread suffix. Then iterate over counted clauses and
-  formulas, preserving occurrence order and emitting clause terminators.
+  `LiteralRenameStep.literal_exits` now consumes one packed frame from the
+  raw stream, preserves the dictionary and arbitrary unread suffix, and
+  appends the renamed literal to the logical output prefix. The prefix is
+  stored in reverse for left-to-right traversal. For a frame and dictionary
+  totaling `N` bits, loading, lookup and return together cost at most the
+  renamer's polynomial at `N` plus `8N + 7`. `clause_head_exits` gives the
+  occurrence-prefix invariant on a formula dictionary.
+  Next wrap this step with a literal-count stack, prove the bounded loop over
+  one clause body, and emit one terminator even for an empty clause. Then
+  traverse the counted formula and restore the unary output to source order.
   Whole-formula polynomial-time re-encoding and malformed-input rejection
   remain open.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
