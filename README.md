@@ -352,7 +352,16 @@ processed prefix in reverse, so returning one literal extends that prefix
 in source order. With `N` bits in the consumed frame and dictionary together,
 the complete step costs at most the renamer's polynomial at `N` plus
 `8N + 7`. `clause_head_exits` specializes this to dense renaming on a formula
-dictionary. Counted clause traversal and clause terminators remain pending.
+dictionary.
+
+`ClauseRename.dense_clause_exits` extends the prefix by a whole unary clause.
+The caller supplies one count mark per packed literal. The loop consumes one
+mark and one frame per occurrence, preserving the dictionary and the unread
+stream. When the count reaches zero it emits exactly one `endClause`. An
+empty clause takes two steps and leaves the input untouched. With `N` bits
+in the clause body and framed dictionary together and literal-step bound
+`Q`, the routine takes at most `N * (Q(N) + 2) + 2` steps. Reading the
+binary count header into this layout is the next step.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

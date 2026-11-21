@@ -423,9 +423,13 @@ for those membership results.
   totaling `N` bits, loading, lookup and return together cost at most the
   renamer's polynomial at `N` plus `8N + 7`. `clause_head_exits` gives the
   occurrence-prefix invariant on a formula dictionary.
-  Next wrap this step with a literal-count stack, prove the bounded loop over
-  one clause body, and emit one terminator even for an empty clause. Then
-  traverse the counted formula and restore the unary output to source order.
+  `ClauseRename.dense_clause_exits` now consumes the counted body and appends
+  its dense-renamed unary clause, including exactly one terminator. The loop
+  retains the framed dictionary and unread suffix. With `N` body and dictionary
+  bits together, its bound is `N * (Q(N) + 2) + 2` for the literal-step
+  polynomial `Q`. The empty clause costs exactly two steps.
+  Next load the clause's binary header into the remaining-literal stack,
+  traverse the counted formula, and restore the unary output to source order.
   Whole-formula polynomial-time re-encoding and malformed-input rejection
   remain open.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common

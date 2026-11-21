@@ -155,6 +155,7 @@ import LeanNPHardness.FormulaDictionaryMachine
 import LeanNPHardness.LiteralDictionaryMachine
 import LeanNPHardness.LiteralRenameMachine
 import LeanNPHardness.LiteralRenameStep
+import LeanNPHardness.ClauseRenameMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine

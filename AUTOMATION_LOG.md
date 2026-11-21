@@ -6641,3 +6641,69 @@ avoid failed routes, and choose a materially different experiment when blocked.
   layout with a literal-count stack and use the clause-head invariant in
   a bounded loop. Emit one clause terminator after exhaustion, including
   the zero-count case, before lifting to formulas.
+
+## 2026-11-21 22:05 UTC (22 November Sydney) — count and terminate one renamed clause
+
+- **Start.** The snapshot's clean generated `work` at
+  `d57008f626cbce7c95df8ad093539867847c3989` was an ancestor of fetched
+  `solresol/lean-np-hardness` main at
+  `4cb23a6466865b2419c631db1b9d52802e1480c4`. Preserved `work` and
+  established tracking `main` after checking ancestry, local state and the
+  live ref. One worktree and no competing local Lean build. Created the
+  missing run memory and used the fetched journal for continuity.
+- **Readiness.** Verified the saved Start deployment and guarded runner.
+  Sourced the shared runtime and used its exact Lean 4.35.0
+  (`eb6cafb7290e`), Lake 5.0.0-src+eb6cafb and elan 4.2.4. Toolchain,
+  manifest and Lake options matched the starting commit. All nine origins
+  and revisions matched the shared archive receipt. Installed those pins in
+  the target's own `.lake`, reused 2,325 cached artifacts and checked all
+  nine direct Mathlib imports. The published runner enforced two Lean
+  threads, a 2 GiB disk reserve, 12 GiB process-group RSS and 30 minutes
+  per command. Final pins and tracked dependency sources passed again.
+- **Result.** New `ClauseRenameMachine.lean` extends the single-literal
+  layout with a remaining-count stack. `ClauseRename.clause_exits` consumes
+  one mark and packed frame per occurrence and extends the reverse-stored
+  prefix by the exact unary encoding of the renamed clause. The dictionary
+  and arbitrary unread bits survive. The empty test and final terminator
+  push cost exactly two steps, including for an initially empty clause
+  (`empty_exits`). `dense_clause_exits` specializes the result to the
+  formula dictionary. In total body and dictionary bits `N`, the bound is
+  `N * (Q(N) + 2) + 2` for the literal-step polynomial `Q`. This
+  interface starts with the decoded count.
+- **Comparison.** Read the sibling's `SourceAdapter.v` and
+  `CompilerComplexity.v`. Its exact-width compiler counts occurrences.
+  The separately fetched, read-only Coq complexity checkout at
+  `14b5f413d2fb7adecde79c5451b483f9a1af59a8` gives empty disjunction and
+  empty conjunction different semantics in `SAT.v`, and `kCNF_clause_length`
+  in `kSAT.v` counts repeated entries. These distinctions motivate preserving
+  the empty-clause boundary. All execution and time proofs here use Lean TM2.
+- **Proof experiments.** The first targeted build left a routine equality
+  ahead of the stack equality in the terminator proof. Unfolding `finish`
+  before applying the one-step push contract exposed the stack goal. Rewriting
+  the reversed singleton terminator also required `List.nil_append` to
+  normalize the output on the two sides. The existing
+  `CertificateMembershipLoop.length_le_body_length` applied to packed literal
+  codes bounds the count even for positive zero. This avoids bringing 47
+  additional project modules into the literal renamer's import closure.
+- **Checks and files.** Added the root import and three audits in
+  `LeanNPHardness/Audit.lean`; updated README, ROADMAP and THEOREM_STATUS.
+  Final targeted build passed 1,340 jobs without new-module warnings; full
+  `lake build` passed 2,508. All 973 axiom reports use only `propext`,
+  `Classical.choice` and `Quot.sound`, including 12 axiom-free results.
+  The scan of 168 Lean sources/config files found only the historical
+  `proof_wanted` comment at `PolytimeReduction.lean:43`. Two further Lean
+  examples checked consecutive empty clauses (two distinct terminators in
+  four steps) and a four-occurrence clause with repeated negative literals,
+  positive zero, a duplicate dictionary entry, an absent variable and an
+  unread incomplete frame header. Logs and parsed checks are in
+  `/tmp/np22-{target2,full,examples}.log` and `/tmp/np22-verification.json`.
+- **Ending state.** A pre-commit fetch confirmed the live branch and tracking
+  ref still matched the starting commit. This entry accompanies the verified
+  increment on tracking `main`. Run memory records the final local, tracking
+  and live refs after the ordinary push. No blocker for the counted body.
+- **Next experiment.** Connect the canonical binary clause-count frame to
+  this loop. Isolate the leading count frame for `CountHeader.natural_exits`,
+  charge moving the unary marks into the remaining-literal stack, and keep
+  the dictionary, prior output and following input in place. The numeric
+  count is bounded by the canonical body length. Then lift the complete
+  clause routine under an independent formula count.

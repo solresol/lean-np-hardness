@@ -70,6 +70,7 @@ import LeanNPHardness.FormulaDictionaryMachine
 import LeanNPHardness.LiteralDictionaryMachine
 import LeanNPHardness.LiteralRenameMachine
 import LeanNPHardness.LiteralRenameStep
+import LeanNPHardness.ClauseRenameMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine
@@ -1162,3 +1163,8 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineAdapters.LiteralRenameStep.bounded_exits
 #print axioms LeanNPHardness.MachineAdapters.LiteralRenameStep.literal_exits
 #print axioms LeanNPHardness.MachineAdapters.LiteralRenameStep.clause_head_exits
+
+-- Count-controlled clause renaming and termination
+#print axioms LeanNPHardness.MachineAdapters.ClauseRename.empty_exits
+#print axioms LeanNPHardness.MachineAdapters.ClauseRename.clause_exits
+#print axioms LeanNPHardness.MachineAdapters.ClauseRename.dense_clause_exits
