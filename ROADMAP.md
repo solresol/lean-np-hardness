@@ -428,7 +428,12 @@ for those membership results.
   retains the framed dictionary and unread suffix. With `N` body and dictionary
   bits together, its bound is `N * (Q(N) + 2) + 2` for the literal-step
   polynomial `Q`. The empty clause costs exactly two steps.
-  Next load the clause's binary header into the remaining-literal stack,
+  `FramedClauseRename.dense_clause_exits` now starts at the binary header.
+  The decoder writes directly to the loop's counter and retains the dictionary
+  and unread stream. In full clause and dictionary bits `N`, header and body
+  together cost at most `N * (5N + 8) + 3 + C(N)` for the counted-body
+  polynomial `C`. A complete empty clause takes exactly five steps.
+  Next preserve an outer clause count across each complete-clause call,
   traverse the counted formula, and restore the unary output to source order.
   Whole-formula polynomial-time re-encoding and malformed-input rejection
   remain open.

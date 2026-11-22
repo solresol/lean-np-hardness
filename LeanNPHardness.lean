@@ -23,6 +23,7 @@ import LeanNPHardness.FramedListCons
 import LeanNPHardness.TaggedFramedListCons
 import LeanNPHardness.MachineRoutineExtension
 import LeanNPHardness.MachineRoutineRightExtension
+import LeanNPHardness.MachineRoutineStackMap
 import LeanNPHardness.MachineRoutineCall
 import LeanNPHardness.PairDuplication
 import LeanNPHardness.CNFNormalization
@@ -156,6 +157,7 @@ import LeanNPHardness.LiteralDictionaryMachine
 import LeanNPHardness.LiteralRenameMachine
 import LeanNPHardness.LiteralRenameStep
 import LeanNPHardness.ClauseRenameMachine
+import LeanNPHardness.FramedClauseRenameMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine

@@ -360,8 +360,16 @@ mark and one frame per occurrence, preserving the dictionary and the unread
 stream. When the count reaches zero it emits exactly one `endClause`. An
 empty clause takes two steps and leaves the input untouched. With `N` bits
 in the clause body and framed dictionary together and literal-step bound
-`Q`, the routine takes at most `N * (Q(N) + 2) + 2` steps. Reading the
-binary count header into this layout is the next step.
+`Q`, the routine takes at most `N * (Q(N) + 2) + 2` steps.
+
+`FramedClauseRename.dense_clause_exits` reads the binary literal count and
+renames the complete clause. The decoder reads the shared input stack and
+writes directly to the loop's count stack. For `N` bits in the full clause
+and dictionary together, the run takes at most `N * (5N + 8) + 3 + C(N)`
+steps, where `C` is the counted-body polynomial above. A canonical empty
+clause consumes its one-bit header and emits one terminator in exactly
+five steps. The next stage is to maintain an independent formula count
+across these calls.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

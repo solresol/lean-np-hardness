@@ -71,6 +71,7 @@ import LeanNPHardness.LiteralDictionaryMachine
 import LeanNPHardness.LiteralRenameMachine
 import LeanNPHardness.LiteralRenameStep
 import LeanNPHardness.ClauseRenameMachine
+import LeanNPHardness.FramedClauseRenameMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine
@@ -119,6 +120,7 @@ import LeanNPHardness.FramedListCons
 import LeanNPHardness.TaggedFramedListCons
 import LeanNPHardness.MachineRoutineExtension
 import LeanNPHardness.MachineRoutineRightExtension
+import LeanNPHardness.MachineRoutineStackMap
 import LeanNPHardness.MachineRoutineCall
 import LeanNPHardness.PairDuplication
 import LeanNPHardness.CNFNormalization
@@ -1168,3 +1170,10 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineAdapters.ClauseRename.empty_exits
 #print axioms LeanNPHardness.MachineAdapters.ClauseRename.clause_exits
 #print axioms LeanNPHardness.MachineAdapters.ClauseRename.dense_clause_exits
+
+-- Direct stack wiring and complete framed clause renaming
+#print axioms LeanNPHardness.Routines.StackMap.exits
+#print axioms LeanNPHardness.MachineAdapters.FramedClauseRename.header_exits
+#print axioms LeanNPHardness.MachineAdapters.FramedClauseRename.empty_exits
+#print axioms LeanNPHardness.MachineAdapters.FramedClauseRename.clause_exits
+#print axioms LeanNPHardness.MachineAdapters.FramedClauseRename.dense_clause_exits

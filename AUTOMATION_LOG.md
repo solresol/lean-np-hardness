@@ -6707,3 +6707,68 @@ avoid failed routes, and choose a materially different experiment when blocked.
   the dictionary, prior output and following input in place. The numeric
   count is bounded by the canonical body length. Then lift the complete
   clause routine under an independent formula count.
+
+## 2026-11-22 22:12 UTC — dense renaming from the binary clause header
+
+- **Start.** The clean generated `work` at
+  `d57008f626cbce7c95df8ad093539867847c3989` was an ancestor of fetched
+  `solresol/lean-np-hardness` main at
+  `9910107ed7440114228db095ff8e843a357fe82a`. Preserved `work` and
+  established tracking `main` after checking ancestry, live refs, the sole
+  worktree and local processes. The fresh snapshot lacked run memory.
+  Created it and used the fetched journal to confirm the counted-body result.
+- **Readiness.** Verified the saved Start deployment, sourced the published
+  runtime, and checked elan 4.2.4, absolute Lean 4.35.0 (`eb6cafb7290e`),
+  Lake 5.0.0-src+eb6cafb, and the toolchain, manifest, and Lake option hashes
+  against the starting commit. Installed all nine exact manifest revisions in
+  the target's own `.lake`. Every origin and pin matched the archive receipt.
+  Reused 2,325 cached artifacts and checked all nine direct Mathlib imports.
+  Costly commands used the published guard with two Lean threads, 2 GiB disk
+  reserve, 12 GiB process-group RSS and a 30-minute limit per command.
+  Final pin, origin and clean tracked dependency checks passed.
+- **Result.** `MachineRoutineStackMap.lean` proves `Routines.StackMap.exits`:
+  assigning stack addresses and symbol equivalences preserves exact execution
+  when the caller representation respects reads and writes.
+  `FramedClauseRenameMachine.lean` uses it to run the existing count decoder
+  directly on the clause loop's input, scratch and count stacks. This removes
+  the need for the transfer considered in the previous entry. `header_exits`
+  retains arbitrary dictionary, output and unread contents. `clause_exits`
+  and `dense_clause_exits` consume the complete framed clause, including its
+  binary header, and append the renamed clause to the reverse-stored prefix.
+  With full clause and dictionary bit length `N` and counted-body polynomial
+  `C`, the bound is `N * (5N + 8) + 3 + C(N)`. `empty_exits` consumes the
+  one-bit zero header and writes one terminator in exactly five steps.
+- **Comparison.** Read sibling `SourceAdapter.v` and `CompilerComplexity.v`
+  on list occurrences and their encoded-size bounds. Checked the separate
+  read-only Coq complexity checkout at the sibling's pin
+  `14b5f413d2fb7adecde79c5451b483f9a1af59a8`. Its `SAT.size_clause`
+  and `kCNF_clause_length` count every literal entry. The Lean runtime
+  proof uses `CountedClause.count_le_body_length` to bound the decoded count
+  by actual consumed bits, even for repeated zero literals.
+- **Proof experiments.** Section arguments to the recursive statement mapper
+  are implicit inside its definition. Use bare recursive calls there, and
+  explicitly include the read/write hypotheses in the simulation lemmas.
+  For `pop`, simplify the inverse-mapped head before rewriting the mapped
+  tail. At each concrete stack address, change the symbol map to `List.map id`
+  before handling the dependent update. For the composed time bound, combine
+  header and body inequalities with `Nat.add_le_add` directly. Arithmetic
+  reflection treated the lambda-wrapped polynomial evaluation as a separate
+  term. Final targeted build passed 1,474 jobs with no new-module warnings.
+- **Verification and files.** Added root and Audit imports, five axiom audits,
+  and updated README, ROADMAP and THEOREM_STATUS. Full `lake build` passed
+  2,510 jobs. All five new declarations use only `propext`, `Classical.choice`
+  and `Quot.sound`. All 978 audit reports passed, including 12 axiom-free
+  reports. The only scan match across 170 Lean files was the historical
+  `proof_wanted` comment in `PolytimeReduction.lean`. Two Lean examples
+  checked adjacent empty clauses in exactly ten steps, and an empty clause
+  followed by a four-occurrence clause with repeated negatives, zero, an
+  absent variable, a duplicate dictionary entry and an unread partial header.
+  Task evidence is in `/tmp/np22-target7.log`, `/tmp/np22-framed-full.log`,
+  `/tmp/np22-framed-examples.lean` and `/tmp/np22-framed-verified.json`.
+- **Ending state and next experiment.** Pre-commit fetch, tracking ref and
+  live main still matched the starting commit. This entry accompanies the
+  verified changes on tracking main. The exact ordinary push and ref check
+  are recorded in run memory. Next add an outer remaining-clause stack and
+  lift the complete clause routine under it. Pop one mark per clause and
+  prove the accumulated unary prefix across empty and repeated clauses.
+  Source-order restoration and standalone formula re-encoding follow.
