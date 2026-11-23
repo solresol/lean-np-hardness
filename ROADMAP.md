@@ -433,8 +433,13 @@ for those membership results.
   and unread stream. In full clause and dictionary bits `N`, header and body
   together cost at most `N * (5N + 8) + 3 + C(N)` for the counted-body
   polynomial `C`. A complete empty clause takes exactly five steps.
-  Next preserve an outer clause count across each complete-clause call,
-  traverse the counted formula, and restore the unary output to source order.
+  `ClauseListRename.dense_clauses_exits` now traverses the framed clauses
+  with an independent, preloaded outer count. It retains the dictionary and
+  unread input and appends the unary encoding of `formula.denseRename` to
+  the reverse-stored prefix. For body and dictionary bit length `N`, it
+  costs at most `N * (P(N) + 2) + 1` with framed-clause polynomial `P`.
+  Next decode the outer binary count, compose it with this traversal in
+  the full formula bit measure, and restore the unary output to source order.
   Whole-formula polynomial-time re-encoding and malformed-input rejection
   remain open.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common

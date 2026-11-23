@@ -6772,3 +6772,62 @@ avoid failed routes, and choose a materially different experiment when blocked.
   lift the complete clause routine under it. Pop one mark per clause and
   prove the accumulated unary prefix across empty and repeated clauses.
   Source-order restoration and standalone formula re-encoding follow.
+
+## 2026-11-23 UTC — dense renaming of a counted list of framed clauses
+
+- **Start.** The generated `work` at `d57008f626cbce7c95df8ad093539867847c3989`
+  was clean and an ancestor of live `solresol/lean-np-hardness` main at
+  `17ffc34aa5e5d5e4acaf9581cad47e07205b0af0`. Preserved `work` and
+  established tracking `main` at the fetched tip. One worktree and no
+  competing local build. Created the missing run memory and took continuity
+  from the fetched journal.
+- **Readiness.** Used the managed Cloud runtime skill and verified deployed
+  `START.md` and its helpers. The executor had no separately listed Start
+  skill. Sourced the shared runtime and verified elan 4.2.4, Lean 4.35.0
+  (`eb6cafb7290e`), Lake 5.0.0-src+eb6cafb and the unchanged toolchain,
+  manifest and Lake options against the starting commit. Installed all nine
+  exact manifest revisions in this checkout's own `.lake`. Origins and
+  revisions matched the shared receipt. Reused 2,325 cached files and checked
+  all nine direct Mathlib imports. Used the published process-group runner
+  with two Lean threads, 2 GiB disk reserve, 12 GiB RSS and 30 minutes per
+  command. Final pins and tracked dependency sources passed again.
+- **Increment.** `ClauseListRenameMachine.lean` lifts the complete-clause
+  routine beneath an outer count stack. `ClauseListRename.clauses_exits`
+  consumes the body with an arbitrary supplied dictionary and retains the
+  exact unread suffix. `dense_clauses_exits` appends the unary encoding of
+  `formula.denseRename` to a reverse-stored prefix. One mark per clause
+  pays for a pop and test, and the last test costs one. In combined formula
+  body and dictionary bits `N`, the bound is `N * (P(N) + 2) + 1` for the
+  complete-clause polynomial `P`. `empty_exits` takes one step.
+  `empty_clauses_exits` consumes exactly `k` zero headers and emits exactly
+  `k` boundaries in `7k + 1` steps.
+- **Comparison and proof details.** Read sibling `SourceAdapter.v` and
+  `CompilerComplexity.v` on list structure and size. The separate read-only
+  comparison checkout at the documented Coq complexity pin
+  `14b5f413d2fb7adecde79c5451b483f9a1af59a8` defines `SAT.size_cnf`
+  with a contribution from each clause, including an empty one, and
+  `kCNF_clause_length` counts every literal occurrence. The Lean time proof
+  uses `CountedFormula.count_le_body_length` to charge the outer marks to
+  actual source bits. In the induction step, give polynomial monotonicity an
+  explicit evaluation inequality before `omega` so it recognizes both
+  terms. For consecutive empty clauses, `List.replicate_succ'` extends the
+  output on the right and `List.nil_append` closes the resulting suffix goal.
+- **Checks.** Added root and Audit imports and four axiom reports, and
+  synchronized README, roadmap and theorem status. Targeted build passed
+  1,476 jobs without new-module warnings. Full `lake build` passed 2,511
+  jobs. All four new results use only `propext`, `Classical.choice` and
+  `Quot.sound`. All 982 audit reports passed, including 12 axiom-free results.
+  The 171-file source/config scan found only the historical `proof_wanted`
+  comment in `PolytimeReduction.lean:43`. Four additional Lean examples
+  checked the exact zero- and two-empty-clause runs and explicit output for
+  adjacent empty clauses followed by repeated nonempty clauses. Both a
+  duplicate dictionary with an absent variable and the formula dictionary
+  were checked with a prior prefix and an unread partial header. Qualify
+  `Sym.endClause` inside append chains in standalone examples.
+- **Ending state and next experiment.** The pre-commit fetch and live main
+  still matched the starting commit. This entry accompanies the verified
+  increment on tracking main. Run memory records the exact commit, push and
+  live ref comparison. Next decode the canonical outer binary count into
+  the new counter and compose that run with `clauses_exits` using
+  `CountedFormula.encode_eq`. Bound the count by the body length, then
+  restore the unary output to source order for standalone conversion.

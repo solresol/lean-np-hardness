@@ -317,9 +317,8 @@ cleanup and halting in original input bits. `prepare_formula` preserves every
 source occurrence; `prepare_dictionary_nodup` applies only to the auxiliary
 dictionary, and `lookup_prepare` connects it to `denseIndex`.
 `prepare_encode_length_le` separately bounds the complete output by `4N + 1`
-tagged symbols for original formula bit length `N`. Repeated lookup during
-formula traversal, malformed-stream rejection and full dense renaming remain
-pending; this preparation does not supply a new hardness transfer.
+tagged symbols for original formula bit length `N`. The counted traversal
+below reuses the retained dictionary.
 
 `LiteralDictionary.computableInPolyTime` now connects packed-literal variable
 extraction to tagged dictionary lookup. Input is a tagged pair of
@@ -368,8 +367,17 @@ writes directly to the loop's count stack. For `N` bits in the full clause
 and dictionary together, the run takes at most `N * (5N + 8) + 3 + C(N)`
 steps, where `C` is the counted-body polynomial above. A canonical empty
 clause consumes its one-bit header and emits one terminator in exactly
-five steps. The next stage is to maintain an independent formula count
-across these calls.
+five steps.
+
+`ClauseListRename.dense_clauses_exits` traverses the body of a binary
+formula using one preloaded mark per clause. It leaves the dictionary and
+unread input intact. The output stack holds the prior prefix followed by the
+unary encoding of `formula.denseRename`, all in reverse. Both repeated and
+empty clauses contribute their own terminators. For `N` bits in the body and
+dictionary together and complete-clause time polynomial `P`, the loop takes
+at most `N * (P(N) + 2) + 1` steps. For `k` consecutive empty clauses,
+`empty_clauses_exits` gives exactly `7k + 1` steps. Loading the outer binary
+count and restoring output order are the next stages.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

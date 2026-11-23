@@ -72,6 +72,7 @@ import LeanNPHardness.LiteralRenameMachine
 import LeanNPHardness.LiteralRenameStep
 import LeanNPHardness.ClauseRenameMachine
 import LeanNPHardness.FramedClauseRenameMachine
+import LeanNPHardness.ClauseListRenameMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine
@@ -1177,3 +1178,9 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineAdapters.FramedClauseRename.empty_exits
 #print axioms LeanNPHardness.MachineAdapters.FramedClauseRename.clause_exits
 #print axioms LeanNPHardness.MachineAdapters.FramedClauseRename.dense_clause_exits
+
+-- Dense renaming across a counted sequence of complete clauses
+#print axioms LeanNPHardness.MachineAdapters.ClauseListRename.empty_exits
+#print axioms LeanNPHardness.MachineAdapters.ClauseListRename.empty_clauses_exits
+#print axioms LeanNPHardness.MachineAdapters.ClauseListRename.clauses_exits
+#print axioms LeanNPHardness.MachineAdapters.ClauseListRename.dense_clauses_exits
