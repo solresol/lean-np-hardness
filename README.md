@@ -376,8 +376,18 @@ unary encoding of `formula.denseRename`, all in reverse. Both repeated and
 empty clauses contribute their own terminators. For `N` bits in the body and
 dictionary together and complete-clause time polynomial `P`, the loop takes
 at most `N * (P(N) + 2) + 1` steps. For `k` consecutive empty clauses,
-`empty_clauses_exits` gives exactly `7k + 1` steps. Loading the outer binary
-count and restoring output order are the next stages.
+`empty_clauses_exits` gives exactly `7k + 1` steps.
+
+`FramedFormulaRename.dense_formula_exits` starts at the formula's binary
+clause count, with both counters empty. The header decoder writes its marks
+directly to the outer counter. Traversal consumes the complete canonical
+formula and leaves the dictionary and unread suffix intact. For `N` bits in
+the full formula and framed dictionary together, the bound is
+`N * (5N + 8) + 3 + T(N)`, where `T` bounds the clause-list traversal.
+The formula dictionary occupies at most `3B + 1` bits for `B` original formula
+bits, so the dense case can use `4B + 1` for `N`. A formula with zero clauses
+takes exactly four steps and emits no symbols.
+The next stage restores the unary output to source order.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

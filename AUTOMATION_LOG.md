@@ -6831,3 +6831,67 @@ avoid failed routes, and choose a materially different experiment when blocked.
   the new counter and compose that run with `clauses_exits` using
   `CountedFormula.encode_eq`. Bound the count by the body length, then
   restore the unary output to source order for standalone conversion.
+
+## 2026-11-24 UTC — dense renaming from the formula's binary clause count
+
+- **Start.** Live `solresol/lean-np-hardness` main was
+  `c30dbda74e47d795ce23512ef6ae34ad63bf3ade`. The sole local worktree
+  was clean on generated `work` at `d57008f626cbce7c95df8ad093539867847c3989`.
+  Verified ancestry, preserved that branch, and established tracking `main`
+  at the fetched tip. No competing local Lean build was present. The fresh
+  snapshot lacked run memory, so created it and used the fetched journal.
+- **Readiness.** Read the managed Cloud runtime skill and deployed `START.md`.
+  The skill catalog had no separate Start entry. Verified the deployment,
+  sourced the published runtime, and checked elan 4.2.4, absolute Lean
+  4.35.0 (`eb6cafb7290e`) and Lake 5.0.0-src+eb6cafb. The toolchain,
+  manifest and Lake options matched the starting commit and the snapshot.
+  Installed the nine pinned Git dependencies only in the target's own
+  `.lake`. All nine origins and revisions matched the archive receipt.
+  Reused 2,325 cached artifacts with no archive downloads, and checked the
+  nine direct Mathlib imports. Used the published runner with two Lean
+  threads, 2 GiB disk reserve, 12 GiB process-group RSS limit and 30 minutes
+  per command.
+- **Result.** In `FramedFormulaRenameMachine.lean`, `header_exits` reads
+  the canonical binary clause count directly into the outer traversal
+  counter. `formula_exits` consumes the complete formula with an arbitrary
+  dictionary, preserves that dictionary and the unread suffix, and appends
+  the unary renaming to the reverse-stored prefix. For complete formula and
+  dictionary bit length `N` and clause-list traversal polynomial `T`, it
+  costs at most `N * (5N + 8) + 3 + T(N)` steps. `dense_formula_exits`
+  specializes to the formula's dictionary and uses `4B + 1` for `N`,
+  where `B` is the original encoded size. Dictionary preparation is a
+  separate machine. `empty_exits` consumes only the zero header in exactly
+  four steps, preserving an arbitrary existing output.
+- **Comparison and proof.** Read sibling `SourceAdapter.v` and
+  `CompilerComplexity.v`, including `formula_length_le_size`. The separate
+  read-only complexity-library checkout at the sibling's pin
+  `14b5f413d2fb7adecde79c5451b483f9a1af59a8` defines `SAT.size_cnf`
+  with a contribution for every clause, including an empty one.
+  In Lean, `CountedFormula.count_le_body_length` charges the numeric count
+  to actual source bits. Applying `StackMap.exits` to the entire checked
+  clause header redirects one counter address, preserves its step count
+  and keeps the literal counter empty. Factored the existing three-step
+  zero-header run into `FramedClauseRename.zero_header_exits`. The first
+  target build passed without warnings in the changed modules.
+- **Verification.** Added the module to the root and Audit and synchronized
+  README, roadmap and theorem status. Targeted build passed 1,481 jobs and
+  full `lake build` passed 2,512. All five new audits use only `propext`,
+  `Classical.choice` and `Quot.sound`. All 987 project audits passed,
+  including 12 axiom-free results. The 172-file source/config scan found
+  only the existing `proof_wanted` comment at `PolytimeReduction.lean:43`.
+  Three additional Lean examples checked the exact zero-count stop and
+  explicit output for a four-clause formula with repeated clauses and
+  literals, empty clauses, a prior output prefix and an unread partial
+  header. Tested both the formula dictionary and a duplicate dictionary
+  with an absent variable. No failed proof experiment or resource guard.
+  Final pin, origin and tracked dependency checks passed. Build, examples
+  and parsed audits are in `/tmp/np24-{target,full,examples}.log` and
+  `/tmp/np24-verified.json`.
+- **Ending state and next target.** Pre-commit fetch and live ref both
+  confirmed the starting main tip. This entry accompanies the checked
+  increment on tracking main. Run memory records the resulting commit and
+  live ref check after push. No blocker for this increment. Next start with
+  an empty reverse-output stack and move its unary symbols onto a dedicated
+  caller output stack. `moveAll_exits` charges exactly `2L + 1` steps for
+  `L` emitted symbols, and `Formula.denseRename_unary_length_le` bounds
+  `L` in the original formula bits. Preserve any caller output suffix.

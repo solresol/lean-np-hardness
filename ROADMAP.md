@@ -438,10 +438,14 @@ for those membership results.
   unread input and appends the unary encoding of `formula.denseRename` to
   the reverse-stored prefix. For body and dictionary bit length `N`, it
   costs at most `N * (P(N) + 2) + 1` with framed-clause polynomial `P`.
-  Next decode the outer binary count, compose it with this traversal in
-  the full formula bit measure, and restore the unary output to source order.
-  Whole-formula polynomial-time re-encoding and malformed-input rejection
-  remain open.
+  `FramedFormulaRename.dense_formula_exits` reads the canonical outer
+  count directly into the traversal's counter and renames the full binary
+  formula. With complete formula and dictionary bit length `N`, header
+  decoding adds at most `N * (5N + 8) + 3` steps to the traversal bound.
+  For the formula dictionary, `N ≤ 4B + 1` in the original formula bits `B`.
+  Next restore the unary output to source order and charge the transfer
+  using `Formula.denseRename_unary_length_le`. Packaging standalone
+  polynomial-time re-encoding and malformed-input rejection remain open.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

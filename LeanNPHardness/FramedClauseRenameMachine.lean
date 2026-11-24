@@ -90,11 +90,10 @@ theorem header_exits (n : Nat) (input dict : List Bool) (out : List Sym) :
 noncomputable def routine : Routine (ClauseRename.Alphabet c) :=
   seq (header c) (ClauseRename.routine c)
 
-/-- For the canonical zero header, two read steps, one decoder exit test,
-one clause-loop exit test and one terminator push take exactly five steps. -/
-theorem empty_exits (input dict : List Bool) (out : List Sym) :
-    (routine c).Exits (ClauseRename.contents c (false :: input) dict out []) 5
-      (ClauseRename.contents c input dict (.endClause :: out) []) := by
+/-- Decoding the one-bit zero header takes exactly three steps. -/
+theorem zero_header_exits (input dict : List Bool) (out : List Sym) :
+    (header c).Exits (ClauseRename.contents c (false :: input) dict out []) 3
+      (ClauseRename.contents c input dict out []) := by
   have read := extend_exits CountedLiteralBody.ExtraAlphabet CountHeader.readBits (fun _ => [])
     (CountHeader.readBits_exits [] input [] [])
   have test := loop_exits_nil CountHeader.bitsStack (dispatch CountHeader.bitsStack CountHeader.horn)
@@ -102,9 +101,14 @@ theorem empty_exits (input dict : List Bool) (out : List Sym) :
   have decoded : CountHeader.routine.Exits
       (CountHeader.contents (false :: input) [] [] [] []) 3 (CountHeader.contents input [] [] [] []) :=
     seq_exits _ _ read test
-  have load := place_exits c dict out decoded
-  simp only [place_contents] at load
-  exact seq_exits _ _ load (ClauseRename.empty_exits c input dict out)
+  simpa only [place_contents] using place_exits c dict out decoded
+
+/-- For the canonical zero header, two read steps, one decoder exit test,
+one clause-loop exit test and one terminator push take exactly five steps. -/
+theorem empty_exits (input dict : List Bool) (out : List Sym) :
+    (routine c).Exits (ClauseRename.contents c (false :: input) dict out []) 5
+      (ClauseRename.contents c input dict (.endClause :: out) []) := by
+  exact seq_exits _ _ (zero_header_exits c input dict out) (ClauseRename.empty_exits c input dict out)
 
 /-- The input length includes the count frame, all literal frames, and the
 framed dictionary. Each occurrence contributes at least one body bit. -/

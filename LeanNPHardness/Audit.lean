@@ -73,6 +73,7 @@ import LeanNPHardness.LiteralRenameStep
 import LeanNPHardness.ClauseRenameMachine
 import LeanNPHardness.FramedClauseRenameMachine
 import LeanNPHardness.ClauseListRenameMachine
+import LeanNPHardness.FramedFormulaRenameMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine
@@ -1175,6 +1176,7 @@ end LeanNPHardness.Audit
 -- Direct stack wiring and complete framed clause renaming
 #print axioms LeanNPHardness.Routines.StackMap.exits
 #print axioms LeanNPHardness.MachineAdapters.FramedClauseRename.header_exits
+#print axioms LeanNPHardness.MachineAdapters.FramedClauseRename.zero_header_exits
 #print axioms LeanNPHardness.MachineAdapters.FramedClauseRename.empty_exits
 #print axioms LeanNPHardness.MachineAdapters.FramedClauseRename.clause_exits
 #print axioms LeanNPHardness.MachineAdapters.FramedClauseRename.dense_clause_exits
@@ -1184,3 +1186,9 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineAdapters.ClauseListRename.empty_clauses_exits
 #print axioms LeanNPHardness.MachineAdapters.ClauseListRename.clauses_exits
 #print axioms LeanNPHardness.MachineAdapters.ClauseListRename.dense_clauses_exits
+
+-- Complete formula renaming from the outer binary header.
+#print axioms LeanNPHardness.MachineAdapters.FramedFormulaRename.header_exits
+#print axioms LeanNPHardness.MachineAdapters.FramedFormulaRename.empty_exits
+#print axioms LeanNPHardness.MachineAdapters.FramedFormulaRename.formula_exits
+#print axioms LeanNPHardness.MachineAdapters.FramedFormulaRename.dense_formula_exits
