@@ -443,9 +443,13 @@ for those membership results.
   formula. With complete formula and dictionary bit length `N`, header
   decoding adds at most `N * (5N + 8) + 3` steps to the traversal bound.
   For the formula dictionary, `N ≤ 4B + 1` in the original formula bits `B`.
-  Next restore the unary output to source order and charge the transfer
-  using `Formula.denseRename_unary_length_le`. Packaging standalone
-  polynomial-time re-encoding and malformed-input rejection remain open.
+  `OrderedFormulaRename.dense_formula_exits` emits the complete unary word
+  in source order before a caller output suffix. Restoration empties the
+  buffer in exactly `2L + 1` steps for `L` output symbols, adding at most
+  `2B(B + 1) + 1` steps in original formula bits. Next load the tagged
+  dictionary/formula pair from `FormulaDictionary.preservingComputableInPolyTime`
+  onto the two input stacks. Standalone conversion still requires dictionary
+  cleanup and canonical halting. Malformed-input rejection remains open.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

@@ -6895,3 +6895,64 @@ avoid failed routes, and choose a materially different experiment when blocked.
   caller output stack. `moveAll_exits` charges exactly `2L + 1` steps for
   `L` emitted symbols, and `Formula.denseRename_unary_length_le` bounds
   `L` in the original formula bits. Preserve any caller output suffix.
+
+## 2026-11-25 UTC (26 November Sydney) — source-order dense unary output
+
+- **Start.** Live main of `solresol/lean-np-hardness` matched
+  `6f37152a857c002ce2bd34bb55bffc8f92295624`. The sole worktree was
+  clean on generated `work` at `d57008f626cbce7c95df8ad093539867847c3989`.
+  Checked its ancestry, kept that ref and established tracking `main` at
+  the fetched tip. No other local Lean build was active. The fresh
+  snapshot lacked run memory, so created it and used the fetched journal.
+- **Readiness.** Read the managed runtime skill and the deployed Start
+  instructions. Verified the shared setup hashes and sourced the published
+  runtime. Elan 4.2.4 supplied absolute Lean 4.35.0 (`eb6cafb7290e`) and
+  Lake 5.0.0-src+eb6cafb. Toolchain, manifest and Lake configuration
+  matched both the snapshot and starting commit. Installed the nine exact
+  Git pins in this checkout's own `.lake`, checked origins and clean
+  dependency sources, reused 2,325 cached artifacts without downloads,
+  and checked all nine direct Mathlib imports. Expensive commands used the
+  published guard with two Lean threads, 2 GiB disk reserve, 12 GiB
+  process-group RSS and 30 minutes per command.
+- **Result.** `OrderedFormulaRenameMachine.lean` adds one caller output
+  stack. `OrderedFormulaRename.restore_exits` transfers an arbitrary word
+  from the reverse buffer in exactly `2L + 1` steps for `L` symbols.
+  `formula_exits` runs the framed renamer with an arbitrary supplied
+  dictionary and prepends the resulting unary word to the caller output.
+  Both suffixes and the dictionary survive, and the buffer and counters
+  finish empty. `dense_formula_exits` specializes to the formula dictionary.
+  If `P` is the framed traversal polynomial and `B` the original formula
+  bit length, the time bound is `P(4B + 1) + 2B(B + 1) + 1`.
+  `empty_exits` gives exactly five steps for zero clauses.
+- **Comparison and proof.** The sibling's `SourceAdapter.v` preserves
+  repeated literal entries, and `CompilerComplexity.v` proves
+  `clause_observations_map` for source-order traversal. The separate
+  read-only Coq complexity checkout at the documented pin
+  `14b5f413d2fb7adecde79c5451b483f9a1af59a8` counts each literal
+  occurrence and clause in `SAT.size_cnf`. The Lean proof lifts the
+  traversal with `extend_exits`, uses `moveAll_exits` for the exact
+  transfer, and applies `Formula.denseRename_unary_length_le` for cost.
+  The initial alphabet alias left `Sym` ambiguous with mathlib's
+  symmetric power. Qualifying `CNF.Unary.Sym` resolved the build.
+- **Verification.** Added the root import, four Audit declarations and
+  synchronized README, roadmap and theorem status. Targeted build passed
+  1,482 jobs with no new-module warnings. Full `lake build` passed 2,513
+  jobs. All four new declarations use only `propext`, `Classical.choice`
+  and `Quot.sound`. Checked all 991 axiom reports, including 12 axiom-free
+  results. The 173-file source/config scan found only the existing
+  `proof_wanted` comment at `PolytimeReduction.lean:43`. Four concrete
+  examples checked a non-palindromic seven-step transfer, the five-step
+  empty formula, explicit output for repeated literals and clauses with
+  empty clauses on both ends, and a duplicate dictionary with one absent
+  variable. All retained nonempty caller suffixes. Final pin, origin and
+  tracked dependency checks passed. Build and audit evidence is in
+  `/tmp/np26-full.log`, `/tmp/np26-examples.lean` and
+  `/tmp/np26-verified.json`.
+- **Ending state and next target.** Pre-commit fetch and the live main ref
+  still matched the starting tip. This entry accompanies the verified
+  increment on tracking main. Run memory records the resulting commit and
+  live-ref verification. The next experiment is a tagged input loader
+  for the pair from `FormulaDictionary.preservingComputableInPolyTime`:
+  route left dictionary bits and right formula bits to their respective
+  stacks in original order, measuring the steps in their combined length.
+  Canonical dictionary cleanup and halting follow the ordered traversal.

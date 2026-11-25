@@ -387,7 +387,15 @@ the full formula and framed dictionary together, the bound is
 The formula dictionary occupies at most `3B + 1` bits for `B` original formula
 bits, so the dense case can use `4B + 1` for `N`. A formula with zero clauses
 takes exactly four steps and emits no symbols.
-The next stage restores the unary output to source order.
+
+`OrderedFormulaRename.dense_formula_exits` places the unary encoding of
+`formula.denseRename` in source order before an arbitrary output suffix.
+It starts with the dictionary in place, preserves it and the unread input,
+and clears the traversal buffer. For `L` emitted symbols, `restore_exits`
+charges exactly `2L + 1` steps, including the empty-buffer test. Since
+`L ≤ B(B + 1)`, restoration adds at most `2B(B + 1) + 1` steps to the
+dense traversal bound. The next step loads the dictionary and formula from
+the tagged pair produced by `FormulaDictionary.preservingComputableInPolyTime`.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),
