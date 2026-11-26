@@ -6956,3 +6956,70 @@ avoid failed routes, and choose a materially different experiment when blocked.
   route left dictionary bits and right formula bits to their respective
   stacks in original order, measuring the steps in their combined length.
   Canonical dictionary cleanup and halting follow the ordered traversal.
+
+## 2026-11-26 UTC — load the tagged dictionary and formula for dense renaming
+
+- **Start.** Fetched `solresol/lean-np-hardness` main at
+  `c1e53e2ebb4054bd606c2330dbc5db7efa5d04e1`. The single clean worktree
+  was on generated `work` at `d57008f626cbce7c95df8ad093539867847c3989`.
+  Verified ancestry, preserved `work` and established tracking `main`.
+  Found no concurrent local Lean build. The snapshot lacked run memory, so
+  created it and used the fetched journal for continuity.
+- **Readiness.** Read the managed Cloud runtime skill and deployed `START.md`.
+  Verified the deployment and sourced the published runtime. The toolchain,
+  manifest and Lake option hashes agreed with both starting revisions.
+  Checked elan 4.2.4, absolute Lean 4.35.0 (`eb6cafb7290e`) and Lake
+  5.0.0-src+eb6cafb. Installed the nine pinned dependencies in this target's
+  own `.lake`, verified their origins and revisions against the archive
+  receipt, and checked tracked dependency sources. Reused 2,325 local
+  archives and checked all nine direct mathlib imports. Guarded commands
+  used two Lean threads, a 2 GiB disk reserve, a 12 GiB process-group RSS
+  cap and a 30-minute limit.
+- **Result.** `TaggedFormulaRenameMachine.lean` maps the six addresses of
+  `TaggedFramedListCons.load` onto the ordered renamer using `StackMap.exits`.
+  `load_exits` routes left dictionary bits and right formula bits onto the
+  traversal's own stacks in source order, preserves a caller output suffix,
+  and takes exactly `3N + 3` steps in the combined bit length. Both empty
+  words and repeated bits are covered. `prepared_load_exits` identifies the
+  actual wire from `FormulaDictionary.prepare`. `formula_exits` composes
+  the loader and traversal for any supplied dictionary, including duplicates
+  and absent variables. `dense_formula_exits` starts with the prepared pair
+  and adds at most `12B + 6` steps to the ordered traversal polynomial in
+  the original formula bit length `B`. It retains the dictionary on exit.
+- **Comparison and proof.** The sibling's `SourceAdapter.v` preserves
+  repeated list entries and `CompilerComplexity.v` gives source-order
+  traversal via `clause_observations_map`. The Coq library's
+  `sat_verifierb_time_bound` charges a paired input via `size_prod`. Read
+  it at the sibling's exact pin `14b5f413d2fb7adecde79c5451b483f9a1af59a8`
+  in a separate read-only checkout. The Lean step count comes from the
+  checked loader and its read/write-preserving stack map. A minimal probe
+  showed that typeclass search found decidable equality on the ordered
+  stack family but failed on its additional sum with Unit. Binding the
+  existing component instance before constructing the sum resolved this.
+  For a selected stack update, expose `word = word.map id` after splitting
+  the addresses. Rewriting the pair length with its named encoding theorem
+  keeps the loaded word definitionally equal to the traversal input.
+- **Verification.** Added root and Audit imports, four axiom queries, and
+  updated the README, roadmap and theorem status. Targeted build passed
+  1,500 jobs without new-module warnings. Full `lake build` passed all
+  2,514 jobs. All 995 axiom reports passed, including 12 axiom-free reports.
+  The four new results use only `propext`, `Classical.choice` and
+  `Quot.sound`. Scanning 174 Lean source/config files found only the earlier
+  explanatory `proof_wanted` comment at `PolytimeReduction.lean:43`.
+  Seven concrete examples checked empty and one-sided raw pairs, unequal
+  non-palindromic words, the two one-bit headers for the empty formula and
+  dictionary, and explicit unary outputs with repeated and absent variables.
+  An eighth check reduced the mapped loader instructions themselves over
+  four tagged bits. At step 15 the routine had exited, the tagged stack
+  was empty, both words were in source order and the output suffix survived.
+  Final pin, origin and clean tracked-source checks passed. Evidence is in
+  `/tmp/np27-full.log`, `/tmp/np27-verified.json`, `/tmp/np27-examples.lean`
+  and `/tmp/np27-direct.lean`.
+- **Ending state and next target.** Pre-commit fetch and live main still
+  matched the starting revision. This entry accompanies the verified code
+  on tracking main. Run memory records the commit and live ref after push.
+  Next drain the retained dictionary with `drain_exits`, specialize to
+  empty caller output, and prove the canonical halting layout. To package
+  a polynomial-time adapter on all pairs, bound each unary index by the
+  supplied dictionary length, including the absence sentinel. The adapter
+  can then compose with `FormulaDictionary.preservingComputableInPolyTime`.

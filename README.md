@@ -394,8 +394,16 @@ It starts with the dictionary in place, preserves it and the unread input,
 and clears the traversal buffer. For `L` emitted symbols, `restore_exits`
 charges exactly `2L + 1` steps, including the empty-buffer test. Since
 `L ≤ B(B + 1)`, restoration adds at most `2B(B + 1) + 1` steps to the
-dense traversal bound. The next step loads the dictionary and formula from
-the tagged pair produced by `FormulaDictionary.preservingComputableInPolyTime`.
+dense traversal bound.
+
+`TaggedFormulaRename.load_exits` loads a left-tagged dictionary and a
+right-tagged binary formula directly onto those stacks. For `N` bits across
+both components, the loader takes exactly `3N + 3` TM2 steps and preserves
+the caller’s output suffix. `prepared_load_exits` checks the wire produced
+by `FormulaDictionary.preservingComputableInPolyTime`. Starting from that
+wire, `dense_formula_exits` adds at most `12B + 6` loading steps to the
+ordered traversal for `B` original formula bits. Standalone conversion still
+requires draining the retained dictionary and packaging the halting machine.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

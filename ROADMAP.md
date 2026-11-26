@@ -446,10 +446,14 @@ for those membership results.
   `OrderedFormulaRename.dense_formula_exits` emits the complete unary word
   in source order before a caller output suffix. Restoration empties the
   buffer in exactly `2L + 1` steps for `L` output symbols, adding at most
-  `2B(B + 1) + 1` steps in original formula bits. Next load the tagged
-  dictionary/formula pair from `FormulaDictionary.preservingComputableInPolyTime`
-  onto the two input stacks. Standalone conversion still requires dictionary
-  cleanup and canonical halting. Malformed-input rejection remains open.
+  `2B(B + 1) + 1` steps in original formula bits.
+  `TaggedFormulaRename.prepared_load_exits` loads the tagged dictionary and
+  formula onto those stacks in source order in exactly `3N + 3` steps for
+  `N` tagged bits. Its `dense_formula_exits` composes loading with traversal,
+  adding at most `12B + 6` steps. Next drain the retained dictionary and
+  package the run as a canonically halting machine on a tagged pair. Bound
+  the unary output for arbitrary supplied dictionaries before composing with
+  formula preparation. Malformed-input rejection remains open.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational
