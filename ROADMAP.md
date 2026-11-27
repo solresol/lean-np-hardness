@@ -450,10 +450,12 @@ for those membership results.
   `TaggedFormulaRename.prepared_load_exits` loads the tagged dictionary and
   formula onto those stacks in source order in exactly `3N + 3` steps for
   `N` tagged bits. Its `dense_formula_exits` composes loading with traversal,
-  adding at most `12B + 6` steps. Next drain the retained dictionary and
-  package the run as a canonically halting machine on a tagged pair. Bound
-  the unary output for arbitrary supplied dictionaries before composing with
-  formula preparation. Malformed-input rejection remains open.
+  adding at most `12B + 6` steps. `DenseFormulaRename.outputsInTime` charges
+  dictionary cleanup and gives canonical halt on any encoded pair.
+  `DenseFormulaRename.computableInPolyTime` composes this with preparation
+  to compute dense unary CNF from one binary formula. Next package the SAT
+  and exact-3-SAT reductions using `satisfiable_denseRename` and
+  `exactKSAT_denseRename`. Malformed-input rejection remains open.
 - Connect `phd-thesis-lean`'s concrete regression compiler to the common
   encoded exact-3-SAT language.
 - Re-express its construction bound in the shared bit-level computational

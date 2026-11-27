@@ -76,6 +76,7 @@ import LeanNPHardness.ClauseListRenameMachine
 import LeanNPHardness.FramedFormulaRenameMachine
 import LeanNPHardness.OrderedFormulaRenameMachine
 import LeanNPHardness.TaggedFormulaRenameMachine
+import LeanNPHardness.DenseFormulaRenameMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine
@@ -1203,3 +1204,10 @@ end LeanNPHardness.Audit
 #print axioms LeanNPHardness.MachineAdapters.TaggedFormulaRename.prepared_load_exits
 #print axioms LeanNPHardness.MachineAdapters.TaggedFormulaRename.formula_exits
 #print axioms LeanNPHardness.MachineAdapters.TaggedFormulaRename.dense_formula_exits
+
+#print axioms LeanNPHardness.MachineAdapters.DenseFormulaRename.cleanup_exits
+#print axioms LeanNPHardness.MachineAdapters.DenseFormulaRename.output_length_le
+#print axioms LeanNPHardness.MachineAdapters.DenseFormulaRename.routine_exits
+#print axioms LeanNPHardness.MachineAdapters.DenseFormulaRename.outputsInTime
+#print axioms LeanNPHardness.MachineAdapters.DenseFormulaRename.pairComputableInPolyTime
+#print axioms LeanNPHardness.MachineAdapters.DenseFormulaRename.computableInPolyTime

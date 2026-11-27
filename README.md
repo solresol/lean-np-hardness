@@ -34,8 +34,9 @@ instances. It preserves satisfiability, exact clause widths, polarity, order,
 and repeated occurrences. Only its auxiliary variable dictionary is
 deduplicated. The renamed variables occupy precisely the dictionary index
 range, and the unary output has at most `n * (n + 1)` symbols for original
-binary input length `n`. Its TM2 implementation and runtime proof remain
-pending; the checked bound is on output size.
+binary input length `n`. The finite TM2 witness
+`DenseFormulaRename.computableInPolyTime` computes this unary encoding
+in polynomial time from the original binary input.
 
 `FirstMatchMachine` supplies a polynomial-time dictionary lookup component.
 It composes the serialized repeated-membership machine with a three-stack
@@ -52,8 +53,8 @@ serializes the input as `(dictionary, [query])`, with checked round trip,
 injectivity, exact bit length, and decoder rejection of non-singleton queries
 and trailing data. The unary result size is at most the input bit length;
 `lookup_denseIndex` supplies the dense-renaming interface. `FormulaDictionary`
-now constructs the dictionary from a formula and retains the original source;
-connecting repeated lookups to that traversal remains pending.
+constructs the dictionary from a formula and retains the original source
+for the renaming traversal.
 
 `PairDuplication.computableInPolyTime` copies one encoded value into its
 canonical tagged pair in exactly `6n + 3` TM2 steps for input length `n`,
@@ -62,8 +63,7 @@ including an empty one. `retainInputComputableInPolyTime` composes duplication
 with the pair-left adapter to compute `(f a, a)` from one input.
 `DictionaryLookup.preservingComputableInPolyTime` specializes this to return
 the unary index alongside the complete original query and dictionary, with
-polynomial runtime in the original `FramedNatLookup` input bits. Changing the
-retained query and connecting repeated lookups to CNF traversal remain pending.
+polynomial runtime in the original `FramedNatLookup` input bits.
 
 `DictionaryLookupEncoding.computableInPolyTime` converts the tagged pair
 `PairEncoding.finEncoding FramedNat.finEncoding FramedNatList.finEncoding`
@@ -112,12 +112,10 @@ kernel's empty count/work stacks and restores each component with one transfer.
 with the cons kernel, preserving repetitions. `runSteps_le` and `outputsInTime`
 give the bound `9n + 21`, including empty workspace, reset control, and halt,
 where `n` counts the original tagged symbols (the sum of complete component
-bit lengths). The polynomial witness uses `9X + 21`. Malformed-stream rejection,
-the dictionary-construction machine, and full dense-renaming runtime remain
-separate obligations.
+bit lengths). The polynomial witness uses `9X + 21`.
 
 `DictionaryConstruction` supplies the conditional insertion and tail-first
-fold specification for that machine. `insert_eq_lookup` connects insertion
+fold specification for the dictionary builder. `insert_eq_lookup` connects insertion
 to the checked lookup's absence sentinel. `extend_eq_dedup_append` proves
 agreement with `List.dedup` for a duplicate-free seed; `suffix_extend` retains
 an arbitrary seed verbatim, including its repetitions. `build_eq_dedup` and
@@ -158,8 +156,7 @@ entry count `m`, bounded by `6n + 5` in full source length `n = H + B`.
 `routine_exits` reattaches the unchanged header, and `computableInPolyTime`
 packages full list reversal under `FramedNatList.finEncoding` with `10X + 7`,
 including empty workspace, reset and halt. `output_length` proves unchanged
-encoded size. The seeded folding routine is checked below; full dense-renaming
-runtime remains pending.
+encoded size. The seeded fold below uses this reversed stream.
 
 `DictionaryInsertInput.natural_head_exits` now extracts one intact query frame
 and serializes it with the current dictionary as exactly the tagged input
@@ -402,8 +399,16 @@ both components, the loader takes exactly `3N + 3` TM2 steps and preserves
 the caller’s output suffix. `prepared_load_exits` checks the wire produced
 by `FormulaDictionary.preservingComputableInPolyTime`. Starting from that
 wire, `dense_formula_exits` adds at most `12B + 6` loading steps to the
-ordered traversal for `B` original formula bits. Standalone conversion still
-requires draining the retained dictionary and packaging the halting machine.
+ordered traversal for `B` original formula bits.
+
+`DenseFormulaRename.cleanup_exits` drains the retained dictionary in exactly
+`2D + 1` steps for `D` dictionary bits. For any tagged dictionary/formula
+pair of length `N`, including duplicate entries and absent variables,
+`output_length_le` bounds the unary word by `N(N + 1)` symbols.
+`outputsInTime` gives canonical halt with only this word on the output
+stack. `computableInPolyTime` composes the tagged machine with dictionary
+preparation, so one binary formula suffices. Its time polynomial is measured
+in the original formula bits and includes the intermediate transfer.
 
 The component verifier machines listed in this section predate the complete
 verifiers `SatVerify` and `ExactThreeVerify` (see the Cook--Levin section),

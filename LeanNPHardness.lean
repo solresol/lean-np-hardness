@@ -162,6 +162,7 @@ import LeanNPHardness.ClauseListRenameMachine
 import LeanNPHardness.FramedFormulaRenameMachine
 import LeanNPHardness.OrderedFormulaRenameMachine
 import LeanNPHardness.TaggedFormulaRenameMachine
+import LeanNPHardness.DenseFormulaRenameMachine
 import LeanNPHardness.PackedLiteralEvaluationMachine
 import LeanNPHardness.ClauseEvaluationStepMachine
 import LeanNPHardness.ClauseLiteralMachine
